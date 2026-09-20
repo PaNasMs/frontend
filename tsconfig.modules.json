@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ostojaos/ui": ["src/shared/ui"],
+      "@ostojaos/runtime": ["src/app/module-registry"],
+      "@ostojaos/operations": ["src/app/operations"],
+      "@ostojaos/removable": ["src/app/removable"],
+      "@ostojaos/layout": ["src/app/desktop-layout"],
+      "@ostojaos/completion": ["src/shared/job-completion"],
+      "@ostojaos/client": ["src/api/client"],
+      "react": ["node_modules/@types/react/index.d.ts"],
+      "react/*": ["node_modules/@types/react/*"],
+      "react-dom/*": ["node_modules/@types/react-dom/*"],
+      "*": ["node_modules/*"],
+      "@ostojaos/i18n": ["src/i18n/index"],
+      "@ostojaos/navigation": ["src/app/navigation"]
+    }
+  },
+  "include": ["../modules/*/frontend/**/*.tsx", "src/vite-env.d.ts"]
+}

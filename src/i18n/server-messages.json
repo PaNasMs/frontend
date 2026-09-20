@@ -1,0 +1,3151 @@
+[
+  {
+    "key": "server_b71e20152e8e",
+    "en": "Command {{v0}} exited with code {{v1}}. Check the object's state and system journal.",
+    "ru": "Команда {{v0}} завершилась с кодом {{v1}}. Проверьте состояние объекта и системный журнал."
+  },
+  {
+    "key": "server_45624bed0c40",
+    "en": "Invalid name",
+    "ru": "Недопустимое имя"
+  },
+  {
+    "key": "server_0367ee968288",
+    "en": "Number outside the allowed range",
+    "ru": "Число вне допустимого диапазона"
+  },
+  {
+    "key": "server_6b686fdcfd54",
+    "en": "The configuration is a symbolic link",
+    "ru": "Конфигурация является символической ссылкой"
+  },
+  {
+    "key": "server_a2f35c5a78ea",
+    "en": "Invalid path",
+    "ru": "Некорректный путь"
+  },
+  {
+    "key": "server_279adc1b19c1",
+    "en": "The path must be absolute and normalized",
+    "ru": "Путь должен быть абсолютным и нормализованным"
+  },
+  {
+    "key": "server_2878f951c49b",
+    "en": "Modifying array",
+    "ru": "Изменение массива"
+  },
+  {
+    "key": "server_1961b4420950",
+    "en": "Creating file system",
+    "ru": "Создание файловой системы"
+  },
+  {
+    "key": "server_dfd8ea069ec2",
+    "en": "Modifying partition",
+    "ru": "Изменение раздела"
+  },
+  {
+    "key": "server_565659d99907",
+    "en": "Modifying partition table",
+    "ru": "Изменение разметки"
+  },
+  {
+    "key": "server_a0db26f6447a",
+    "en": "Checking file system",
+    "ru": "Проверка файловой системы"
+  },
+  {
+    "key": "server_5583658820b4",
+    "en": "Resizing file system",
+    "ru": "Изменение размера файловой системы"
+  },
+  {
+    "key": "server_23450f3b3766",
+    "en": "Modifying file system",
+    "ru": "Изменение файловой системы"
+  },
+  {
+    "key": "server_a9998394caf3",
+    "en": "Growing file system",
+    "ru": "Увеличение файловой системы"
+  },
+  {
+    "key": "server_67717534c4a1",
+    "en": "Mounting volume",
+    "ru": "Подключение тома"
+  },
+  {
+    "key": "server_de66fae6bed1",
+    "en": "Unmounting volume",
+    "ru": "Отключение тома"
+  },
+  {
+    "key": "server_3685643c353b",
+    "en": "Processing encrypted volume",
+    "ru": "Обработка зашифрованного тома"
+  },
+  {
+    "key": "server_dc88c8acb379",
+    "en": "Creating user",
+    "ru": "Создание пользователя"
+  },
+  {
+    "key": "server_45b4d6db86eb",
+    "en": "Updating user",
+    "ru": "Обновление пользователя"
+  },
+  {
+    "key": "server_fc2706595662",
+    "en": "Deleting user",
+    "ru": "Удаление пользователя"
+  },
+  {
+    "key": "server_da6a620b96d5",
+    "en": "Change password",
+    "ru": "Смена пароля"
+  },
+  {
+    "key": "server_c2f25b60f90f",
+    "en": "Updating packages",
+    "ru": "Обновление пакетов"
+  },
+  {
+    "key": "server_2b686a7c4e82",
+    "en": "Applying service state",
+    "ru": "Применение состояния служб"
+  },
+  {
+    "key": "server_cfc38420a472",
+    "en": "Updating boot configuration",
+    "ru": "Обновление загрузочной конфигурации"
+  },
+  {
+    "key": "server_184d3eeefee8",
+    "en": "Checking device state",
+    "ru": "Проверка состояния устройств"
+  },
+  {
+    "key": "server_c7e0ec1853ae",
+    "en": "Submitting SMART test command",
+    "ru": "Отправка команды проверки SMART"
+  },
+  {
+    "key": "server_18a8509561ae",
+    "en": "Applying changes",
+    "ru": "Применение изменений"
+  },
+  {
+    "key": "server_15e86b135a02",
+    "en": "Select a systemd service",
+    "ru": "Выберите systemd-службу"
+  },
+  {
+    "key": "server_edf2a472f778",
+    "en": "This service is protected from changes through the panel",
+    "ru": "Эта служба защищена от изменения через панель"
+  },
+  {
+    "key": "server_0d9c435351f3",
+    "en": "Service is not loaded",
+    "ru": "Служба не загружена"
+  },
+  {
+    "key": "server_52321c607a0d",
+    "en": "Unknown system query",
+    "ru": "Неизвестный системный запрос"
+  },
+  {
+    "key": "server_f734bba2f6a4",
+    "en": "Unknown system operation",
+    "ru": "Неизвестная системная операция"
+  },
+  {
+    "key": "server_398c7d4f7b0d",
+    "en": "Done",
+    "ru": "Готово"
+  },
+  {
+    "key": "server_b14f756f3a76",
+    "en": "Directory does not exist",
+    "ru": "Каталог не существует"
+  },
+  {
+    "key": "server_219685dcdf6b",
+    "en": "The shared folder must be on a mounted local volume",
+    "ru": "Общая папка должна быть на подключённом локальном томе"
+  },
+  {
+    "key": "server_ded742cb3c74",
+    "en": "The share path must not contain spaces or quotation marks",
+    "ru": "Путь общей папки не должен содержать пробелы или кавычки"
+  },
+  {
+    "key": "server_70a38a296175",
+    "en": "NFS share updated",
+    "ru": "Публикация NFS обновлена"
+  },
+  {
+    "key": "server_3b8645d245c4",
+    "en": "Invalid period",
+    "ru": "Некорректный период"
+  },
+  {
+    "key": "server_07dde0235662",
+    "en": "Invalid boot selection",
+    "ru": "Некорректная загрузка"
+  },
+  {
+    "key": "server_6ea38dabfb1c",
+    "en": "Select a regular user",
+    "ru": "Выберите обычного пользователя"
+  },
+  {
+    "key": "server_293a579e546e",
+    "en": "Invalid permissions",
+    "ru": "Некорректные права"
+  },
+  {
+    "key": "server_6cbc2d27609b",
+    "en": "This file system does not support the selected Unix permissions",
+    "ru": "Эта ФС не поддерживает выбранные Unix-права"
+  },
+  {
+    "key": "server_8e7af85a03c9",
+    "en": "OS UPDATE",
+    "ru": "ОБНОВЛЕНИЕ ОС"
+  },
+  {
+    "key": "server_f13321d42c45",
+    "en": "Folder ownership and permissions updated",
+    "ru": "Владелец и права папки обновлены"
+  },
+  {
+    "key": "server_b7b645364521",
+    "en": "Specify NFS clients",
+    "ru": "Укажите клиентов NFS"
+  },
+  {
+    "key": "server_8836a2b38cb4",
+    "en": "NFS: Linux UID/GID permissions; root_squash enabled",
+    "ru": "NFS: права Linux по UID/GID; root_squash включён"
+  },
+  {
+    "key": "server_77f7878fdf2a",
+    "en": "Invalid service",
+    "ru": "Некорректная служба"
+  },
+  {
+    "key": "server_2aeb92c7c86c",
+    "en": "Apply only to the selected folder, without recursion",
+    "ru": "Применить только к выбранной папке, без рекурсии"
+  },
+  {
+    "key": "server_0d67304d34a1",
+    "en": "No updates available",
+    "ru": "Нет доступных обновлений"
+  },
+  {
+    "key": "server_f8cbd8ea4e7f",
+    "en": "Clients: ",
+    "ru": "Клиенты: "
+  },
+  {
+    "key": "server_1aa9d9df61b1",
+    "en": "Owner: ",
+    "ru": "Владелец: "
+  },
+  {
+    "key": "server_1e0356fb49b5",
+    "en": "Group: ",
+    "ru": "Группа: "
+  },
+  {
+    "key": "server_8cfef6bfa54d",
+    "en": "Permissions: ",
+    "ru": "Права: "
+  },
+  {
+    "key": "server_0d503f558890",
+    "en": "Refresh available package lists",
+    "ru": "Обновить список доступных пакетов"
+  },
+  {
+    "key": "server_f400953e972e",
+    "en": "Specify clients as comma-separated IP addresses or subnets",
+    "ru": "Клиенты задаются IP-адресами или подсетями через запятую"
+  },
+  {
+    "key": "server_91398d6c544f",
+    "en": "Invalid schedule",
+    "ru": "Некорректное расписание"
+  },
+  {
+    "key": "server_3632b3570302",
+    "en": "Disk unavailable",
+    "ru": "Диск недоступен"
+  },
+  {
+    "key": "server_57194e68b2d6",
+    "en": "Select a sleep timeout from the list",
+    "ru": "Выберите время сна из списка"
+  },
+  {
+    "key": "server_4b8c3a9ce4c6",
+    "en": "Sleep is supported only for SATA HDDs with a serial number",
+    "ru": "Сон поддерживается только для SATA HDD с серийным номером"
+  },
+  {
+    "key": "server_ff42d6a08454",
+    "en": "The hdparm package is required to configure disk sleep",
+    "ru": "Для настройки сна требуется пакет hdparm"
+  },
+  {
+    "key": "server_65d5f204d405",
+    "en": "Array name: 1–31 Latin letters, digits, _ or -. Start with a letter, digit or _. Spaces are not allowed.",
+    "ru": "Имя массива: от 1 до 31 символа — латинские буквы, цифры, _ и -. Первый символ — буква, цифра или _. Пробелы не допускаются."
+  },
+  {
+    "key": "server_a21518e3ba96",
+    "en": "Select a block device",
+    "ru": "Выберите блочное устройство"
+  },
+  {
+    "key": "server_3162a87fedd2",
+    "en": "The device no longer exists",
+    "ru": "Устройство больше не существует"
+  },
+  {
+    "key": "server_9945259e13a8",
+    "en": "The system drive or one of its members is protected",
+    "ru": "Системный накопитель или его участник защищён"
+  },
+  {
+    "key": "server_89da019bac3d",
+    "en": "The device is read-only",
+    "ru": "Устройство доступно только для чтения"
+  },
+  {
+    "key": "server_75269f5df258",
+    "en": "Detach dependent devices or delete partitions first",
+    "ru": "Сначала отключите зависимые устройства или удалите разделы"
+  },
+  {
+    "key": "server_a0c414a17589",
+    "en": "Unmount file systems first",
+    "ru": "Сначала отмонтируйте файловые системы"
+  },
+  {
+    "key": "server_c06b41d7b9f3",
+    "en": "The device is used by another storage layer",
+    "ru": "Устройство используется другим слоем хранения"
+  },
+  {
+    "key": "server_0a4aabd64fd2",
+    "en": "Select a physical drive",
+    "ru": "Выберите физический накопитель"
+  },
+  {
+    "key": "server_e191c96a90d9",
+    "en": "The controller does not support disconnection",
+    "ru": "Контроллер не поддерживает отключение"
+  },
+  {
+    "key": "server_4425b78c5849",
+    "en": "The mount point must be under /srv, /mnt or /media",
+    "ru": "Точка монтирования должна находиться в /srv, /mnt или /media"
+  },
+  {
+    "key": "server_e8ed895a5600",
+    "en": "Links in the mount path are not allowed",
+    "ru": "Ссылки в пути монтирования запрещены"
+  },
+  {
+    "key": "server_2d9f4e99ea9f",
+    "en": "{{v0}} (PID {{v1}}, user {{v2}})",
+    "ru": "{{v0}} (PID {{v1}}, пользователь {{v2}})"
+  },
+  {
+    "key": "server_ba61d31f490b",
+    "en": "No unfinished array reshape",
+    "ru": "Нет незавершённой перестройки массива"
+  },
+  {
+    "key": "server_6599eac9fe96",
+    "en": "Reshape control is supported for RAID5/RAID6 with MD 1.2 metadata",
+    "ru": "Управление перестройкой поддерживается для RAID5/RAID6 с метаданными MD 1.2"
+  },
+  {
+    "key": "server_4a15befd867b",
+    "en": "Could not confirm reshape resumption. Refresh array state and check the system journal.",
+    "ru": "Не удалось подтвердить продолжение перестройки. Обновите состояние массива и проверьте системный журнал."
+  },
+  {
+    "key": "server_ed7dbeded89f",
+    "en": "Single-disk expansion is supported for RAID5 and RAID6",
+    "ru": "Расширение одним диском поддерживается для RAID5 и RAID6"
+  },
+  {
+    "key": "server_d0d6068bcf3b",
+    "en": "Expansion requires an array with MD 1.2 metadata",
+    "ru": "Для расширения поддерживаются массивы с метаданными MD 1.2"
+  },
+  {
+    "key": "server_25766c22ba25",
+    "en": "Wait for the current array operation to finish before expanding",
+    "ru": "Дождитесь завершения текущей операции массива перед расширением"
+  },
+  {
+    "key": "server_504a2afe5f17",
+    "en": "Recover failed or missing array members first",
+    "ru": "Сначала восстановите неисправных или отсутствующих участников массива"
+  },
+  {
+    "key": "server_d2a151faf939",
+    "en": "Array membership changed. Refresh data before expanding",
+    "ru": "Состав массива изменился. Обновите данные перед расширением"
+  },
+  {
+    "key": "server_92a2acbd9085",
+    "en": "Unknown storage operation",
+    "ru": "Неизвестная операция хранения"
+  },
+  {
+    "key": "server_9c0aaa471cd5",
+    "en": "Operation complete. Background synchronization or SMART testing is shown in device status.",
+    "ru": "Операция выполнена. Фоновая синхронизация или SMART-тест отражаются в состоянии устройства."
+  },
+  {
+    "key": "server_5dd6044efea1",
+    "en": "Unknown storage query",
+    "ru": "Неизвестный запрос хранения"
+  },
+  {
+    "key": "server_f46a449847c8",
+    "en": "The drive is used by an array or another storage layer",
+    "ru": "Накопитель используется массивом или другим слоем хранения"
+  },
+  {
+    "key": "server_58572a92304f",
+    "en": "PID {{v0}} (process already exited)",
+    "ru": "PID {{v0}} (процесс уже завершился)"
+  },
+  {
+    "key": "server_cea95a8ca708",
+    "en": "Could not check which processes use volume “{{v0}}”. Deletion has not started; retry after resolving process access errors.",
+    "ru": "Не удалось проверить, какие процессы используют том «{{v0}}». Удаление не начато; повторите проверку после устранения ошибки доступа к процессам."
+  },
+  {
+    "key": "server_c5c79868278b",
+    "en": "Reshape is not running. Refresh array state.",
+    "ru": "Перестройка сейчас не выполняется. Обновите состояние массива."
+  },
+  {
+    "key": "server_471cf51479ed",
+    "en": "Reshape is already running or the array is busy with another operation",
+    "ru": "Перестройка уже выполняется или массив занят другой операцией"
+  },
+  {
+    "key": "server_50e6a749a521",
+    "en": "Recover missing or failed array members first",
+    "ru": "Сначала восстановите отсутствующих или неисправных участников массива"
+  },
+  {
+    "key": "server_7158c4085cce",
+    "en": "The array is not ready to resume reshape",
+    "ru": "Массив не готов к продолжению перестройки"
+  },
+  {
+    "key": "server_b5413774b8d3",
+    "en": "Could not confirm reshape pause",
+    "ru": "Не удалось подтвердить паузу перестройки"
+  },
+  {
+    "key": "server_b9709dc556ba",
+    "en": "Reshape paused. Position saved.",
+    "ru": "Перестройка приостановлена. Позиция сохранена."
+  },
+  {
+    "key": "server_c24c2aac3b53",
+    "en": "All members must be synchronized; expansion with spare disks is not supported yet",
+    "ru": "Все участники должны быть синхронизированы; расширение массива с резервными дисками пока не поддерживается"
+  },
+  {
+    "key": "server_4f257da54c5c",
+    "en": "RAID0/1/5/6/10 are supported",
+    "ru": "Поддерживаются RAID0/1/5/6/10"
+  },
+  {
+    "key": "server_68210ac7f07f",
+    "en": "Select disks",
+    "ru": "Выберите диски"
+  },
+  {
+    "key": "server_49884749a833",
+    "en": "Duplicate members",
+    "ru": "Повторяющиеся участники"
+  },
+  {
+    "key": "server_d548348ef7bf",
+    "en": "Not enough members",
+    "ru": "Недостаточно участников"
+  },
+  {
+    "key": "server_922c9c87c1d6",
+    "en": "RAID10 requires an even number of members",
+    "ru": "Для RAID10 требуется чётное количество участников"
+  },
+  {
+    "key": "server_a236166c7eaa",
+    "en": "Array name is already in use",
+    "ru": "Имя массива уже используется"
+  },
+  {
+    "key": "server_9ef18a4a4d98",
+    "en": "Choose how to open the volume before mounting",
+    "ru": "Для подключения требуется выбрать способ работы с томом"
+  },
+  {
+    "key": "server_f742a116d4d0",
+    "en": "Errors repaired. The volume remains unmounted.",
+    "ru": "Ошибки исправлены. Том остаётся отключённым."
+  },
+  {
+    "key": "server_3b789c44a9b7",
+    "en": "Linux mounted the volume read-only. A file system check is required.",
+    "ru": "После подключения Linux перевёл том в режим только чтения. Требуется проверка файловой системы."
+  },
+  {
+    "key": "server_ca630e5e22fe",
+    "en": "Array no longer available. Refresh the device list.",
+    "ru": "Массив больше не доступен. Обновите список устройств."
+  },
+  {
+    "key": "server_7fdd8603631e",
+    "en": "Could not determine array member sizes",
+    "ru": "Не удалось определить размеры участников массива"
+  },
+  {
+    "key": "server_c4558b190402",
+    "en": "Select a physical disk",
+    "ru": "Выберите физический диск"
+  },
+  {
+    "key": "server_17798235c847",
+    "en": "process list unavailable",
+    "ru": "список процессов недоступен"
+  },
+  {
+    "key": "server_79c0a38a12f1",
+    "en": ", {{v0}} more",
+    "ru": ", ещё {{v0}}"
+  },
+  {
+    "key": "server_e6b9dd0e37bb",
+    "en": "Volume “{{v0}}” is busy: {{v1}}. Close the files or stop the relevant service; if this is a terminal, leave the volume's directory.",
+    "ru": "Том «{{v0}}» занят: {{v1}}. Завершите работу с файлами или остановите соответствующую службу; если это терминал, выйдите из каталога тома."
+  },
+  {
+    "key": "server_71a45241f870",
+    "en": " has not started. ",
+    "ru": " не начата. "
+  },
+  {
+    "key": "server_bf0ec8150294",
+    "en": "Reshape resumed. Progress is shown on the array card.",
+    "ru": "Перестройка продолжена. Прогресс отображается в карточке массива."
+  },
+  {
+    "key": "server_1f87b0ab8c7d",
+    "en": "Unsupported member",
+    "ru": "Неподдерживаемый участник"
+  },
+  {
+    "key": "server_1544a09e059f",
+    "en": "The member contains data or RAID metadata",
+    "ru": "Участник содержит данные или RAID-метаданные"
+  },
+  {
+    "key": "server_fceec2eab610",
+    "en": "RAID will be created",
+    "ru": "Будет создан RAID"
+  },
+  {
+    "key": "server_d37eea26c9c8",
+    "en": "RAID0 has no redundancy: a disk failure causes array data loss",
+    "ru": "RAID0 не имеет избыточности: отказ любого диска приведёт к потере данных массива"
+  },
+  {
+    "key": "server_f88328af22d6",
+    "en": "Array synchronization will continue in the background",
+    "ru": "Синхронизация массива продолжится в фоне"
+  },
+  {
+    "key": "server_c0c2f9c20965",
+    "en": "All non-system SATA HDDs",
+    "ru": "Все несистемные SATA HDD"
+  },
+  {
+    "key": "server_6458721600ce",
+    "en": "The setting persists across restarts and applies to new HDDs. For busy RAID arrays, it is deferred until the background operation finishes.",
+    "ru": "Настройка сохранится после перезагрузки и применится к новым HDD. Для занятых RAID применение откладывается до завершения фоновой операции."
+  },
+  {
+    "key": "server_24b7b5ee2c96",
+    "en": " is used by: ",
+    "ru": " используется: "
+  },
+  {
+    "key": "server_48aa056322db",
+    "en": ". Unmount these nested mounts first.",
+    "ru": ". Сначала размонтируйте эти вложенные подключения."
+  },
+  {
+    "key": "server_20d7e6695a70",
+    "en": ". Remove their shares in Shared folders first.",
+    "ru": ". Сначала отключите их публикацию в разделе «Общие папки»."
+  },
+  {
+    "key": "server_d5f1cd28ab21",
+    "en": "Operation on ",
+    "ru": "Операция с "
+  },
+  {
+    "key": "server_c6b71a1a14fc",
+    "en": "Never sleep",
+    "ru": "Не переводить в сон"
+  },
+  {
+    "key": "server_ffe0c0117df7",
+    "en": "Sleep after {{v0}} minutes of no disk access",
+    "ru": "Сон после {{v0}} минут без обращений к диску"
+  },
+  {
+    "key": "server_9b2a4a21d32d",
+    "en": "No serial number",
+    "ru": "Нет серийного номера"
+  },
+  {
+    "key": "server_41027baf4b06",
+    "en": "Select a test type",
+    "ru": "Выберите тип проверки"
+  },
+  {
+    "key": "server_cf2fe57fefd5",
+    "en": "SMART tests wake disks; busy arrays and running tests are skipped",
+    "ru": "SMART-проверки пробуждают диск; занятые массивы и уже выполняющиеся тесты пропускаются"
+  },
+  {
+    "key": "server_7381fcf38762",
+    "en": "The volume is read-only, possibly due to file system errors. Choose repair or read-only access.",
+    "ru": "Том находится в режиме только чтения. Это может быть следствием ошибок файловой системы. Выберите проверку с исправлением или открытие только для чтения."
+  },
+  {
+    "key": "server_1069e8466160",
+    "en": " automatic checking is unavailable. You can mount the volume read-only.",
+    "ru": " автоматическая проверка недоступна. Можно подключить том только для чтения."
+  },
+  {
+    "key": "server_bce8ede76049",
+    "en": "Could not mount volume: ",
+    "ru": "Не удалось подключить том: "
+  },
+  {
+    "key": "server_364f20207e32",
+    "en": "Array is still active",
+    "ru": "Массив всё ещё активен"
+  },
+  {
+    "key": "server_014353e5f625",
+    "en": "The disk contains a file system. Prepare it in Partitions and mounts.",
+    "ru": "Диск содержит файловую систему. Подготовьте его во вкладке «Разделы и монтирования»."
+  },
+  {
+    "key": "server_e915bd79236f",
+    "en": "Device ",
+    "ru": "Устройство "
+  },
+  {
+    "key": "server_e3173a68dff5",
+    "en": "Mounted inside “{{v0}}”: ",
+    "ru": "Внутри «{{v0}}» подключены: "
+  },
+  {
+    "key": "server_2d894068f09d",
+    "en": "Folders shared via NFS: ",
+    "ru": "Через NFS опубликованы папки: "
+  },
+  {
+    "key": "server_fe495d3882d6",
+    "en": "SMART requires a physical disk with a serial number",
+    "ru": "SMART доступен физическому диску с серийным номером"
+  },
+  {
+    "key": "server_7d13b39af758",
+    "en": "The test may wake the disk",
+    "ru": "Проверка может разбудить диск"
+  },
+  {
+    "key": "server_3e2c9e44e380",
+    "en": ". Disable them in Shared folders first.",
+    "ru": ". Сначала отключите их в разделе «Общие папки»."
+  },
+  {
+    "key": "server_75f6a961090e",
+    "en": "For ",
+    "ru": "Для "
+  },
+  {
+    "key": "server_5053c9e88a37",
+    "en": "The device is not an MD RAID array",
+    "ru": "Устройство не является MD RAID"
+  },
+  {
+    "key": "server_b265ee7564bb",
+    "en": "The command finished, but the new member count is not confirmed yet. Refresh array state before retrying.",
+    "ru": "Команда завершилась, но новое число участников ещё не подтверждено. Обновите состояние массива перед повтором."
+  },
+  {
+    "key": "server_fb512d64e122",
+    "en": "Array expansion started. Wait for reshape to finish on the RAID card. Partition and file system sizes are unchanged.",
+    "ru": "Расширение массива запущено. Дождитесь завершения перестроения в карточке RAID. Размер разделов и файловой системы не изменён."
+  },
+  {
+    "key": "server_b181530ff820",
+    "en": "” is used by NFS shares: ",
+    "ru": "» используется публикациями NFS: "
+  },
+  {
+    "key": "server_b43d77a5758d",
+    "en": "Finish array reshape first",
+    "ru": "Сначала завершите перестройку массива"
+  },
+  {
+    "key": "server_1126fa7ce0dc",
+    "en": "Wait for the array operation to finish",
+    "ru": "Дождитесь завершения операции массива"
+  },
+  {
+    "key": "server_f9d403315114",
+    "en": "ARRAY DATA WILL BECOME INACCESSIBLE",
+    "ru": "ДАННЫЕ МАССИВА СТАНУТ НЕДОСТУПНЫ"
+  },
+  {
+    "key": "server_2ff1e9b5fd56",
+    "en": "Volumes will be unmounted and member RAID metadata removed",
+    "ru": "Монтирования будут отключены, RAID-метаданные участников удалены"
+  },
+  {
+    "key": "server_c39715ed5ac4",
+    "en": "Select a disk or array",
+    "ru": "Выберите диск или массив"
+  },
+  {
+    "key": "server_ced875aa216b",
+    "en": "The device contains a file system",
+    "ru": "На устройстве находится файловая система"
+  },
+  {
+    "key": "server_41944418c85f",
+    "en": "New partition: {{v0}}–{{v1}} MiB",
+    "ru": "Новый раздел: {{v0}}–{{v1}} МиБ"
+  },
+  {
+    "key": "server_0e9ecb96d091",
+    "en": "Select a partition",
+    "ru": "Выберите раздел"
+  },
+  {
+    "key": "server_4df102694383",
+    "en": "The utility for creating this file system is unavailable",
+    "ru": "Утилита создания этой ФС недоступна"
+  },
+  {
+    "key": "server_8abaa1a9ef52",
+    "en": "Cannot format a RAID member",
+    "ru": "Нельзя форматировать участника RAID"
+  },
+  {
+    "key": "server_e47e0c11feb0",
+    "en": "FORMATTING WILL DESTROY DATA",
+    "ru": "ФОРМАТИРОВАНИЕ УНИЧТОЖИТ ДАННЫЕ"
+  },
+  {
+    "key": "server_d6dfdce2f5ca",
+    "en": "Volume “",
+    "ru": "Том «"
+  },
+  {
+    "key": "server_74330252d9c2",
+    "en": "mdadm did not confirm startup",
+    "ru": "mdadm не подтвердил запуск"
+  },
+  {
+    "key": "server_725ad1c0b097",
+    "en": "Startup timed out",
+    "ru": "Превышено время ожидания запуска"
+  },
+  {
+    "key": "server_9d7934ea2a6c",
+    "en": "RAID0 does not support redundancy checks",
+    "ru": "RAID0 не поддерживает проверку избыточности"
+  },
+  {
+    "key": "server_df1ee37bfce2",
+    "en": "The partition overlaps an existing partition",
+    "ru": "Раздел пересекается с существующим"
+  },
+  {
+    "key": "server_b0830713874c",
+    "en": "Resizing a partition with this file system is not supported yet; use separate file system operations",
+    "ru": "Изменение раздела с этой ФС пока не поддерживается; используйте отдельные операции ФС"
+  },
+  {
+    "key": "server_4167775b8ea6",
+    "en": "Outside disk boundaries",
+    "ru": "За границей диска"
+  },
+  {
+    "key": "server_cc48e7b1d1ed",
+    "en": "New size: {{v0}} MiB",
+    "ru": "Новый размер: {{v0}} МиБ"
+  },
+  {
+    "key": "server_2e833ca0631a",
+    "en": "The ext file system and partition will be resized in a safe order",
+    "ru": "ФС ext будет изменена в безопасном порядке относительно раздела"
+  },
+  {
+    "key": "server_199993a4422e",
+    "en": "Resizing is not supported",
+    "ru": "Изменение размера не поддерживается"
+  },
+  {
+    "key": "server_648625096686",
+    "en": "This RAID level does not support the operation",
+    "ru": "Уровень не поддерживает эту операцию"
+  },
+  {
+    "key": "server_cb56528249cb",
+    "en": "Wait for the current array operation to finish",
+    "ru": "Дождитесь завершения текущей операции массива"
+  },
+  {
+    "key": "server_2ac9a838ec2c",
+    "en": "The new member must be empty",
+    "ru": "Новый участник должен быть пустым"
+  },
+  {
+    "key": "server_faa724114b48",
+    "en": "The new disk is smaller than the array members",
+    "ru": "Новый диск меньше участников массива"
+  },
+  {
+    "key": "server_8ded1ffcdc80",
+    "en": "Background progress is shown on the array card",
+    "ru": "Прогресс фоновой операции отслеживается в карточке массива"
+  },
+  {
+    "key": "server_8c1f55c582ce",
+    "en": "Not enough contiguous free space",
+    "ru": "Недостаточно непрерывного свободного места"
+  },
+  {
+    "key": "server_fa473ce8c169",
+    "en": "The file system must be mounted",
+    "ru": "ФС должна быть подключена"
+  },
+  {
+    "key": "server_51f49736ea88",
+    "en": "Select a file system",
+    "ru": "Выберите файловую систему"
+  },
+  {
+    "key": "server_0c9d0980dcd6",
+    "en": "The mount point is not a directory",
+    "ru": "Точка не является каталогом"
+  },
+  {
+    "key": "server_8a42b814b4fa",
+    "en": "Already mounted",
+    "ru": "Уже подключено"
+  },
+  {
+    "key": "server_8fdb7ee6c5a4",
+    "en": "The mount point is already used by another volume",
+    "ru": "Точка монтирования уже занята другим томом"
+  },
+  {
+    "key": "server_e76eacfb7536",
+    "en": "The mount point directory must be empty",
+    "ru": "Каталог точки монтирования должен быть пустым"
+  },
+  {
+    "key": "server_9fe46408f68b",
+    "en": "A UUID is required for mounting",
+    "ru": "Для подключения нужен UUID"
+  },
+  {
+    "key": "server_bd1e8e6ac2c4",
+    "en": "Starting array expansion; reshape will continue in the background",
+    "ru": "Запуск расширения массива; перестроение продолжится в фоне"
+  },
+  {
+    "key": "server_24f70e09ad97",
+    "en": ". Check array membership and progress before retrying: the new disk may already be a spare. Reason: ",
+    "ru": ". Проверьте состав и прогресс массива перед повтором: новый диск мог уже стать резервным участником. Причина: "
+  },
+  {
+    "key": "server_f68addb0b761",
+    "en": "Select an unused disk or partition",
+    "ru": "Выберите свободный диск или раздел"
+  },
+  {
+    "key": "server_be4fc3624404",
+    "en": "Members: {{v0}} → {{v1}}",
+    "ru": "Участников: {{v0}} → {{v1}}"
+  },
+  {
+    "key": "server_fea4fc5d9444",
+    "en": "Array capacity: approximately {{v0}} → {{v1}} MiB",
+    "ru": "Ёмкость массива: примерно {{v0}} → {{v1}} МиБ"
+  },
+  {
+    "key": "server_b48f55daf557",
+    "en": "The selected disk will become an active array member. Data will be reshaped in the background.",
+    "ru": "Выбранный диск станет активным участником массива. Данные будут перестроены в фоне."
+  },
+  {
+    "key": "server_d9bdb6c35b27",
+    "en": "Partitions and file systems keep their current sizes. Expand them separately in Partitions and mounts.",
+    "ru": "Разделы и файловая система сохранят свой размер. Их расширение выполняется отдельно во вкладке «Разделы и монтирования»."
+  },
+  {
+    "key": "server_b1b523e54545",
+    "en": "Old member not found",
+    "ru": "Старый участник не найден"
+  },
+  {
+    "key": "server_de93bb045d57",
+    "en": "New member: ",
+    "ru": "Новый участник: "
+  },
+  {
+    "key": "server_0e9762460ec3",
+    "en": "XFS can only grow to the device size",
+    "ru": "XFS можно только увеличить до размера устройства"
+  },
+  {
+    "key": "server_bc97a706ba8f",
+    "en": "Resizing multi-device Btrfs requires a separate workflow",
+    "ru": "Изменение многодисковой Btrfs требует отдельного сценария"
+  },
+  {
+    "key": "server_d82c3e8e3a69",
+    "en": "Unknown mount mode",
+    "ru": "Неизвестный режим подключения"
+  },
+  {
+    "key": "server_4996e9804888",
+    "en": "Select a removable drive partition",
+    "ru": "Выберите раздел съёмного накопителя"
+  },
+  {
+    "key": "server_c2665b42e95b",
+    "en": "At startup: ",
+    "ru": "При загрузке: "
+  },
+  {
+    "key": "server_76cb4f18bb66",
+    "en": "Device is not mounted",
+    "ru": "Устройство не подключено"
+  },
+  {
+    "key": "server_4f70a0915622",
+    "en": "The volume will be unmounted without forcibly terminating processes",
+    "ru": "Подключение будет отключено без принудительного завершения процессов"
+  },
+  {
+    "key": "server_2f11efc9a3f9",
+    "en": "Could not confirm expansion startup ",
+    "ru": "Не удалось подтвердить запуск расширения "
+  },
+  {
+    "key": "server_c8d576d4ad69",
+    "en": "Volume already mounted. Unmount it before repairing.",
+    "ru": "Том уже подключён. Сначала отключите его для исправления."
+  },
+  {
+    "key": "server_aeb91d80f3ea",
+    "en": "Automatic repair is unavailable for this file system",
+    "ru": "Автоматическое исправление этой файловой системы недоступно"
+  },
+  {
+    "key": "server_ae1fbb8c5e3e",
+    "en": "Device is write-protected",
+    "ru": "Устройство защищено от записи"
+  },
+  {
+    "key": "server_9abf3c569015",
+    "en": "Select a standalone disk or partition",
+    "ru": "Выберите отдельный диск или раздел"
+  },
+  {
+    "key": "server_c020b5a4468d",
+    "en": "PARTITION TABLE AND SIGNATURES WILL BE REMOVED; DATA WILL BECOME INACCESSIBLE",
+    "ru": "РАЗМЕТКА И СИГНАТУРЫ БУДУТ УДАЛЕНЫ; ДАННЫЕ СТАНУТ НЕДОСТУПНЫ"
+  },
+  {
+    "key": "server_d04c9be71d7e",
+    "en": "This does not fully erase the drive's contents",
+    "ru": "Это не полное стирание содержимого носителя"
+  },
+  {
+    "key": "server_21e1a7c157a3",
+    "en": "All mounted drive volumes will be unmounted, pending writes saved, and the device disconnected",
+    "ru": "Все подключённые тома накопителя будут отмонтированы, записи сохранены, устройство отключено"
+  },
+  {
+    "key": "server_40c688c43d47",
+    "en": "Enter the LUKS password",
+    "ru": "Введите пароль LUKS"
+  },
+  {
+    "key": "server_3cd91523edb9",
+    "en": "Select an unlocked LUKS volume",
+    "ru": "Выберите открытый LUKS-том"
+  },
+  {
+    "key": "server_789a182ca1df",
+    "en": "LUKS requires an empty device",
+    "ru": "Для LUKS требуется пустое устройство"
+  },
+  {
+    "key": "server_b27644d85842",
+    "en": "Select a LUKS container",
+    "ru": "Выберите LUKS-контейнер"
+  },
+  {
+    "key": "server_bde524548be9",
+    "en": "Name already in use",
+    "ru": "Имя занято"
+  },
+  {
+    "key": "server_70706cc3d871",
+    "en": "No user specified for mounting the volume",
+    "ru": "Не указан пользователь для подключения тома"
+  },
+  {
+    "key": "server_a14eeb8d45b9",
+    "en": ". The drive was not disconnected; previously processed volumes may already be unmounted. Check processes and mounts.",
+    "ru": ". Накопитель не отключён; ранее обработанные тома могли быть уже отмонтированы. Проверьте процессы и подключения."
+  },
+  {
+    "key": "server_6cf044c24f04",
+    "en": "Could not unmount ",
+    "ru": "Не удалось отмонтировать "
+  },
+  {
+    "key": "server_8f38b3dd7baf",
+    "en": "No stable ATA ID",
+    "ru": "Нет устойчивого ATA ID"
+  },
+  {
+    "key": "server_91a3c8ca1fba",
+    "en": "Unsupported device ID",
+    "ru": "Неподдерживаемый ID устройства"
+  },
+  {
+    "key": "server_e5537dc45105",
+    "en": "Service account is protected",
+    "ru": "Служебная учётная запись защищена"
+  },
+  {
+    "key": "server_8734f6087a21",
+    "en": "The home folder must be under /home, /srv or /mnt",
+    "ru": "Домашняя папка должна находиться в /home, /srv или /mnt"
+  },
+  {
+    "key": "server_9babb48829af",
+    "en": "Invalid home folder",
+    "ru": "Недопустимая домашняя папка"
+  },
+  {
+    "key": "server_23a0c00cd5e2",
+    "en": "Links in the home folder path are not allowed",
+    "ru": "Ссылки в пути домашней папки запрещены"
+  },
+  {
+    "key": "server_4daabc864005",
+    "en": "Invalid display name",
+    "ru": "Некорректное отображаемое имя"
+  },
+  {
+    "key": "server_4d68ec8c79d3",
+    "en": "Unknown user operation",
+    "ru": "Неизвестная операция пользователей"
+  },
+  {
+    "key": "server_69d6f4dafb14",
+    "en": "Users and groups updated",
+    "ru": "Состояние пользователей и групп обновлено"
+  },
+  {
+    "key": "server_af4702a1671d",
+    "en": "The home volume is unavailable or the path is a volume root",
+    "ru": "Том домашней папки недоступен или путь является корнем тома"
+  },
+  {
+    "key": "server_6c852e2b788b",
+    "en": "Home folder unavailable",
+    "ru": "Домашняя папка недоступна"
+  },
+  {
+    "key": "server_c8f3ab6669a5",
+    "en": "The home folder belongs to another user",
+    "ru": "Домашняя папка принадлежит другому пользователю"
+  },
+  {
+    "key": "server_6d84ea941775",
+    "en": "The home folder contains mounts",
+    "ru": "В домашней папке есть монтирования"
+  },
+  {
+    "key": "server_abd631ab5baf",
+    "en": "Destination folder already exists",
+    "ru": "Папка назначения уже существует"
+  },
+  {
+    "key": "server_60054fa02b82",
+    "en": "User not found",
+    "ru": "Пользователь не найден"
+  },
+  {
+    "key": "server_a0acc3915167",
+    "en": "The path overlaps another user's home folder",
+    "ru": "Путь пересекается с домашней папкой другого пользователя"
+  },
+  {
+    "key": "server_a7ebfa79c919",
+    "en": "User already exists",
+    "ru": "Пользователь уже существует"
+  },
+  {
+    "key": "server_9728edf3175c",
+    "en": "Enter your password",
+    "ru": "Введите пароль"
+  },
+  {
+    "key": "server_50de432d8464",
+    "en": "Create Linux user and home folder with 0700 permissions",
+    "ru": "Создать Linux-пользователя и домашнюю папку 0700"
+  },
+  {
+    "key": "server_41ab27e347de",
+    "en": "SSH is disabled by default",
+    "ru": "SSH по умолчанию выключен"
+  },
+  {
+    "key": "server_bc50dd23799a",
+    "en": "Group already exists",
+    "ru": "Группа уже существует"
+  },
+  {
+    "key": "server_16ca1eb35a57",
+    "en": "Service group is protected",
+    "ru": "Служебная группа защищена"
+  },
+  {
+    "key": "server_9c72e629be1f",
+    "en": "You cannot delete yourself",
+    "ru": "Нельзя удалить себя"
+  },
+  {
+    "key": "server_a0f53afe1148",
+    "en": "The last administrator is protected",
+    "ru": "Последний администратор защищён"
+  },
+  {
+    "key": "server_13e748db4286",
+    "en": "Files in shared folders will be preserved",
+    "ru": "Файлы в общих папках сохраняются"
+  },
+  {
+    "key": "server_66f97ff29576",
+    "en": "The group is used by users",
+    "ru": "Группа используется пользователями"
+  },
+  {
+    "key": "server_7e3ccb4c90e5",
+    "en": "Select members",
+    "ru": "Выберите участников"
+  },
+  {
+    "key": "server_fab9a0a0491d",
+    "en": "Select groups",
+    "ru": "Выберите группы"
+  },
+  {
+    "key": "server_914e4c44f81c",
+    "en": "DELETE HOME FOLDER: ",
+    "ru": "УДАЛИТЬ ДОМАШНЮЮ ПАПКУ: "
+  },
+  {
+    "key": "server_89e1b5bcc5d3",
+    "en": "You cannot remove privileges from yourself or the last administrator",
+    "ru": "Нельзя лишить себя или последнего администратора полномочий"
+  },
+  {
+    "key": "server_268bc6215bd0",
+    "en": "Some home files could not be deleted; the account was preserved",
+    "ru": "Не все файлы home удалось удалить; учётная запись сохранена"
+  },
+  {
+    "key": "server_7cfa8ebcdb94",
+    "en": "Move ",
+    "ru": "Перенести "
+  },
+  {
+    "key": "server_7bedde60ed09",
+    "en": "Checking and repair are not yet available for this file system",
+    "ru": "Для этой файловой системы проверка и исправление пока недоступны"
+  },
+  {
+    "key": "server_b3d8d9d8c44b",
+    "en": "Invalid device",
+    "ru": "Некорректное устройство"
+  },
+  {
+    "key": "server_03b2f26c854d",
+    "en": "Device disconnected",
+    "ru": "Устройство отключено"
+  },
+  {
+    "key": "server_bd7573a4cafe",
+    "en": "Repairing file system",
+    "ru": "Исправление файловой системы"
+  },
+  {
+    "key": "server_1dad344b8655",
+    "en": "Checking file system without changes",
+    "ru": "Проверка файловой системы без изменений"
+  },
+  {
+    "key": "server_930047cf503f",
+    "en": "The check exceeded one hour. The volume is unmounted; it can be opened read-only.",
+    "ru": "Проверка превысила час. Том не подключён; можно открыть его только для чтения."
+  },
+  {
+    "key": "server_7e0a9efe9bcb",
+    "en": "Check utility is not installed: ",
+    "ru": "Не установлена утилита проверки "
+  },
+  {
+    "key": "server_7f5af92261f2",
+    "en": ": code ",
+    "ru": ": код "
+  },
+  {
+    "key": "server_1627c8108197",
+    "en": "Errors remain after repair.",
+    "ru": "После исправления остались ошибки."
+  },
+  {
+    "key": "server_219a2f5d9451",
+    "en": "The file system failed its check.",
+    "ru": "Файловая система не прошла проверку."
+  },
+  {
+    "key": "server_6b473c58acda",
+    "en": "Choose a mount point without spaces, commas or backslashes",
+    "ru": "Выберите точку подключения без пробелов, запятых и обратных слешей"
+  },
+  {
+    "key": "server_c5d8fa935df3",
+    "en": "Network share mounted",
+    "ru": "Сетевая папка подключена"
+  },
+  {
+    "key": "server_cbacfee8a434",
+    "en": "Specify server:/path for NFS or //server/share for SMB",
+    "ru": "Укажите сервер:/путь для NFS или //сервер/папка для SMB"
+  },
+  {
+    "key": "server_f4e55ba49e69",
+    "en": "This mount point is already mounted",
+    "ru": "Эта точка уже подключена"
+  },
+  {
+    "key": "server_a072129b8d68",
+    "en": "The mount point must be an empty directory",
+    "ru": "Точка подключения должна быть пустым каталогом"
+  },
+  {
+    "key": "server_ac131cee5cbb",
+    "en": "The mount point is already configured in fstab",
+    "ru": "Точка уже настроена в fstab"
+  },
+  {
+    "key": "server_6463a53c9db9",
+    "en": "Network mount not found",
+    "ru": "Сетевое подключение не найдено"
+  },
+  {
+    "key": "server_524077f4ec34",
+    "en": "Unmount the share and remove automatic mounting if configured by the panel",
+    "ru": "Отключить папку и убрать её автоподключение, если оно настроено панелью"
+  },
+  {
+    "key": "server_2684c9080c78",
+    "en": "Network share unmounted",
+    "ru": "Сетевая папка отключена"
+  },
+  {
+    "key": "server_e4531b0f4b30",
+    "en": "Invalid mount mode",
+    "ru": "Некорректный режим подключения"
+  },
+  {
+    "key": "server_0ad541be32d9",
+    "en": "Specify SMB username and password",
+    "ru": "Укажите пользователя и пароль SMB"
+  },
+  {
+    "key": "server_c5eb26618a7e",
+    "en": "Read-only",
+    "ru": "Только чтение"
+  },
+  {
+    "key": "server_823409cc0f7f",
+    "en": "Read and write",
+    "ru": "Чтение и запись"
+  },
+  {
+    "key": "server_9c96dc46cd2e",
+    "en": "Mount at startup",
+    "ru": "Подключать при загрузке"
+  },
+  {
+    "key": "server_b31742e6aa82",
+    "en": "Until unmounted or restarted",
+    "ru": "До отключения или перезагрузки"
+  },
+  {
+    "key": "server_21aff4160aa9",
+    "en": "). Finish file transfers or close programs using the folder.",
+    "ru": "). Завершите передачу файлов или закройте использующие папку программы."
+  },
+  {
+    "key": "server_a4f677a93fc6",
+    "en": "Credentials are already stored for this mount point; choose another",
+    "ru": "Для этой точки уже сохранены учётные данные; выберите другую точку"
+  },
+  {
+    "key": "server_d323a54f530d",
+    "en": "Invalid SMB credentials",
+    "ru": "Некорректные учётные данные SMB"
+  },
+  {
+    "key": "server_ee3249f7dcf7",
+    "en": "Folder is in use by processes (PID: ",
+    "ru": "Папка занята процессами (PID: "
+  },
+  {
+    "key": "server_34776bdf2d82",
+    "en": "Could not mount network share. Check its address, server availability and read/write permissions",
+    "ru": "Не удалось подключить сетевую папку. Проверьте адрес, доступность сервера и разрешение чтения/записи"
+  },
+  {
+    "key": "server_0826bdd6f86f",
+    "en": ", and the SMB username and password.",
+    "ru": ", а также пользователя и пароль SMB."
+  },
+  {
+    "key": "server_cfbb3b0112f7",
+    "en": " for the OstojaOS IP address in NFS rules.",
+    "ru": " для IP-адреса OstojaOS в правилах NFS."
+  },
+  {
+    "key": "server_5fccad6b28c4",
+    "en": "Invalid module identifier",
+    "ru": "Некорректный идентификатор модуля"
+  },
+  {
+    "key": "server_d90ed0c644ab",
+    "en": "The identifier belongs to the core",
+    "ru": "Идентификатор принадлежит ядру"
+  },
+  {
+    "key": "server_bffdab3d52e1",
+    "en": "Version must use X.Y.Z format",
+    "ru": "Версия должна иметь формат X.Y.Z"
+  },
+  {
+    "key": "server_b4d89c3da45f",
+    "en": "Invalid version constraint",
+    "ru": "Некорректное ограничение версии"
+  },
+  {
+    "key": "server_993868bb1559",
+    "en": "The archive targets another architecture",
+    "ru": "Архив собран для другой архитектуры"
+  },
+  {
+    "key": "server_94bcc11b4add",
+    "en": "Invalid module title",
+    "ru": "Некорректное название модуля"
+  },
+  {
+    "key": "server_6ec36194adf2",
+    "en": "Unknown service format",
+    "ru": "Неизвестный формат службы"
+  },
+  {
+    "key": "server_e1209fdc6bc1",
+    "en": "Invalid dependencies",
+    "ru": "Некорректные зависимости"
+  },
+  {
+    "key": "server_567db153c8db",
+    "en": "Invalid system dependencies",
+    "ru": "Некорректные системные зависимости"
+  },
+  {
+    "key": "server_89dd5f0b215b",
+    "en": "Invalid widget description",
+    "ru": "Некорректное описание виджетов"
+  },
+  {
+    "key": "server_872432317eca",
+    "en": "Invalid user-shell capability",
+    "ru": "Некорректная возможность пользовательской оболочки"
+  },
+  {
+    "key": "server_720c0ec95648",
+    "en": "Module has no files",
+    "ru": "Нет файлов модуля"
+  },
+  {
+    "key": "server_7a4264ad64ad",
+    "en": "Module UI is missing",
+    "ru": "Отсутствует UI модуля"
+  },
+  {
+    "key": "server_58906d5c7ef0",
+    "en": "Service executable is missing",
+    "ru": "Отсутствует исполняемый файл службы"
+  },
+  {
+    "key": "server_660affe7c55f",
+    "en": "Upload the archive again",
+    "ru": "Повторно загрузите архив"
+  },
+  {
+    "key": "server_c40ec0e17316",
+    "en": "Archive not found or belongs to another user",
+    "ru": "Архив не найден или принадлежит другому пользователю"
+  },
+  {
+    "key": "server_12c063ad9c2f",
+    "en": "Unknown command",
+    "ru": "Неизвестная команда"
+  },
+  {
+    "key": "server_75b928033acb",
+    "en": "Use version constraints such as >=0.1.0,<1.0.0",
+    "ru": "Используйте ограничения версий вида >=0.1.0,<1.0.0"
+  },
+  {
+    "key": "server_9f7699c5401a",
+    "en": "Module is incompatible with OstojaOS core ",
+    "ru": "Модуль несовместим с ядром OstojaOS "
+  },
+  {
+    "key": "server_a0d2b1b59df1",
+    "en": "Widget names must use the module prefix",
+    "ru": "Виджет должен иметь префикс модуля"
+  },
+  {
+    "key": "server_27930195d5c7",
+    "en": "The widget size must fit a mobile screen",
+    "ru": "Размер виджета должен помещаться на мобильном экране"
+  },
+  {
+    "key": "server_1e6e2a0db2fa",
+    "en": "Invalid OS package name",
+    "ru": "Некорректное имя пакета ОС"
+  },
+  {
+    "key": "server_5adea67ccfa2",
+    "en": "Invalid OS package version",
+    "ru": "Некорректная версия пакета ОС"
+  },
+  {
+    "key": "server_491f659644e4",
+    "en": "Invalid path in module",
+    "ru": "Некорректный путь в модуле"
+  },
+  {
+    "key": "server_1e7e7edd0757",
+    "en": "Invalid checksum",
+    "ru": "Некорректная контрольная сумма"
+  },
+  {
+    "key": "server_6ea963d70257",
+    "en": "Invalid module handlers",
+    "ru": "Некорректные обработчики модуля"
+  },
+  {
+    "key": "server_2726b8f7a7e7",
+    "en": "Archive too large",
+    "ru": "Архив слишком большой"
+  },
+  {
+    "key": "server_3d086755a5b9",
+    "en": "Archive contains duplicate paths",
+    "ru": "Архив содержит повторяющиеся пути"
+  },
+  {
+    "key": "server_c2e4078038ab",
+    "en": "Archive manifest is missing",
+    "ru": "Отсутствует описание архива"
+  },
+  {
+    "key": "server_038ace81da46",
+    "en": "Archive contains unknown files or is missing its root module",
+    "ru": "Архив содержит неизвестные файлы или не содержит основной модуль"
+  },
+  {
+    "key": "server_59c1f91edc71",
+    "en": "Dependencies require removing system packages",
+    "ru": "Зависимости требуют удаления системных пакетов"
+  },
+  {
+    "key": "server_a6718b824f68",
+    "en": "The module's server code runs with root privileges. Application operations run with user privileges.",
+    "ru": "Устанавливаемый серверный код модулей имеет права root. Прикладные операции выполняются с правами пользователя."
+  },
+  {
+    "key": "server_e78e6ad8c457",
+    "en": "Module not installed",
+    "ru": "Модуль не установлен"
+  },
+  {
+    "key": "server_6b0b0dc1d20a",
+    "en": "Handlers must use the module prefix",
+    "ru": "Обработчики должны иметь префикс модуля"
+  },
+  {
+    "key": "server_3c557fe4bf11",
+    "en": "Archive must contain only regular, unencrypted files",
+    "ru": "Архив должен содержать только обычные файлы без шифрования"
+  },
+  {
+    "key": "server_8f205cc57acb",
+    "en": "Unsafe archive path",
+    "ru": "Опасный путь в архиве"
+  },
+  {
+    "key": "server_c7a79df3c888",
+    "en": "Module manifest too large",
+    "ru": "Описание модуля слишком большое"
+  },
+  {
+    "key": "server_738e4b7f0e4a",
+    "en": "Identifier does not match directory",
+    "ru": "Идентификатор не совпадает с каталогом"
+  },
+  {
+    "key": "server_19de9d5f4318",
+    "en": "Publisher not specified",
+    "ru": "Не указан издатель"
+  },
+  {
+    "key": "server_6586020a5ecb",
+    "en": "Invalid signature",
+    "ru": "Некорректная подпись"
+  },
+  {
+    "key": "server_e8936c43b07f",
+    "en": "Dependency cycle: ",
+    "ru": "Цикл зависимостей: "
+  },
+  {
+    "key": "server_65a40d466fad",
+    "en": ". Upload an archive containing this dependency.",
+    "ru": ". Загрузите архив с этой зависимостью."
+  },
+  {
+    "key": "server_cb4beb550051",
+    "en": ". Refresh OS package lists.",
+    "ru": ". Обновите списки пакетов ОС."
+  },
+  {
+    "key": "server_eb431f8ddf09",
+    "en": " is busy: close the terminal or finish file transfers",
+    "ru": " занят: закройте терминал или завершите передачу файлов"
+  },
+  {
+    "key": "server_1a549db000b0",
+    "en": "OS packages: ",
+    "ru": "Пакеты ОС: "
+  },
+  {
+    "key": "server_e0292b6802be",
+    "en": "Publishers: ",
+    "ru": "Издатели: "
+  },
+  {
+    "key": "server_0d96dc22e471",
+    "en": "Module service failed to start: ",
+    "ru": "Служба модуля не запустилась: "
+  },
+  {
+    "key": "server_53c5d3715edc",
+    "en": "Module is used by other modules",
+    "ru": "Модуль используется другими модулями"
+  },
+  {
+    "key": "server_6e3d548acbd7",
+    "en": "Modules installed and enabled",
+    "ru": "Модули установлены и включены"
+  },
+  {
+    "key": "server_f64684cd31a8",
+    "en": "Unknown publisher: ",
+    "ru": "Неизвестный издатель: "
+  },
+  {
+    "key": "server_4ac44c34aaec",
+    "en": "Missing module ",
+    "ru": "Не хватает модуля "
+  },
+  {
+    "key": "server_ec4daf9d7732",
+    "en": ": requires ",
+    "ru": ": требуется "
+  },
+  {
+    "key": "server_331cda05ae3c",
+    "en": "Module ",
+    "ru": "Модуль "
+  },
+  {
+    "key": "server_34f47087a72f",
+    "en": "Dependent modules: ",
+    "ru": "От модуля зависят: "
+  },
+  {
+    "key": "server_65866bdc4b46",
+    "en": "Enable module and its dependencies",
+    "ru": "Включить модуль и его зависимости"
+  },
+  {
+    "key": "server_11c9ac863028",
+    "en": "Disable module",
+    "ru": "Отключить модуль"
+  },
+  {
+    "key": "server_576e48cf2b3a",
+    "en": "Remove module code; settings and user files are preserved",
+    "ru": "Удалить код модуля; настройки и пользовательские файлы сохраняются"
+  },
+  {
+    "key": "server_55f7320f2bc0",
+    "en": "Enable: ",
+    "ru": "Включить: "
+  },
+  {
+    "key": "server_5b9c81d7ea06",
+    "en": "Module service failed to start",
+    "ru": "Служба модуля не запустилась"
+  },
+  {
+    "key": "server_d07e7d0fce9a",
+    "en": "Corrupted file: ",
+    "ru": "Повреждён файл: "
+  },
+  {
+    "key": "server_637b6d166314",
+    "en": "Incompatible dependency version for ",
+    "ru": "Неподходящая версия зависимости "
+  },
+  {
+    "key": "server_fc2667344e3a",
+    "en": " on ",
+    "ru": " от "
+  },
+  {
+    "key": "server_988ec2d23a7e",
+    "en": "Install/enable: ",
+    "ru": "Установить/включить: "
+  },
+  {
+    "key": "server_ea6b28ea4c4f",
+    "en": "Module removed",
+    "ru": "Модуль удалён"
+  },
+  {
+    "key": "server_169bef1b2fcf",
+    "en": "Module disabled",
+    "ru": "Модуль отключён"
+  },
+  {
+    "key": "server_8f86189a97f3",
+    "en": "Update would break a dependency of module ",
+    "ru": "Обновление нарушит зависимость модуля "
+  },
+  {
+    "key": "server_348e2683dd12",
+    "en": "OS repositories have no suitable package ",
+    "ru": "В репозиториях ОС нет подходящего пакета "
+  },
+  {
+    "key": "server_9cd7801baf0d",
+    "en": "Invalid module signature: ",
+    "ru": "Подпись модуля недействительна: "
+  },
+  {
+    "key": "server_2583b89a7fe9",
+    "en": "Administrator permissions have changed",
+    "ru": "Права администратора изменились"
+  },
+  {
+    "key": "server_0b12ddcf8729",
+    "en": "Parameters must be an object",
+    "ru": "Параметры должны быть объектом"
+  },
+  {
+    "key": "server_3a97e4c53350",
+    "en": "Unknown operation",
+    "ru": "Неизвестная операция"
+  },
+  {
+    "key": "server_f5381e7ab118",
+    "en": "Unknown mode",
+    "ru": "Неизвестный режим"
+  },
+  {
+    "key": "server_dc9a55e8b9e3",
+    "en": "State has changed. Review a new operation plan.",
+    "ru": "Состояние изменилось. Проверьте новый план операции."
+  },
+  {
+    "key": "server_80389e80f43a",
+    "en": "The exact operation target was not confirmed",
+    "ru": "Не подтверждена точная цель операции"
+  },
+  {
+    "key": "server_fe11d8565204",
+    "en": "File manager is not installed or is disabled",
+    "ru": "Файловый менеджер не установлен или отключён"
+  },
+  {
+    "key": "server_14259c322f16",
+    "en": "Mode or user not specified",
+    "ru": "Не указан режим или пользователь"
+  },
+  {
+    "key": "server_b6ed0d7ad3e3",
+    "en": "Request too large",
+    "ru": "Слишком большой запрос"
+  },
+  {
+    "key": "server_918a3daf6be9",
+    "en": "Operation timed out. Check the actual state before retrying.",
+    "ru": "Превышено время операции. Проверьте фактическое состояние перед повтором."
+  },
+  {
+    "key": "server_8801c2a8166b",
+    "en": "Could not process the operation. Check parameters, object availability and the system journal.",
+    "ru": "Не удалось обработать операцию. Проверьте параметры, доступность объекта и системный журнал."
+  },
+  {
+    "key": "server_880e6678b092",
+    "en": "Invalid request",
+    "ru": "Некорректный запрос"
+  },
+  {
+    "key": "server_c090f75df759",
+    "en": "Expected a single JSON object",
+    "ru": "Ожидался один JSON-объект"
+  },
+  {
+    "key": "server_8a64428307c0",
+    "en": "Invalid request origin",
+    "ru": "Недопустимый источник запроса"
+  },
+  {
+    "key": "server_926eefca4d1c",
+    "en": "Sign-in required",
+    "ru": "Требуется вход"
+  },
+  {
+    "key": "server_86d1c1b144d1",
+    "en": "Could not end session",
+    "ru": "Не удалось завершить сессию"
+  },
+  {
+    "key": "server_db530c648ebf",
+    "en": "Could not read Linux users",
+    "ru": "Не удалось прочитать пользователей Linux"
+  },
+  {
+    "key": "server_90d27a5d40c3",
+    "en": "Could not read storage",
+    "ru": "Не удалось прочитать хранилище"
+  },
+  {
+    "key": "server_48facdeb3746",
+    "en": "Notifications unavailable",
+    "ru": "Уведомления недоступны"
+  },
+  {
+    "key": "server_e2650b75dcfe",
+    "en": "Administrator permissions required",
+    "ru": "Требуются права администратора"
+  },
+  {
+    "key": "server_76658afb84d5",
+    "en": "Could not read notifications",
+    "ru": "Не удалось прочитать уведомления"
+  },
+  {
+    "key": "server_5500ce354ba0",
+    "en": "Could not clear notification history",
+    "ru": "Не удалось очистить историю уведомлений"
+  },
+  {
+    "key": "server_9adad8f60880",
+    "en": "History unavailable",
+    "ru": "История недоступна"
+  },
+  {
+    "key": "server_db838323794d",
+    "en": "Metrics unavailable",
+    "ru": "Метрики недоступны"
+  },
+  {
+    "key": "server_51f5f4aeda8f",
+    "en": "Could not read settings",
+    "ru": "Не удалось прочитать настройки"
+  },
+  {
+    "key": "server_fe2456cbe8ac",
+    "en": "Invalid settings",
+    "ru": "Некорректные настройки"
+  },
+  {
+    "key": "server_eeed855af8cc",
+    "en": "Invalid layout",
+    "ru": "Некорректная раскладка"
+  },
+  {
+    "key": "server_7b149e59ce70",
+    "en": "Too many disks",
+    "ru": "Слишком много дисков"
+  },
+  {
+    "key": "server_f2bcbe52d338",
+    "en": "Invalid CRC count",
+    "ru": "Некорректный счётчик CRC"
+  },
+  {
+    "key": "server_8e531638392c",
+    "en": "Could not save settings",
+    "ru": "Не удалось сохранить настройки"
+  },
+  {
+    "key": "server_2032092d4ab9",
+    "en": "API method not found",
+    "ru": "Метод API не найден"
+  },
+  {
+    "key": "server_f032d65d9bb8",
+    "en": "Too many attempts. Wait a minute.",
+    "ru": "Слишком много попыток. Подождите минуту."
+  },
+  {
+    "key": "server_ad05a4df12df",
+    "en": "Check your username and password",
+    "ru": "Проверьте логин и пароль"
+  },
+  {
+    "key": "server_a88e15d11d94",
+    "en": "Sign-in error",
+    "ru": "Ошибка входа"
+  },
+  {
+    "key": "server_1e4be38baa35",
+    "en": "System sign-in service unavailable",
+    "ru": "Служба системного входа недоступна"
+  },
+  {
+    "key": "server_22fe8cd3d455",
+    "en": "Incorrect password or access not allowed",
+    "ru": "Неверный пароль или доступ не разрешён"
+  },
+  {
+    "key": "server_c16ddc0ba821",
+    "en": "Sign-in service error",
+    "ru": "Ошибка службы входа"
+  },
+  {
+    "key": "server_91bd577aab5e",
+    "en": "Could not create session",
+    "ru": "Не удалось создать сессию"
+  },
+  {
+    "key": "server_a2a33e165338",
+    "en": "Cooling request error",
+    "ru": "Ошибка запроса охлаждения"
+  },
+  {
+    "key": "server_4df552beb390",
+    "en": "Cooling controller unavailable",
+    "ru": "Контроллер охлаждения недоступен"
+  },
+  {
+    "key": "server_e6a75dcc4e78",
+    "en": "Could not read or apply cooling settings",
+    "ru": "Не удалось прочитать или применить настройки охлаждения"
+  },
+  {
+    "key": "server_674d91cbd98c",
+    "en": "Profile error",
+    "ru": "Ошибка профиля"
+  },
+  {
+    "key": "server_993a976a0444",
+    "en": "Profile service unavailable",
+    "ru": "Служба профиля недоступна"
+  },
+  {
+    "key": "server_19b39c883ff7",
+    "en": "Could not update profile. Check your input.",
+    "ru": "Не удалось обновить профиль. Проверьте введённые данные."
+  },
+  {
+    "key": "server_550655d8392d",
+    "en": "Incorrect current password",
+    "ru": "Неверный текущий пароль"
+  },
+  {
+    "key": "server_f351cd39c488",
+    "en": "Password changed, but panel sessions could not be ended",
+    "ru": "Пароль изменён, но не удалось завершить сессии панели"
+  },
+  {
+    "key": "server_af1002d098bc",
+    "en": "Management service unavailable",
+    "ru": "Служба управления недоступна"
+  },
+  {
+    "key": "server_1742686cb3e9",
+    "en": "CPU temperature ≥ 80 °C",
+    "ru": "Температура CPU ≥ 80 °C"
+  },
+  {
+    "key": "server_35704240ca02",
+    "en": "Less than 5% free space on the system drive",
+    "ru": "На системном носителе осталось меньше 5% места"
+  },
+  {
+    "key": "server_954b2fc6d0d7",
+    "en": "Cooling telemetry is out of date",
+    "ru": "Телеметрия охлаждения устарела"
+  },
+  {
+    "key": "server_90360b6b118a",
+    "en": "SMART warning: ",
+    "ru": "Предупреждение SMART: "
+  },
+  {
+    "key": "server_a5a6ebda9937",
+    "en": "SMART: disk failure: ",
+    "ru": "SMART: неисправность диска: "
+  },
+  {
+    "key": "server_9b1fc3db9ca6",
+    "en": "Disk temperature ≥ 50 °C: ",
+    "ru": "Температура диска ≥ 50 °C: "
+  },
+  {
+    "key": "server_704aa78ae997",
+    "en": "Operation ",
+    "ru": "Операция "
+  },
+  {
+    "key": "server_9675947ca1ab",
+    "en": "Drive ",
+    "ru": "Накопитель "
+  },
+  {
+    "key": "server_d36f222da74a",
+    "en": " can be disconnected",
+    "ru": " можно отключить"
+  },
+  {
+    "key": "server_b8755ad563e6",
+    "en": "Drive connected: {{v0}} · {{v1}} GiB",
+    "ru": "Подключён накопитель {{v0}} · {{v1}} ГиБ"
+  },
+  {
+    "key": "server_69e5c941caf1",
+    "en": "Drive disconnected: ",
+    "ru": "Отключён накопитель "
+  },
+  {
+    "key": "server_2ff0013776c6",
+    "en": ". It had mounted volumes or array members; check storage.",
+    "ru": ". На нём были подключённые тома или участники массива; проверьте хранилище."
+  },
+  {
+    "key": "server_f465a5bcd3ae",
+    "en": "The image must not exceed 8 MiB",
+    "ru": "Изображение должно быть не больше 8 МиБ"
+  },
+  {
+    "key": "server_a87b5767899a",
+    "en": "Select a JPEG or PNG image",
+    "ru": "Выберите изображение JPEG или PNG"
+  },
+  {
+    "key": "server_a9776cbc27d6",
+    "en": "The image must not exceed 24 megapixels",
+    "ru": "Изображение должно содержать не больше 24 мегапикселей"
+  },
+  {
+    "key": "server_d3b0d6e053ce",
+    "en": "Could not read image",
+    "ru": "Не удалось прочитать изображение"
+  },
+  {
+    "key": "server_fbe914f11075",
+    "en": "Could not prepare wallpaper",
+    "ru": "Не удалось подготовить фон"
+  },
+  {
+    "key": "server_78f601618785",
+    "en": "Could not save or read wallpaper",
+    "ru": "Не удалось сохранить или прочитать фон"
+  },
+  {
+    "key": "server_b49c96d84bc6",
+    "en": "Could not read wallpaper",
+    "ru": "Не удалось прочитать фон"
+  },
+  {
+    "key": "server_ba671632c941",
+    "en": "Module is not installed or is disabled",
+    "ru": "Модуль не установлен или отключён"
+  },
+  {
+    "key": "server_5ff8f50a82f2",
+    "en": "Terminal unavailable",
+    "ru": "Терминал недоступен"
+  },
+  {
+    "key": "server_3ea79d34f494",
+    "en": "Transfer failed",
+    "ru": "Передача не удалась"
+  },
+  {
+    "key": "server_98699da9d8b3",
+    "en": "Access denied, file already exists, or transfer interrupted",
+    "ru": "Нет доступа, файл уже существует или передача прервана"
+  },
+  {
+    "key": "server_b70d92cc432d",
+    "en": "Could not determine transfer size",
+    "ru": "Не удалось определить размер передачи"
+  },
+  {
+    "key": "server_6a01a7bd2d71",
+    "en": "CRC count acknowledged: ",
+    "ru": "Счётчик CRC принят: "
+  },
+  {
+    "key": "server_e3b5a0d18f81",
+    "en": "Module unavailable",
+    "ru": "Модуль недоступен"
+  },
+  {
+    "key": "server_388b738c5c2d",
+    "en": "File not found",
+    "ru": "Файл не найден"
+  },
+  {
+    "key": "server_9c2e1b1735d4",
+    "en": "Could not upload archive",
+    "ru": "Не удалось загрузить архив"
+  },
+  {
+    "key": "server_def204584212",
+    "en": "Not found",
+    "ru": "Не найдено"
+  },
+  {
+    "key": "server_e90db497705c",
+    "en": "System handler unavailable",
+    "ru": "Системный обработчик недоступен"
+  },
+  {
+    "key": "server_522007b7406b",
+    "en": "Invalid handler response",
+    "ru": "Некорректный ответ обработчика"
+  },
+  {
+    "key": "server_b43973b89658",
+    "en": "In progress; the result will be checked",
+    "ru": "Выполняется; результат будет проверен"
+  },
+  {
+    "key": "server_fabe7ed7c2ee",
+    "en": "Access denied",
+    "ru": "Нет доступа"
+  },
+  {
+    "key": "server_92a18afc8143",
+    "en": "Task log unavailable",
+    "ru": "Журнал задач недоступен"
+  },
+  {
+    "key": "server_8fd66d0ff6fd",
+    "en": "Could not clear task history",
+    "ru": "Не удалось очистить историю задач"
+  },
+  {
+    "key": "server_2d5372b86025",
+    "en": "Only tasks that have not started can be cancelled",
+    "ru": "Можно отменить только ещё не начатую задачу"
+  },
+  {
+    "key": "server_f851035f8243",
+    "en": "Review the operation plan first",
+    "ru": "Сначала проверьте план операции"
+  },
+  {
+    "key": "server_179bad9b8628",
+    "en": "Queue unavailable",
+    "ru": "Очередь недоступна"
+  },
+  {
+    "key": "server_bc04a5642695",
+    "en": "Queue is full",
+    "ru": "Очередь заполнена"
+  },
+  {
+    "key": "server_9839adf4b2ca",
+    "en": "Target is too long",
+    "ru": "Слишком длинная цель"
+  },
+  {
+    "key": "server_307429dd8415",
+    "en": "Queued",
+    "ru": "В очереди"
+  },
+  {
+    "key": "server_49d8b5c9f94c",
+    "en": "Task identifier already in use",
+    "ru": "Идентификатор задачи уже занят"
+  },
+  {
+    "key": "server_27d8b29a9ab0",
+    "en": "Too many uploaded archives; remove old ones or try again later",
+    "ru": "Слишком много загруженных архивов; удалите старые или повторите позже"
+  },
+  {
+    "key": "server_b3c95874de05",
+    "en": "Archive is empty or exceeds 128 MiB",
+    "ru": "Архив пуст или превышает 128 МиБ"
+  },
+  {
+    "key": "server_df0d28a5adf9",
+    "en": "Cancelled before start",
+    "ru": "Отменено до начала"
+  },
+  {
+    "key": "server_2b7e642e8ec1",
+    "en": "Clients: {{v0}}",
+    "ru": "Клиенты: {{v0}}"
+  },
+  {
+    "key": "server_90710eeda32b",
+    "en": "Owner: {{v0}}",
+    "ru": "Владелец: {{v0}}"
+  },
+  {
+    "key": "server_6818465106a2",
+    "en": "Group: {{v0}}",
+    "ru": "Группа: {{v0}}"
+  },
+  {
+    "key": "server_20f530f7ed61",
+    "en": "Permissions: {{v0}}",
+    "ru": "Права: {{v0}}"
+  },
+  {
+    "key": "server_7bb48c817298",
+    "en": "Operation on {{v0}} has not started. {{v1}}",
+    "ru": "Операция с {{v0}} не начата. {{v1}}"
+  },
+  {
+    "key": "server_498050658189",
+    "en": "Device {{v0}} is used by: {{v1}}",
+    "ru": "Устройство {{v0}} используется: {{v1}}"
+  },
+  {
+    "key": "server_fdabc0a87a21",
+    "en": "Operation on {{v0}} has not started. ",
+    "ru": "Операция с {{v0}} не начата. "
+  },
+  {
+    "key": "server_4690f6c588d7",
+    "en": "RAID will be created{{v0}}",
+    "ru": "Будет создан RAID{{v0}}"
+  },
+  {
+    "key": "server_2c25dd5dab43",
+    "en": "Device {{v0}} is used by: ",
+    "ru": "Устройство {{v0}} используется: "
+  },
+  {
+    "key": "server_83550b99a4c3",
+    "en": "Mounted inside “{{v0}}”: {{v1}}. Unmount these nested mounts first.",
+    "ru": "Внутри «{{v0}}» подключены: {{v1}}. Сначала размонтируйте эти вложенные подключения."
+  },
+  {
+    "key": "server_eb4062751008",
+    "en": "Folders shared via NFS: {{v0}}. Remove their shares in Shared folders first.",
+    "ru": "Через NFS опубликованы папки: {{v0}}. Сначала отключите их публикацию в разделе «Общие папки»."
+  },
+  {
+    "key": "server_00270e274b8e",
+    "en": "Operation on {{v0}}",
+    "ru": "Операция с {{v0}}"
+  },
+  {
+    "key": "server_afa0cc9f7e40",
+    "en": "For {{v0}} automatic checking is unavailable. You can mount the volume read-only.",
+    "ru": "Для {{v0}} автоматическая проверка недоступна. Можно подключить том только для чтения."
+  },
+  {
+    "key": "server_4bc00043db05",
+    "en": "Could not mount volume: {{v0}}",
+    "ru": "Не удалось подключить том: {{v0}}"
+  },
+  {
+    "key": "server_ce7b0cf63723",
+    "en": "Device {{v0}}",
+    "ru": "Устройство {{v0}}"
+  },
+  {
+    "key": "server_0cf9fb01d091",
+    "en": "Mounted inside “{{v0}}”: {{v1}}",
+    "ru": "Внутри «{{v0}}» подключены: {{v1}}"
+  },
+  {
+    "key": "server_aceb006dbdf6",
+    "en": "Folders shared via NFS: {{v0}}",
+    "ru": "Через NFS опубликованы папки: {{v0}}"
+  },
+  {
+    "key": "server_fe7796ffbe4c",
+    "en": "Volume “{{v0}}” is used by NFS shares: {{v1}}. Disable them in Shared folders first.",
+    "ru": "Том «{{v0}}» используется публикациями NFS: {{v1}}. Сначала отключите их в разделе «Общие папки»."
+  },
+  {
+    "key": "server_26c20e131dee",
+    "en": "For {{v0}}",
+    "ru": "Для {{v0}}"
+  },
+  {
+    "key": "server_27f5a0e756ed",
+    "en": "Volume “{{v0}}” is used by NFS shares: {{v1}}",
+    "ru": "Том «{{v0}}» используется публикациями NFS: {{v1}}"
+  },
+  {
+    "key": "server_cb5b39404bab",
+    "en": "Volume “{{v0}}” is used by NFS shares: ",
+    "ru": "Том «{{v0}}» используется публикациями NFS: "
+  },
+  {
+    "key": "server_bbf651a59a6b",
+    "en": "Volume “{{v0}}",
+    "ru": "Том «{{v0}}"
+  },
+  {
+    "key": "server_7b6b6d232ce7",
+    "en": "Could not confirm expansion startup {{v0}}. Check array membership and progress before retrying: the new disk may already be a spare. Reason: {{v1}}",
+    "ru": "Не удалось подтвердить запуск расширения {{v0}}. Проверьте состав и прогресс массива перед повтором: новый диск мог уже стать резервным участником. Причина: {{v1}}"
+  },
+  {
+    "key": "server_948f33e68021",
+    "en": "Could not confirm expansion startup {{v0}}. Check array membership and progress before retrying: the new disk may already be a spare. Reason: ",
+    "ru": "Не удалось подтвердить запуск расширения {{v0}}. Проверьте состав и прогресс массива перед повтором: новый диск мог уже стать резервным участником. Причина: "
+  },
+  {
+    "key": "server_e88352cb8c4f",
+    "en": "New member: {{v0}}",
+    "ru": "Новый участник: {{v0}}"
+  },
+  {
+    "key": "server_2542440d7e18",
+    "en": "At startup: {{v0}}",
+    "ru": "При загрузке: {{v0}}"
+  },
+  {
+    "key": "server_aa4cf8b5b9e5",
+    "en": "Could not confirm expansion startup {{v0}}",
+    "ru": "Не удалось подтвердить запуск расширения {{v0}}"
+  },
+  {
+    "key": "server_6de15f1f0a6a",
+    "en": "Could not unmount {{v0}}. The drive was not disconnected; previously processed volumes may already be unmounted. Check processes and mounts.",
+    "ru": "Не удалось отмонтировать {{v0}}. Накопитель не отключён; ранее обработанные тома могли быть уже отмонтированы. Проверьте процессы и подключения."
+  },
+  {
+    "key": "server_49856ed56354",
+    "en": "Could not unmount {{v0}}",
+    "ru": "Не удалось отмонтировать {{v0}}"
+  },
+  {
+    "key": "server_fb9d8c2570e5",
+    "en": "DELETE HOME FOLDER: {{v0}}",
+    "ru": "УДАЛИТЬ ДОМАШНЮЮ ПАПКУ: {{v0}}"
+  },
+  {
+    "key": "server_9c476587893d",
+    "en": "Move {{v0}} → {{v1}}",
+    "ru": "Перенести {{v0}} → {{v1}}"
+  },
+  {
+    "key": "server_35049a8eb0b5",
+    "en": "Move {{v0}} → ",
+    "ru": "Перенести {{v0}} → "
+  },
+  {
+    "key": "server_ba3aaaae6010",
+    "en": "Move {{v0}}",
+    "ru": "Перенести {{v0}}"
+  },
+  {
+    "key": "server_e45167f21590",
+    "en": "{{v0}} {{v1}}: code {{v2}}.\n{{v3}}",
+    "ru": "{{v0}} {{v1}}: код {{v2}}.\n{{v3}}"
+  },
+  {
+    "key": "server_c9cc3819d92b",
+    "en": "{{v0}} {{v1}}: code {{v2}}.\n",
+    "ru": "{{v0}} {{v1}}: код {{v2}}.\n"
+  },
+  {
+    "key": "server_8579055a7277",
+    "en": "{{v0}} {{v1}}: code {{v2}}",
+    "ru": "{{v0}} {{v1}}: код {{v2}}"
+  },
+  {
+    "key": "server_f80286e1a492",
+    "en": "Check utility is not installed: {{v0}}",
+    "ru": "Не установлена утилита проверки {{v0}}"
+  },
+  {
+    "key": "server_82f9d5e8af1e",
+    "en": "{{v0}} {{v1}}: code ",
+    "ru": "{{v0}} {{v1}}: код "
+  },
+  {
+    "key": "server_9dfacbddbd2d",
+    "en": "Folder is in use by processes (PID: {{v0}}). Finish file transfers or close programs using the folder.",
+    "ru": "Папка занята процессами (PID: {{v0}}). Завершите передачу файлов или закройте использующие папку программы."
+  },
+  {
+    "key": "server_36c449e4d6ad",
+    "en": "Folder is in use by processes (PID: {{v0}}",
+    "ru": "Папка занята процессами (PID: {{v0}}"
+  },
+  {
+    "key": "server_1563c3b10093",
+    "en": "Could not mount network share. Check its address, server availability and read/write permissions{{v0}}",
+    "ru": "Не удалось подключить сетевую папку. Проверьте адрес, доступность сервера и разрешение чтения/записи{{v0}}"
+  },
+  {
+    "key": "server_0db211a1a9e3",
+    "en": "Module is incompatible with OstojaOS core {{v0}}",
+    "ru": "Модуль несовместим с ядром OstojaOS {{v0}}"
+  },
+  {
+    "key": "server_8067b47c02f0",
+    "en": "Dependency cycle: {{v0}}",
+    "ru": "Цикл зависимостей: {{v0}}"
+  },
+  {
+    "key": "server_8df894c22be8",
+    "en": "Missing module {{v0}}. Upload an archive containing this dependency.",
+    "ru": "Не хватает модуля {{v0}}. Загрузите архив с этой зависимостью."
+  },
+  {
+    "key": "server_6cf69af432d6",
+    "en": "Incompatible dependency version for {{v0}}: requires {{v1}}",
+    "ru": "Неподходящая версия зависимости {{v0}}: требуется {{v1}}"
+  },
+  {
+    "key": "server_ebbd9ddb7cfc",
+    "en": "OS repositories have no suitable package {{v0}} >= {{v1}}. Refresh OS package lists.",
+    "ru": "В репозиториях ОС нет подходящего пакета {{v0}} >= {{v1}}. Обновите списки пакетов ОС."
+  },
+  {
+    "key": "server_f5c56faab52c",
+    "en": "Module {{v0}} is busy: close the terminal or finish file transfers",
+    "ru": "Модуль {{v0}} занят: закройте терминал или завершите передачу файлов"
+  },
+  {
+    "key": "server_0f6f91cb324f",
+    "en": "Install/enable: {{v0}} {{v1}}",
+    "ru": "Установить/включить: {{v0}} {{v1}}"
+  },
+  {
+    "key": "server_2726be406ad5",
+    "en": "OS packages: {{v0}}",
+    "ru": "Пакеты ОС: {{v0}}"
+  },
+  {
+    "key": "server_99f3564b3577",
+    "en": "Publishers: {{v0}}",
+    "ru": "Издатели: {{v0}}"
+  },
+  {
+    "key": "server_61312dc07389",
+    "en": "Module service failed to start: {{v0}}",
+    "ru": "Служба модуля не запустилась: {{v0}}"
+  },
+  {
+    "key": "server_fe27278a960e",
+    "en": "Unknown publisher: {{v0}}",
+    "ru": "Неизвестный издатель: {{v0}}"
+  },
+  {
+    "key": "server_2fba8e5bc895",
+    "en": "Missing module {{v0}}",
+    "ru": "Не хватает модуля {{v0}}"
+  },
+  {
+    "key": "server_79af36786ec8",
+    "en": "Incompatible dependency version for {{v0}}: requires ",
+    "ru": "Неподходящая версия зависимости {{v0}}: требуется "
+  },
+  {
+    "key": "server_5c4264bf841f",
+    "en": "Update would break a dependency of module {{v0}} on {{v1}}",
+    "ru": "Обновление нарушит зависимость модуля {{v0}} от {{v1}}"
+  },
+  {
+    "key": "server_22c279458e7c",
+    "en": "OS repositories have no suitable package {{v0}} >= {{v1}}",
+    "ru": "В репозиториях ОС нет подходящего пакета {{v0}} >= {{v1}}"
+  },
+  {
+    "key": "server_42cd34003ebc",
+    "en": "Module {{v0}}",
+    "ru": "Модуль {{v0}}"
+  },
+  {
+    "key": "server_6bf6895a08d5",
+    "en": "Install/enable: {{v0}} ",
+    "ru": "Установить/включить: {{v0}} "
+  },
+  {
+    "key": "server_6b0a50b9983b",
+    "en": "Dependent modules: {{v0}}",
+    "ru": "От модуля зависят: {{v0}}"
+  },
+  {
+    "key": "server_87a7aeaf0aad",
+    "en": "Enable: {{v0}}",
+    "ru": "Включить: {{v0}}"
+  },
+  {
+    "key": "server_fe7a07db12af",
+    "en": "Corrupted file: {{v0}}",
+    "ru": "Повреждён файл: {{v0}}"
+  },
+  {
+    "key": "server_3e2ef2720734",
+    "en": "Incompatible dependency version for {{v0}}",
+    "ru": "Неподходящая версия зависимости {{v0}}"
+  },
+  {
+    "key": "server_0d1a617dd8c7",
+    "en": "Update would break a dependency of module {{v0}} on ",
+    "ru": "Обновление нарушит зависимость модуля {{v0}} от "
+  },
+  {
+    "key": "server_fdeb93f30b7d",
+    "en": "OS repositories have no suitable package {{v0}} >= ",
+    "ru": "В репозиториях ОС нет подходящего пакета {{v0}} >= "
+  },
+  {
+    "key": "server_6765209ab15a",
+    "en": "Install/enable: {{v0}}",
+    "ru": "Установить/включить: {{v0}}"
+  },
+  {
+    "key": "server_6ff020368143",
+    "en": "Update would break a dependency of module {{v0}}",
+    "ru": "Обновление нарушит зависимость модуля {{v0}}"
+  },
+  {
+    "key": "server_46dbcfcfee57",
+    "en": "OS repositories have no suitable package {{v0}}",
+    "ru": "В репозиториях ОС нет подходящего пакета {{v0}}"
+  },
+  {
+    "key": "server_958d37a67371",
+    "en": "Invalid module signature: {{v0}}",
+    "ru": "Подпись модуля недействительна: {{v0}}"
+  },
+  {
+    "key": "server_db9215691b82",
+    "en": "Drive {{v0}} can be disconnected",
+    "ru": "Накопитель {{v0}} можно отключить"
+  },
+  {
+    "key": "server_2a3c4b65fa7b",
+    "en": "Drive disconnected: {{v0}}",
+    "ru": "Отключён накопитель {{v0}}"
+  },
+  {
+    "key": "server_3aad9783967a",
+    "en": "Drive disconnected: {{v0}}. It had mounted volumes or array members; check storage.",
+    "ru": "Отключён накопитель {{v0}}. На нём были подключённые тома или участники массива; проверьте хранилище."
+  },
+  {
+    "key": "server_1fbed3b6a47f",
+    "en": "SMART warning: {{v0}}",
+    "ru": "Предупреждение SMART: {{v0}}"
+  },
+  {
+    "key": "server_1caae31e483b",
+    "en": "SMART: disk failure: {{v0}}",
+    "ru": "SMART: неисправность диска: {{v0}}"
+  },
+  {
+    "key": "server_8f37b20748b5",
+    "en": "Disk temperature ≥ 50 °C: {{v0}}",
+    "ru": "Температура диска ≥ 50 °C: {{v0}}"
+  },
+  {
+    "key": "server_66713bee77ea",
+    "en": "CRC count acknowledged: {{v0}}",
+    "ru": "Счётчик CRC принят: {{v0}}"
+  },
+  {
+    "key": "server_f5c56faab52c",
+    "en": "Module {{v0}} is busy: close the terminal or finish file transfers",
+    "ru": "Модуль {{v0}} занят: закройте терминал или завершите передачу файлов"
+  },
+  {
+    "key": "server_498050658189",
+    "en": "Device {{v0}} is used by: {{v1}}",
+    "ru": "Устройство {{v0}} используется: {{v1}}"
+  },
+  {
+    "key": "server_3f82f5eeb499",
+    "en": "Operation {{v0}}: {{v1}}",
+    "ru": "Операция {{v0}}: {{v1}}"
+  },
+  {
+    "key": "server_55e9825aae65",
+    "en": "Process interrupted. Check the actual state before retrying.",
+    "ru": "Процесс прерван. Проверьте фактическое состояние перед повтором."
+  },
+  {
+    "key": "server_1b007d637e8d",
+    "en": "Could not read language preference",
+    "ru": "Не удалось прочитать язык интерфейса"
+  },
+  {
+    "key": "server_34bcda5932dc",
+    "en": "Unsupported interface language",
+    "ru": "Неподдерживаемый язык интерфейса"
+  },
+  {
+    "key": "homes.server0",
+    "en": "Home folders are in use. Close these sessions or applications: {{v0}}",
+    "ru": "Домашние папки заняты. Закройте эти сеансы или приложения: {{v0}}"
+  },
+  {
+    "key": "homes.server1",
+    "en": "An interrupted home move must be recovered first",
+    "ru": "Сначала восстановите прерванный перенос домашних папок"
+  },
+  {
+    "key": "homes.server2",
+    "en": "Home folder locations must not overlap",
+    "ru": "Старое и новое расположения не должны быть вложены друг в друга"
+  },
+  {
+    "key": "homes.server3",
+    "en": "Unsupported current home location",
+    "ru": "Текущее расположение домашних папок не поддерживает перенос"
+  },
+  {
+    "key": "homes.server4",
+    "en": "Choose a new folder under /home, /srv or /mnt",
+    "ru": "Выберите новую папку внутри /home, /srv или /mnt"
+  },
+  {
+    "key": "homes.server5",
+    "en": "The source and destination parent must exist; the destination must be a new folder",
+    "ru": "Исходная папка и родитель новой папки должны существовать. Сама новая папка ещё не должна существовать"
+  },
+  {
+    "key": "homes.server6",
+    "en": "The home folder contains mounts; unmount them before moving",
+    "ru": "Домашняя папка является точкой монтирования или содержит их. Отмонтируйте вложенные тома перед переносом"
+  },
+  {
+    "key": "homes.server7",
+    "en": "Choose a writable local Linux filesystem for home folders",
+    "ru": "Выберите локальную файловую систему Linux, доступную для записи"
+  },
+  {
+    "key": "homes.server8",
+    "en": "Root home cannot be moved",
+    "ru": "Домашнюю папку root переносить нельзя"
+  },
+  {
+    "key": "homes.server9",
+    "en": "Home folder unavailable: {{v0}}",
+    "ru": "Недоступна домашняя папка пользователя: {{v0}}"
+  },
+  {
+    "key": "homes.server10",
+    "en": "Install rsync before moving home folders",
+    "ru": "Для переноса домашних папок требуется rsync"
+  },
+  {
+    "key": "homes.server11",
+    "en": "Not enough free space to copy home folders",
+    "ru": "На целевом томе недостаточно свободного места для копирования домашних папок"
+  },
+  {
+    "key": "homes.server12",
+    "en": "System maintenance is already in progress",
+    "ru": "В системе уже выполняется обслуживание"
+  },
+  {
+    "key": "homes.server13",
+    "en": "Home copy verification failed; original data was preserved",
+    "ru": "Проверка копии не пройдена. Исходные данные сохранены"
+  },
+  {
+    "key": "homes.server14",
+    "en": "Home move interrupted. Recovery is required; original data was preserved.",
+    "ru": "Перенос прерван. Требуется восстановление; исходные данные сохранены."
+  },
+  {
+    "key": "homes.server15",
+    "en": "Home folders moved and user paths updated",
+    "ru": "Домашние папки перенесены, пути пользователей обновлены"
+  },
+  {
+    "key": "homes.server16",
+    "en": "Home move recovered. Any destination copy was retained.",
+    "ru": "Состояние после прерванного переноса восстановлено. Копия в целевой папке сохранена."
+  },
+  {
+    "key": "homes.server17",
+    "en": "No interrupted home move",
+    "ru": "Прерванного переноса нет"
+  },
+  {
+    "key": "homes.server18",
+    "en": "Copying and verifying home folders",
+    "ru": "Копирование и проверка домашних папок"
+  },
+  {
+    "key": "homes.mountAtBoot",
+    "en": "Configure automatic mounting for the destination volume first",
+    "ru": "Сначала включите автоматическое монтирование целевого тома при загрузке"
+  },
+  {
+    "key": "homes.volumeChanged",
+    "en": "Home volume changed or is unavailable; data was preserved",
+    "ru": "Домашний том изменился или недоступен. Данные сохранены"
+  },
+  {
+    "key": "power.scheduled",
+    "en": "Power operation scheduled",
+    "ru": "Операция питания запланирована"
+  },
+  {
+    "key": "network.error.0",
+    "en": "NetworkManager is not running; network editing is unavailable",
+    "ru": "NetworkManager не запущен; изменение сети недоступно"
+  },
+  {
+    "key": "network.error.1",
+    "en": "Invalid network interface",
+    "ru": "Некорректный сетевой интерфейс"
+  },
+  {
+    "key": "network.error.2",
+    "en": "Network interface changed",
+    "ru": "Сетевой интерфейс изменился"
+  },
+  {
+    "key": "network.error.3",
+    "en": "Select a connected interface managed by NetworkManager",
+    "ru": "Выберите подключённый интерфейс под управлением NetworkManager"
+  },
+  {
+    "key": "network.error.4",
+    "en": "This connection type is available for viewing only",
+    "ru": "Этот тип подключения доступен только для просмотра"
+  },
+  {
+    "key": "network.error.5",
+    "en": "Network rollback could not restore every interface; check the local console",
+    "ru": "Откат сети не восстановил все интерфейсы; проверьте NAS через локальную консоль"
+  },
+  {
+    "key": "network.error.6",
+    "en": "Invalid IP address or prefix",
+    "ru": "Некорректный IP-адрес или префикс"
+  },
+  {
+    "key": "network.error.7",
+    "en": "IP address family or prefix does not match",
+    "ru": "Неверная версия IP или отсутствует префикс"
+  },
+  {
+    "key": "network.error.8",
+    "en": "Use a unicast IP address",
+    "ru": "Укажите индивидуальный IP-адрес"
+  },
+  {
+    "key": "network.error.9",
+    "en": "Invalid network settings",
+    "ru": "Некорректные настройки сети"
+  },
+  {
+    "key": "network.error.10",
+    "en": "Unsupported IP configuration method",
+    "ru": "Неподдерживаемый способ настройки IP"
+  },
+  {
+    "key": "network.error.11",
+    "en": "Too many network addresses",
+    "ru": "Слишком много сетевых адресов"
+  },
+  {
+    "key": "network.error.12",
+    "en": "Invalid network option",
+    "ru": "Некорректный параметр сети"
+  },
+  {
+    "key": "network.error.13",
+    "en": "Invalid route metric",
+    "ru": "Некорректная метрика маршрута"
+  },
+  {
+    "key": "network.error.14",
+    "en": "Too many routes",
+    "ru": "Слишком много маршрутов"
+  },
+  {
+    "key": "network.error.15",
+    "en": "Invalid route",
+    "ru": "Некорректный маршрут"
+  },
+  {
+    "key": "network.error.16",
+    "en": "Route destination must be a network with a prefix",
+    "ru": "Назначение маршрута должно быть адресом сети с префиксом"
+  },
+  {
+    "key": "network.error.17",
+    "en": "A static configuration needs at least one address",
+    "ru": "Для статической настройки нужен хотя бы один адрес"
+  },
+  {
+    "key": "network.error.18",
+    "en": "A local-only connection cannot have a default gateway or route",
+    "ru": "Для локального подключения нельзя задавать шлюз или маршрут по умолчанию"
+  },
+  {
+    "key": "network.error.19",
+    "en": "Clear addresses, DNS and routes for the selected IP method",
+    "ru": "Для выбранного способа настройки очистите адреса, DNS и маршруты"
+  },
+  {
+    "key": "network.error.20",
+    "en": "At least one IP protocol must remain enabled",
+    "ru": "Хотя бы один протокол IP должен остаться включённым"
+  },
+  {
+    "key": "network.error.21",
+    "en": "MTU must be automatic or within the supported IP range",
+    "ru": "Укажите MTU 0 для автоматического выбора или допустимое значение: от 576 для IPv4, от 1280 для IPv6, до 9000"
+  },
+  {
+    "key": "network.error.22",
+    "en": "Unknown network operation",
+    "ru": "Неизвестная сетевая операция"
+  },
+  {
+    "key": "network.error.23",
+    "en": "Confirm or roll back the pending network change first",
+    "ru": "Сначала подтвердите или отмените ожидающее изменение сети"
+  },
+  {
+    "key": "network.error.24",
+    "en": "Advanced connection settings cannot be edited by this form",
+    "ru": "Это подключение содержит расширенные параметры, которые форма пока не поддерживает"
+  },
+  {
+    "key": "network.error.25",
+    "en": "Network settings have not changed",
+    "ru": "Настройки сети не изменились"
+  },
+  {
+    "key": "network.error.26",
+    "en": "Network changes require confirmation within two minutes",
+    "ru": "Изменения сети требуют подтверждения в течение двух минут"
+  },
+  {
+    "key": "network.error.27",
+    "en": "This network change has expired or is no longer pending",
+    "ru": "Время подтверждения истекло или изменение больше не ожидает подтверждения"
+  },
+  {
+    "key": "network.error.28",
+    "en": "Only the administrator who applied the network change can confirm or undo it",
+    "ru": "Подтвердить или отменить изменение может применивший его администратор"
+  },
+  {
+    "key": "network.error.29",
+    "en": "Could not apply network settings; previous settings were restored",
+    "ru": "Не удалось применить настройки сети; прежние настройки восстановлены"
+  },
+  {
+    "key": "network.error.30",
+    "en": "Network changes await confirmation",
+    "ru": "Изменения сети ожидают подтверждения"
+  },
+  {
+    "key": "network.error.31",
+    "en": "Network configuration changed externally; roll back and review it again",
+    "ru": "Настройки сети изменились вне панели; выполните откат и проверьте их заново"
+  },
+  {
+    "key": "network.error.32",
+    "en": "Network settings confirmed",
+    "ru": "Настройки сети подтверждены"
+  },
+  {
+    "key": "network.error.33",
+    "en": "Previous network settings restored",
+    "ru": "Прежние настройки сети восстановлены"
+  },
+  {
+    "key": "wifi.error.0",
+    "en": "Select a managed Wi-Fi adapter",
+    "ru": "Выберите Wi-Fi-адаптер, управляемый системой"
+  },
+  {
+    "key": "wifi.error.1",
+    "en": "Invalid saved Wi-Fi connection",
+    "ru": "Некорректное сохранённое подключение Wi-Fi"
+  },
+  {
+    "key": "wifi.error.2",
+    "en": "Saved Wi-Fi connection is no longer available",
+    "ru": "Сохранённое подключение Wi-Fi больше недоступно"
+  },
+  {
+    "key": "wifi.error.3",
+    "en": "Wi-Fi network changed; refresh the list",
+    "ru": "Сеть Wi-Fi изменилась; обновите список"
+  },
+  {
+    "key": "wifi.error.4",
+    "en": "Wi-Fi name must contain 1 to 32 bytes",
+    "ru": "Название Wi-Fi должно занимать от 1 до 32 байт"
+  },
+  {
+    "key": "wifi.error.5",
+    "en": "This Wi-Fi security type is not supported yet",
+    "ru": "Этот тип защиты Wi-Fi пока не поддерживается"
+  },
+  {
+    "key": "wifi.error.6",
+    "en": "Invalid Wi-Fi password",
+    "ru": "Некорректный пароль Wi-Fi"
+  },
+  {
+    "key": "wifi.error.7",
+    "en": "Invalid Wi-Fi password length",
+    "ru": "Некорректная длина пароля: WPA/WPA2 — 8–63 байта или 64 шестнадцатеричных символа; WPA3 — 1–63 байта"
+  },
+  {
+    "key": "wifi.error.8",
+    "en": "This Wi-Fi network does not use a password",
+    "ru": "Эта сеть Wi-Fi не использует пароль"
+  },
+  {
+    "key": "wifi.error.9",
+    "en": "Wi-Fi is blocked by a hardware switch",
+    "ru": "Wi-Fi заблокирован аппаратным переключателем"
+  },
+  {
+    "key": "wifi.error.10",
+    "en": "Enable Wi-Fi before scanning or connecting",
+    "ru": "Включите Wi-Fi перед поиском сетей или подключением"
+  },
+  {
+    "key": "wifi.error.11",
+    "en": "Wi-Fi adapter is not connected",
+    "ru": "Wi-Fi-адаптер не подключён к сети"
+  },
+  {
+    "key": "wifi.error.12",
+    "en": "Wi-Fi scan is unavailable or was requested too recently; try again shortly",
+    "ru": "Поиск сетей недоступен или уже запущен; повторите немного позже"
+  },
+  {
+    "key": "wifi.error.13",
+    "en": "Wi-Fi scan requested",
+    "ru": "Поиск сетей Wi-Fi запущен"
+  },
+  {
+    "key": "wifi.error.14",
+    "en": "Wi-Fi connection failed; check password, signal and router settings",
+    "ru": "Не удалось подключиться к Wi-Fi; проверьте пароль, сигнал и настройки роутера"
+  },
+  {
+    "key": "wifi.error.15",
+    "en": "Wi-Fi connection timed out; check password, signal and router settings",
+    "ru": "Время подключения к Wi-Fi истекло; проверьте пароль, сигнал и настройки роутера"
+  },
+  {
+    "key": "wifi.error.16",
+    "en": "Wi-Fi operation failed; previous settings were restored",
+    "ru": "Не удалось изменить Wi-Fi; прежние настройки восстановлены"
+  },
+  {
+    "key": "wifi.error.17",
+    "en": "Invalid recovery request",
+    "ru": "Некорректный запрос восстановления"
+  },
+  {
+    "key": "share.error.0",
+    "en": "Invalid sharing name",
+    "ru": "Введите название схемы длиной до 64 символов"
+  },
+  {
+    "key": "share.error.1",
+    "en": "Select at least one destination interface",
+    "ru": "Выберите хотя бы один интерфейс для раздачи"
+  },
+  {
+    "key": "share.error.2",
+    "en": "Source and destination interfaces must be different",
+    "ru": "Источник и получатели должны быть разными интерфейсами"
+  },
+  {
+    "key": "share.error.3",
+    "en": "An interface is already used by another sharing group",
+    "ru": "Интерфейс уже используется другой схемой раздачи"
+  },
+  {
+    "key": "share.error.4",
+    "en": "Invalid sharing mode",
+    "ru": "Недопустимый режим раздачи"
+  },
+  {
+    "key": "share.error.5",
+    "en": "Transparent Wi-Fi bridging is not verified with your router; use a separate network",
+    "ru": "Совместимость Wi-Fi-моста с роутером не подтверждена; используйте отдельную сеть"
+  },
+  {
+    "key": "share.error.6",
+    "en": "Install the network sharing dependencies first",
+    "ru": "Сначала установите системные компоненты раздачи сети"
+  },
+  {
+    "key": "share.error.7",
+    "en": "Sharing group no longer exists",
+    "ru": "Эта схема раздачи больше не существует"
+  },
+  {
+    "key": "share.error.8",
+    "en": "No free private subnet found for sharing",
+    "ru": "Не найдена свободная подсеть для раздачи"
+  },
+  {
+    "key": "share.error.9",
+    "en": "No free routing table available for sharing",
+    "ru": "Нет свободной таблицы маршрутов для раздачи"
+  },
+  {
+    "key": "share.error.10",
+    "en": "Routing rule conflicts with sharing",
+    "ru": "Существующее правило маршрутизации конфликтует с раздачей"
+  },
+  {
+    "key": "share.error.11",
+    "en": "Select a managed Ethernet or Wi-Fi interface",
+    "ru": "Выберите управляемый Ethernet- или Wi-Fi-интерфейс"
+  },
+  {
+    "key": "share.error.12",
+    "en": "Connect the source interface before sharing",
+    "ru": "Сначала подключите интерфейс-источник к сети"
+  },
+  {
+    "key": "share.error.13",
+    "en": "Existing policy routing requires manual review before sharing",
+    "ru": "Существующие специальные правила маршрутизации требуют ручной проверки"
+  },
+  {
+    "key": "share.error.14",
+    "en": "Source uses advanced or unsaved settings; save a simple IP configuration first",
+    "ru": "У источника нестандартные настройки IP; сначала проверьте его конфигурацию"
+  },
+  {
+    "key": "share.error.15",
+    "en": "Authenticated Ethernet bridging requires manual configuration",
+    "ru": "Мост для Ethernet с аутентификацией требует ручной настройки"
+  },
+  {
+    "key": "share.error.16",
+    "en": "Source already belongs to a bridge or bond",
+    "ru": "Источник уже входит в мост или объединение интерфейсов"
+  },
+  {
+    "key": "share.error.17",
+    "en": "Sharing is already enabled",
+    "ru": "Раздача уже включена"
+  },
+  {
+    "key": "share.error.18",
+    "en": "Sharing is already stopped",
+    "ru": "Раздача уже остановлена"
+  },
+  {
+    "key": "share.error.19",
+    "en": "A network adapter was replaced; recreate the sharing group",
+    "ru": "Сетевой адаптер заменён; создайте схему раздачи заново"
+  },
+  {
+    "key": "share.error.20",
+    "en": "Sharing configuration changed externally; roll back and review it again",
+    "ru": "Настройки раздачи изменены извне; выполните откат и проверьте схему"
+  },
+  {
+    "key": "share.error.21",
+    "en": "These interfaces share one radio; choose a separate Wi-Fi adapter",
+    "ru": "Эти интерфейсы используют общий радиомодуль; выберите отдельный Wi-Fi-адаптер"
+  },
+  {
+    "key": "share.error.22",
+    "en": "This Wi-Fi adapter cannot create an access point on permitted channels",
+    "ru": "Адаптер не может создать точку доступа на разрешённых каналах"
+  },
+  {
+    "key": "share.error.23",
+    "en": "Enable Wi-Fi before creating an access point",
+    "ru": "Включите Wi-Fi перед созданием точки доступа"
+  },
+  {
+    "key": "share.error.24",
+    "en": "Use a Wi-Fi password of 8 to 63 printable ASCII characters",
+    "ru": "Пароль Wi-Fi должен содержать 8–63 латинских символа, цифры или знака"
+  },
+  {
+    "key": "share.error.25",
+    "en": "This Wi-Fi band is not available for an access point",
+    "ru": "Этот диапазон Wi-Fi недоступен для точки доступа"
+  },
+  {
+    "key": "share.error.26",
+    "en": "Sharing could not start; previous settings were restored",
+    "ru": "Не удалось запустить раздачу; прежние настройки восстановлены"
+  },
+  {
+    "key": "share.error.27",
+    "en": "A network adapter is disconnected",
+    "ru": "Сетевой адаптер отключён"
+  },
+  {
+    "key": "share.error.28",
+    "en": "Sharing could not start; check the selected adapters",
+    "ru": "Не удалось запустить раздачу; проверьте выбранные адаптеры"
+  },
+  {
+    "key": "share.error.29",
+    "en": "Sharing activation timed out; previous settings will be restored",
+    "ru": "Время запуска раздачи истекло; прежние настройки будут восстановлены"
+  },
+  {
+    "key": "share.error.30",
+    "en": "Edit this interface through its sharing group",
+    "ru": "Изменяйте этот интерфейс через его схему раздачи"
+  },
+  {
+    "key": "share.error.subnetConflict",
+    "en": "The sharing subnet now overlaps another network; recreate the sharing group",
+    "ru": "Подсеть раздачи теперь пересекается с другой сетью; создайте схему заново"
+  },
+  {
+    "key": "share.activation.failed",
+    "en": "Sharing activation failed for {{v0}}; previous settings will be restored"
+  },
+  {
+    "key": "share.activation.wifi",
+    "en": "Sharing activation timed out while starting Wi-Fi access points {{v0}}; previous settings will be restored"
+  },
+  {
+    "key": "share.activation.bridge",
+    "en": "Sharing activation timed out while waiting for bridge {{v0}} to obtain network settings; previous settings will be restored"
+  },
+  {
+    "key": "wifi.error.unavailable",
+    "en": "Wi-Fi adapter did not become available; check its hardware switch",
+    "ru": "Адаптер Wi-Fi не включился. Проверьте аппаратный переключатель."
+  },
+  {
+    "key": "wifi.error.identity",
+    "en": "Wi-Fi adapter has no stable hardware address",
+    "ru": "Не удалось определить постоянный аппаратный адрес Wi-Fi-адаптера."
+  },
+  {
+    "key": "modules.updatedDisabled",
+    "en": "Module updated; remains disabled",
+    "ru": "Модуль обновлён и остаётся выключенным"
+  },
+  {
+    "key": "network.channelUnavailable",
+    "en": "This Wi-Fi channel is not available for an access point",
+    "ru": "Этот канал Wi-Fi недоступен для точки доступа"
+  },
+  {
+    "key": "network.selectAP",
+    "en": "Select a Wi-Fi access point from this sharing group",
+    "ru": "Выберите точку доступа Wi-Fi из этой группы раздачи"
+  },
+  {
+    "key": "server_share_recipient_select",
+    "en": "Select a recipient interface from this sharing group",
+    "ru": "Выберите получателя в этой схеме раздачи",
+    "uk": "Виберіть отримувача в цій схемі роздачі"
+  },
+  {
+    "key": "server_share_recipient_removed",
+    "en": "Sharing recipient removed",
+    "ru": "Адаптер удалён из раздачи",
+    "uk": "Адаптер видалено з роздачі"
+  }
+]
