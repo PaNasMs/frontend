@@ -1,40 +1,79 @@
 # PaNasMs frontend
 
-Отдельный репозиторий интерфейса. Начальный рабочий прототип реализован.
+React SPA for **Pavlo's NAS Management System**, currently prototype 0.2.1.
+Production output is static HTML, CSS and JavaScript served by the
+[backend](https://github.com/PaNasMs/backend); Node.js is only a build/development dependency.
 
-Стек: React, TypeScript strict, Vite, React Router Data Mode, TanStack Query,
-Radix Dialog/Tabs, собственные CSS-стили, локальные MDI SVG. React Hook Form/Zod
-используются в форме входа; Tailwind подключён, но не является основой текущих стилей.
+## Interface
 
-## Границы
+- Per-user desktop grid, widgets, wallpaper, shortcuts and taskbar ordering.
+- Users/groups, storage and mounts, network, services, logs, updates and metric history.
+- Settings grouped by system area, with separate advanced controls.
+- Task, notification and removable-device menus in the top bar.
+- Module catalog, archive installation, module details and lifecycle actions.
+- English default/fallback translations, plus Russian and Ukrainian; each user
+  can choose their own language.
 
-- SPA: общая оболочка, рабочий стол, страницы модулей и единое окно настроек.
-- HTTP для данных/команд, WebSocket для событий и прогресса.
-- Модули предоставляют страницы, виджеты и разделы настроек оболочке.
-- Терминал — отдельная страница с собственным потоком ввода/вывода.
-  Службы, журналы, обновления и история метрик получают предметные страницы;
-  их содержимое не переносится в окно настроек. Сеть — отдельный будущий модуль.
-- Системные операции и авторизация выполняются backend; скрытие кнопок
-  не заменяет проверку прав. Прямого доступа к агенту и Linux нет.
-- Клиент генерируется из версионированного OpenAPI backend. Не копировать
-  серверные реализации и не создавать вторую независимую схему API.
-- Сборка выпускает статические файлы; runtime Node/SSR не требуется.
+Files, Terminal and Cloud Sync are installable modules with separate source and
+release repositories. The SPA hosts their contributions through the module API.
+System operations and authorization are enforced by the backend.
 
-На старте реализации создать `src/app` для оболочки, `src/modules`
-для функциональных модулей, `src/shared` для действительно общих компонентов
-и `src/api` для клиента. Не создавать универсальные абстракции заранее.
+## Stack and source layout
 
-Проверки: `npm run format:check`, `npm run test:unit`, `npm run build`.
-Форматирование: `npm run format`. Типы API: `npm run generate:api`.
-Текущие функциональные компоненты находятся в `src/app`; выделение `src/modules`
-остаётся следующим шагом рефакторинга. Контракт management пока описан не полностью.
+React 19, strict TypeScript, Vite, React Router, TanStack Query, i18next,
+Radix Dialog/Tabs and local Material Design Icons SVG paths. Styling is primarily
+custom CSS; Tailwind is configured. The login form uses React Hook Form and Zod.
 
-Требования в текущем workspace: [план](../docs/custom-nas-project-plan.md)
-и группы UI/SET в [задачах](../docs/implementation-tasks.md).
+| Path | Contents |
+| --- | --- |
+| [src/app](src/app) | Shell, desktop and system feature views |
+| [src/api](src/api) | HTTP client and generated OpenAPI declarations |
+| [src/i18n](src/i18n) | Core translations and server-message localization |
+| [tests](tests) | Unit and browser smoke checks |
 
-Текущий объём, сборка, проверки и удаление: [руководство прототипа](../docs/prototype-development.md).
+HTTP carries snapshots and commands; the authenticated WebSocket carries events
+and invalidations. Nested routes preserve selected storage/settings sections
+across reloads. Most system feature components still live in `src/app`; a complete
+split into feature directories has not been done.
 
-## Лицензия
+## Development and checks
 
-Оригинальный код PaNasMs: [PolyForm Noncommercial 1.0.0](LICENSE).
-Область применения и исключения для сторонних компонентов: [NOTICE](NOTICE).
+Requirements: Node.js 22.12 or newer and npm 9.5 or newer.
+
+```sh
+npm ci
+npm run dev
+npm run format:check
+npm run test:unit
+npm run build
+```
+
+Vite proxies `/api`, including WebSockets, to `http://127.0.0.1:8080`. A working
+backend/agent installation is required for real system operations; there is no
+mock NAS backend. Production output is written to `dist/`.
+
+`npm run typecheck` checks TypeScript without producing a Vite bundle;
+`npm run format` formats source and tests. `npm run test:smoke` runs the separate
+browser smoke script; inspect its environment requirements before using it.
+
+To regenerate API declarations, clone backend beside frontend in the
+[workspace layout](https://github.com/PaNasMs/panasms#workspace-setup), then run:
+
+```sh
+npm run generate:api
+```
+
+The source contract is `backend/api/openapi.yaml`. Management operation schemas
+are not yet complete, so the generated declarations do not cover the entire API.
+
+Official module releases build from their own repositories:
+[Files](https://github.com/PaNasMs/module-files),
+[Terminal](https://github.com/PaNasMs/module-terminal) and
+[Cloud Sync](https://github.com/PaNasMs/module-cloud-sync).
+The workspace `build:modules` command is a local integration build, not the
+registry release pipeline.
+
+## License
+
+Public documentation is maintained in English. Original code uses
+[PolyForm Noncommercial 1.0.0](LICENSE); see [NOTICE](NOTICE) for third-party scope.
