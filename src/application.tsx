@@ -160,7 +160,7 @@ function Shell() {
         ))}
         <Outlet />
       </main>
-      <footer className="app-footer">{tr('ostojaos_0_1_first_working_prototype_fc5b4f2c')}</footer>
+      <footer className="app-footer">{tr('panasms_0_1_first_working_prototype_fc5b4f2c')}</footer>
     </>
   )
 }

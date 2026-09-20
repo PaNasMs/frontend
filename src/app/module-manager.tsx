@@ -80,7 +80,7 @@ export function ModuleManager() {
       if (archive.size > 128 * 1024 * 1024) throw Error(tr('the_archive_must_not_exceed_128_mib_8b2f3ac6'))
       const response = await fetch('/api/v1/modules/upload', {
         method: 'POST',
-        headers: { 'X-OstojaOS-Request': '1', 'Content-Type': 'application/zip' },
+        headers: { 'X-PaNasMs-Request': '1', 'Content-Type': 'application/zip' },
         body: archive,
       })
       if (!response.ok) throw Error(tr('could_not_upload_archive_44fa0a9b') + ' ' + response.status)
@@ -229,7 +229,7 @@ export function ModuleManager() {
                 ? `${installedIds.has(selected.id) ? (selected.enabled ? tr('enabled_12b6f103') : tr('disabled_c9467860')) : tr('modules.catalogAvailable')} · ${selected.version}`
                 : moduleId
                   ? tr('module_details_4dac2386')
-                  : tr('additional_ostojaos_features_357fb81f')}
+                  : tr('additional_panasms_features_357fb81f')}
             </p>
           </div>
         </div>
@@ -271,7 +271,7 @@ export function ModuleManager() {
           ref={file}
           type="file"
           hidden
-          accept=".zip,.ostojaos"
+          accept=".zip,.panasms"
           onChange={(e) => {
             const archive = e.target.files?.[0]
             e.target.value = ''
@@ -360,7 +360,7 @@ export function ModuleManager() {
           <section className="surface">
             <h2>{tr('dependencies_898afdf0')}</h2>
             <dl className="module-facts">
-              <dt>{tr('ostojaos_core_a9f23ebe')}</dt>
+              <dt>{tr('panasms_core_a9f23ebe')}</dt>
               <dd>
                 {selected.core}
                 <span className="muted small">

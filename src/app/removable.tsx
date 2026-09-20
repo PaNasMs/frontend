@@ -81,7 +81,7 @@ export function recoveryKey(volume: Removable) {
 }
 function loadRecovery() {
   try {
-    return JSON.parse(sessionStorage.getItem('ostojaos-offered-recovery') ?? '[]') as string[]
+    return JSON.parse(sessionStorage.getItem('panasms-offered-recovery') ?? '[]') as string[]
   } catch {
     return []
   }
@@ -90,7 +90,7 @@ const offeredRecovery = new Set<string>(loadRecovery())
 function rememberRecovery(volume: Removable) {
   offeredRecovery.add(recoveryKey(volume))
   try {
-    sessionStorage.setItem('ostojaos-offered-recovery', JSON.stringify([...offeredRecovery]))
+    sessionStorage.setItem('panasms-offered-recovery', JSON.stringify([...offeredRecovery]))
   } catch {}
 }
 const pendingMounts = new Map<string, Promise<string>>()

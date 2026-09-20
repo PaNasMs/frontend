@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import assert from 'node:assert/strict'
-const directory = process.env.OSTOJAOS_SMOKE_DIR
+const directory = process.env.PANASMS_SMOKE_DIR
 const { url, token } = JSON.parse(await readFile(`${directory}/connection.json`, 'utf8'))
 const browser = await chromium.launch({
   executablePath: process.env.CHROME_PATH || '/opt/google/chrome/chrome',
@@ -10,7 +10,7 @@ const browser = await chromium.launch({
 })
 try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } })
-  await context.addCookies([{ name: 'ostojaos_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
+  await context.addCookies([{ name: 'panasms_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
   const page = await context.newPage()
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
@@ -35,7 +35,7 @@ try {
   const rejected = await page.evaluate(async () =>
     fetch('/api/v1/cooling', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-OstojaOS-Request': '1' },
+      headers: { 'Content-Type': 'application/json', 'X-PaNasMs-Request': '1' },
       body: JSON.stringify({ profile: 'off', sampleSeconds: 0 }),
     }).then((r) => r.status),
   )

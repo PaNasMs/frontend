@@ -99,7 +99,7 @@ export function DiskSettings() {
                 onChange={(e) => setSleep(Number(e.target.value))}
               >
                 <option value="" disabled>
-                  {tr('not_configured_in_ostojaos_b81448a5')}
+                  {tr('not_configured_in_panasms_b81448a5')}
                 </option>
                 <option value={0}>{tr('never_sleep_c6b71a1a')}</option>
                 {[5, 10, 15, 20, 30, 60, 120, 180, 300].map((n) => (

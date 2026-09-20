@@ -30,4 +30,4 @@ export const SDK = {
   layout,
   client,
 }
-Object.assign(globalThis, { OstojaOSSDK: SDK })
+Object.assign(globalThis, { PaNasMsSDK: SDK })

@@ -232,7 +232,7 @@ function SharingWizard({
   const destinations = interfaces.filter((i) => i.name !== source && ['ethernet', 'wifi'].includes(i.kind))
   const aps = outputs.filter((name) => interfaces.find((i) => i.name === name)?.kind === 'wifi')
   const apName = aps[step - 1]
-  const ap = wifi[apName] ?? { ssid: 'OstojaOS', band: 'bg', password: '' }
+  const ap = wifi[apName] ?? { ssid: 'PaNasMs', band: 'bg', password: '' }
   const last = step === aps.length + 1
   const setAP = (value: Partial<AP>) => setWifi({ ...wifi, [apName]: { ...ap, ...value } })
   const allowed = (candidate: ShareInterface) =>
@@ -301,7 +301,7 @@ function SharingWizard({
                           if (i.kind === 'wifi' && !wifi[i.name])
                             setWifi({
                               ...wifi,
-                              [i.name]: { ssid: 'OstojaOS', password: '', band: i.sharing?.bands[0] ?? 'bg' },
+                              [i.name]: { ssid: 'PaNasMs', password: '', band: i.sharing?.bands[0] ?? 'bg' },
                             })
                         }}
                       >

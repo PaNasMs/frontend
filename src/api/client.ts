@@ -20,7 +20,7 @@ export async function request<T>(path: string, method = 'GET', body?: unknown): 
   const r = await fetch(`/api/v1/${path}`, {
     method,
     credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/json', 'X-OstojaOS-Request': '1' },
+    headers: { 'Content-Type': 'application/json', 'X-PaNasMs-Request': '1' },
     body: body === undefined ? undefined : JSON.stringify(body),
   })
   if (!r.ok) {

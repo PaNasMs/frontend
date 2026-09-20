@@ -17,7 +17,7 @@ export function createLocalAlert(message: string): Alert {
   return { id: 'local:' + ++toastSequence, message, active: false, created: now, updated: now }
 }
 export function notify(message: string) {
-  window.dispatchEvent(new CustomEvent('ostojaos:toast', { detail: message }))
+  window.dispatchEvent(new CustomEvent('panasms:toast', { detail: message }))
 }
 export function NotificationsList() {
   const data = useQuery({
@@ -58,8 +58,8 @@ export function NotificationToasts() {
       const toast = createLocalAlert((event as CustomEvent<string>).detail)
       setToasts((old) => [toast, ...old].slice(0, 4))
     }
-    window.addEventListener('ostojaos:toast', receive)
-    return () => window.removeEventListener('ostojaos:toast', receive)
+    window.addEventListener('panasms:toast', receive)
+    return () => window.removeEventListener('panasms:toast', receive)
   }, [])
   useEffect(() => {
     if (!data.data) return

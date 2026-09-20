@@ -72,7 +72,7 @@ export default function Login() {
         </form>
         <p className="small muted">{tr('access_for_existing_linux_users_in_the_sudo_group_bbc94faa')}</p>
       </section>
-      <div className="login-foot">{tr('ostojaos_prototype_0_1_f18e5220')}</div>
+      <div className="login-foot">{tr('panasms_prototype_0_1_f18e5220')}</div>
     </main>
   )
 }

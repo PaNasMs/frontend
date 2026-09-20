@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import assert from 'node:assert/strict'
-const directory = process.env.OSTOJAOS_SMOKE_DIR
+const directory = process.env.PANASMS_SMOKE_DIR
 const { url, token } = JSON.parse(await readFile(`${directory}/connection.json`, 'utf8'))
 const browser = await chromium.launch({
   executablePath: '/opt/google/chrome/chrome',
@@ -9,10 +9,10 @@ const browser = await chromium.launch({
   args: ['--no-sandbox'],
 })
 const context = await browser.newContext({ viewport: { width: 1440, height: 1100 } })
-await context.addCookies([{ name: 'ostojaos_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
+await context.addCookies([{ name: 'panasms_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
 const original = await (await context.request.get(url + '/api/v1/preferences')).json()
-const fixture = '/home/pasha/ostojaos-ui-fixture-' + Date.now()
-const headers = { Origin: url, 'X-OstojaOS-Request': '1' }
+const fixture = '/home/pasha/panasms-ui-fixture-' + Date.now()
+const headers = { Origin: url, 'X-PaNasMs-Request': '1' }
 async function api(view, body, target) {
   const r = body
     ? await context.request.post(url + '/api/v1/manage?view=' + view, { headers, data: body })
@@ -99,14 +99,14 @@ try {
     url + '/api/v1/files/content?target=' + encodeURIComponent(fixture + '/hello.txt'),
     {
       headers: { ...headers, 'Content-Type': 'application/octet-stream' },
-      data: Buffer.from('OstojaOS streamed test\n'),
+      data: Buffer.from('PaNasMs streamed test\n'),
     },
   )
   assert.equal(upload.status(), 204)
   const download = await context.request.get(
     url + '/api/v1/files/content?target=' + encodeURIComponent(fixture + '/hello.txt'),
   )
-  assert.equal(await download.text(), 'OstojaOS streamed test\n')
+  assert.equal(await download.text(), 'PaNasMs streamed test\n')
   await job('file.copy', { target: fixture + '/hello.txt', destination: fixture + '/copy.txt' })
   await job('file.rename', { target: fixture + '/copy.txt', destination: fixture + '/renamed.txt' })
   assert.equal((await api('files', undefined, fixture)).entries.length, 2)

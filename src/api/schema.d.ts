@@ -750,7 +750,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                "X-OstojaOS-Request": "1";
+                "X-PaNasMs-Request": "1";
             };
             path?: never;
             cookie?: never;
@@ -1055,7 +1055,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                "X-OstojaOS-Request": "1";
+                "X-PaNasMs-Request": "1";
             };
             path?: never;
             cookie?: never;
@@ -1090,7 +1090,7 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                "X-OstojaOS-Request": "1";
+                "X-PaNasMs-Request": "1";
             };
             path?: never;
             cookie?: never;

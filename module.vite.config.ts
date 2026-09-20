@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'node:path'
-const id = process.env.OSTOJAOS_MODULE
-if (!id || !['files', 'terminal', 'cloud-sync'].includes(id)) throw Error('Set OSTOJAOS_MODULE=files|terminal|cloud-sync')
+const id = process.env.PANASMS_MODULE
+if (!id || !['files', 'terminal', 'cloud-sync'].includes(id)) throw Error('Set PANASMS_MODULE=files|terminal|cloud-sync')
 const shared: Record<string, string> = {
-  react: 'OstojaOSSDK.react',
-  'react/jsx-runtime': 'OstojaOSSDK.jsx',
-  '@tanstack/react-query': 'OstojaOSSDK.query',
-  '@radix-ui/react-dialog': 'OstojaOSSDK.dialog',
-  'react-router-dom': 'OstojaOSSDK.router',
+  react: 'PaNasMsSDK.react',
+  'react/jsx-runtime': 'PaNasMsSDK.jsx',
+  '@tanstack/react-query': 'PaNasMsSDK.query',
+  '@radix-ui/react-dialog': 'PaNasMsSDK.dialog',
+  'react-router-dom': 'PaNasMsSDK.router',
 }
 for (const name of [
   'ui',
@@ -20,7 +20,7 @@ for (const name of [
   'i18n',
   'navigation',
 ])
-  shared['@ostojaos/' + name] = 'OstojaOSSDK.' + name
+  shared['@panasms/' + name] = 'PaNasMsSDK.' + name
 export default defineConfig({
   resolve: {
     alias: {
@@ -34,7 +34,7 @@ export default defineConfig({
     emptyOutDir: true,
     lib: {
       entry: resolve('../modules/' + id + '/frontend/' + id + '.tsx'),
-      name: 'OstojaOSModule_' + id.replaceAll('-', '_'),
+      name: 'PaNasMsModule_' + id.replaceAll('-', '_'),
       formats: ['iife'],
       fileName: () => 'index.js',
       cssFileName: 'index',

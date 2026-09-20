@@ -1361,8 +1361,8 @@
   },
   {
     "key": "server_cfbb3b0112f7",
-    "en": " for the OstojaOS IP address in NFS rules.",
-    "ru": " для IP-адреса OstojaOS в правилах NFS."
+    "en": " for the PaNasMs IP address in NFS rules.",
+    "ru": " для IP-адреса PaNasMs в правилах NFS."
   },
   {
     "key": "server_5fccad6b28c4",
@@ -1456,8 +1456,8 @@
   },
   {
     "key": "server_9f7699c5401a",
-    "en": "Module is incompatible with OstojaOS core ",
-    "ru": "Модуль несовместим с ядром OstojaOS "
+    "en": "Module is incompatible with PaNasMs core ",
+    "ru": "Модуль несовместим с ядром PaNasMs "
   },
   {
     "key": "server_a0d2b1b59df1",
@@ -2371,8 +2371,8 @@
   },
   {
     "key": "server_0db211a1a9e3",
-    "en": "Module is incompatible with OstojaOS core {{v0}}",
-    "ru": "Модуль несовместим с ядром OstojaOS {{v0}}"
+    "en": "Module is incompatible with PaNasMs core {{v0}}",
+    "ru": "Модуль несовместим с ядром PaNasMs {{v0}}"
   },
   {
     "key": "server_8067b47c02f0",

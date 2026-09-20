@@ -1,4 +1,4 @@
-# OstojaOS frontend
+# PaNasMs frontend
 
 Отдельный репозиторий интерфейса. Начальный рабочий прототип реализован.
 
@@ -36,5 +36,5 @@ Radix Dialog/Tabs, собственные CSS-стили, локальные MDI
 
 ## Лицензия
 
-Оригинальный код OstojaOS: [PolyForm Noncommercial 1.0.0](LICENSE).
+Оригинальный код PaNasMs: [PolyForm Noncommercial 1.0.0](LICENSE).
 Область применения и исключения для сторонних компонентов: [NOTICE](NOTICE).

@@ -1,8 +1,8 @@
 import { chromium } from '@playwright/test'
 import { readFile, writeFile } from 'node:fs/promises'
 import assert from 'node:assert/strict'
-const directory = process.env.OSTOJAOS_SMOKE_DIR
-if (!directory) throw new Error('OSTOJAOS_SMOKE_DIR is required; launch Go TestBrowserHarness first')
+const directory = process.env.PANASMS_SMOKE_DIR
+if (!directory) throw new Error('PANASMS_SMOKE_DIR is required; launch Go TestBrowserHarness first')
 const { url, token } = JSON.parse(await readFile(`${directory}/connection.json`, 'utf8'))
 const browser = await chromium.launch({
   executablePath: process.env.CHROME_PATH || '/opt/google/chrome/chrome',
@@ -17,7 +17,7 @@ try {
   await page.goto(url)
   await page.getByRole('heading', { name: 'Добро пожаловать' }).waitFor()
   await page.screenshot({ path: `${directory}/login.png`, fullPage: true })
-  await context.addCookies([{ name: 'ostojaos_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
+  await context.addCookies([{ name: 'panasms_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
   await page.reload()
   const initialPreferences = await page.evaluate(async () =>
     fetch('/api/v1/preferences').then((r) => r.json()),
@@ -71,7 +71,7 @@ try {
   await page.evaluate(async (prefs) => {
     const r = await fetch('/api/v1/preferences', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-OstojaOS-Request': '1' },
+      headers: { 'Content-Type': 'application/json', 'X-PaNasMs-Request': '1' },
       body: JSON.stringify(prefs),
     })
     if (!r.ok) throw new Error('restore preferences failed')

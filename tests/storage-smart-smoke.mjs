@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import assert from 'node:assert/strict'
-const directory = process.env.OSTOJAOS_SMOKE_DIR
+const directory = process.env.PANASMS_SMOKE_DIR
 const { url, token } = JSON.parse(await readFile(`${directory}/connection.json`, 'utf8'))
 const browser = await chromium.launch({
   executablePath: '/opt/google/chrome/chrome',
@@ -9,7 +9,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox'],
 })
 const context = await browser.newContext({ viewport: { width: 1440, height: 1100 } })
-await context.addCookies([{ name: 'ostojaos_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
+await context.addCookies([{ name: 'panasms_session', value: token, url, httpOnly: true, sameSite: 'Strict' }])
 const original = await (await context.request.get(`${url}/api/v1/preferences`)).json()
 try {
   const page = await context.newPage()
@@ -43,7 +43,7 @@ try {
   assert.ok(accepted.smartCrcBaselines[key] > 0)
   accepted.smartCrcBaselines[key] -= 1
   const changed = await context.request.put(`${url}/api/v1/preferences`, {
-    headers: { Origin: url, 'X-OstojaOS-Request': '1' },
+    headers: { Origin: url, 'X-PaNasMs-Request': '1' },
     data: accepted,
   })
   assert.equal(changed.status(), 200)
@@ -71,10 +71,10 @@ try {
   )
 } finally {
   const restored = await context.request.put(`${url}/api/v1/preferences`, {
-    headers: { Origin: url, 'X-OstojaOS-Request': '1' },
+    headers: { Origin: url, 'X-PaNasMs-Request': '1' },
     data: original,
   })
   assert.equal(restored.status(), 200)
-  await context.request.post(`${url}/api/v1/logout`, { headers: { Origin: url, 'X-OstojaOS-Request': '1' } })
+  await context.request.post(`${url}/api/v1/logout`, { headers: { Origin: url, 'X-PaNasMs-Request': '1' } })
   await browser.close()
 }

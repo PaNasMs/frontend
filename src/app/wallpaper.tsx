@@ -27,7 +27,7 @@ export function WallpaperSettings() {
       const response = await fetch('/api/v1/wallpaper', {
         method: 'PUT',
         credentials: 'same-origin',
-        headers: { 'Content-Type': file.type || 'application/octet-stream', 'X-OstojaOS-Request': '1' },
+        headers: { 'Content-Type': file.type || 'application/octet-stream', 'X-PaNasMs-Request': '1' },
         body: file,
       })
       const body = await response.json()
