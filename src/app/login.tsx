@@ -26,7 +26,7 @@ export default function Login() {
     <main className="login-page">
       <section className="login-intro">
         <div className="wordmark">
-          Ostoja<span>OS</span>
+          PaNas<span>Ms</span>
           <span className="logo-dot" />
         </div>
         <span className="eyebrow">{tr('your_space_b869dc8f')}</span>
