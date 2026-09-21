@@ -4,7 +4,10 @@ import { initializeLanguage } from './i18n'
 async function start() {
   let selected: unknown = 'en'
   try {
-    const response = await fetch('/api/v1/preferences', { credentials: 'same-origin' })
+    const response = await fetch('/api/v1/preferences', {
+      credentials: 'same-origin',
+      signal: AbortSignal.timeout(15000),
+    })
     if (response.ok) selected = (await response.json()).language
   } catch {
     /* The login screen and offline shell still use English. */

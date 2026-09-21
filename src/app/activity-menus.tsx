@@ -1,3 +1,4 @@
+import { useExclusivePopover } from '../shared/interaction'
 import { tr } from '../i18n/index'
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -25,6 +26,7 @@ function ActivityMenu({
   children: ReactNode
 }) {
   const menu = useRef<HTMLDetailsElement>(null)
+  useExclusivePopover(menu)
   const query = useQueryClient()
   const [params, setParams] = useSearchParams()
   const mutation = useMutation({
@@ -83,7 +85,11 @@ function ActivityMenu({
 export function ActivityMenus() {
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
   const admin = session.data?.role === 'admin'
-  const jobs = useQuery({ queryKey: ['jobs'], queryFn: () => managed<Job[]>('jobs'), enabled: !!session.data })
+  const jobs = useQuery({
+    queryKey: ['jobs'],
+    queryFn: () => managed<Job[]>('jobs'),
+    enabled: !!session.data,
+  })
   const alerts = useQuery({ queryKey: ['notifications'], queryFn: () => request<Alert[]>('notifications') })
   return (
     <>

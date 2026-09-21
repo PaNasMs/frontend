@@ -37,3 +37,22 @@ test('does not treat missing job as completion', async () => {
   )
   assert.equal(reads, 120)
 })
+test('a hung status read releases the blocking wait without claiming failure', async () => {
+  await assert.rejects(
+    waitForJob(
+      () => new Promise(() => {}),
+      async () => {},
+      120,
+      5,
+    ),
+    /not been confirmed/,
+  )
+})
+test('connection loss while observing an accepted job is an uncertain result', async () => {
+  await assert.rejects(
+    waitForJob(async () => {
+      throw new Error('offline')
+    }),
+    /not been confirmed/,
+  )
+})

@@ -1,7 +1,7 @@
 import { WaitingSurface } from '../shared/ui'
 import { notify } from './notifications'
 import { tr } from '../i18n/index'
-import { useEffect, useState } from 'react'
+import { useDraft } from '../shared/interaction'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request } from '../api/client'
 import type { components } from '../api/schema'
@@ -10,14 +10,15 @@ export type CoolingState = components['schemas']['CoolingState']
 export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'disk'; advanced?: boolean }) {
   const q = useQueryClient()
   const data = useQuery({ queryKey: ['cooling'], queryFn: () => request<CoolingState>('cooling') })
-  const [profile, setProfile] = useState('balanced')
-  const [interval, setInterval] = useState(60)
   const cfg = data.data?.config
   const saved = kind === 'cpu' ? cfg?.cpuProfile : cfg?.profile
-  useEffect(() => {
-    if (saved) setProfile(saved)
-    if (cfg) setInterval(cfg.sampleSeconds)
-  }, [saved, cfg?.sampleSeconds])
+  const draft = useDraft<{ profile: string; interval: number }>(
+    { profile: saved ?? 'balanced', interval: cfg?.sampleSeconds ?? 60 },
+    kind + String(advanced),
+  )
+  const { profile, interval } = draft.draft
+  const setProfile = (profile: string) => draft.setDraft((p) => ({ ...p, profile }))
+  const setInterval = (interval: number) => draft.setDraft((p) => ({ ...p, interval }))
   const save = useMutation({
     mutationFn: async () => {
       const current = await request<CoolingState>('cooling')
@@ -28,10 +29,11 @@ export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'dis
     },
     onSuccess: (s) => {
       q.setQueryData(['cooling'], s)
+      draft.reset(draft.draft)
       notify(tr('settings_saved_0c39426c'))
     },
   })
-  const dirty = cfg && (profile !== saved || (kind === 'disk' && interval !== cfg.sampleSeconds))
+  const dirty = !!cfg && draft.dirty
   return (
     <WaitingSurface busy={save.isPending}>
       <h2>

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useDraft } from '../shared/interaction'
+import { useState } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -73,17 +74,18 @@ function Groups({
   )
 }
 function EditAccount({ account, inventory }: { account: Account; inventory: Inventory }) {
-  const [name, setName] = useState(account.name)
-  const [primaryGroup, setPrimary] = useState(account.primaryGroup)
-  const [groups, setGroups] = useState(account.groups)
-  useEffect(() => {
-    setName(account.name)
-    setPrimary(account.primaryGroup)
-    setGroups(account.groups)
-  }, [account.name, account.primaryGroup, account.groups.join(',')])
+  const edit = useDraft(
+    { name: account.name, primaryGroup: account.primaryGroup, groups: account.groups },
+    account.username,
+  )
+  const { name, primaryGroup, groups } = edit.draft
+  const setName = (name: string) => edit.setDraft((v) => ({ ...v, name }))
+  const setPrimary = (primaryGroup: string) => edit.setDraft((v) => ({ ...v, primaryGroup }))
+  const setGroups = (groups: string[]) => edit.setDraft((v) => ({ ...v, groups }))
   return (
     <section>
       <h2>{tr('accounts.profile')}</h2>
+      {edit.conflict && <Notice>{tr('ui.newData')}</Notice>}
       <div className="user-form-grid">
         <label className="field">
           {tr('display_name_403372fc')}
@@ -103,6 +105,8 @@ function EditAccount({ account, inventory }: { account: Account; inventory: Inve
       <p className="small muted">{tr('accounts.rolePolicy')}</p>
       <OperationButton
         actions={['user.edit']}
+        disabled={!edit.dirty}
+        onDone={() => edit.reset(edit.draft)}
         fields={[]}
         initial={{ target: account.username, name, primaryGroup, groups }}
         label={tr('accounts.save')}
@@ -160,13 +164,15 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
     inactiveDays: account.inactiveDays ?? -1,
     forcePasswordChange: account.forcePasswordChange,
   })
-  const [value, setValue] = useState(initial)
-  useEffect(() => setValue(initial()), [JSON.stringify(account)])
+  const security = useDraft(initial(), account.username)
+  const { draft: value, setDraft: setValue } = security
   return (
     <section>
       <h2>{tr('accounts.security')}</h2>
+      {security.conflict && <Notice>{tr('ui.newData')}</Notice>}
       <p className="muted">{tr('accounts.passwordPolicy')}</p>
-      <div className="user-form-grid">
+      <p className="small muted">{tr('ui.pendingAccessHelp')}</p>
+      <div className="user-access-groups">
         {(['panel', 'ssh', 'disabled'] as const).map((key) => (
           <label className="check" key={key}>
             <input
@@ -178,6 +184,8 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
             {tr('accounts.' + key)}
           </label>
         ))}
+      </div>
+      <div className="user-form-grid">
         {value.ssh && (
           <label className="field">
             {tr('accounts.shell')}
@@ -233,6 +241,8 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
       <div className="actions">
         <OperationButton
           actions={['user.security']}
+          disabled={!security.dirty}
+          onDone={() => security.reset(security.draft)}
           fields={[]}
           initial={value}
           label={tr('accounts.save')}
@@ -256,7 +266,7 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
           icon={mdiKeyChange}
         />
       </div>
-      <div className="user-section-heading">
+      <div className="user-section-heading separated-section">
         <h3>{tr('accounts.smbAccess')}</h3>
         <OperationButton
           actions={['share.account']}
@@ -269,6 +279,7 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
       </div>
       <p>{tr('shares.' + (account.smb?.status ?? 'disabled'))}</p>
       <p className="small muted">{tr('shares.accountHint')}</p>
+      <p className="small muted">{tr('ui.immediateAccessHelp')}</p>
     </section>
   )
 }

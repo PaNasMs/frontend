@@ -17,7 +17,7 @@ import {
   mdiViewDashboardOutline,
 } from '@mdi/js'
 import { request, type Metrics, type Preferences } from '../api/client'
-import { Button, Icon, Notice } from '../shared/ui'
+import { Button, Icon, Notice, bytes } from '../shared/ui'
 import { screen, columns, free, place, defaults, apps, type Tile } from './desktop-layout'
 import { usePreferencesSave } from './preferences-save'
 export { newID, type Tile } from './desktop-layout'
@@ -369,6 +369,8 @@ export function Dashboard() {
   )
 }
 export function HistoryPage() {
+  const [openValues, setOpenValues] = useState<Record<string, boolean>>({})
+  const [technical, setTechnical] = useState(false)
   const [disk, setDisk] = useQueryValue('disk')
   const [network, setNetwork] = useQueryValue('network')
   const [hoursValue, setHoursValue] = useQueryValue('hours', '24', ['1', '24', '168'])
@@ -409,11 +411,52 @@ export function HistoryPage() {
       else segments.push([])
     })
     return (
-      <svg viewBox="0 0 1000 200" role="img" aria-label={tr('history_87c7eb93', { v0: key })}>
-        {segments.map((s, i) => (
-          <polyline key={i} points={s.join(' ')} fill="none" stroke="currentColor" strokeWidth="2" />
-        ))}
-      </svg>
+      <div className="chart-content">
+        <svg viewBox="0 0 1000 200" role="img" aria-label={tr('history_87c7eb93', { v0: key })}>
+          {segments.map((s, i) => (
+            <polyline key={i} points={s.join(' ')} fill="none" stroke="currentColor" strokeWidth="2" />
+          ))}
+        </svg>
+        <div className="chart-summary">
+          <span>0 — {key === 'cpu' || key === 'memory' ? '100%' : bytes(max) + '/s'}</span>
+          <span>
+            {rows.length ? new Date(rows[0].observedAt).toLocaleString() : '—'} —{' '}
+            {rows.length ? new Date(rows[rows.length - 1].observedAt).toLocaleString() : '—'}
+          </span>
+        </div>
+        <details
+          className="chart-values"
+          onToggle={(event) =>
+            setOpenValues((previous) => ({ ...previous, [key]: event.currentTarget.open }))
+          }
+        >
+          <summary>{tr('ui.chartData')}</summary>
+          {openValues[key] && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>{tr('ui.time')}</th>
+                    <th>{key === 'cpu' || key === 'memory' ? '%' : tr('b_923f9729') + '/s'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row, i) => (
+                    <tr key={row.observedAt}>
+                      <td>{new Date(row.observedAt).toLocaleString()}</td>
+                      <td>
+                        {values[i] == null
+                          ? '—'
+                          : Number(values[i]).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </details>
+      </div>
     )
   }
   return (
@@ -460,13 +503,19 @@ export function HistoryPage() {
           </section>
           <section className="surface history-chart">
             <h2>{tr('disk_read_write_c3f4ccec')}</h2>
+            <label className="check">
+              <input type="checkbox" checked={technical} onChange={(e) => setTechnical(e.target.checked)} />
+              {tr('ui.advancedDevices')}
+            </label>
             <label className="field">
               {tr('device_bc791dbe')}
               <select value={disk} onChange={(e) => setDisk(e.target.value)}>
                 <option value="">{tr('select_a_device_64ef214b')}</option>
-                {Object.keys(rows.at(-1)?.disks ?? {}).map((n) => (
-                  <option key={n}>{n}</option>
-                ))}
+                {Object.keys(rows.at(-1)?.disks ?? {})
+                  .filter((n) => technical || !/^(ram|loop|zram)/.test(n))
+                  .map((n) => (
+                    <option key={n}>{n}</option>
+                  ))}
               </select>
             </label>
             {disk && (

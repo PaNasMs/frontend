@@ -1,3 +1,4 @@
+import { notify } from './notifications'
 import { mdiCancel, mdiRestore, mdiCheck, mdiRefresh } from '@mdi/js'
 import { serverText } from '../i18n/server'
 import { Link } from 'react-router-dom'
@@ -9,7 +10,8 @@ import { newID } from './dashboard'
 import { useState, useEffect, useRef, type ReactNode } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { request, type Accounts } from '../api/client'
+import { request, APIError, type Accounts } from '../api/client'
+import { reconcileSubmission } from '../shared/operation-submission'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
 type RecoveryReport = {
   message: string
@@ -364,15 +366,29 @@ export const operations: Record<string, Operation> = {
   },
 }
 export async function managed<T>(view: string, body?: unknown, target?: string): Promise<T> {
-  const data = await request<
-    T & {
-      error?: string
-    }
-  >(
-    `manage?view=${view}${target ? '&target=' + encodeURIComponent(target) : ''}`,
-    body ? 'POST' : 'GET',
-    body,
-  )
+  const submit = () =>
+    request<
+      T & {
+        error?: string
+      }
+    >(
+      `manage?view=${view}${target ? '&target=' + encodeURIComponent(target) : ''}`,
+      body ? 'POST' : 'GET',
+      body,
+    )
+  const id = view === 'run' && body && typeof body === 'object' && 'id' in body ? body.id : undefined
+  const data = id
+    ? await reconcileSubmission(
+        submit,
+        async () => {
+          const jobs = await request<Job[]>('manage?view=jobs')
+          return jobs.find((job) => job.id === id) as (T & { error?: string }) | undefined
+        },
+        (error) =>
+          error instanceof TypeError ||
+          (error instanceof APIError && (error.status === 0 || error.status === 408 || error.status >= 500)),
+      )
+    : await submit()
   if (data.error) throw new Error(data.error)
   return data
 }
@@ -482,6 +498,7 @@ function OperationForm({
   const [params, setParams] = useState<Record<string, unknown>>(() => defaults(action))
   const [id] = useState(() => newID())
   const inv = useQuery({
+    enabled: !!candidatesFor || /^(disk|raid|partition|filesystem|mount)\./.test(action),
     queryKey: ['management-storage', candidatesFor ?? 'all'],
     queryFn: () =>
       managed<{
@@ -522,6 +539,14 @@ function OperationForm({
         confirmation: string
         fingerprint: string
       }>('plan', { action, params: requestParams })
+    },
+    onError: () => {
+      const field = invalidFolderName
+        ? 'name'
+        : params.password !== params.passwordConfirm
+          ? 'passwordConfirm'
+          : ''
+      if (field) document.getElementById(`${id}-${field}`)?.focus()
     },
   })
   const run = useMutation({
@@ -564,8 +589,12 @@ function OperationForm({
             ),
           )
         }
-        await q.cancelQueries({ queryKey: ['management-storage'] })
-        await q.invalidateQueries({ queryKey: ['management-storage'] }, { throwOnError: true })
+        if (!action.startsWith('user.') && !action.startsWith('group.')) {
+          await q.cancelQueries({ queryKey: ['management-storage'] })
+          await q
+            .invalidateQueries({ queryKey: ['management-storage'] }, { throwOnError: true })
+            .catch(() => notify(tr('ui.refreshFailed')))
+        }
       }
       return job
     },
@@ -771,6 +800,12 @@ function OperationForm({
         {!plan.data &&
           editable.map((f) => {
             const val = params[f.key]
+            const fieldError =
+              f.key === 'passwordConfirm' && val && val !== params.password
+                ? tr('passwords_do_not_match_a73dc9b1')
+                : action === 'file.mkdir' && f.key === 'name' && val && invalidFolderName
+                  ? tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286')
+                  : ''
             const choices =
               providedChoices?.[f.key] ??
               (f.type === 'devices' || f.type === 'device'
@@ -835,7 +870,10 @@ function OperationForm({
                       </select>
                     ) : (
                       <input
+                        id={`${id}-${f.key}`}
                         aria-label={f.label}
+                        aria-invalid={!!fieldError}
+                        aria-describedby={fieldError ? `${id}-${f.key}-error` : undefined}
                         type={f.type === 'number' ? 'number' : f.type === 'password' ? 'password' : 'text'}
                         value={String(val)}
                         autoComplete="off"
@@ -843,6 +881,11 @@ function OperationForm({
                           change(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value)
                         }
                       />
+                    )}
+                    {fieldError && (
+                      <span id={`${id}-${f.key}-error`} className="error-text" role="alert">
+                        {fieldError}
+                      </span>
                     )}
                   </>
                 )}
@@ -949,14 +992,26 @@ export function JobsList() {
         {data.data?.map((j) => (
           <article className="surface" key={j.id}>
             <div className="volume-heading">
-              <h3>{operations[j.action]?.label ?? j.action}</h3>
+              <h3>
+                {(
+                  {
+                    'module.install': tr('ui.moduleInstall'),
+                    'module.remove': tr('ui.moduleRemove'),
+                    'module.enable': tr('ui.moduleEnable'),
+                    'module.disable': tr('ui.moduleDisable'),
+                    'share.account': tr('ui.applyUser'),
+                  } as Record<string, string>
+                )[j.action] ??
+                  operations[j.action]?.label ??
+                  j.action}
+              </h3>
               <span
                 className={`badge ${j.status === 'failed' || j.status === 'interrupted' ? 'warning' : ''}`}
               >
                 {names[j.status]}
               </span>
             </div>
-            <p>{j.target}</p>
+            <p>{j.target || (Array.isArray(j.result.modules) ? j.result.modules.join(', ') : '')}</p>
             <p className="muted">{j.stage}</p>
             {typeof j.result.original === 'string' && (
               <p className="small">

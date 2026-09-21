@@ -29,14 +29,7 @@ export function CpuWidget() {
   const metrics = useMetrics()
   const history = useShortHistory()
   const value = metrics.data?.cpu
-  const word =
-    value == null
-      ? ''
-      : value < 25
-        ? tr('idle_2939e033')
-        : value < 60
-          ? tr('working_fab213b1')
-          : tr('busy_bad83d79')
+  const word = value == null ? '' : tr('ui.utilization')
   return (
     <>
       <div className="widget-ring-row">

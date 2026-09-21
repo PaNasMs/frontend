@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { FolderPicker } from '../shared/folder-picker'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -11,6 +12,7 @@ import {
   mdiRefresh,
   mdiCheck,
   mdiClose,
+  mdiFolderSearchOutline,
 } from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
@@ -65,6 +67,25 @@ export function SharingPage() {
     queryFn: () => managed<State>('sharing'),
     refetchInterval: 10000,
   })
+  useEffect(() => {
+    const folder = search.get('folder')
+    if (!folder || !data.data) return
+    setEditing(
+      data.data.shares.find((s) => s.path === folder) ?? {
+        ...empty,
+        path: folder,
+        name: folder.split('/').filter(Boolean).at(-1) ?? '',
+      },
+    )
+    setSearch(
+      (previous) => {
+        const next = new URLSearchParams(previous)
+        next.delete('folder')
+        return next
+      },
+      { replace: true },
+    )
+  }, [search, data.data])
   const users = useQuery({ queryKey: ['users'], queryFn: () => request<Accounts>('users') })
   const legacy = useQuery({
     queryKey: ['nfs'],
@@ -249,6 +270,7 @@ function ShareEditor({
 }) {
   const [value, setValue] = useState({ ...original, clients: original.clients.join(',') })
   const [step, setStep] = useState(0)
+  const [browsing, setBrowsing] = useState(false)
   const update = (key: string, v: unknown) => setValue((s) => ({ ...s, [key]: v }))
   const save = useMutation({
     mutationFn: async () => {
@@ -309,6 +331,21 @@ function ShareEditor({
                 {tr('shares.path')}
                 <input value={value.path} onChange={(e) => update('path', e.target.value)} />
               </label>
+              <Button
+                title={tr('ui.browse')}
+                aria-label={tr('ui.browse')}
+                onClick={() => setBrowsing(!browsing)}
+              >
+                <Icon path={mdiFolderSearchOutline} />
+              </Button>
+              {browsing && (
+                <FolderPicker
+                  onChoose={(path) => {
+                    update('path', path)
+                    setBrowsing(false)
+                  }}
+                />
+              )}
               <div className="row">
                 {(['smb', 'nfs'] as const).map((k) => (
                   <label className="check" key={k}>

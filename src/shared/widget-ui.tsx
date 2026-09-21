@@ -87,7 +87,7 @@ export function Sparkline({
   const last = values.length - 1
   if (last < 1) return null
   const x = (i: number) => (i / last) * width
-  const y = (v: number) => height - (Math.min(v, max) / max) * (height - 3)
+  const y = (v: number) => height - 2 - (Math.min(v, max) / max) * (height - 4)
   const segments: { i: number; v: number }[][] = [[]]
   values.forEach((v, i) => {
     if (v == null) segments.push([])

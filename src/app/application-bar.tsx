@@ -50,7 +50,7 @@ export function ApplicationBar() {
       }
     }
     function escape(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && (root.current?.querySelector('[aria-expanded="true"]') || popup.current)) {
         setContext(null)
         setOpen(false)
         trigger.current?.focus()
@@ -66,6 +66,19 @@ export function ApplicationBar() {
   useEffect(() => {
     popup.current?.querySelector<HTMLButtonElement>('button')?.focus()
   }, [context])
+  useEffect(() => {
+    const close = (event: Event) => {
+      if ((event as CustomEvent).detail !== root.current) {
+        setOpen(false)
+        setContext(null)
+      }
+    }
+    window.addEventListener('panasms:popover', close)
+    return () => window.removeEventListener('panasms:popover', close)
+  }, [])
+  useEffect(() => {
+    if (open) window.dispatchEvent(new CustomEvent('panasms:popover', { detail: root.current }))
+  }, [open])
   function arrange(source: string, target: string) {
     if (source === target) return
     save.mutate((p) => ({ ...p, taskbar: reorder(p.taskbar ?? ids, source, target) }))

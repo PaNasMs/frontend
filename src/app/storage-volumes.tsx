@@ -225,6 +225,7 @@ export function StorageVolumes({
       <span className="hierarchy-usage">
         <progress
           aria-label={tr('used_space_2e2871cb')}
+          aria-valuetext={`${bytes(Number(mount.used))} / ${bytes(Number(mount.size))} · ${Math.round((Number(mount.used) / Number(mount.size)) * 100)}%`}
           max={Number(mount.size)}
           value={Number(mount.used)}
         />
@@ -245,7 +246,7 @@ export function StorageVolumes({
         >
           <Icon path={device.fstype === 'crypto_LUKS' ? mdiLock : mdiHarddisk} />
           <span className="hierarchy-name">
-            <strong>{device.label || device.name}</strong>
+            <strong>{device.label || arrayNames[device.path] || device.name}</strong>
             <small>
               {device.path}
               {connected

@@ -1,6 +1,6 @@
 import { tr, locale } from '../i18n/index'
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { request } from '../api/client'
 import { Notice } from '../shared/ui'
@@ -31,11 +31,13 @@ export function NotificationsList() {
       {data.data?.map((a) => (
         <article className="surface" key={a.id}>
           <span className={`badge ${a.active ? 'warning' : ''}`}>
-            {a.active
-              ? tr('needs_attention_925c5165')
-              : a.id.startsWith('device:')
-                ? tr('event_bb92633b')
-                : tr('resolved_b6c73843')}
+            {a.id.startsWith('job:')
+              ? tr(a.active ? 'ui.reviewOperation' : 'ui.operationHistory')
+              : a.active
+                ? tr('needs_attention_925c5165')
+                : a.id.startsWith('device:')
+                  ? tr('event_bb92633b')
+                  : tr('resolved_b6c73843')}
           </span>
           <p>{a.message}</p>
           <span className="small muted">{new Date(a.updated).toLocaleString(locale())}</span>
@@ -46,6 +48,8 @@ export function NotificationsList() {
   )
 }
 export function NotificationToasts() {
+  const location = useLocation()
+  const [paused, setPaused] = useState(false)
   const data = useQuery({
     queryKey: ['notifications'],
     queryFn: () => request<Alert[]>('notifications'),
@@ -56,7 +60,7 @@ export function NotificationToasts() {
   useEffect(() => {
     const receive = (event: Event) => {
       const toast = createLocalAlert((event as CustomEvent<string>).detail)
-      setToasts((old) => [toast, ...old].slice(0, 4))
+      setToasts((old) => [toast, ...old].slice(0, 3))
     }
     window.addEventListener('panasms:toast', receive)
     return () => window.removeEventListener('panasms:toast', receive)
@@ -71,24 +75,44 @@ export function NotificationToasts() {
           (a.active || a.id.startsWith('device:')) &&
           Date.now() - Date.parse(a.updated) < 30000,
       )
-      if (fresh.length) setToasts((old) => [...fresh, ...old].slice(0, 4))
+      if (fresh.length) setToasts((old) => [...fresh, ...old].slice(0, 3))
     }
     seen.current = current
   }, [data.data])
   useEffect(() => {
-    if (!toasts.length) return
+    if (!toasts.length || paused) return
     const timer = setTimeout(() => setToasts((old) => old.slice(0, -1)), 8000)
     return () => clearTimeout(timer)
-  }, [toasts])
+  }, [toasts, paused])
   return (
-    <div className="notification-toasts" aria-live="polite">
+    <div
+      className="notification-toasts"
+      aria-live="polite"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false)
+      }}
+    >
       {toasts.map((a) => (
         <div className={`notification-toast ${a.active ? 'warning' : ''}`} key={a.id}>
           <p>{a.message}</p>
           <div>
             {!a.id.startsWith('local:') && (
               <Link
-                to={a.id.startsWith('device:') ? '/storage' : '/?panel=notifications'}
+                to={
+                  a.id.startsWith('device:')
+                    ? '/storage/disks'
+                    : {
+                        pathname: location.pathname,
+                        search: (() => {
+                          const params = new URLSearchParams(location.search)
+                          params.set('panel', 'notifications')
+                          return params.toString()
+                        })(),
+                      }
+                }
                 onClick={() => setToasts((old) => old.filter((x) => x.id !== a.id))}
               >
                 {tr('open_1259571a')}

@@ -1,7 +1,7 @@
+import { useDraft } from '../shared/interaction'
 import { WaitingSurface } from '../shared/ui'
 import { useRouteTab } from './navigation'
 import { tr } from '../i18n/index'
-import { useEffect, useState } from 'react'
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -34,11 +34,9 @@ export function DiskSettings() {
   const disks = flatten(storage.data?.devices ?? []).filter(
     (d) => d.type === 'disk' && d.tran === 'sata' && d.serial,
   )
-  const [sleep, setSleep] = useState<number | null>(null)
   const savedSleep = options.data?.sleepSettings?.minutes
-  useEffect(() => {
-    setSleep(savedSleep ?? null)
-  }, [savedSleep])
+  const sleepDraft = useDraft<number | null>(savedSleep ?? null)
+  const { draft: sleep, setDraft: setSleep } = sleepDraft
   const sleepSave = useMutation({
     mutationFn: async () => {
       const params = { minutes: sleep }
@@ -140,18 +138,22 @@ export function DiskSettings() {
             <p className="small muted">{tr('times_use_the_nas_time_zone_checks_are_skipped_whi_45c1d87b')}</p>
             {storage.error && <Notice error>{storage.error.message}</Notice>}
             {options.error && <Notice error>{options.error.message}</Notice>}
-            <div className="smart-schedule-list" aria-label={tr('smart_schedules_for_all_disks_62f57755')}>
-              <div className="smart-schedule-header">
-                <span>{tr('disk_ca040760')}</span>
-                <span>{tr('short_test_adb0ab92')}</span>
-                <span>{tr('extended_test_00c16405')}</span>
+            <div
+              role="table"
+              className="smart-schedule-list"
+              aria-label={tr('smart_schedules_for_all_disks_62f57755')}
+            >
+              <div role="row" className="smart-schedule-header">
+                <span role="columnheader">{tr('disk_ca040760')}</span>
+                <span role="columnheader">{tr('short_test_adb0ab92')}</span>
+                <span role="columnheader">{tr('extended_test_00c16405')}</span>
               </div>
               {disks.map((disk) => {
                 const schedules =
                   options.data?.devices.find((d) => d.path === disk.path)?.smartSchedules ?? []
                 return (
-                  <div className="smart-schedule-row" key={disk.path}>
-                    <div className="smart-schedule-device">
+                  <div role="row" className="smart-schedule-row" key={disk.path}>
+                    <div role="rowheader" className="smart-schedule-device">
                       <strong>{disk.model?.trim() || disk.name}</strong>
                       <span>{disk.serial}</span>
                       <small>{disk.path}</small>
@@ -160,7 +162,7 @@ export function DiskSettings() {
                       const schedule = schedules.find((s) => s.test === test)
                       const name = test === 'short' ? tr('short_860d8c86') : tr('extended_fc92aebd')
                       return (
-                        <div className="smart-schedule-cell" key={test}>
+                        <div role="cell" className="smart-schedule-cell" key={test}>
                           <div className="smart-schedule-value">
                             <span className="smart-schedule-mobile-label">{name}</span>
                             <strong>

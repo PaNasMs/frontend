@@ -102,18 +102,21 @@ export function WifiControls({
           <Icon path={mdiLinkOff} size={20} />
         </Button>
       )}
-      <button
-        type="button"
-        role="switch"
-        aria-checked={enabled}
-        className="wifi-radio-switch"
-        title={tr(enabled ? 'wifi.turnOff' : 'wifi.turnOn')}
-        aria-label={'Wi-Fi · ' + name}
-        disabled={disabled || (!enabled && !hardwareEnabled)}
-        onClick={() => setConfirm('radio')}
-      >
-        <span className="wifi-radio-thumb" />
-      </button>
+      <span className="wifi-labeled-control">
+        <span>Wi-Fi</span>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={enabled}
+          className="wifi-radio-switch"
+          title={tr(enabled ? 'wifi.turnOff' : 'wifi.turnOn')}
+          aria-label={'Wi-Fi · ' + name}
+          disabled={disabled || (!enabled && !hardwareEnabled)}
+          onClick={() => setConfirm('radio')}
+        >
+          <span className="wifi-radio-thumb" />
+        </button>
+      </span>
       <Dialog.Root
         open={open}
         onOpenChange={(value) => {

@@ -1,3 +1,7 @@
+import { PageError } from './shared/page-error'
+import { TooltipLayer } from './shared/tooltip'
+import { useExclusivePopover, DirtyFormsProvider } from './shared/interaction'
+import packageInfo from '../package.json'
 import { tr } from './i18n/index'
 import { useWallpaper, wallpaperURL } from './app/wallpaper'
 import { PowerMenu } from './app/power-menu'
@@ -32,6 +36,7 @@ import './app/network'
 import { Settings } from './app/settings'
 import { useEvents } from './app/events'
 import './style.css'
+import './design-system.css'
 const query = new QueryClient({
   defaultOptions: {
     queries: {
@@ -56,12 +61,16 @@ function Shell() {
   })
   const q = useQueryClient()
   const menu = useRef<HTMLDetailsElement>(null)
+  useExclusivePopover(menu)
+  useEffect(() => {
+    document.getElementById('main-content')?.focus({ preventScroll: true })
+  }, [routeLocation.pathname])
   useEffect(() => {
     const close = (e: PointerEvent) => {
       if (menu.current && !menu.current.contains(e.target as Node)) menu.current.open = false
     }
     const escape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && menu.current) {
+      if (e.key === 'Escape' && menu.current?.open) {
         menu.current.open = false
         menu.current.querySelector('summary')?.focus()
       }
@@ -93,14 +102,12 @@ function Shell() {
   if (session.isPending)
     return (
       <main className="loading">
-        <div className="wordmark">
-          pi<span>nas</span>
-        </div>
+        <div className="wordmark">PaNasMs</div>
         <p>{tr('connecting_to_nas_28b61ede')}</p>
       </main>
     )
   if (session.error instanceof APIError && session.error.status === 401) return <Login />
-  if (session.error)
+  if (session.error && !session.data)
     return (
       <main className="loading">
         <Notice error>{session.error.message}</Notice>
@@ -109,6 +116,10 @@ function Shell() {
     )
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        {tr('ui.skip')}
+      </a>
+      <TooltipLayer />
       <header className="topbar">
         <ApplicationBar />
         <div className="topbar-right">
@@ -151,7 +162,11 @@ function Shell() {
         </div>
       </header>
       <NotificationToasts />
-      <main className={`workspace ${wallpaper.data?.version ? 'has-wallpaper' : ''}`}>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className={`workspace ${wallpaper.data?.version ? 'has-wallpaper' : ''}`}
+      >
         {wallpaper.data?.version && (
           <div
             className="desktop-wallpaper"
@@ -170,13 +185,16 @@ function Shell() {
         ))}
         {session.data?.role !== 'admin' &&
         !['/', '/profile', '/history'].includes(routeLocation.pathname) &&
-        !routeLocation.pathname.startsWith('/files') ? (
+        !routeLocation.pathname.startsWith('/files') &&
+        !routeLocation.pathname.startsWith('/profile/') ? (
           <Navigate to="/" replace />
         ) : (
-          <Outlet />
+          <DirtyFormsProvider>
+            <Outlet />
+          </DirtyFormsProvider>
         )}
       </main>
-      <footer className="app-footer">{tr('panasms_0_1_first_working_prototype_fc5b4f2c')}</footer>
+      <footer className="app-footer">PaNasMs · {packageInfo.version}</footer>
     </>
   )
 }
@@ -191,35 +209,47 @@ async function boot() {
   const router = createBrowserRouter([
     {
       element: <Shell />,
+      errorElement: <PageError />,
       children: [
-        ...modules().flatMap((m) =>
-          [m.path, ...(m.routes ?? []).map((route) => `${m.path}/${route}`)].map((path) => ({
-            path,
-            element: <m.component />,
-          })),
-        ),
-        { path: '/modules/:moduleId', element: <ModuleManager /> },
-        { path: '/', element: <Dashboard /> },
-        ...[
-          '/settings',
-          '/settings/general',
-          ...settingsSections().flatMap((s) => [
-            `/settings/${s.id}`,
-            ...(s.routes ?? []).map((route) => `/settings/${s.id}/${route}`),
-          ]),
-        ].map((path) => ({ path, element: <Settings /> })),
-        { path: '/profile', element: <ProfilePage /> },
-        { path: '/jobs', element: <Navigate to="/?panel=jobs" replace /> },
-        { path: '/history', element: <HistoryPage /> },
-        { path: '/notifications', element: <Navigate to="/?panel=notifications" replace /> },
         {
-          path: '*',
-          element: (
-            <>
-              <h1>{tr('page_not_found_b8a96047')}</h1>
-              <Link to="/">{tr('go_to_desktop_487f0618')}</Link>
-            </>
-          ),
+          element: <Outlet />,
+          errorElement: <PageError />,
+          children: [
+            ...modules().flatMap((m) =>
+              [m.path, ...(m.routes ?? []).map((route) => `${m.path}/${route}`)].map((path) => ({
+                path,
+                element: <m.component />,
+                errorElement: <PageError />,
+              })),
+            ),
+            { path: '/modules/:moduleId', element: <ModuleManager /> },
+            { path: '/', element: <Dashboard /> },
+            ...[
+              '/settings',
+              '/settings/general',
+              ...settingsSections().flatMap((s) => [
+                `/settings/${s.id}`,
+                ...(s.routes ?? []).map((route) => `/settings/${s.id}/${route}`),
+              ]),
+            ].map((path) => ({ path, element: <Settings /> })),
+            ...['/profile', '/profile/:section'].map((path) => ({
+              path,
+              element: <ProfilePage />,
+              errorElement: <PageError />,
+            })),
+            { path: '/jobs', element: <Navigate to="/?panel=jobs" replace /> },
+            { path: '/history', element: <HistoryPage /> },
+            { path: '/notifications', element: <Navigate to="/?panel=notifications" replace /> },
+            {
+              path: '*',
+              element: (
+                <>
+                  <h1>{tr('page_not_found_b8a96047')}</h1>
+                  <Link to="/">{tr('go_to_desktop_487f0618')}</Link>
+                </>
+              ),
+            },
+          ],
         },
       ],
     },

@@ -1,3 +1,4 @@
+import { useExclusivePopover } from '../shared/interaction'
 import { WaitingOverlay } from '../shared/ui'
 import { DialogContent } from '../shared/ui'
 import { tr } from '../i18n/index'
@@ -411,6 +412,7 @@ export function EjectButton({
 }
 export function RemovableMenu() {
   const menu = useRef<HTMLDetailsElement>(null)
+  useExclusivePopover(menu)
   const query = useQueryClient()
   const access = useVolumeAccess()
   const mount = useMutation({

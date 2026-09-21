@@ -139,7 +139,7 @@ function IPFields({
       </label>
       {active && (
         <>
-          <label className="field">
+          <label className="field" hidden={value.method !== 'manual'}>
             {tr('network.addresses')}
             <textarea
               rows={2}
@@ -148,7 +148,7 @@ function IPFields({
               onChange={(e) => set('addresses', e.target.value.split('\n'))}
             />
           </label>
-          <label className="field">
+          <label className="field" hidden={value.method !== 'manual'}>
             {tr('network.gateway')}
             <input
               value={value.gateway}
@@ -156,7 +156,7 @@ function IPFields({
               onChange={(e) => set('gateway', e.target.value)}
             />
           </label>
-          <label className="field">
+          <label className="field" hidden={value.method === 'auto' && !value.ignoreAutoDns}>
             {tr('network.dns')}
             <textarea
               rows={2}
@@ -276,6 +276,7 @@ function IPFields({
 }
 
 function NetworkPage() {
+  const [showSystem, setShowSystem] = useState(false)
   const [tab, setTab] = useRouteTab('/network', ['interfaces', 'routes'], 'interfaces')
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
   const admin = session.data?.role === 'admin'
@@ -414,10 +415,14 @@ function NetworkPage() {
           <Tabs.Trigger value="routes">{tr('network.routes')}</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="interfaces">
+          <label className="check">
+            <input type="checkbox" checked={showSystem} onChange={(e) => setShowSystem(e.target.checked)} />
+            {tr('ui.systemInterfaces')}
+          </label>
           {data.isPending && <p>{tr('network.loading')}</p>}
           {data.data && (
             <SharingLayout
-              interfaces={data.data.interfaces}
+              interfaces={data.data.interfaces.filter((item) => showSystem || item.kind !== 'loopback')}
               sharing={data.data.sharing ?? { groups: [], ready: false }}
               busy={busy || !!pending}
               error={error}
@@ -568,7 +573,10 @@ function NetworkPage() {
                                     title={tr('share.removePort')}
                                     aria-label={tr('share.removePort') + ' ' + name}
                                     disabled={busy || !!pending}
-                                    onClick={() => { setError(''); setRemovePort({ group, name }) }}
+                                    onClick={() => {
+                                      setError('')
+                                      setRemovePort({ group, name })
+                                    }}
                                   >
                                     <Icon path={mdiDeleteOutline} size={20} />
                                   </Button>
@@ -626,7 +634,12 @@ function NetworkPage() {
           <p className="muted">{tr('network.routeHint')}</p>
         </Tabs.Content>
       </Tabs.Root>
-      <Dialog.Root open={!!removePort} onOpenChange={(open) => { if (!open && !busy) setRemovePort(null) }}>
+      <Dialog.Root
+        open={!!removePort}
+        onOpenChange={(open) => {
+          if (!open && !busy) setRemovePort(null)
+        }}
+      >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
           <DialogContent busy={busy} className="settings-dialog share-confirm">
@@ -637,10 +650,24 @@ function NetworkPage() {
             </Dialog.Description>
             {error && <Notice error>{error}</Notice>}
             <div className="actions">
-              <Button disabled={busy} onClick={async () => {
-                if (removePort && await run('network.share.remove-port', { id: removePort.group.id, interface: removePort.name })) setRemovePort(null)
-              }}>{tr('share.removePortYes')}</Button>
-              <Button disabled={busy} onClick={() => setRemovePort(null)}>{tr('share.cancel')}</Button>
+              <Button
+                disabled={busy}
+                onClick={async () => {
+                  if (
+                    removePort &&
+                    (await run('network.share.remove-port', {
+                      id: removePort.group.id,
+                      interface: removePort.name,
+                    }))
+                  )
+                    setRemovePort(null)
+                }}
+              >
+                {tr('share.removePortYes')}
+              </Button>
+              <Button disabled={busy} onClick={() => setRemovePort(null)}>
+                {tr('share.cancel')}
+              </Button>
             </div>
           </DialogContent>
         </Dialog.Portal>
@@ -655,7 +682,9 @@ function NetworkPage() {
           <Dialog.Overlay className="dialog-overlay" />
           <DialogContent busy={busy} className="settings-dialog network-details-dialog">
             <div className="share-wizard-heading">
-              <Dialog.Title>{tr('share.details')} · {details}</Dialog.Title>
+              <Dialog.Title>
+                {tr('share.details')} · {details}
+              </Dialog.Title>
               <Dialog.Close asChild>
                 <Button title={tr('share.cancel')} aria-label={tr('share.cancel')}>
                   <Icon path={mdiClose} />
@@ -669,7 +698,14 @@ function NetworkPage() {
                 <dt>{tr('network.profile')}</dt>
                 <dd>{detailNetwork?.profile || detailed.profile || '—'}</dd>
                 <dt>{tr('network.stateLabel')}</dt>
-                <dd>{networkAppearance({ ...detailed, sharingPort: detailNetwork?.name !== detailed.name }, data.data?.wifi).title}</dd>
+                <dd>
+                  {
+                    networkAppearance(
+                      { ...detailed, sharingPort: detailNetwork?.name !== detailed.name },
+                      data.data?.wifi,
+                    ).title
+                  }
+                </dd>
                 {detailNetwork?.name !== detailed.name && (
                   <>
                     <dt>{tr('network.sharedNetwork')}</dt>

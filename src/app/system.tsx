@@ -2,15 +2,29 @@ import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { tr, locale } from '../i18n/index'
 import { registerModule } from './module-registry'
-import { mdiServer, mdiChip, mdiClockOutline, mdiMemory, mdiFan, mdiPower } from '@mdi/js'
+import {
+  mdiServer,
+  mdiChip,
+  mdiClockOutline,
+  mdiMemory,
+  mdiFan,
+  mdiPower,
+  mdiDotsHorizontal,
+  mdiTextBoxSearchOutline,
+  mdiRefresh,
+  mdiDownload,
+} from '@mdi/js'
 import { CoolingSettings } from './cooling'
 import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } from './system-widgets'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery } from '@tanstack/react-query'
 import { managed, OperationButton } from './operations'
-import { Notice } from '../shared/ui'
+import { Notice, Icon } from '../shared/ui'
 export function SystemPage() {
   const [tab, setTab] = useRouteTab('/system', ['services', 'journal', 'updates'], 'services')
+  const [filter, setFilter] = useQueryValue('filter')
+  const [state, setState] = useQueryValue('state')
+  const stateText = (value: string) => tr('ui.state.' + value, { defaultValue: value })
   const navigate = useNavigate()
   const location = useLocation()
   const [unit, setUnit] = useQueryValue('unit')
@@ -53,6 +67,13 @@ export function SystemPage() {
     queryFn: () =>
       managed<{
         packages: string[]
+        packageDetails?: {
+          name: string
+          installed: string
+          available: string
+          source: string
+          action: string
+        }[]
         rebootRequired: boolean
       }>('updates'),
     enabled: tab === 'updates',
@@ -67,6 +88,28 @@ export function SystemPage() {
           <Tabs.Trigger value="updates">{tr('updates_13920906')}</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="services">
+          <div className="filter-bar">
+            <input
+              type="search"
+              aria-label={tr('ui.searchServices')}
+              placeholder={tr('ui.searchServices')}
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+            <select
+              aria-label={tr('state_81e4bb36')}
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+            >
+              <option value="">{tr('all_fd08da7a')}</option>
+              {['active', 'inactive', 'failed'].map((v) => (
+                <option key={v} value={v}>
+                  {stateText(v)}
+                </option>
+              ))}
+            </select>
+          </div>
+          {services.isPending && <Notice>{tr('loading_interface_f69ec4bd')}</Notice>}
           {services.error && <Notice error>{services.error.message}</Notice>}
           <div className="table-wrap">
             <table>
@@ -79,40 +122,51 @@ export function SystemPage() {
                 </tr>
               </thead>
               <tbody>
-                {services.data?.services.map((s) => (
-                  <tr key={s.unit}>
-                    <td>
-                      {s.unit}
-                      <div className="small muted">{s.description}</div>
-                    </td>
-                    <td>
-                      {s.active} · {s.sub}
-                    </td>
-                    <td>{s.enabled}</td>
-                    <td>
-                      <OperationButton
-                        actions={[
-                          'service.start',
-                          'service.stop',
-                          'service.restart',
-                          'service.enable',
-                          'service.disable',
-                        ]}
-                        initial={{ target: s.unit }}
-                      />
-                      <button
-                        className="button"
-                        onClick={() => {
-                          const params = new URLSearchParams(location.search)
-                          params.set('unit', s.unit)
-                          void navigate({ pathname: '/system/journal', search: params.toString() })
-                        }}
-                      >
-                        {tr('logs_67ade741')}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {services.data?.services
+                  .filter(
+                    (s) =>
+                      (!state || s.active === state) &&
+                      `${s.unit} ${s.description}`.toLowerCase().includes(filter.toLowerCase()),
+                  )
+                  .map((s) => (
+                    <tr key={s.unit}>
+                      <td>
+                        {s.unit}
+                        <div className="small muted">{s.description}</div>
+                      </td>
+                      <td>
+                        <span className={`status-label ${s.active}`}>{stateText(s.active)}</span>
+                        <div className="small muted">{stateText(s.sub)}</div>
+                      </td>
+                      <td>{stateText(s.enabled)}</td>
+                      <td>
+                        <OperationButton
+                          icon={mdiDotsHorizontal}
+                          label={tr('actions_9978ac34') + ' · ' + s.unit}
+                          actions={[
+                            'service.start',
+                            'service.stop',
+                            'service.restart',
+                            'service.enable',
+                            'service.disable',
+                          ]}
+                          initial={{ target: s.unit }}
+                        />
+                        <button
+                          className="button"
+                          title={tr('logs_67ade741') + ' · ' + s.unit}
+                          aria-label={tr('logs_67ade741') + ' · ' + s.unit}
+                          onClick={() => {
+                            const params = new URLSearchParams(location.search)
+                            params.set('unit', s.unit)
+                            void navigate({ pathname: '/system/journal', search: params.toString() })
+                          }}
+                        >
+                          <Icon path={mdiTextBoxSearchOutline} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -167,21 +221,55 @@ export function SystemPage() {
         </Tabs.Content>
         <Tabs.Content value="updates">
           <div className="actions">
-            <OperationButton label={tr('check_for_updates_fa7bfc55')} actions={['updates.refresh']} />
-            <OperationButton label={tr('install_updates_0eda9206')} actions={['updates.install']} />
+            <OperationButton
+              icon={mdiRefresh}
+              label={tr('check_for_updates_fa7bfc55')}
+              actions={['updates.refresh']}
+            />
+            <OperationButton
+              icon={mdiDownload}
+              label={tr('install_updates_0eda9206')}
+              actions={['updates.install']}
+            />
           </div>
           {updates.error && <Notice error>{updates.error.message}</Notice>}
           {updates.data?.rebootRequired && (
             <Notice>{tr('the_os_reports_that_a_restart_is_required_7e5c66a2')}</Notice>
           )}
-          <div className="surface">
-            {updates.data?.packages.map((p, i) => (
-              <p key={i} className="small mono">
-                {p}
-              </p>
-            ))}
-            {updates.data?.packages.length === 0 && <p>{tr('no_updates_available_613848c9')}</p>}
-          </div>
+          {updates.isPending && <Notice>{tr('loading_interface_f69ec4bd')}</Notice>}
+          {updates.data && (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>{tr('ui.package')}</th>
+                    <th>{tr('ui.installedVersion')}</th>
+                    <th>{tr('ui.availableVersion')}</th>
+                    <th>{tr('ui.source')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {updates.data.packageDetails?.map((p) => (
+                    <tr key={p.name}>
+                      <td>
+                        <strong>{p.name}</strong>
+                      </td>
+                      <td>{p.installed || '—'}</td>
+                      <td>{p.available || '—'}</td>
+                      <td>{p.source || '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {updates.data.packages.length === 0 && (
+                <p className="notice">{tr('no_updates_available_613848c9')}</p>
+              )}
+              <details className="diagnostic-details">
+                <summary>{tr('ui.details')}</summary>
+                <pre>{updates.data.packages.join('\n')}</pre>
+              </details>
+            </div>
+          )}
         </Tabs.Content>
       </Tabs.Root>
     </>

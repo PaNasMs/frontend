@@ -1,3 +1,7 @@
+import * as Tabs from '@radix-ui/react-tabs'
+import { useRouteTab } from './navigation'
+import { WallpaperSettings } from './wallpaper'
+import { useDraft, useUnsavedForm, ConfirmDialog } from '../shared/interaction'
 import { UserSessions, UserHistory } from './user-sessions'
 import { AvatarSettings } from './user-avatar'
 import { WaitingSurface } from '../shared/ui'
@@ -5,34 +9,46 @@ import { notify } from './notifications'
 import { tr, language, languageNames, languages, type Language } from '../i18n/index'
 import { usePreferencesSave } from './preferences-save'
 import { mdiCheck, mdiKeyChange, mdiKeyPlus, mdiDeleteOutline } from '@mdi/js'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { flushSync } from 'react-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request, type Preferences } from '../api/client'
 import type { components } from '../api/schema'
 import { Button, Icon, Notice } from '../shared/ui'
 type Profile = components['schemas']['Profile']
 export function ProfilePage() {
+  const [section, setSection] = useRouteTab(
+    '/profile',
+    ['account', 'appearance', 'security', 'activity'],
+    'account',
+  )
+  const [deleteKey, setDeleteKey] = useState('')
   const preferences = useQuery({
     queryKey: ['preferences'],
     queryFn: () => request<Preferences>('preferences'),
   })
   const saveLanguage = usePreferencesSave()
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('en')
-  useEffect(() => {
-    if (preferences.data) setSelectedLanguage(language(preferences.data.language))
-  }, [preferences.data?.language])
+  const langDraft = useDraft(language(preferences.data?.language))
+  const { draft: selectedLanguage, setDraft: setSelectedLanguage } = langDraft
+  const themeDraft = useDraft<'dark' | 'light'>(preferences.data?.theme ?? 'dark')
+  const saveTheme = usePreferencesSave()
 
   const q = useQueryClient()
   const data = useQuery({ queryKey: ['profile'], queryFn: () => request<Profile>('profile') })
-  const [name, setName] = useState('')
+  const nameDraft = useDraft(data.data?.name ?? '')
+  const { draft: name, setDraft: setName } = nameDraft
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
   const [confirm, setConfirm] = useState('')
   const [key, setKey] = useState('')
   const [keyPassword, setKeyPassword] = useState('')
-  useEffect(() => {
-    if (data.data) setName(data.data.name)
-  }, [data.data?.name])
+  useUnsavedForm(!!next || !!key, () => {
+    setCurrent('')
+    setNext('')
+    setConfirm('')
+    setKey('')
+    setKeyPassword('')
+  })
   const update = useMutation({
     mutationFn: (body: Record<string, string>) => request('profile', 'POST', body),
     onSuccess: (_, body) => {
@@ -41,6 +57,7 @@ export function ProfilePage() {
         location.assign('/')
         return
       }
+      if (body.action === 'name') nameDraft.reset(body.name)
       notify(body.action === 'name' ? tr('name_saved_31b77838') : tr('ssh_keys_updated_88d5e6c8'))
       setKey('')
       setKeyPassword('')
@@ -50,7 +67,19 @@ export function ProfilePage() {
     },
   })
   return (
-    <WaitingSurface busy={update.isPending || saveLanguage.isPending}>
+    <WaitingSurface busy={update.isPending || saveLanguage.isPending || saveTheme.isPending}>
+      <ConfirmDialog
+        open={!!deleteKey}
+        title={tr('delete_86ea33ae')}
+        accept={tr('delete_86ea33ae')}
+        onCancel={() => setDeleteKey('')}
+        onConfirm={() => {
+          update.mutate({ action: 'delete', id: deleteKey, currentPassword: keyPassword })
+          setDeleteKey('')
+        }}
+      >
+        {tr('delete_this_ssh_key_it_will_no_longer_work_for_sig_7c3f298a')}
+      </ConfirmDialog>
       <div className="page-heading">
         <div>
           <span className="eyebrow">{tr('your_account_0d85c326')}</span>
@@ -59,15 +88,60 @@ export function ProfilePage() {
       </div>
       {data.error && <Notice error>{data.error.message}</Notice>}
       {update.error && <Notice error>{update.error.message}</Notice>}
+      <Tabs.Root value={section} onValueChange={setSection}>
+        <Tabs.List className="tabs">
+          {(['account', 'appearance', 'security', 'activity'] as const).map((id) => (
+            <Tabs.Trigger value={id} key={id}>
+              {tr('ui.' + id)}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+      </Tabs.Root>
       <div className="profile-grid">
-        <AvatarSettings />
-        <section className="surface">
+        <section className="surface" hidden={section !== 'appearance'}>
+          <h2>{tr('ui.theme')}</h2>
+          <label className="field">
+            {tr('ui.theme')}
+            <select
+              value={themeDraft.draft}
+              onChange={(e) => themeDraft.setDraft(e.target.value as 'light' | 'dark')}
+            >
+              <option value="light">{tr('ui.light')}</option>
+              <option value="dark">{tr('ui.dark')}</option>
+            </select>
+          </label>
+          <Button
+            aria-label={tr('save_4864057d')}
+            title={tr('save_4864057d')}
+            disabled={!themeDraft.dirty || saveTheme.isPending}
+            onClick={() =>
+              saveTheme.mutate((p) => ({ ...p, theme: themeDraft.draft }), {
+                onSuccess: () => {
+                  themeDraft.reset(themeDraft.draft)
+                  notify(tr('ui.saved'))
+                },
+              })
+            }
+          >
+            <Icon path={mdiCheck} />
+          </Button>
+          {saveTheme.error && <Notice error>{saveTheme.error.message}</Notice>}
+          <h2>{tr('wallpaper_b59390bb')}</h2>
+          <WallpaperSettings />
+        </section>
+        <div hidden={section !== 'account'}>
+          <AvatarSettings />
+        </div>
+        <section className="surface" hidden={section !== 'appearance'}>
           <h2>{tr('profile.language')}</h2>
           <form
             onSubmit={(event) => {
               event.preventDefault()
               saveLanguage.mutate((current) => ({ ...current, language: selectedLanguage }), {
-                onSuccess: () => location.reload(),
+                onSuccess: () => {
+                  flushSync(() => langDraft.reset(selectedLanguage))
+                  location.reload()
+                },
               })
             }}
           >
@@ -102,7 +176,7 @@ export function ProfilePage() {
             </Button>
           </form>
         </section>
-        <section className="surface">
+        <section className="surface" hidden={section !== 'account'}>
           <h2>{tr('personal_details_5b1cf4d4')}</h2>
           {data.data && (
             <dl className="info-list">
@@ -140,7 +214,7 @@ export function ProfilePage() {
             </Button>
           </form>
         </section>
-        <section className="surface">
+        <section className="surface" hidden={section !== 'security'}>
           <h2>{tr('change_password_da6a620b')}</h2>
           <form
             onSubmit={(e) => {
@@ -173,6 +247,8 @@ export function ProfilePage() {
               {tr('repeat_new_password_e32d8bb9')}
               <input
                 type="password"
+                aria-invalid={!!confirm && confirm !== next}
+                aria-describedby="password-mismatch"
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
                 autoComplete="new-password"
@@ -180,7 +256,9 @@ export function ProfilePage() {
               />
             </label>
             {confirm && confirm !== next && (
-              <p className="error-text">{tr('passwords_do_not_match_a73dc9b1')}</p>
+              <p id="password-mismatch" role="alert" className="error-text">
+                {tr('passwords_do_not_match_a73dc9b1')}
+              </p>
             )}
             <p className="small muted">{tr('this_changes_your_linux_password_you_will_need_to__e2af63b1')}</p>
             <Button
@@ -192,7 +270,7 @@ export function ProfilePage() {
             </Button>
           </form>
         </section>
-        <section className="surface profile-keys">
+        <section className="surface profile-keys" hidden={section !== 'security'}>
           <h2>{tr('ssh_keys_95296132')}</h2>
           {data.data?.keys.length === 0 && <p className="muted">{tr('no_keys_added_eba3397b')}</p>}
           {data.data?.keys.map((k) => (
@@ -206,8 +284,7 @@ export function ProfilePage() {
                 aria-label={tr('delete_86ea33ae')}
                 disabled={!keyPassword || update.isPending}
                 onClick={() => {
-                  if (window.confirm(tr('delete_this_ssh_key_it_will_no_longer_work_for_sig_7c3f298a')))
-                    update.mutate({ action: 'delete', id: k.id, currentPassword: keyPassword })
+                  setDeleteKey(k.id)
                 }}
               >
                 <Icon path={mdiDeleteOutline} />
@@ -242,12 +319,12 @@ export function ProfilePage() {
           </Button>
         </section>
         {data.data && (
-          <section className="surface">
+          <section className="surface" hidden={section !== 'activity'}>
             <UserSessions user={data.data.username} />
           </section>
         )}
         {data.data && (
-          <section className="surface">
+          <section className="surface" hidden={section !== 'activity'}>
             <UserHistory user={data.data.username} />
           </section>
         )}

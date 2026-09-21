@@ -1,5 +1,5 @@
 import { tr, locale } from '../i18n/index'
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import { isValidElement, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 export function cn(...v: Parameters<typeof clsx>) {
@@ -12,8 +12,16 @@ export function Icon({ path, size = 22 }: { path: string; size?: number }) {
     </svg>
   )
 }
-export function Button({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  return <button className={cn('button', className)} {...props} />
+export function Button({ className, title, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
+  const iconOnly = isValidElement(props.children) && props.children.type === Icon
+  return (
+    <button
+      className={cn('button', iconOnly && 'icon-only', className)}
+      data-tooltip={title}
+      {...props}
+      aria-label={props['aria-label'] ?? (iconOnly ? title : undefined)}
+    />
+  )
 }
 export function Notice({ children, error = false }: { children: ReactNode; error?: boolean }) {
   return (
@@ -33,3 +41,5 @@ export function bytes(n: number) {
   return `${n.toLocaleString(locale(), { maximumFractionDigits: 1 })} ${u[i]}`
 }
 export { DialogContent, WaitingOverlay, WaitingSurface } from './waiting'
+
+export { ConfirmDialog, UnsavedChanges, useDraft, useExclusivePopover } from './interaction'
