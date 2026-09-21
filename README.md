@@ -1,11 +1,14 @@
 # PaNasMs frontend
 
-React SPA for **Pavlo's NAS Management System**, currently prototype 0.2.5.
+React SPA for **Pavlo's NAS Management System**, currently in the 0.2.x prototype series.
 Production output is static HTML, CSS and JavaScript served by the
 [backend](https://github.com/PaNasMs/backend); Node.js is only a build/development dependency.
 
 Follow the [PaNasMs UI/UX guidelines](https://github.com/PaNasMs/panasms/blob/main/documentation/ui-ux-guidelines.md)
 for core and module interfaces. The public guide is the shared design baseline.
+
+[Project website and English UI screenshots](https://panasms.github.io/) ·
+[Website source](https://github.com/PaNasMs/panasms.github.io)
 
 ## Interface
 
@@ -86,7 +89,8 @@ Pushes to `main`, pull requests and manual runs invoke the shared
 The exact frontend commit is paired with the resolved backend commit and tested
 in native ARM64/AMD64 Debian 13 jobs. Download the resulting packages and source
 manifest from this repository's **Actions → Build PaNasMs** run. CI artifacts do
-not install themselves or update a running NAS.
+not install themselves. Successful main-branch builds are imported into the signed
+testing channel; installation on a NAS follows its configured update policy.
 
 ## License
 
@@ -95,7 +99,7 @@ Public documentation is maintained in English. Original code uses
 
 ## Account interface
 
-Core 0.2.3 adds user/group cards and account detail tabs for profile, access policy,
+The account interface provides user/group cards and account detail tabs for profile, access policy,
 SSH keys, panel/SSH sessions and security history. Ordinary users see their own
 profile, Files, desktop and read-only system widgets. Administrative routes remain
 protected by the backend independently of their visibility in the application menu.
@@ -141,3 +145,16 @@ System update controls live at `/settings/updates`: channel, installation policy
 maintenance window, version comparison, actions, progress and history. The UI
 reconnects after core restart; installation continues in an independent service.
 See the [update lifecycle](https://github.com/PaNasMs/panasms/blob/main/documentation/system-updates.md).
+
+## Notifications and network cards
+
+Notifications show severity as an icon beside the message, with action icons
+beside the date. Operation notifications open the corresponding task details.
+Reviewing an operation and dismissing its notification are separate actions;
+active hardware conditions are not silently cleared with notification history.
+The backend distinguishes known failures before any changes from operations
+whose results still need review.
+
+Network-card action icons stay aligned with the interface heading. The labeled
+Wi-Fi switch occupies a separate row beneath the actions, so it does not push
+the entire toolbar below the title.
