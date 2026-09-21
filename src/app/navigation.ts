@@ -7,9 +7,10 @@ export function useRouteTab(base: string, choices: readonly string[], fallback: 
   const segment = location.pathname.slice(base.length + 1).split('/')[0]
   const selected = choices.includes(segment) ? segment : fallback
   useEffect(() => {
-    if (!choices.includes(segment))
+    const ownsPath = location.pathname === base || location.pathname.startsWith(`${base}/`)
+    if (ownsPath && !choices.includes(segment))
       void navigate({ pathname: `${base}/${fallback}`, search: location.search }, { replace: true })
-  }, [base, fallback, segment, location.search, navigate, choices.join('|')])
+  }, [base, fallback, segment, location.pathname, location.search, navigate, choices.join('|')])
   return [
     selected,
     (next: string) => {

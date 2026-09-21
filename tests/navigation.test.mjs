@@ -4,9 +4,58 @@ import React from 'react'
 import { renderToString } from 'react-dom/server'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { loadTypeScript } from './helpers/typescript.mjs'
+import { readFileSync } from 'node:fs'
+import vm from 'node:vm'
+import ts from 'typescript'
 const { useRouteTab, useQueryValue, updateQuery, queryValue } = loadTypeScript(
   new URL('../src/app/navigation.ts', import.meta.url),
 )
+
+test('a retained disk settings panel cannot redirect navigation outside its route', () => {
+  const code = ts.transpileModule(
+    readFileSync(new URL('../src/app/navigation.ts', import.meta.url), 'utf8'),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  ).outputText
+  for (const [pathname, expected] of [
+    ['/settings/cpu-cooling', undefined],
+    ['/settings/users', undefined],
+    ['/settings', undefined],
+    ['/settings/storage-other', undefined],
+    ['/storage/disks', undefined],
+    ['/settings/storage/normal', undefined],
+    ['/settings/storage/advanced', undefined],
+    ['/settings/storage', '/settings/storage/normal'],
+    ['/settings/storage/', '/settings/storage/normal'],
+    ['/settings/storage/unknown', '/settings/storage/normal'],
+  ]) {
+    const effects = []
+    const navigations = []
+    const exports = {}
+    vm.runInNewContext(code, {
+      exports,
+      require: (name) => {
+        if (name === 'react') return { useEffect: (effect) => effects.push(effect) }
+        if (name === 'react-router-dom')
+          return {
+            useLocation: () => ({ pathname, search: '?panel=jobs' }),
+            useNavigate:
+              () =>
+              (...args) =>
+                navigations.push(args),
+          }
+        throw Error(`Unexpected dependency: ${name}`)
+      },
+    })
+    exports.useRouteTab('/settings/storage', ['normal', 'advanced'], 'normal')
+    effects.forEach((effect) => effect())
+    assert.equal(navigations.length, expected ? 1 : 0, pathname)
+    if (expected) {
+      assert.equal(navigations[0][0].pathname, expected)
+      assert.equal(navigations[0][0].search, '?panel=jobs')
+      assert.equal(navigations[0][1].replace, true)
+    }
+  }
+})
 
 test('deep links and Back/Forward derive the selected tab from the URL', async () => {
   function Screen() {
