@@ -136,3 +136,8 @@ full-height panel strip. Settings use a vertical navigation divider and flat con
 sections; tables inherit their containing page surface. General settings probe the
 new HTTP port before navigation, with a manual-link fallback. Module repositories
 are managed from the Modules toolbar and require explicit publisher-key review.
+
+System update controls live at `/settings/updates`: channel, installation policy,
+maintenance window, version comparison, actions, progress and history. The UI
+reconnects after core restart; installation continues in an independent service.
+See the [update lifecycle](https://github.com/PaNasMs/panasms/blob/main/documentation/system-updates.md).

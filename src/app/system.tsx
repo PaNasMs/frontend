@@ -14,6 +14,7 @@ import {
   mdiRefresh,
   mdiDownload,
 } from '@mdi/js'
+import { SystemUpdates } from './system-updates'
 import { WebSettings } from './web-settings'
 import { CoolingSettings } from './cooling'
 import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } from './system-widgets'
@@ -284,6 +285,7 @@ registerModule({
   icon: mdiServer,
   component: SystemPage,
   settings: [
+    { id: 'updates', title: tr('up.title'), icon: mdiDownload, component: SystemUpdates },
     {
       id: 'general',
       title: tr('web.general'),

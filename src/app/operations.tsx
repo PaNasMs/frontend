@@ -1,3 +1,4 @@
+import { useUpdateTask } from './system-updates'
 import { FolderField } from '../shared/folder-picker'
 import { MultiSelect } from '../shared/multi-select'
 import { notify } from './notifications'
@@ -66,6 +67,11 @@ const mounting = [
   { key: 'readOnly', label: tr('read_only_c5eb2661'), type: 'check', value: false },
 ] as Field[]
 export const operations: Record<string, Operation> = {
+  'system.update.settings': { label: tr('up.preferences'), fields: [] },
+  'system.update.check': { label: tr('up.check'), fields: [] },
+  'system.update.download': { label: tr('up.download'), fields: [] },
+  'system.update.install': { label: tr('up.install'), fields: [] },
+  'system.update.rollback': { label: tr('up.rollback'), fields: [] },
   'share.save': { label: tr('shares.save'), fields: [] },
   'share.remove': { label: tr('shares.remove'), fields: [] },
   'share.disconnect': { label: tr('shares.disconnect'), fields: [] },
@@ -1024,7 +1030,9 @@ function OperationForm({
   )
 }
 export function JobsList() {
-  const systemTasks = useRaidTasks()
+  const raidTasks = useRaidTasks()
+  const updates = useUpdateTask()
+  const systemTasks = { ...raidTasks, tasks: [...updates, ...raidTasks.tasks] }
   const [selected, setSelected] = useState<Job | null>(null)
   const q = useQueryClient()
   const data = useQuery({ queryKey: ['jobs'], queryFn: () => managed<Job[]>('jobs'), refetchInterval: 2000 })

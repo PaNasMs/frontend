@@ -35,7 +35,7 @@ export function NotificationsList() {
               ? tr(a.active ? 'ui.reviewOperation' : 'ui.operationHistory')
               : a.active
                 ? tr('needs_attention_925c5165')
-                : a.id.startsWith('device:')
+                : (a.id.startsWith('device:') || a.id.startsWith('update:'))
                   ? tr('event_bb92633b')
                   : tr('resolved_b6c73843')}
           </span>
@@ -72,7 +72,7 @@ export function NotificationToasts() {
       const fresh = data.data.filter(
         (a) =>
           seen.current!.get(a.id) !== a.updated &&
-          (a.active || a.id.startsWith('device:')) &&
+          (a.active || (a.id.startsWith('device:') || a.id.startsWith('update:'))) &&
           Date.now() - Date.parse(a.updated) < 30000,
       )
       if (fresh.length) setToasts((old) => [...fresh, ...old].slice(0, 3))
@@ -102,7 +102,7 @@ export function NotificationToasts() {
             {!a.id.startsWith('local:') && (
               <Link
                 to={
-                  a.id.startsWith('device:')
+                  a.id.startsWith('update:') ? '/settings/updates' : a.id.startsWith('device:')
                     ? '/storage/disks'
                     : {
                         pathname: location.pathname,

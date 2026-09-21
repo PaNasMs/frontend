@@ -3387,5 +3387,60 @@
     "key": "repos.server.installedPublisher",
     "en": "Installed module belongs to another publisher",
     "ru": "Установленный модуль принадлежит другому издателю"
+  },
+  {
+    "key": "up.server.available",
+    "en": "PaNasMs update available: {{v0}}",
+    "ru": "Доступно обновление PaNasMs: {{v0}}"
+  },
+  {
+    "key": "up.server.complete",
+    "en": "PaNasMs update: complete · {{v0}}",
+    "ru": "Обновление PaNasMs установлено. {{v0}}"
+  },
+  {
+    "key": "up.server.rolledback",
+    "en": "PaNasMs update: rolled-back · {{v0}}",
+    "ru": "Восстановлена предыдущая версия PaNasMs. {{v0}}"
+  },
+  {
+    "key": "up.server.failed",
+    "en": "PaNasMs update: failed · {{v0}}",
+    "ru": "Обновление PaNasMs не выполнено: {{v0}}"
+  },
+  {
+    "key": "up.server.recovery",
+    "en": "PaNasMs update: recovery-required · {{v0}}",
+    "ru": "Нужно восстановить PaNasMs: {{v0}}"
+  },
+  {
+    "key": "up.server.wait",
+    "en": "A system update is in progress; wait for the panel to reconnect",
+    "ru": "Идёт обновление системы. Дождитесь подключения панели."
+  },
+  {
+    "key": "up.server.none",
+    "en": "No newer PaNasMs version is available in this channel",
+    "ru": "В выбранном канале нет более новой версии PaNasMs"
+  },
+  {
+    "key": "up.server.jobs",
+    "en": "Wait for active operations: {{v0}}",
+    "ru": "Дождитесь завершения операций: {{v0}}"
+  },
+  {
+    "key": "up.server.modules",
+    "en": "Incompatible installed modules: {{v0}}",
+    "ru": "Несовместимые установленные модули: {{v0}}"
+  },
+  {
+    "key": "up.server.required",
+    "en": "Restore the failed update before starting another operation",
+    "ru": "Сначала восстановите прерванное обновление"
+  },
+  {
+    "key": "up.server.space",
+    "en": "At least 1 GiB of free space is required for update and rollback",
+    "ru": "Для обновления и отката нужен минимум 1 ГиБ свободного места"
   }
 ]

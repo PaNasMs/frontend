@@ -1,3 +1,4 @@
+import { useUpdateTask } from './system-updates'
 import { tr } from '../i18n/index'
 import { useRaidTasks } from './raid-tasks'
 import { useEffect, useState } from 'react'
@@ -24,7 +25,8 @@ export function OngoingTasks() {
   const params = new URLSearchParams(location.search)
   params.set('panel', 'jobs')
   const jobsHref = `${location.pathname}?${params}`
-  const tasks = [...raids, ...longJobs(jobs.data ?? [], now, operations)]
+  const updates = useUpdateTask()
+  const tasks = [...updates, ...raids, ...longJobs(jobs.data ?? [], now, operations)]
   if (!tasks.length) return null
   return (
     <div className="ongoing-tasks" aria-label={tr('long_running_tasks_ef6b1f6c')}>
@@ -32,7 +34,7 @@ export function OngoingTasks() {
         <Link
           className={`ongoing-task ${task.paused ? 'paused' : ''}`}
           key={task.id}
-          to={jobsHref}
+          to={task.id === 'system-update' ? task.href! : jobsHref}
           title={`${task.title} · ${task.target} · ${[taskPercent(task), task.stage].filter(Boolean).join(' · ')}${error || jobs.error ? ' ' + tr('data_may_be_out_of_date_f878d6a7') : ''}`}
           aria-label={`${task.title}: ${task.target}, ${task.paused ? tr('paused_de6ceb5b') : taskPercent(task) || tr('in_progress_169836f8')}`}
         >
