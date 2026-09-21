@@ -36,7 +36,6 @@ export function NotificationsList() {
       {data.error && <Notice error>{data.error.message}</Notice>}
       {(inspect.error || dismiss.error) && <Notice error>{(inspect.error || dismiss.error)?.message}</Notice>}
       {selected && <JobRecovery job={selected} onClose={() => setSelected(null)} />}
-      {data.data?.some(a => a.active && a.id.startsWith('job:')) && <p className="small muted">{tr('alerts.reviewHint')}</p>}
       {data.data?.map((a) => (
         <article className="surface" key={a.id}>
           {!a.id.startsWith('job:') && <span className={`badge ${a.active ? 'warning' : ''}`}>
