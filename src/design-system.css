@@ -18,7 +18,10 @@
   --radius-control: 0.5rem;
   --radius-card: 0.75rem;
   --radius-dialog: 1rem;
-  --shadow-raised: 0 16px 48px #0004;
+  --card-border: #344258;
+  --shadow-card: 0 2px 5px #0002, 0 6px 18px #0003;
+  --shadow-card-hover: 0 3px 8px #0003, 0 10px 24px #0004;
+  --shadow-raised: 0 4px 12px #0004, 0 20px 56px #0006;
   --raid-bg: #1a2738;
   --raid-border: #607693;
   --raid-shadow: none;
@@ -41,7 +44,10 @@
   --info: #1d4ed8;
   --focus: #1d4ed8;
   --selection: #e8f0ff;
-  --shadow-raised: 0 12px 36px #18283c24;
+  --card-border: #e2e8f0;
+  --shadow-card: 0 2px 5px #18283c0a, 0 6px 18px #18283c14;
+  --shadow-card-hover: 0 3px 8px #18283c12, 0 10px 24px #18283c20;
+  --shadow-raised: 0 4px 12px #18283c18, 0 20px 56px #18283c30;
   --raid-bg: #e9eef5;
   --raid-border: #788da8;
   --raid-shadow: none;
@@ -129,9 +135,9 @@ small {
 .disk-card,
 .module-card {
   border-radius: var(--radius-card);
-  border: 1px solid var(--line);
+  border: 1px solid var(--card-border);
   background: var(--panel);
-  box-shadow: 0 2px 6px #00000005;
+  box-shadow: var(--shadow-card);
   padding: 16px;
 }
 .surface > h2:first-child,
@@ -488,13 +494,21 @@ dd,
   border-color: var(--focus);
   background: var(--selection);
 }
+.disk-card.selected {
+  box-shadow: inset 0 0 0 1px var(--focus), var(--shadow-card);
+}
 .storage-hierarchy {
   gap: 20px;
 }
+.hierarchy-group {
+  border-color: var(--card-border);
+  box-shadow: var(--shadow-card);
+}
 .desktop-widget {
   border-radius: 12px;
-  border-color: var(--line);
+  border-color: var(--card-border);
   background: var(--panel);
+  box-shadow: var(--shadow-card);
 }
 .desktop-widget a[aria-label] {
   min-width: 32px;
@@ -1362,9 +1376,9 @@ td {
 }
 .coordinate-tile.desktop-shortcut {
   background: var(--panel);
-  border: 1px solid var(--line);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 6px #00000005;
+  box-shadow: var(--shadow-card);
   overflow: hidden;
 }
 .desktop-shortcut .desktop-app-icon,
@@ -1395,6 +1409,14 @@ td {
 .coordinate-tile.desktop-shortcut:hover {
   background: var(--panel-soft);
   border-color: var(--control-border);
+}
+@media (hover: hover) {
+  button.user-card:hover,
+  .module-card:hover,
+  .disk-card.selectable:not(.selected):hover,
+  .coordinate-tile.desktop-shortcut:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
 }
 .personal-desktop .desktop-shortcut.editing .shortcut-link {
   padding-top: 4px;
