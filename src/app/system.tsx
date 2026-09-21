@@ -14,6 +14,7 @@ import {
   mdiRefresh,
   mdiDownload,
 } from '@mdi/js'
+import { WebSettings } from './web-settings'
 import { CoolingSettings } from './cooling'
 import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } from './system-widgets'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -284,10 +285,17 @@ registerModule({
   component: SystemPage,
   settings: [
     {
-      id: 'cpu',
-      title: tr('cpu_cooling_da67e28f'),
-      icon: mdiChip,
-      component: () => <CoolingSettings kind="cpu" />,
+      id: 'general',
+      title: tr('web.general'),
+      icon: mdiServer,
+      component: () => (
+        <div className="general-settings">
+          <WebSettings />
+          <section className="surface">
+            <CoolingSettings kind="cpu" />
+          </section>
+        </div>
+      ),
     },
   ],
   widgets: {

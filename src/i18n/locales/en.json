@@ -1762,5 +1762,21 @@
   "ui.homeVolumeError1": "The destination volume is unavailable",
   "ui.homeVolumeError2": "The destination parent folder does not exist",
   "ui.homeVolumeError3": "Choose a folder on a supported home volume",
-  "ui.homeVolumeError4": "Choose an existing folder without symbolic links"
+  "ui.homeVolumeError4": "Choose an existing folder without symbolic links",
+  "web.general": "General",
+  "web.title": "Web interface",
+  "web.description": "Port used to access the NAS management panel.",
+  "web.port": "HTTP port",
+  "web.default": "Default: 80.",
+  "web.confirm": "Change HTTP port?",
+  "web.restart": "The panel will briefly restart. Open the new address after applying. If startup fails, the previous port will be restored.",
+  "web.waiting": "Applying the port and restarting the panel…",
+  "web.open": "Open panel",
+  "web.openNew": "Open the panel at the new address. If it is unavailable, try again shortly; a failed startup restores the previous address.",
+  "web.server.0": "Enter an HTTP port between 1 and 65535",
+  "web.server.1": "Browsers block this HTTP port. Choose another port.",
+  "web.server.2": "The HTTP port is occupied or unavailable. Choose another port.",
+  "web.server.3": "An HTTP port change is already in progress",
+  "web.server.4": "The web interface did not start on the new port. The previous port was restored.",
+  "web.server.5": "The interrupted HTTP port change was rolled back."
 }

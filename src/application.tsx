@@ -222,6 +222,7 @@ async function boot() {
                 errorElement: <PageError />,
               })),
             ),
+            { path: '/settings/cpu', element: <Navigate to="/settings/general" replace /> },
             { path: '/modules/:moduleId', element: <ModuleManager /> },
             { path: '/', element: <Dashboard /> },
             ...[

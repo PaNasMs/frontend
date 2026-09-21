@@ -3256,5 +3256,41 @@
     "key": "ui.homeVolumeError4",
     "en": "Choose an existing folder without symbolic links",
     "ru": "Выберите существующую папку без символических ссылок"
+  },
+  {
+    "key": "web.server.0",
+    "en": "Enter an HTTP port between 1 and 65535",
+    "ru": "Укажите порт HTTP от 1 до 65535",
+    "uk": "Укажіть порт HTTP від 1 до 65535"
+  },
+  {
+    "key": "web.server.1",
+    "en": "Browsers block this HTTP port. Choose another port.",
+    "ru": "Браузеры блокируют этот порт HTTP. Выберите другой.",
+    "uk": "Браузери блокують цей порт HTTP. Виберіть інший."
+  },
+  {
+    "key": "web.server.2",
+    "en": "The HTTP port is occupied or unavailable. Choose another port.",
+    "ru": "Этот порт HTTP занят или недоступен. Выберите другой.",
+    "uk": "Цей порт HTTP зайнятий або недоступний. Виберіть інший."
+  },
+  {
+    "key": "web.server.3",
+    "en": "An HTTP port change is already in progress",
+    "ru": "Изменение порта HTTP уже выполняется",
+    "uk": "Зміна порту HTTP вже виконується"
+  },
+  {
+    "key": "web.server.4",
+    "en": "The web interface did not start on the new port. The previous port was restored.",
+    "ru": "Панель не запустилась на новом порту. Прежний порт восстановлен.",
+    "uk": "Панель не запустилася на новому порту. Попередній порт відновлено."
+  },
+  {
+    "key": "web.server.5",
+    "en": "The interrupted HTTP port change was rolled back.",
+    "ru": "Прерванное изменение порта HTTP отменено.",
+    "uk": "Перервану зміну порту HTTP скасовано."
   }
 ]

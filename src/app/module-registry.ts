@@ -46,7 +46,10 @@ export function setModuleAccess(admin: boolean) {
   administrator = admin
 }
 export const modules = () => registered.filter((m) => administrator || m.id === 'files')
-export const settingsSections = () => modules().flatMap((m) => m.settings ?? [])
+export const settingsSections = () =>
+  modules()
+    .flatMap((m) => m.settings ?? [])
+    .sort((a, b) => Number(b.id === 'general') - Number(a.id === 'general'))
 
 /**
  * Источник виджетов, состав которых известен только во время работы: например по
