@@ -1,3 +1,5 @@
+import { FolderField } from '../shared/folder-picker'
+import { MultiSelect } from '../shared/multi-select'
 import { notify } from './notifications'
 import { mdiCancel, mdiRestore, mdiCheck, mdiRefresh } from '@mdi/js'
 import { serverText } from '../i18n/server'
@@ -37,7 +39,10 @@ export type Job = {
 export type Field = {
   key: string
   label: string
-  type?: 'number' | 'password' | 'check' | 'devices' | 'groups' | 'users' | 'device' | 'select'
+  type?: 'number' | 'password' | 'check' | 'devices' | 'groups' | 'users' | 'device' | 'select' | 'folder'
+  folderPolicy?: 'home' | 'share' | 'mount'
+  newFolder?: boolean
+  defaultName?: string
   options?: string[]
   value?: unknown
 }
@@ -47,7 +52,13 @@ type Operation = {
 }
 const target = { key: 'target', label: tr('device_bc791dbe'), type: 'device' } as Field
 const user = { key: 'target', label: tr('username_e2d97c93') } as Field
-const point = { key: 'point', label: tr('mount_point_b3caf3fe'), value: '/srv/' } as Field
+const point = {
+  key: 'point',
+  label: tr('mount_point_b3caf3fe'),
+  type: 'folder',
+  folderPolicy: 'mount',
+  newFolder: true,
+} as Field
 const size = { key: 'sizeMiB', label: tr('new_size_mib_43cfeb96'), type: 'number' } as Field
 const mounting = [
   point,
@@ -82,7 +93,7 @@ export const operations: Record<string, Operation> = {
   'folder.permissions': {
     label: tr('folder_ownership_and_permissions_74a7c536'),
     fields: [
-      { key: 'target', label: tr('folder_on_a_local_volume_a8d51b60') },
+      { key: 'target', label: tr('folder_on_a_local_volume_a8d51b60'), type: 'folder' },
       { key: 'owner', label: tr('owner_username_6137717d') },
       { key: 'group', label: tr('group_ae8ad7b5') },
       {
@@ -252,7 +263,7 @@ export const operations: Record<string, Operation> = {
     fields: [
       user,
       { key: 'name', label: tr('display_name_403372fc') },
-      { key: 'home', label: tr('homes.optionalHome') },
+      { key: 'home', label: tr('homes.optionalHome'), type: 'folder', folderPolicy: 'home', newFolder: true },
       { key: 'primaryGroup', label: tr('primary_group_5cd09a30'), type: 'select' },
       { key: 'groups', label: tr('accounts.additionalGroups'), type: 'groups', value: [] },
       { key: 'password', label: tr('password_14f7c63c'), type: 'password' },
@@ -279,7 +290,16 @@ export const operations: Record<string, Operation> = {
   },
   'user.home': {
     label: tr('move_home_folder_335db758'),
-    fields: [user, { key: 'home', label: tr('new_home_path_18188fcc') }],
+    fields: [
+      user,
+      {
+        key: 'home',
+        label: tr('new_home_path_18188fcc'),
+        type: 'folder',
+        folderPolicy: 'home',
+        newFolder: true,
+      },
+    ],
   },
   'user.delete': {
     label: tr('delete_user_e0728517'),
@@ -333,7 +353,7 @@ export const operations: Record<string, Operation> = {
   'nfs.export': {
     label: tr('share_folder_via_nfs_9108d76f'),
     fields: [
-      { key: 'target', label: tr('directory_on_a_local_volume_9baebdb5') },
+      { key: 'target', label: tr('directory_on_a_local_volume_9baebdb5'), type: 'folder' },
       { key: 'clients', label: tr('ip_addresses_subnets_comma_separated_27575fc9') },
       { key: 'readOnly', label: tr('read_only_c5eb2661'), type: 'check', value: true },
     ],
@@ -820,6 +840,31 @@ function OperationForm({
                         .filter((u) => u.category !== 'service')
                         .map((u) => ({ id: u.username, label: u.username }))
                     : undefined)
+            if (f.type === 'folder')
+              return (
+                <FolderField
+                  key={f.key}
+                  label={f.label}
+                  value={String(val ?? '')}
+                  policy={f.folderPolicy}
+                  newFolder={f.newFolder}
+                  defaultName={
+                    f.defaultName ?? (f.folderPolicy === 'home' ? String(params.target ?? '') : undefined)
+                  }
+                  optional={action === 'user.create'}
+                  onChange={(value) => change(f.key, value)}
+                />
+              )
+            if (f.type === 'groups' || f.type === 'users')
+              return (
+                <MultiSelect
+                  key={f.key}
+                  label={f.label}
+                  values={Array.isArray(val) ? (val as string[]) : []}
+                  options={choices ?? []}
+                  onChange={(value) => change(f.key, value)}
+                />
+              )
             return (
               <label className={f.type === 'check' ? 'check' : 'field'} key={f.key}>
                 {f.type === 'check' ? (
@@ -837,12 +882,12 @@ function OperationForm({
                     {choices ? (
                       <select
                         aria-label={f.label}
-                        multiple={f.type === 'devices' || f.type === 'groups' || f.type === 'users'}
+                        multiple={f.type === 'devices'}
                         value={val as string | string[]}
                         onChange={(e) =>
                           change(
                             f.key,
-                            f.type !== 'devices' && f.type !== 'groups' && f.type !== 'users'
+                            f.type !== 'devices'
                               ? e.target.value
                               : [...e.target.selectedOptions].map((o) => o.value),
                           )
@@ -951,7 +996,14 @@ function OperationForm({
           <Button
             className="primary"
             disabled={
-              plan.isPending || (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
+              plan.isPending ||
+              editable.some(
+                (field) =>
+                  field.type === 'folder' &&
+                  !(action === 'user.create' && field.key === 'home') &&
+                  !params[field.key],
+              ) ||
+              (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
             }
             onClick={() => plan.mutate()}
           >

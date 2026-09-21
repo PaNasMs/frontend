@@ -88,7 +88,7 @@ export function ProfilePage() {
       </div>
       {data.error && <Notice error>{data.error.message}</Notice>}
       {update.error && <Notice error>{update.error.message}</Notice>}
-      <Tabs.Root value={section} onValueChange={setSection}>
+      <Tabs.Root className="tabbed-page" value={section} onValueChange={setSection}>
         <Tabs.List className="tabs">
           {(['account', 'appearance', 'security', 'activity'] as const).map((id) => (
             <Tabs.Trigger value={id} key={id}>

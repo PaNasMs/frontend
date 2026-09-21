@@ -409,7 +409,7 @@ function NetworkPage() {
           </Dialog.Portal>
         </Dialog.Root>
       )}
-      <Tabs.Root value={tab} onValueChange={setTab}>
+      <Tabs.Root className="tabbed-page" value={tab} onValueChange={setTab}>
         <Tabs.List className="tabs">
           <Tabs.Trigger value="interfaces">{tr('network.interfaces')}</Tabs.Trigger>
           <Tabs.Trigger value="routes">{tr('network.routes')}</Tabs.Trigger>

@@ -1,3 +1,4 @@
+import { FolderField } from '../shared/folder-picker'
 import { WaitingSurface } from '../shared/ui'
 import { DialogContent } from '../shared/ui'
 import { useEffect, useState } from 'react'
@@ -128,19 +129,17 @@ export function HomeSettings() {
                   void prepare()
                 }}
               >
-                <label className="field">
-                  {tr('homes.destination')}
-                  <input
-                    required
-                    value={destination}
-                    placeholder="/srv/md127/home"
-                    disabled={busy || running}
-                    onChange={(e) => {
-                      setDestination(e.target.value)
-                      setReview(null)
-                    }}
-                  />
-                </label>
+                <FolderField
+                  label={tr('homes.destination')}
+                  value={destination}
+                  policy="home"
+                  newFolder
+                  disabled={busy || running}
+                  onChange={(value) => {
+                    setDestination(value)
+                    setReview(null)
+                  }}
+                />
                 <Button
                   disabled={busy || running || !destination || destination === data.data.path}
                   title={tr('homes.move')}

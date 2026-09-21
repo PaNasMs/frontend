@@ -1,3 +1,4 @@
+import { MultiSelect } from '../shared/multi-select'
 import { useDraft } from '../shared/interaction'
 import { useState } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -56,21 +57,16 @@ function Groups({
   change: (v: string[]) => void
 }) {
   return (
-    <div className="user-group-picker">
-      {groups.map((g) => (
-        <label className="check" key={g.name}>
-          <input
-            type="checkbox"
-            checked={values.includes(g.name)}
-            onChange={(e) =>
-              change(e.target.checked ? [...values, g.name] : values.filter((v) => v !== g.name))
-            }
-          />
-          {g.name}
-          {g.name === 'sudo' && <span className="small muted">{tr('accounts.sudoWarning')}</span>}
-        </label>
-      ))}
-    </div>
+    <MultiSelect
+      label={tr('accounts.additionalGroups')}
+      values={values}
+      options={groups.map((g) => ({
+        id: g.name,
+        label: g.name,
+        description: g.name === 'sudo' ? tr('accounts.sudoWarning') : undefined,
+      }))}
+      onChange={change}
+    />
   )
 }
 function EditAccount({ account, inventory }: { account: Account; inventory: Inventory }) {
@@ -100,7 +96,6 @@ function EditAccount({ account, inventory }: { account: Account; inventory: Inve
           </select>
         </label>
       </div>
-      <p>{tr('accounts.additionalGroups')}</p>
       <Groups values={groups} groups={inventory.groups} change={setGroups} />
       <p className="small muted">{tr('accounts.rolePolicy')}</p>
       <OperationButton
@@ -127,7 +122,16 @@ function EditAccount({ account, inventory }: { account: Account; inventory: Inve
         <OperationButton
           actions={['user.home']}
           initial={{ target: account.username }}
-          fields={[{ key: 'home', label: tr('new_home_path_18188fcc') }]}
+          fields={[
+            {
+              key: 'home',
+              label: tr('new_home_path_18188fcc'),
+              type: 'folder',
+              folderPolicy: 'home',
+              newFolder: true,
+              defaultName: account.username,
+            },
+          ]}
           label={tr('move_home_folder_335db758')}
           icon={mdiFolderMoveOutline}
         />
@@ -374,7 +378,7 @@ function AccountDetails({
             </dl>
           </section>
         ) : (
-          <Tabs.Root value={section} onValueChange={setSection}>
+          <Tabs.Root className="tabbed-page account-detail-panel" value={section} onValueChange={setSection}>
             <Tabs.List className="tabs">
               {['profile', 'security', 'keys', 'sessions', 'history'].map((s) => (
                 <Tabs.Trigger value={s} key={s}>
@@ -382,7 +386,7 @@ function AccountDetails({
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
-            <div className="surface user-details">
+            <div className="user-details">
               <Tabs.Content value="profile">
                 <EditAccount account={user} inventory={inventory} />
               </Tabs.Content>
@@ -440,7 +444,7 @@ export function Users() {
           </Button>
         </div>
       </div>
-      <Tabs.Root value={tab} onValueChange={setTab}>
+      <Tabs.Root className="tabbed-page" value={tab} onValueChange={setTab}>
         <Tabs.List className="tabs">
           <Tabs.Trigger value="accounts">{tr('users_0f0b8f55')}</Tabs.Trigger>
           <Tabs.Trigger value="groups">{tr('groups_1cb3d2d6')}</Tabs.Trigger>

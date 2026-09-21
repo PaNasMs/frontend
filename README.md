@@ -1,6 +1,6 @@
 # PaNasMs frontend
 
-React SPA for **Pavlo's NAS Management System**, currently prototype 0.2.1.
+React SPA for **Pavlo's NAS Management System**, currently prototype 0.2.5.
 Production output is static HTML, CSS and JavaScript served by the
 [backend](https://github.com/PaNasMs/backend); Node.js is only a build/development dependency.
 
@@ -96,3 +96,17 @@ and NFS clients. The Security tab of each user controls SMB access and shows pas
 `/sharing?tab=connections` displays active SMB sessions and disconnect actions.
 Mutations wait for actual job completion, refresh the query and show errors in
 place; the editor uses the shared waiting overlay. Core supplies en/ru/uk labels.
+
+## Selection and page surfaces
+
+Use `MultiSelect` for compact searchable membership selection and `FolderField`
+for filesystem destinations. Folder selection policies are named `home`, `share`
+and `mount`; each uses an administrator-only server query with its own roots and
+restrictions. For a new destination, select an existing parent and enter only the
+new folder name. Selection itself never creates or moves data. Home-volume checks
+are also enforced when planning and executing operations, independently of the UI.
+
+Horizontal Radix tab groups use `tabbed-page` so tabs, filters and content share
+one surface. Module cards keep their title/version separate from explicit
+installation and enabled states; lifecycle actions stay in the footer. Desktop
+shortcuts fill their grid cell, while widget and layout behavior is unchanged.

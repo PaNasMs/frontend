@@ -76,7 +76,7 @@ export function DiskSettings() {
   return (
     <WaitingSurface busy={sleepSave.isPending || reset.isPending}>
       <h2>{tr('disk_subsystem_e8f8c086')}</h2>
-      <Tabs.Root activationMode="manual" value={tab} onValueChange={setTab}>
+      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
         <Tabs.List className="tabs" aria-label={tr('disk_subsystem_settings_014926f4')}>
           <Tabs.Trigger value="general">{tr('settings_7f17c7c6')}</Tabs.Trigger>
           <Tabs.Trigger value="advanced">{tr('advanced_settings_3cc80085')}</Tabs.Trigger>

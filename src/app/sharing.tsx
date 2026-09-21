@@ -1,4 +1,4 @@
-import { FolderPicker } from '../shared/folder-picker'
+import { FolderField } from '../shared/folder-picker'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -12,7 +12,6 @@ import {
   mdiRefresh,
   mdiCheck,
   mdiClose,
-  mdiFolderSearchOutline,
 } from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
@@ -270,7 +269,6 @@ function ShareEditor({
 }) {
   const [value, setValue] = useState({ ...original, clients: original.clients.join(',') })
   const [step, setStep] = useState(0)
-  const [browsing, setBrowsing] = useState(false)
   const update = (key: string, v: unknown) => setValue((s) => ({ ...s, [key]: v }))
   const save = useMutation({
     mutationFn: async () => {
@@ -327,25 +325,11 @@ function ShareEditor({
                 {tr('shares.name')}
                 <input value={value.name} onChange={(e) => update('name', e.target.value)} />
               </label>
-              <label className="field">
-                {tr('shares.path')}
-                <input value={value.path} onChange={(e) => update('path', e.target.value)} />
-              </label>
-              <Button
-                title={tr('ui.browse')}
-                aria-label={tr('ui.browse')}
-                onClick={() => setBrowsing(!browsing)}
-              >
-                <Icon path={mdiFolderSearchOutline} />
-              </Button>
-              {browsing && (
-                <FolderPicker
-                  onChoose={(path) => {
-                    update('path', path)
-                    setBrowsing(false)
-                  }}
-                />
-              )}
+              <FolderField
+                label={tr('shares.path')}
+                value={value.path}
+                onChange={(path) => update('path', path)}
+              />
               <div className="row">
                 {(['smb', 'nfs'] as const).map((k) => (
                   <label className="check" key={k}>

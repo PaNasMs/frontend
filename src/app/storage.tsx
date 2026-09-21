@@ -651,6 +651,7 @@ export function StoragePage() {
         </div>
       </div>
       <Tabs.Root
+        className="tabbed-page"
         activationMode="manual"
         value={tab}
         onValueChange={(v) => {

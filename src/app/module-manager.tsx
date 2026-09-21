@@ -7,8 +7,8 @@ import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   mdiPuzzleOutline,
-  mdiPower,
   mdiPowerOff,
+  mdiCheckCircleOutline,
   mdiDownload,
   mdiUpdate,
   mdiUpload,
@@ -319,26 +319,43 @@ export function ModuleManager() {
                 <h2>
                   <Link
                     className="module-card-link"
+                    title={module.title}
                     to={`/modules/${module.id}${filter === 'all' ? '' : `?filter=${filter}`}`}
                   >
                     {module.title}
                   </Link>
                 </h2>
                 <span className="module-card-version muted" title={tr('version_97c248cb')}>
-                  {module.version}
+                  {tr(
+                    installedIds.has(module.id) ? 'ui.moduleInstalledVersion' : 'ui.moduleAvailableVersion',
+                    { version: module.version },
+                  )}
                 </span>
               </div>
-              {installedIds.has(module.id) && (
+              <div className="module-card-footer">
                 <span
-                  className={`module-state${module.enabled ? ' enabled' : ''}`}
-                  title={module.enabled ? tr('enabled_12b6f103') : tr('disabled_c9467860')}
-                  role="img"
-                  aria-label={module.enabled ? tr('enabled_12b6f103') : tr('disabled_c9467860')}
+                  className={`module-status ${installedIds.has(module.id) ? (module.enabled ? 'enabled' : 'disabled') : 'available'}`}
                 >
-                  <Icon path={module.enabled ? mdiPower : mdiPowerOff} />
+                  <Icon
+                    size={16}
+                    path={
+                      installedIds.has(module.id)
+                        ? module.enabled
+                          ? mdiCheckCircleOutline
+                          : mdiPowerOff
+                        : mdiDownload
+                    }
+                  />
+                  {tr(
+                    installedIds.has(module.id)
+                      ? module.enabled
+                        ? 'enabled_12b6f103'
+                        : 'disabled_c9467860'
+                      : 'ui.notInstalled',
+                  )}
                 </span>
-              )}
-              {actions(module)}
+                {actions(module)}
+              </div>
             </article>
           ))}
         </div>

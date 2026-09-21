@@ -3231,5 +3231,30 @@
   {
     "key": "jobs.cancelledSafely",
     "en": "Cancelled at a safe point; inspect the result before starting another operation"
+  },
+  {
+    "key": "ui.homeVolumeError0",
+    "en": "Home folders cannot be stored on USB or removable devices",
+    "ru": "Домашние папки нельзя размещать на USB или съёмных носителях"
+  },
+  {
+    "key": "ui.homeVolumeError1",
+    "en": "The destination volume is unavailable",
+    "ru": "Целевой том недоступен"
+  },
+  {
+    "key": "ui.homeVolumeError2",
+    "en": "The destination parent folder does not exist",
+    "ru": "Родительская папка назначения не существует"
+  },
+  {
+    "key": "ui.homeVolumeError3",
+    "en": "Choose a folder on a supported home volume",
+    "ru": "Выберите папку на допустимом томе для домашних папок"
+  },
+  {
+    "key": "ui.homeVolumeError4",
+    "en": "Choose an existing folder without symbolic links",
+    "ru": "Выберите существующую папку без символических ссылок"
   }
 ]

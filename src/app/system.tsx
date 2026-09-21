@@ -81,7 +81,7 @@ export function SystemPage() {
   return (
     <>
       <h1>{tr('system_3ac98f27')}</h1>
-      <Tabs.Root activationMode="manual" value={tab} onValueChange={setTab}>
+      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
         <Tabs.List className="tabs">
           <Tabs.Trigger value="services">{tr('services_578702de')}</Tabs.Trigger>
           <Tabs.Trigger value="journal">{tr('logs_67ade741')}</Tabs.Trigger>
