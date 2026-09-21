@@ -22,11 +22,12 @@ test('a retained disk settings panel cannot redirect navigation outside its rout
     ['/settings', undefined],
     ['/settings/storage-other', undefined],
     ['/storage/disks', undefined],
-    ['/settings/storage/normal', undefined],
+    ['/settings/storage/general', undefined],
+    ['/settings/storage/normal', '/settings/storage/general'],
     ['/settings/storage/advanced', undefined],
-    ['/settings/storage', '/settings/storage/normal'],
-    ['/settings/storage/', '/settings/storage/normal'],
-    ['/settings/storage/unknown', '/settings/storage/normal'],
+    ['/settings/storage', '/settings/storage/general'],
+    ['/settings/storage/', '/settings/storage/general'],
+    ['/settings/storage/unknown', '/settings/storage/general'],
   ]) {
     const effects = []
     const navigations = []
@@ -46,7 +47,7 @@ test('a retained disk settings panel cannot redirect navigation outside its rout
         throw Error(`Unexpected dependency: ${name}`)
       },
     })
-    exports.useRouteTab('/settings/storage', ['normal', 'advanced'], 'normal')
+    exports.useRouteTab('/settings/storage', ['general', 'advanced'], 'general')
     effects.forEach((effect) => effect())
     assert.equal(navigations.length, expected ? 1 : 0, pathname)
     if (expected) {

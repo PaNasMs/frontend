@@ -23,7 +23,7 @@ const days = [
 ]
 export function DiskSettings() {
   const q = useQueryClient()
-  const [tab, setTab] = useRouteTab('/settings/storage', ['normal', 'advanced'], 'normal')
+  const [tab, setTab] = useRouteTab('/settings/storage', ['general', 'advanced'], 'general')
   const storage = useQuery({ queryKey: ['storage'], queryFn: () => request<Storage>('storage') })
   const options = useQuery({
     queryKey: ['management-storage', 'all'],
@@ -78,10 +78,10 @@ export function DiskSettings() {
       <h2>{tr('disk_subsystem_e8f8c086')}</h2>
       <Tabs.Root activationMode="manual" value={tab} onValueChange={setTab}>
         <Tabs.List className="tabs" aria-label={tr('disk_subsystem_settings_014926f4')}>
-          <Tabs.Trigger value="normal">{tr('settings_7f17c7c6')}</Tabs.Trigger>
+          <Tabs.Trigger value="general">{tr('settings_7f17c7c6')}</Tabs.Trigger>
           <Tabs.Trigger value="advanced">{tr('advanced_settings_3cc80085')}</Tabs.Trigger>
         </Tabs.List>
-        <Tabs.Content value="normal">
+        <Tabs.Content value="general">
           <section className="disk-settings-section">
             <CoolingSettings kind="disk" />
           </section>
