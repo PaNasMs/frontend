@@ -233,11 +233,11 @@ export interface paths {
             };
         };
         put?: never;
-        /** Preview, enqueue or cancel an operation, or clear finished job history */
+        /** Preview, enqueue, safely cancel, inspect or acknowledge a task, or clear reviewed history */
         post: {
             parameters: {
                 query: {
-                    view: "plan" | "run" | "cancel" | "clear-history";
+                    view: "plan" | "run" | "cancel" | "recover" | "acknowledge" | "clear-history";
                 };
                 header?: never;
                 path?: never;
@@ -503,6 +503,36 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        JobRecovery: {
+            message: string;
+            checks: {
+                label: string;
+                value: unknown;
+            }[];
+            route: string;
+            /** @description An explicit action requiring a fresh preview and confirmation */
+            recoveryAction?: string | null;
+        };
+        ManagementJob: {
+            id: string;
+            user: string;
+            action: string;
+            target: string;
+            /** @enum {string} */
+            status: "queued" | "running" | "succeeded" | "failed" | "cancelled" | "interrupted";
+            stage: string;
+            created: string;
+            updated: string;
+            result: {
+                [key: string]: unknown;
+            };
+            /** @description Cancellation is currently supported at a safe checkpoint */
+            canCancel: boolean;
+            cancelRequested: boolean;
+            /** @description Unreviewed terminal tasks are retained when history is cleared */
+            needsReview: boolean;
+            recovery?: components["schemas"]["JobRecovery"];
+        };
         Identity: {
             username: string;
             name: string;

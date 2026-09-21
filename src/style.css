@@ -4354,3 +4354,31 @@ form th,
 .network-ap-radio > span {
   font-size: var(--form-label-size);
 }
+
+.job-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.job-recovery {
+  width: min(42rem, calc(100vw - 2rem));
+}
+.job-recovery-checks {
+  display: grid;
+  gap: 0.75rem;
+}
+.job-recovery-checks dt {
+  font-weight: 600;
+}
+.job-recovery-checks dd {
+  margin: 0.25rem 0 0;
+}
+.job-recovery-checks pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 16rem;
+  overflow: auto;
+  font: inherit;
+}

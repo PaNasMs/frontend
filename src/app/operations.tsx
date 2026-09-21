@@ -1,3 +1,6 @@
+import { mdiCancel, mdiRestore, mdiCheck, mdiRefresh } from '@mdi/js'
+import { serverText } from '../i18n/server'
+import { Link } from 'react-router-dom'
 import { DialogContent } from '../shared/ui'
 import { tr, locale } from '../i18n/index'
 import { SystemTasks, useRaidTasks } from './raid-tasks'
@@ -8,6 +11,12 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request, type Accounts } from '../api/client'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
+type RecoveryReport = {
+  message: string
+  checks: { label: string; value: unknown }[]
+  route: string
+  recoveryAction?: string
+}
 export type Job = {
   id: string
   user: string
@@ -17,6 +26,10 @@ export type Job = {
   stage: string
   created: string
   updated: string
+  canCancel: boolean
+  cancelRequested: boolean
+  needsReview: boolean
+  recovery?: RecoveryReport
   result: Record<string, unknown>
 }
 export type Field = {
@@ -56,6 +69,8 @@ export const operations: Record<string, Operation> = {
   'system.poweroff': { label: tr('power.poweroff'), fields: [] },
   'system.reboot': { label: tr('power.reboot'), fields: [] },
   'homes.move': { label: tr('homes.move'), fields: [] },
+  'module.recover': { label: tr('jobs.recoverModules'), fields: [] },
+  'updates.repair': { label: tr('jobs.repairPackages'), fields: [] },
   'homes.recover': { label: tr('homes.recover'), fields: [] },
   'folder.permissions': {
     label: tr('folder_ownership_and_permissions_74a7c536'),
@@ -873,8 +888,9 @@ function OperationForm({
 }
 export function JobsList() {
   const systemTasks = useRaidTasks()
+  const [selected, setSelected] = useState<Job | null>(null)
   const q = useQueryClient()
-  const data = useQuery({ queryKey: ['jobs'], queryFn: () => managed<Job[]>('jobs'), refetchInterval: 10000 })
+  const data = useQuery({ queryKey: ['jobs'], queryFn: () => managed<Job[]>('jobs'), refetchInterval: 2000 })
   const cancel = useMutation({
     mutationFn: (id: string) => managed('cancel', { id }),
     onSuccess: () => void q.invalidateQueries({ queryKey: ['jobs'] }),
@@ -920,17 +936,144 @@ export function JobsList() {
             <span className="small muted">
               {j.user} · {new Date(j.created).toLocaleString(locale())}
             </span>
-            {j.status === 'queued' && (
-              <Button disabled={cancel.isPending} onClick={() => cancel.mutate(j.id)}>
-                {tr('cancel_555ad1c0')}
-              </Button>
+            <div className="job-actions">
+              {j.canCancel && (
+                <Button
+                  title={tr('jobs.cancel')}
+                  aria-label={tr('jobs.cancel')}
+                  disabled={cancel.isPending}
+                  onClick={() => cancel.mutate(j.id)}
+                >
+                  <Icon path={mdiCancel} />
+                </Button>
+              )}
+              {['failed', 'interrupted', 'cancelled'].includes(j.status) && (
+                <Button
+                  title={tr('jobs.inspect')}
+                  aria-label={tr('jobs.inspect')}
+                  onClick={() => setSelected(j)}
+                >
+                  <Icon path={mdiRestore} />
+                </Button>
+              )}
+              {j.needsReview && <span className="badge warning">{tr('jobs.needsReview')}</span>}
+            </div>
+            {j.cancelRequested && j.status === 'running' && <p className="muted">{tr('jobs.cancelling')}</p>}
+            {j.status === 'running' && !j.canCancel && !j.cancelRequested && (
+              <p className="small muted">{tr('jobs.locked')}</p>
             )}
           </article>
         ))}
       </div>
+      {selected && <JobRecovery job={selected} onClose={() => setSelected(null)} />}
       {data.data?.length === 0 && systemTasks.tasks.length === 0 && (
         <Notice>{tr('no_operations_yet_6c83f498')}</Notice>
       )}
     </>
+  )
+}
+
+function JobRecovery({ job, onClose }: { job: Job; onClose: () => void }) {
+  const q = useQueryClient()
+  const [report, setReport] = useState<RecoveryReport | undefined>(job.recovery)
+  const inspect = useMutation({
+    mutationFn: () => managed<RecoveryReport>('recover', { id: job.id }),
+    onSuccess: (value) => {
+      setReport(value)
+      void q.invalidateQueries({ queryKey: ['jobs'] })
+    },
+  })
+  const acknowledge = useMutation({
+    mutationFn: () => managed('acknowledge', { id: job.id }),
+    onSuccess: () => {
+      void q.invalidateQueries({ queryKey: ['jobs'] })
+      onClose()
+    },
+  })
+  const started = useRef(false)
+  useEffect(() => {
+    if (!started.current) {
+      started.current = true
+      inspect.mutate()
+    }
+  }, [inspect])
+  const busy = inspect.isPending || acknowledge.isPending
+  return (
+    <Dialog.Root
+      open
+      onOpenChange={(open) => {
+        if (!open && !busy) onClose()
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Overlay className="dialog-overlay" />
+        <DialogContent className="dialog-content job-recovery" busy={busy}>
+          <Dialog.Title>{tr('jobs.inspect')}</Dialog.Title>
+          <Dialog.Description>
+            {operations[job.action]?.label ?? job.action} · {job.target}
+          </Dialog.Description>
+          <p>{tr('jobs.explanation')}</p>
+          {(inspect.error || acknowledge.error) && (
+            <Notice error>{(inspect.error || acknowledge.error)?.message}</Notice>
+          )}
+          {report && (
+            <>
+              <p>{report.message}</p>
+              <dl className="job-recovery-checks">
+                {report.checks.map((check, index) => (
+                  <div key={index}>
+                    <dt>{tr('jobs.check.' + check.label, { defaultValue: check.label })}</dt>
+                    <dd>
+                      <pre>
+                        {typeof check.value === 'string'
+                          ? serverText(check.value)
+                          : JSON.stringify(check.value, null, 2)}
+                      </pre>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="small muted">{tr('jobs.snapshot')}</p>
+            </>
+          )}
+          <div className="job-actions">
+            <Button
+              title={tr('jobs.refresh')}
+              aria-label={tr('jobs.refresh')}
+              disabled={busy}
+              onClick={() => inspect.mutate()}
+            >
+              <Icon path={mdiRefresh} />
+            </Button>
+            {report?.recoveryAction && operations[report.recoveryAction] && (
+              <OperationButton
+                actions={[report.recoveryAction]}
+                label={operations[report.recoveryAction].label}
+                icon={mdiRestore}
+                autoReview
+              />
+            )}
+            {report && (
+              <Link className="button" to={report.route} onClick={onClose}>
+                {tr('jobs.openSection')}
+              </Link>
+            )}
+            {report && (
+              <Button
+                title={tr('jobs.acknowledge')}
+                aria-label={tr('jobs.acknowledge')}
+                disabled={busy}
+                onClick={() => acknowledge.mutate()}
+              >
+                <Icon path={mdiCheck} />
+              </Button>
+            )}
+            <Button disabled={busy} onClick={onClose}>
+              {tr('homes.close')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }

@@ -94,7 +94,9 @@ export function ActivityMenus() {
           icon={mdiFormatListChecks}
           clearLabel={tr('clear_completed_task_history_be777d80')}
           canClear={
-            !!jobs.data?.some((j) => ['succeeded', 'failed', 'interrupted', 'cancelled'].includes(j.status))
+            !!jobs.data?.some(
+              (j) => ['succeeded', 'failed', 'interrupted', 'cancelled'].includes(j.status) && !j.needsReview,
+            )
           }
           clear={() => managed('clear-history', {})}
         >

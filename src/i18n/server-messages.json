@@ -3147,5 +3147,89 @@
     "en": "Sharing recipient removed",
     "ru": "Адаптер удалён из раздачи",
     "uk": "Адаптер видалено з роздачі"
+  },
+  {
+    "key": "jobs.server.0",
+    "en": "Cancelled before start"
+  },
+  {
+    "key": "jobs.server.1",
+    "en": "Cancellation requested; waiting for a safe stop and cleanup"
+  },
+  {
+    "key": "jobs.server.2",
+    "en": "Wait for active tasks before checking recovery"
+  },
+  {
+    "key": "jobs.server.3",
+    "en": "Review the current state below. The interrupted operation has not been repeated."
+  },
+  {
+    "key": "jobs.server.4",
+    "en": "A password change cannot be verified from stored credentials. Sign in or set a new password through Users."
+  },
+  {
+    "key": "jobs.server.5",
+    "en": "Open home-folder settings. Recover an existing transfer before attempting another move; destination copies may have been retained."
+  },
+  {
+    "key": "jobs.server.6",
+    "en": "Module transactions are recovered during agent startup. Review the installed version and enablement before installing again; upload credentials are not retained in the task."
+  },
+  {
+    "key": "jobs.server.7",
+    "en": "Network watchdogs handle pending rollbacks. Review current connectivity and any pending confirmation in Network before applying a fresh configuration."
+  },
+  {
+    "key": "jobs.server.8",
+    "en": "Do not restart package installation blindly. Review package status and refresh the update list; incomplete packages require repair before another upgrade."
+  },
+  {
+    "key": "jobs.server.9",
+    "en": "Power actions are never replayed automatically. System availability alone does not prove whether the previous reboot completed."
+  },
+  {
+    "key": "jobs.server.10",
+    "en": "Compare source and destination before retrying. A partial copy may exist; do not delete either automatically. Presence or size alone does not prove a complete copy."
+  },
+  {
+    "key": "jobs.server.11",
+    "en": "Check array members and maintenance progress. Use the array pause/resume controls for an existing operation; do not recreate or reformat the array."
+  },
+  {
+    "key": "jobs.server.12",
+    "en": "Inspect the actual partition/filesystem state. Formatting and resizing cannot be safely rolled back by rerunning the command. Back up available data before repair."
+  },
+  {
+    "key": "jobs.server.13",
+    "en": "Present"
+  },
+  {
+    "key": "jobs.server.14",
+    "en": "Absent"
+  },
+  {
+    "key": "jobs.server.15",
+    "en": "Recovery required"
+  },
+  {
+    "key": "jobs.server.16",
+    "en": "No pending journal"
+  },
+  {
+    "key": "jobs.server.17",
+    "en": "Not registered"
+  },
+  {
+    "key": "jobs.server.18",
+    "en": "No incomplete packages reported"
+  },
+  {
+    "key": "jobs.server.19",
+    "en": "The system is reachable"
+  },
+  {
+    "key": "jobs.cancelledSafely",
+    "en": "Cancelled at a safe point; inspect the result before starting another operation"
   }
 ]
