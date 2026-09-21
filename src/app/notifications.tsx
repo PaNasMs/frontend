@@ -39,15 +39,9 @@ export function NotificationsList() {
       {data.data?.some(a => a.active && a.id.startsWith('job:')) && <p className="small muted">{tr('alerts.reviewHint')}</p>}
       {data.data?.map((a) => (
         <article className="surface" key={a.id}>
-          <span className={`badge ${a.active ? 'warning' : ''}`}>
-            {a.id.startsWith('job:')
-              ? tr(a.active ? 'ui.reviewOperation' : 'ui.operationHistory')
-              : a.active
-                ? tr('needs_attention_925c5165')
-                : (a.id.startsWith('device:') || a.id.startsWith('update:'))
-                  ? tr('event_bb92633b')
-                  : tr('resolved_b6c73843')}
-          </span>
+          {!a.id.startsWith('job:') && <span className={`badge ${a.active ? 'warning' : ''}`}>
+            {tr(a.active ? 'needs_attention_925c5165' : a.id.startsWith('device:') || a.id.startsWith('update:') ? 'event_bb92633b' : 'resolved_b6c73843')}
+          </span>}
           <p>{a.message}</p>
           <span className="small muted">{new Date(a.updated).toLocaleString(locale())}</span>
           {a.active && !a.id.startsWith('job:') && <p className="small muted">{tr('alerts.problemHint')}</p>}
