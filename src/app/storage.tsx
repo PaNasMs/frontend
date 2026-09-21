@@ -1084,7 +1084,7 @@ registerModule({
   settings: [
     {
       id: 'storage',
-      routes: ['normal', 'advanced'],
+      routes: ['general', 'advanced', 'normal'],
       title: tr('disk_subsystem_e8f8c086'),
       icon: mdiHarddisk,
       component: DiskSettings,
