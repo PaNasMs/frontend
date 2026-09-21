@@ -32,7 +32,7 @@ export function SystemUpdates() {
   const installing = useRef(false)
   useEffect(() => { if (data) setSettings(data.settings) }, [data?.settings.channel, data?.settings.mode, data?.settings.hour])
   useEffect(() => {
-    if (data?.busy && ['installing', 'verifying'].includes(data.state.phase ?? '')) installing.current = true
+    if (data?.busy && ['installing', 'verifying', 'rolling-back'].includes(data.state.phase ?? '')) installing.current = true
     if (installing.current && data && !data.busy && ['complete', 'rolled-back'].includes(data.state.phase ?? '')) window.location.reload()
   }, [data?.busy, data?.state.phase])
   async function apply(action: string, params: Record<string, unknown> = {}) {
