@@ -4382,3 +4382,29 @@ form th,
   overflow: auto;
   font: inherit;
 }
+
+.user-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.user-card { display: flex; align-items: center; gap: 12px; text-align: left; width: 100%; color: inherit; cursor: pointer; }
+.user-card > div { min-width: 0; flex: 1; }
+.user-card strong, .user-card p { overflow-wrap: anywhere; margin: 2px 0; }
+.user-card .badge { max-width: 9rem; white-space: normal; }
+.user-filters, .user-section-heading, .user-session-list article, .user-key-row { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+.user-filters { margin: 16px 0; flex-wrap: wrap; }
+.user-filters input:not([type=checkbox]) { max-width: 24rem; }
+.user-section-heading h2 { margin: 0; }
+.user-details { max-width: 960px; margin-top: 14px; }
+.user-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+.user-form-grid .field { margin: 0; }
+.user-group-picker { display: grid; grid-template-columns: repeat(auto-fill,minmax(170px,1fr)); max-height: 220px; overflow: auto; gap: 8px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+.user-group-picker .check { align-items: start; flex-wrap: wrap; }
+.user-advanced { margin: 16px 0; }
+.user-advanced summary { cursor: pointer; }
+.user-session-list { display: grid; gap: 12px; margin-top: 14px; }
+.user-session-list article > div, .user-key-row > div { min-width: 0; overflow-wrap: anywhere; }
+.user-session-list p { margin: 4px 0; }
+.user-key-row { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.user-history-row { display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.user-confirm { width: min(420px, calc(100vw - 32px)); }
+.profile-avatar-image { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; margin-bottom: 12px; }
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+@media(max-width: 640px) { .user-form-grid { grid-template-columns: 1fr; } .user-history-row { grid-template-columns: 1fr 1fr; } }

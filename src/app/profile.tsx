@@ -1,8 +1,10 @@
+import { UserSessions, UserHistory } from './user-sessions'
+import { AvatarSettings } from './user-avatar'
 import { WaitingSurface } from '../shared/ui'
 import { notify } from './notifications'
 import { tr, language, languageNames, languages, type Language } from '../i18n/index'
 import { usePreferencesSave } from './preferences-save'
-import { mdiCheck } from '@mdi/js'
+import { mdiCheck, mdiKeyChange, mdiKeyPlus, mdiDeleteOutline } from '@mdi/js'
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request, type Preferences } from '../api/client'
@@ -58,6 +60,7 @@ export function ProfilePage() {
       {data.error && <Notice error>{data.error.message}</Notice>}
       {update.error && <Notice error>{update.error.message}</Notice>}
       <div className="profile-grid">
+        <AvatarSettings />
         <section className="surface">
           <h2>{tr('profile.language')}</h2>
           <form
@@ -106,7 +109,7 @@ export function ProfilePage() {
               <dt>{tr('username_e2d97c93')}</dt>
               <dd>{data.data.username}</dd>
               <dt>{tr('role_ab51a3ac')}</dt>
-              <dd>{tr('administrator_36d00fd7')}</dd>
+              <dd>{tr(data.data.role === 'admin' ? 'administrator_36d00fd7' : 'user_51aff185')}</dd>
               <dt>{tr('groups_1cb3d2d6')}</dt>
               <dd>{data.data.groups.join(', ')}</dd>
               <dt>{tr('home_folder_f76b7ba1')}</dt>
@@ -128,8 +131,8 @@ export function ProfilePage() {
                 autoComplete="name"
               />
             </label>
-            <Button className="primary" disabled={!data.data || name === data.data.name || update.isPending}>
-              {tr('save_name_b6c0cf28')}
+            <Button title={tr('save_name_b6c0cf28')} aria-label={tr('save_name_b6c0cf28')} disabled={!data.data || name === data.data.name || update.isPending}>
+              <Icon path={mdiCheck} />
             </Button>
           </form>
         </section>
@@ -176,8 +179,8 @@ export function ProfilePage() {
               <p className="error-text">{tr('passwords_do_not_match_a73dc9b1')}</p>
             )}
             <p className="small muted">{tr('this_changes_your_linux_password_you_will_need_to__e2af63b1')}</p>
-            <Button className="primary" disabled={update.isPending || !current || !next || next !== confirm}>
-              {tr('change_password_5e4fa6bd')}
+            <Button title={tr('change_password_5e4fa6bd')} aria-label={tr('change_password_5e4fa6bd')} disabled={update.isPending || !current || !next || next !== confirm}>
+              <Icon path={mdiKeyChange} />
             </Button>
           </form>
         </section>
@@ -191,13 +194,13 @@ export function ProfilePage() {
                 <div className="mono small">{k.fingerprint}</div>
               </div>
               <Button
-                disabled={!keyPassword || update.isPending}
+                title={tr('delete_86ea33ae')} aria-label={tr('delete_86ea33ae')} disabled={!keyPassword || update.isPending}
                 onClick={() => {
                   if (window.confirm(tr('delete_this_ssh_key_it_will_no_longer_work_for_sig_7c3f298a')))
                     update.mutate({ action: 'delete', id: k.id, currentPassword: keyPassword })
                 }}
               >
-                {tr('delete_86ea33ae')}
+                <Icon path={mdiDeleteOutline} />
               </Button>
             </article>
           ))}
@@ -220,13 +223,15 @@ export function ProfilePage() {
             />
           </label>
           <Button
-            className="primary"
+            title={tr('add_key_e76bd148')} aria-label={tr('add_key_e76bd148')}
             disabled={!key.trim() || !keyPassword || update.isPending}
             onClick={() => update.mutate({ action: 'add', key, currentPassword: keyPassword })}
           >
-            {tr('add_key_e76bd148')}
+            <Icon path={mdiKeyPlus} />
           </Button>
         </section>
+        {data.data && <section className="surface"><UserSessions user={data.data.username} /></section>}
+        {data.data && <section className="surface"><UserHistory user={data.data.username} /></section>}
       </div>
     </WaitingSurface>
   )

@@ -24,7 +24,7 @@ vm.runInNewContext(code, {
   exports,
   crypto: webcrypto,
   require: (name) =>
-    name === './module-registry' ? { widgets, modules } : name.includes('i18n') ? translations : {},
+    name === './module-registry' ? { widgets, modules, isAdministrator: () => true } : name.includes('i18n') ? translations : {},
 })
 exports.registerShortcuts()
 const layouts = exports.toggleShortcut(undefined, 'files', true)

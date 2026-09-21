@@ -77,3 +77,12 @@ registry release pipeline.
 
 Public documentation is maintained in English. Original code uses
 [PolyForm Noncommercial 1.0.0](LICENSE); see [NOTICE](NOTICE) for third-party scope.
+
+## Account interface
+
+Core 0.2.3 adds user/group cards and account detail tabs for profile, access policy,
+SSH keys, panel/SSH sessions and security history. Ordinary users see their own
+profile, Files, desktop and read-only system widgets. Administrative routes remain
+protected by the backend independently of their visibility in the application menu.
+Passwords follow the host Linux PAM policy; expired-password sign-in completes the
+required password change before entering the application.

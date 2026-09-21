@@ -40,8 +40,11 @@ export function registerModule(module: ModuleDefinition) {
   registered.push(module)
   Object.assign(widgets, module.widgets)
 }
-export const modules = () => registered
-export const settingsSections = () => registered.flatMap((m) => m.settings ?? [])
+let administrator = true
+export const isAdministrator = () => administrator
+export function setModuleAccess(admin: boolean) { administrator = admin }
+export const modules = () => registered.filter(m => administrator || m.id === 'files')
+export const settingsSections = () => modules().flatMap((m) => m.settings ?? [])
 
 /**
  * Источник виджетов, состав которых известен только во время работы: например по
@@ -55,5 +58,11 @@ export function registerWidgetSource(source: WidgetSource) {
 }
 export function useModuleWidgets(): Record<string, WidgetDefinition> {
   const produced = sources.map((source) => source())
-  return Object.assign({}, widgets, ...produced)
+  const result: Record<string, WidgetDefinition> = Object.assign({}, widgets, ...produced)
+  if (!administrator) {
+    for (const [key, value] of Object.entries(result)) {
+      if (value.href && !['/', '/files', '/history'].includes(value.href)) delete result[key]
+    }
+  }
+  return result
 }

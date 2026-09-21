@@ -83,11 +83,11 @@ function ActivityMenu({
 export function ActivityMenus() {
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
   const admin = session.data?.role === 'admin'
-  const jobs = useQuery({ queryKey: ['jobs'], queryFn: () => managed<Job[]>('jobs'), enabled: admin })
+  const jobs = useQuery({ queryKey: ['jobs'], queryFn: () => managed<Job[]>('jobs'), enabled: !!session.data })
   const alerts = useQuery({ queryKey: ['notifications'], queryFn: () => request<Alert[]>('notifications') })
   return (
     <>
-      {admin && (
+      {session.data && (
         <ActivityMenu
           id="jobs"
           title={tr('tasks_2ff08344')}

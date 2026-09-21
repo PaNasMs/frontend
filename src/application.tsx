@@ -5,7 +5,7 @@ import { ApplicationBar } from './app/application-bar'
 import { registerShortcuts } from './app/desktop-layout'
 import { StrictMode, Suspense, lazy, useEffect, useRef } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider, Outlet, Link, Navigate } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Outlet, Link, Navigate, useLocation } from 'react-router-dom'
 import {
   QueryClient,
   QueryClientProvider,
@@ -17,7 +17,7 @@ import { mdiLogout, mdiAccountOutline } from '@mdi/js'
 import { request, APIError, type Identity, type Preferences } from './api/client'
 import { Button, Icon, Notice } from './shared/ui'
 import './app/pages'
-import { modules, settingsSections } from './app/module-registry'
+import { modules, settingsSections, setModuleAccess } from './app/module-registry'
 import { Dashboard, HistoryPage } from './app/dashboard'
 import './app/storage'
 import { ProfilePage } from './app/profile'
@@ -42,6 +42,8 @@ const query = new QueryClient({
 })
 const Login = lazy(() => import('./app/login'))
 function Shell() {
+  const routeLocation = useLocation()
+  const avatar = useQuery({ queryKey: ['avatar'], queryFn: () => request<{ version: string }>('avatar'), retry: false })
   const session = useQuery({
     queryKey: ['session'],
     queryFn: () => request<Identity>('session'),
@@ -106,7 +108,7 @@ function Shell() {
       <header className="topbar">
         <ApplicationBar />
         <div className="topbar-right">
-          <RemovableMenu />
+          {session.data?.role === 'admin' && <RemovableMenu />}
           <ActivityMenus />
           <details className="profile-menu" ref={menu}>
             <summary
@@ -114,7 +116,7 @@ function Shell() {
               aria-label={tr('user_menu_fe38d8c6')}
               title={session.data?.username}
             >
-              {session.data?.username.slice(0, 1).toUpperCase()}
+              {avatar.data?.version ? <img src={`/api/v1/avatar/image?v=${avatar.data.version}`} alt="" /> : session.data?.username.slice(0, 1).toUpperCase()}
             </summary>
             <div className="profile-dropdown">
               <strong>{session.data?.name || session.data?.username}</strong>
@@ -158,13 +160,14 @@ function Shell() {
             {error}
           </Notice>
         ))}
-        <Outlet />
+        {session.data?.role !== 'admin' && !['/', '/profile', '/history'].includes(routeLocation.pathname) && !routeLocation.pathname.startsWith('/files') ? <Navigate to="/" replace /> : <Outlet />}
       </main>
       <footer className="app-footer">{tr('panasms_0_1_first_working_prototype_fc5b4f2c')}</footer>
     </>
   )
 }
 async function boot() {
+  try { setModuleAccess((await request<Identity>('session')).role === 'admin') } catch { setModuleAccess(false) }
   await loadInstalledModules()
   registerShortcuts()
   const router = createBrowserRouter([
