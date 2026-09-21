@@ -4,6 +4,9 @@ React SPA for **Pavlo's NAS Management System**, currently prototype 0.2.5.
 Production output is static HTML, CSS and JavaScript served by the
 [backend](https://github.com/PaNasMs/backend); Node.js is only a build/development dependency.
 
+Follow the [PaNasMs UI/UX guidelines](https://github.com/PaNasMs/panasms/blob/main/documentation/ui-ux-guidelines.md)
+for core and module interfaces. The public guide is the shared design baseline.
+
 ## Interface
 
 - Per-user desktop grid, widgets, wallpaper, shortcuts and taskbar ordering.
@@ -40,6 +43,11 @@ split into feature directories has not been done.
 
 Requirements: Node.js 22.12 or newer and npm 9.5 or newer.
 
+Translation tests include the Files and Terminal dictionaries. For the complete
+unit suite, clone those module repositories at `../modules/files` and
+`../modules/terminal` using the workspace layout below. The core production
+bundle does not include their separate runtime payloads.
+
 ```sh
 npm ci
 npm run dev
@@ -72,6 +80,13 @@ Official module releases build from their own repositories:
 [Cloud Sync](https://github.com/PaNasMs/module-cloud-sync).
 The workspace `build:modules` command is a local integration build, not the
 registry release pipeline.
+
+Pushes to `main`, pull requests and manual runs invoke the shared
+[PaNasMs package build](https://github.com/PaNasMs/panasms/blob/main/documentation/builds.md).
+The exact frontend commit is paired with the resolved backend commit and tested
+in native ARM64/AMD64 Debian 13 jobs. Download the resulting packages and source
+manifest from this repository's **Actions → Build PaNasMs** run. CI artifacts do
+not install themselves or update a running NAS.
 
 ## License
 
@@ -107,6 +122,10 @@ new folder name. Selection itself never creates or moves data. Home-volume check
 are also enforced when planning and executing operations, independently of the UI.
 
 Horizontal Radix tab groups use `tabbed-page` so tabs, filters and content share
-one surface. Module cards keep their title/version separate from explicit
+one surface. Tabs fill the height of the subtle header strip without gaps; the
+active tab has a top accent and joins the content. Cards use `--shadow-card`,
+interactive cards may use `--shadow-card-hover`, and menus/dialogs use
+`--shadow-raised`. Outer tabbed panels and RAID groups remain flat.
+Module cards keep their title/version separate from explicit
 installation and enabled states; lifecycle actions stay in the footer. Desktop
 shortcuts fill their grid cell, while widget and layout behavior is unchanged.
