@@ -53,6 +53,11 @@ const mounting = [
   { key: 'readOnly', label: tr('read_only_c5eb2661'), type: 'check', value: false },
 ] as Field[]
 export const operations: Record<string, Operation> = {
+  'share.save': { label: tr('shares.save'), fields: [] },
+  'share.remove': { label: tr('shares.remove'), fields: [] },
+  'share.disconnect': { label: tr('shares.disconnect'), fields: [] },
+  'share.account': { label: tr('shares.accounts'), fields: [] },
+  'share.recover': { label: tr('shares.recover'), fields: [] },
   'network.wifi.scan': { label: tr('wifi.scan'), fields: [] },
   'network.wifi.radio': { label: tr('wifi.networks'), fields: [] },
   'network.wifi.connect': { label: tr('wifi.connect'), fields: [] },
@@ -391,6 +396,7 @@ type OperationProps = {
   context?: OperationContext
   candidatesFor?: string
   fields?: Field[]
+  onDone?: () => void
   choices?: Record<string, Choice[]>
   description?: string
   autoReview?: boolean
@@ -406,6 +412,7 @@ export function OperationButton({
   candidatesFor,
   fields,
   choices,
+  onDone,
   description,
   autoReview = false,
 }: OperationProps) {
@@ -444,7 +451,10 @@ export function OperationButton({
           choices={choices}
           description={description}
           autoReview={autoReview}
-          onDone={() => setOpen(false)}
+          onDone={() => {
+            setOpen(false)
+            onDone?.()
+          }}
         />
       )}
     </Dialog.Root>
@@ -539,7 +549,8 @@ function OperationForm({
       if (
         ['smart.schedule', 'smart.unschedule'].includes(action) ||
         action.startsWith('user.') ||
-        action.startsWith('group.')
+        action.startsWith('group.') ||
+        action.startsWith('share.')
       ) {
         await waitForJob(async () => {
           const jobs = await managed<Job[]>('jobs')

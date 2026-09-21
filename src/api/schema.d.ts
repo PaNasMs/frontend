@@ -606,6 +606,8 @@ export interface components {
             name: string;
             uid: number;
             role: string;
+            /** @description Linux login succeeded but Samba password synchronization needs attention. */
+            smbSyncWarning?: boolean;
         };
         User: {
             username: string;

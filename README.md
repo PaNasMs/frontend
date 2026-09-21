@@ -86,3 +86,13 @@ profile, Files, desktop and read-only system widgets. Administrative routes rema
 protected by the backend independently of their visibility in the application menu.
 Passwords follow the host Linux PAM policy; expired-password sign-in completes the
 required password change before entering the application.
+
+## Shared folders
+
+The built-in `/sharing` module manages local SMB/NFS publication, separately from
+mounting remote shares. Folder cards expose edit, Linux permission and unpublish
+icons. The compact editor selects a folder and protocols, then user/group access
+and NFS clients. `/sharing?tab=accounts` controls SMB provisioning;
+`/sharing?tab=connections` displays active SMB sessions and disconnect actions.
+Mutations wait for actual job completion, refresh the query and show errors in
+place; the editor uses the shared waiting overlay. Core supplies en/ru/uk labels.

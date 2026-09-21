@@ -4408,3 +4408,48 @@ form th,
 .profile-avatar-image { width: 96px; height: 96px; object-fit: cover; border-radius: 50%; margin-bottom: 12px; }
 .user-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 @media(max-width: 640px) { .user-form-grid { grid-template-columns: 1fr; } .user-history-row { grid-template-columns: 1fr 1fr; } }
+
+.sharing-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-block: 1rem;
+  flex-wrap: wrap;
+}
+.sharing-tabs .active {
+  background: var(--accent);
+  color: white;
+}
+.sharing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+.sharing-card {
+  padding: 1rem;
+  min-width: 0;
+}
+.sharing-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+.sharing-card .row,
+.page-heading .row {
+  display: flex;
+  gap: 0.3rem;
+}
+.sharing-path {
+  overflow-wrap: anywhere;
+}
+.sharing-dialog {
+  max-width: 560px;
+}
+.sharing-dialog select[multiple] {
+  min-height: 7rem;
+}
+.sharing-permissions { max-height: 260px; overflow-y: auto; margin-block: 1rem; }
+.sharing-permissions label { display: grid; grid-template-columns: minmax(0,1fr) minmax(150px,1fr); gap: .75rem; align-items: center; margin-bottom: .4rem; }
+.sharing-permissions span { overflow-wrap: anywhere; }
+.sharing-dialog .dialog-actions { display: flex; gap: .5rem; margin-top: 1rem; }
