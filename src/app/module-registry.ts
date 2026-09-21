@@ -42,8 +42,10 @@ export function registerModule(module: ModuleDefinition) {
 }
 let administrator = true
 export const isAdministrator = () => administrator
-export function setModuleAccess(admin: boolean) { administrator = admin }
-export const modules = () => registered.filter(m => administrator || m.id === 'files')
+export function setModuleAccess(admin: boolean) {
+  administrator = admin
+}
+export const modules = () => registered.filter((m) => administrator || m.id === 'files')
 export const settingsSections = () => modules().flatMap((m) => m.settings ?? [])
 
 /**

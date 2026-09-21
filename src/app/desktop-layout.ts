@@ -16,7 +16,9 @@ export const apps = () => [
     .filter((m) => ['users', 'storage'].includes(m.id))
     .sort((a, b) => a.id.localeCompare(b.id))
     .reverse(),
-  ...(isAdministrator() ? [{ id: 'settings', title: tr('settings_7f17c7c6'), path: '/settings', icon: mdiCogOutline }] : []),
+  ...(isAdministrator()
+    ? [{ id: 'settings', title: tr('settings_7f17c7c6'), path: '/settings', icon: mdiCogOutline }]
+    : []),
   ...modules().filter((m) => !['users', 'storage'].includes(m.id)),
   { id: 'history', title: tr('metrics_history_50331506'), path: '/history', icon: mdiChartLine },
 ]
@@ -65,7 +67,14 @@ export function place(kind: string, all: Tile[], cols: number) {
 }
 export function defaults(cols: number) {
   const all: Tile[] = []
-  for (const kind of ['clock', 'cpu', 'memory', 'cooling', 'systemDisk', ...(isAdministrator() ? ['users', 'storage'] : ['files'])]) {
+  for (const kind of [
+    'clock',
+    'cpu',
+    'memory',
+    'cooling',
+    'systemDisk',
+    ...(isAdministrator() ? ['users', 'storage'] : ['files']),
+  ]) {
     const t = place(kind, all, cols)
     if (t) all.push(t)
   }

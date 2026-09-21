@@ -249,7 +249,7 @@ export const operations: Record<string, Operation> = {
       { key: 'primaryGroup', label: tr('primary_group_5cd09a30'), type: 'select' },
       { key: 'groups', label: tr('accounts.additionalGroups'), type: 'groups', value: [] },
       { key: 'password', label: tr('password_14f7c63c'), type: 'password' },
- { key: 'passwordConfirm', label: tr('repeat_new_password_e32d8bb9'), type: 'password' },
+      { key: 'passwordConfirm', label: tr('repeat_new_password_e32d8bb9'), type: 'password' },
     ],
   },
   'user.edit': {
@@ -485,7 +485,11 @@ function OperationForm({
         formats: string[]
       }>(candidatesFor ? 'raid-candidates' : 'storage-options', undefined, candidatesFor),
   })
-  const accounts = useQuery({ queryKey: ['users'], queryFn: () => request<Accounts>('users'), enabled: (fields ?? operations[action].fields).some(f => f.type === 'groups' || f.type === 'users') })
+  const accounts = useQuery({
+    queryKey: ['users'],
+    queryFn: () => request<Accounts>('users'),
+    enabled: (fields ?? operations[action].fields).some((f) => f.type === 'groups' || f.type === 'users'),
+  })
   const folderName = String(params.name ?? '')
   const invalidFolderName =
     action === 'file.mkdir' &&
@@ -498,7 +502,8 @@ function OperationForm({
         : params
   const plan = useMutation({
     mutationFn: () => {
-      if (['user.create','user.password'].includes(action) && params.password !== params.passwordConfirm) throw new Error(tr('passwords_do_not_match_a73dc9b1'))
+      if (['user.create', 'user.password'].includes(action) && params.password !== params.passwordConfirm)
+        throw new Error(tr('passwords_do_not_match_a73dc9b1'))
       if (invalidFolderName)
         throw new Error(tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286'))
       return managed<{
@@ -531,14 +536,22 @@ function OperationForm({
         fingerprint: reviewed?.fingerprint,
         confirmation: reviewed?.confirmation,
       })
-      if (['smart.schedule', 'smart.unschedule'].includes(action) || action.startsWith('user.') || action.startsWith('group.')) {
+      if (
+        ['smart.schedule', 'smart.unschedule'].includes(action) ||
+        action.startsWith('user.') ||
+        action.startsWith('group.')
+      ) {
         await waitForJob(async () => {
           const jobs = await managed<Job[]>('jobs')
           q.setQueryData(['jobs'], jobs)
           return jobs.find((j) => j.id === job.id)
         })
         if (action.startsWith('user.') || action.startsWith('group.')) {
-          await Promise.all(['users','account-details','account-sessions','account-history','profile'].map(key => q.invalidateQueries({ queryKey: [key] })))
+          await Promise.all(
+            ['users', 'account-details', 'account-sessions', 'account-history', 'profile'].map((key) =>
+              q.invalidateQueries({ queryKey: [key] }),
+            ),
+          )
         }
         await q.cancelQueries({ queryKey: ['management-storage'] })
         await q.invalidateQueries({ queryKey: ['management-storage'] }, { throwOnError: true })
@@ -789,9 +802,10 @@ function OperationForm({
                           )
                         }
                       >
-                        {(f.type === 'device' || (f.type === 'select' && providedChoices?.[f.key])) && !choices.some(c => c.id === '') && (
-                          <option value="">{tr('select_9e5e9af5')}</option>
-                        )}
+                        {(f.type === 'device' || (f.type === 'select' && providedChoices?.[f.key])) &&
+                          !choices.some((c) => c.id === '') && (
+                            <option value="">{tr('select_9e5e9af5')}</option>
+                          )}
                         {choices.map((c) => (
                           <option key={c.id} value={c.id} disabled={'disabled' in c && !!c.disabled}>
                             {c.label}

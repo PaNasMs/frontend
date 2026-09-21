@@ -131,7 +131,11 @@ export function ProfilePage() {
                 autoComplete="name"
               />
             </label>
-            <Button title={tr('save_name_b6c0cf28')} aria-label={tr('save_name_b6c0cf28')} disabled={!data.data || name === data.data.name || update.isPending}>
+            <Button
+              title={tr('save_name_b6c0cf28')}
+              aria-label={tr('save_name_b6c0cf28')}
+              disabled={!data.data || name === data.data.name || update.isPending}
+            >
               <Icon path={mdiCheck} />
             </Button>
           </form>
@@ -179,7 +183,11 @@ export function ProfilePage() {
               <p className="error-text">{tr('passwords_do_not_match_a73dc9b1')}</p>
             )}
             <p className="small muted">{tr('this_changes_your_linux_password_you_will_need_to__e2af63b1')}</p>
-            <Button title={tr('change_password_5e4fa6bd')} aria-label={tr('change_password_5e4fa6bd')} disabled={update.isPending || !current || !next || next !== confirm}>
+            <Button
+              title={tr('change_password_5e4fa6bd')}
+              aria-label={tr('change_password_5e4fa6bd')}
+              disabled={update.isPending || !current || !next || next !== confirm}
+            >
               <Icon path={mdiKeyChange} />
             </Button>
           </form>
@@ -194,7 +202,9 @@ export function ProfilePage() {
                 <div className="mono small">{k.fingerprint}</div>
               </div>
               <Button
-                title={tr('delete_86ea33ae')} aria-label={tr('delete_86ea33ae')} disabled={!keyPassword || update.isPending}
+                title={tr('delete_86ea33ae')}
+                aria-label={tr('delete_86ea33ae')}
+                disabled={!keyPassword || update.isPending}
                 onClick={() => {
                   if (window.confirm(tr('delete_this_ssh_key_it_will_no_longer_work_for_sig_7c3f298a')))
                     update.mutate({ action: 'delete', id: k.id, currentPassword: keyPassword })
@@ -223,15 +233,24 @@ export function ProfilePage() {
             />
           </label>
           <Button
-            title={tr('add_key_e76bd148')} aria-label={tr('add_key_e76bd148')}
+            title={tr('add_key_e76bd148')}
+            aria-label={tr('add_key_e76bd148')}
             disabled={!key.trim() || !keyPassword || update.isPending}
             onClick={() => update.mutate({ action: 'add', key, currentPassword: keyPassword })}
           >
             <Icon path={mdiKeyPlus} />
           </Button>
         </section>
-        {data.data && <section className="surface"><UserSessions user={data.data.username} /></section>}
-        {data.data && <section className="surface"><UserHistory user={data.data.username} /></section>}
+        {data.data && (
+          <section className="surface">
+            <UserSessions user={data.data.username} />
+          </section>
+        )}
+        {data.data && (
+          <section className="surface">
+            <UserHistory user={data.data.username} />
+          </section>
+        )}
       </div>
     </WaitingSurface>
   )

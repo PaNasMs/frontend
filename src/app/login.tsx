@@ -18,14 +18,15 @@ export default function Login() {
   const q = useQueryClient()
   const form = useForm<z.infer<typeof credentials>>({ resolver: zodResolver(credentials) })
   const login = useMutation({
-    mutationFn: (v: z.infer<typeof credentials>) => request<Identity>('login', 'POST', { ...v, ...(next ? { newPassword: next } : {}) }),
+    mutationFn: (v: z.infer<typeof credentials>) =>
+      request<Identity>('login', 'POST', { ...v, ...(next ? { newPassword: next } : {}) }),
     onSuccess: (id) => {
       q.clear()
       q.setQueryData(['session'], id)
       location.reload()
     },
   })
-  const expired = login.error instanceof APIError && login.error.status === 409 || !!next
+  const expired = (login.error instanceof APIError && login.error.status === 409) || !!next
   return (
     <main className="login-page">
       <section className="login-intro">
@@ -67,9 +68,36 @@ export default function Login() {
           {form.formState.errors.password && (
             <p className="error-text">{form.formState.errors.password.message}</p>
           )}
-          {expired && <><p className="muted">{tr('accounts.expiredPasswordHelp')}</p><label className="field">{tr('new_password_5e611d70')}<input type="password" autoComplete="new-password" value={next} onChange={e => setNext(e.target.value)} required /></label><label className="field">{tr('repeat_new_password_e32d8bb9')}<input type="password" autoComplete="new-password" value={confirm} onChange={e => setConfirm(e.target.value)} required /></label></>}
+          {expired && (
+            <>
+              <p className="muted">{tr('accounts.expiredPasswordHelp')}</p>
+              <label className="field">
+                {tr('new_password_5e611d70')}
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  value={next}
+                  onChange={(e) => setNext(e.target.value)}
+                  required
+                />
+              </label>
+              <label className="field">
+                {tr('repeat_new_password_e32d8bb9')}
+                <input
+                  type="password"
+                  autoComplete="new-password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  required
+                />
+              </label>
+            </>
+          )}
           {login.error && <Notice error>{login.error.message}</Notice>}
-          <Button className="primary login-submit" disabled={login.isPending || (expired && (!next || next !== confirm))}>
+          <Button
+            className="primary login-submit"
+            disabled={login.isPending || (expired && (!next || next !== confirm))}
+          >
             {login.isPending ? tr('checking_cbf41dbe') : tr('sign_in_939e95a1')}
             <Icon path={mdiArrowRight} />
           </Button>

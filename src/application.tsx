@@ -43,7 +43,11 @@ const query = new QueryClient({
 const Login = lazy(() => import('./app/login'))
 function Shell() {
   const routeLocation = useLocation()
-  const avatar = useQuery({ queryKey: ['avatar'], queryFn: () => request<{ version: string }>('avatar'), retry: false })
+  const avatar = useQuery({
+    queryKey: ['avatar'],
+    queryFn: () => request<{ version: string }>('avatar'),
+    retry: false,
+  })
   const session = useQuery({
     queryKey: ['session'],
     queryFn: () => request<Identity>('session'),
@@ -116,7 +120,11 @@ function Shell() {
               aria-label={tr('user_menu_fe38d8c6')}
               title={session.data?.username}
             >
-              {avatar.data?.version ? <img src={`/api/v1/avatar/image?v=${avatar.data.version}`} alt="" /> : session.data?.username.slice(0, 1).toUpperCase()}
+              {avatar.data?.version ? (
+                <img src={`/api/v1/avatar/image?v=${avatar.data.version}`} alt="" />
+              ) : (
+                session.data?.username.slice(0, 1).toUpperCase()
+              )}
             </summary>
             <div className="profile-dropdown">
               <strong>{session.data?.name || session.data?.username}</strong>
@@ -160,14 +168,24 @@ function Shell() {
             {error}
           </Notice>
         ))}
-        {session.data?.role !== 'admin' && !['/', '/profile', '/history'].includes(routeLocation.pathname) && !routeLocation.pathname.startsWith('/files') ? <Navigate to="/" replace /> : <Outlet />}
+        {session.data?.role !== 'admin' &&
+        !['/', '/profile', '/history'].includes(routeLocation.pathname) &&
+        !routeLocation.pathname.startsWith('/files') ? (
+          <Navigate to="/" replace />
+        ) : (
+          <Outlet />
+        )}
       </main>
       <footer className="app-footer">{tr('panasms_0_1_first_working_prototype_fc5b4f2c')}</footer>
     </>
   )
 }
 async function boot() {
-  try { setModuleAccess((await request<Identity>('session')).role === 'admin') } catch { setModuleAccess(false) }
+  try {
+    setModuleAccess((await request<Identity>('session')).role === 'admin')
+  } catch {
+    setModuleAccess(false)
+  }
   await loadInstalledModules()
   registerShortcuts()
   const router = createBrowserRouter([
