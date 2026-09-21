@@ -386,7 +386,7 @@ function AccountDetails({
                 </Tabs.Trigger>
               ))}
             </Tabs.List>
-            <div className="user-details">
+            <div className="tabbed-body user-details">
               <Tabs.Content value="profile">
                 <EditAccount account={user} inventory={inventory} />
               </Tabs.Content>
@@ -449,109 +449,113 @@ export function Users() {
           <Tabs.Trigger value="accounts">{tr('users_0f0b8f55')}</Tabs.Trigger>
           <Tabs.Trigger value="groups">{tr('groups_1cb3d2d6')}</Tabs.Trigger>
         </Tabs.List>
-        <div className="user-filters">
-          <input
-            aria-label={tr('accounts.filter')}
-            placeholder={tr('accounts.filter')}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <label className="check">
+        <div className="tabbed-body">
+          <div className="user-filters">
             <input
-              type="checkbox"
-              checked={services === '1'}
-              onChange={(e) => setServices(e.target.checked ? '1' : '0')}
+              aria-label={tr('accounts.filter')}
+              placeholder={tr('accounts.filter')}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
-            {tr('accounts.showSystem')}
-          </label>
-        </div>
-        {data.error && <Notice error>{data.error.message}</Notice>}
-        <Tabs.Content value="accounts">
-          <div className="user-card-grid">
-            {data.data?.users
-              .filter(
-                (u) =>
-                  (services === '1' || u.category !== 'service') &&
-                  `${u.username} ${u.name}`.toLowerCase().includes(search.toLowerCase()),
-              )
-              .map((u) => (
-                <button
-                  className="surface user-card"
-                  key={u.username}
-                  onClick={() => setSelected(u.username)}
-                >
-                  <Icon path={mdiShieldAccountOutline} />
-                  <div>
-                    <strong>{u.name || u.username}</strong>
-                    <p className="muted">{u.username}</p>
-                    <span className="small">{category(u.category)}</span>
-                  </div>
-                  <span className={`badge ${u.disabled || u.expired ? 'warning' : ''}`}>
-                    {u.disabled
-                      ? tr('accounts.disabledState')
-                      : u.expired
-                        ? tr('accounts.expiredState')
-                        : u.passwordStatus === 'locked'
-                          ? tr('accounts.lockedPassword')
-                          : u.panel
-                            ? tr('accounts.panelEnabled')
-                            : tr('accounts.panelDisabled')}
-                  </span>
-                </button>
-              ))}
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={services === '1'}
+                onChange={(e) => setServices(e.target.checked ? '1' : '0')}
+              />
+              {tr('accounts.showSystem')}
+            </label>
           </div>
-        </Tabs.Content>
-        <Tabs.Content value="groups">
-          <div className="user-card-grid">
-            {data.data?.groups
-              .filter((g) => (services === '1' || !g.system || g.name === 'sudo') && g.name.includes(search))
-              .map((g) => (
-                <article className="surface user-group-card" key={g.name}>
-                  <div className="user-section-heading">
-                    <h2>{g.name}</h2>
-                    <span className="small muted">GID {g.gid}</span>
-                    <div className="actions">
-                      {g.editable && (
-                        <OperationButton
-                          actions={['group.edit']}
-                          fields={[{ key: 'members', label: tr('members_fcb848e4'), type: 'users' }]}
-                          initial={{ target: g.name, members: g.members }}
-                          choices={{
-                            members: (data.data?.users ?? [])
-                              .filter((u) => u.category !== 'service')
-                              .map((u) => ({
-                                id: u.username,
-                                label:
-                                  u.username +
-                                  (g.primaryMembers.includes(u.username)
-                                    ? ` · ${tr('accounts.primary')}`
-                                    : ''),
-                                disabled: false,
-                              })),
-                          }}
-                          label={tr('edit_group_members_ad891d65')}
-                          icon={mdiPencilOutline}
-                        />
-                      )}
-                      {g.editable && !g.system && (
-                        <OperationButton
-                          actions={['group.delete']}
-                          fields={[]}
-                          initial={{ target: g.name }}
-                          label={tr('delete_group_05b970e6')}
-                          icon={mdiDeleteOutline}
-                          autoReview
-                        />
-                      )}
+          {data.error && <Notice error>{data.error.message}</Notice>}
+          <Tabs.Content value="accounts">
+            <div className="user-card-grid">
+              {data.data?.users
+                .filter(
+                  (u) =>
+                    (services === '1' || u.category !== 'service') &&
+                    `${u.username} ${u.name}`.toLowerCase().includes(search.toLowerCase()),
+                )
+                .map((u) => (
+                  <button
+                    className="surface user-card"
+                    key={u.username}
+                    onClick={() => setSelected(u.username)}
+                  >
+                    <Icon path={mdiShieldAccountOutline} />
+                    <div>
+                      <strong>{u.name || u.username}</strong>
+                      <p className="muted">{u.username}</p>
+                      <span className="small">{category(u.category)}</span>
                     </div>
-                  </div>
-                  <p>{g.members.join(', ') || tr('accounts.noMembers')}</p>
-                  {g.name === 'sudo' && <p className="small muted">{tr('accounts.sudoWarning')}</p>}
-                  {g.system && <span className="small muted">{tr('accounts.systemGroup')}</span>}
-                </article>
-              ))}
-          </div>
-        </Tabs.Content>
+                    <span className={`badge ${u.disabled || u.expired ? 'warning' : ''}`}>
+                      {u.disabled
+                        ? tr('accounts.disabledState')
+                        : u.expired
+                          ? tr('accounts.expiredState')
+                          : u.passwordStatus === 'locked'
+                            ? tr('accounts.lockedPassword')
+                            : u.panel
+                              ? tr('accounts.panelEnabled')
+                              : tr('accounts.panelDisabled')}
+                    </span>
+                  </button>
+                ))}
+            </div>
+          </Tabs.Content>
+          <Tabs.Content value="groups">
+            <div className="user-card-grid">
+              {data.data?.groups
+                .filter(
+                  (g) => (services === '1' || !g.system || g.name === 'sudo') && g.name.includes(search),
+                )
+                .map((g) => (
+                  <article className="surface user-group-card" key={g.name}>
+                    <div className="user-section-heading">
+                      <h2>{g.name}</h2>
+                      <span className="small muted">GID {g.gid}</span>
+                      <div className="actions">
+                        {g.editable && (
+                          <OperationButton
+                            actions={['group.edit']}
+                            fields={[{ key: 'members', label: tr('members_fcb848e4'), type: 'users' }]}
+                            initial={{ target: g.name, members: g.members }}
+                            choices={{
+                              members: (data.data?.users ?? [])
+                                .filter((u) => u.category !== 'service')
+                                .map((u) => ({
+                                  id: u.username,
+                                  label:
+                                    u.username +
+                                    (g.primaryMembers.includes(u.username)
+                                      ? ` · ${tr('accounts.primary')}`
+                                      : ''),
+                                  disabled: false,
+                                })),
+                            }}
+                            label={tr('edit_group_members_ad891d65')}
+                            icon={mdiPencilOutline}
+                          />
+                        )}
+                        {g.editable && !g.system && (
+                          <OperationButton
+                            actions={['group.delete']}
+                            fields={[]}
+                            initial={{ target: g.name }}
+                            label={tr('delete_group_05b970e6')}
+                            icon={mdiDeleteOutline}
+                            autoReview
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <p>{g.members.join(', ') || tr('accounts.noMembers')}</p>
+                    {g.name === 'sudo' && <p className="small muted">{tr('accounts.sudoWarning')}</p>}
+                    {g.system && <span className="small muted">{tr('accounts.systemGroup')}</span>}
+                  </article>
+                ))}
+            </div>
+          </Tabs.Content>
+        </div>
       </Tabs.Root>
     </>
   )

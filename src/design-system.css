@@ -943,24 +943,20 @@ td {
 /* Tabs and their content form one continuous surface. */
 .tabbed-page {
   min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  background: var(--panel);
 }
 .tabbed-page > .tabs {
-  background: var(--panel-soft);
-  padding: 8px 12px 0;
+  position: relative;
+  background: transparent;
+  padding: 0;
   gap: 4px;
-  margin: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  margin: 0 0 -1px;
+  border: 0;
   overflow-x: auto;
   overflow-y: hidden;
+  scrollbar-width: none;
 }
 .tabbed-page > .tabs button {
   border: 1px solid transparent;
-  border-bottom: 0;
-  margin-bottom: -1px;
   padding: 10px 16px 12px;
   background: transparent;
   color: var(--muted);
@@ -968,11 +964,15 @@ td {
 .tabbed-page > .tabs button[data-state='active'] {
   background: var(--panel);
   border-color: var(--line);
+  border-bottom-color: var(--panel);
   color: var(--accent);
   box-shadow: inset 0 2px var(--accent);
 }
 .tabbed-page > [role='tabpanel'],
-.tabbed-page > .user-details {
+.tabbed-page > .tabbed-body {
+  border: 1px solid var(--line);
+  border-radius: 0 var(--radius-card) var(--radius-card) var(--radius-card);
+  background: var(--panel);
   padding: 24px;
   margin: 0;
   min-width: 0;
@@ -981,12 +981,11 @@ td {
 .tabbed-page > .user-details > [role='tabpanel'] > section > h2:first-child {
   margin-top: 0;
 }
-.tabbed-page > .user-filters {
-  padding: 20px 24px 0;
-  margin: 0;
+.tabbed-body > .user-filters {
+  margin: 0 0 20px;
 }
-.tabbed-page > .notice {
-  margin: 16px 24px;
+.tabbed-body > .notice {
+  margin: 16px 0;
 }
 .account-detail-panel {
   max-width: 1100px;
@@ -1397,14 +1396,8 @@ td {
 }
 @media (max-width: 600px) {
   .tabbed-page > [role='tabpanel'],
-  .tabbed-page > .user-details {
+  .tabbed-page > .tabbed-body {
     padding: 16px;
-  }
-  .tabbed-page > .user-filters {
-    padding: 16px 16px 0;
-  }
-  .tabbed-page > .tabs {
-    padding-inline: 4px;
   }
   .folder-picker-footer {
     align-items: stretch;
@@ -1415,6 +1408,6 @@ td {
     padding: 16px;
   }
 }
-.tabbed-page > .user-filters > input {
+.tabbed-body > .user-filters > input {
   width: min(100%, 24rem);
 }
