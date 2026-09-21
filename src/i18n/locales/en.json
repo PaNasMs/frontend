@@ -1682,5 +1682,6 @@
   "shares.service.inactive": "Stopped",
   "shares.service.failed": "Failed",
   "shares.saved": "Shared folder settings saved",
-  "shares.disconnect": "Disconnect SMB sessions"
+  "shares.disconnect": "Disconnect SMB sessions",
+  "accounts.smbAccess": "SMB access"
 }

@@ -56,7 +56,7 @@ export const operations: Record<string, Operation> = {
   'share.save': { label: tr('shares.save'), fields: [] },
   'share.remove': { label: tr('shares.remove'), fields: [] },
   'share.disconnect': { label: tr('shares.disconnect'), fields: [] },
-  'share.account': { label: tr('shares.accounts'), fields: [] },
+  'share.account': { label: tr('accounts.smbAccess'), fields: [] },
   'share.recover': { label: tr('shares.recover'), fields: [] },
   'network.wifi.scan': { label: tr('wifi.scan'), fields: [] },
   'network.wifi.radio': { label: tr('wifi.networks'), fields: [] },
@@ -557,7 +557,7 @@ function OperationForm({
           q.setQueryData(['jobs'], jobs)
           return jobs.find((j) => j.id === job.id)
         })
-        if (action.startsWith('user.') || action.startsWith('group.')) {
+        if (action.startsWith('user.') || action.startsWith('group.') || action === 'share.account') {
           await Promise.all(
             ['users', 'account-details', 'account-sessions', 'account-history', 'profile'].map((key) =>
               q.invalidateQueries({ queryKey: [key] }),

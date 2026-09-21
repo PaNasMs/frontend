@@ -13,6 +13,8 @@ import {
   mdiFolderMoveOutline,
   mdiRefresh,
   mdiShieldAccountOutline,
+  mdiToggleSwitch,
+  mdiToggleSwitchOffOutline,
 } from '@mdi/js'
 import { request, type Accounts } from '../api/client'
 import { Button, Icon, Notice } from '../shared/ui'
@@ -37,6 +39,7 @@ export type Account = Accounts['users'][number] & {
   passwordStatus: string
   reason: string
   keys?: Key[]
+  smb?: { enabled: boolean; status: string }
   keysError?: string
 }
 type Group = Accounts['groups'][number] & { primaryMembers: string[]; editable: boolean; system: boolean }
@@ -253,6 +256,19 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
           icon={mdiKeyChange}
         />
       </div>
+      <div className="user-section-heading">
+        <h3>{tr('accounts.smbAccess')}</h3>
+        <OperationButton
+          actions={['share.account']}
+          label={tr(account.smb?.enabled ? 'shares.disable' : 'shares.enable')}
+          icon={account.smb?.enabled ? mdiToggleSwitch : mdiToggleSwitchOffOutline}
+          initial={{ target: account.username, enabled: !account.smb?.enabled }}
+          fields={[]}
+          autoReview
+        />
+      </div>
+      <p>{tr('shares.' + (account.smb?.status ?? 'disabled'))}</p>
+      <p className="small muted">{tr('shares.accountHint')}</p>
     </section>
   )
 }
@@ -310,6 +326,7 @@ function AccountDetails({
   const data = useQuery({
     queryKey: ['account-details', username],
     queryFn: () => managed<Account>('account-details', undefined, username),
+    refetchInterval: 10000,
   })
   const user = data.data
   return (

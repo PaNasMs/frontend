@@ -11,8 +11,6 @@ import {
   mdiRefresh,
   mdiCheck,
   mdiClose,
-  mdiAccountCheck,
-  mdiAccountOff,
 } from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
@@ -60,7 +58,7 @@ const empty: Share = {
 export function SharingPage() {
   const cache = useQueryClient()
   const [search, setSearch] = useSearchParams()
-  const tab = search.get('tab') ?? 'folders'
+  const tab = search.get('tab') === 'connections' ? 'connections' : 'folders'
   const [editing, setEditing] = useState<Share | null>(null)
   const data = useQuery({
     queryKey: ['sharing'],
@@ -96,7 +94,7 @@ export function SharingPage() {
         </div>
       </div>
       <nav className="sharing-tabs">
-        {['folders', 'accounts', 'connections'].map((t) => (
+        {['folders', 'connections'].map((t) => (
           <Button key={t} className={t === tab ? 'active' : ''} onClick={() => setSearch({ tab: t })}>
             {tr('shares.' + t)}
           </Button>
@@ -194,35 +192,6 @@ export function SharingPage() {
               />
             </article>
           ))}
-        </>
-      )}
-      {tab === 'accounts' && (
-        <>
-          <p className="muted">{tr('shares.accountHint')}</p>
-          <div className="sharing-grid">
-            {users.data?.users
-              .filter((u) => u.category !== 'service')
-              .map((u) => {
-                const a = data.data?.accounts[u.username]
-                return (
-                  <article className="surface sharing-card" key={u.username}>
-                    <div className="user-section-heading">
-                      <strong>{u.username}</strong>
-                      <OperationButton
-                        actions={['share.account']}
-                        label={tr(a?.enabled ? 'shares.disable' : 'shares.enable')}
-                        icon={a?.enabled ? mdiAccountOff : mdiAccountCheck}
-                        initial={{ target: u.username, enabled: !a?.enabled }}
-                        fields={[]}
-                        autoReview
-                        onDone={refresh}
-                      />
-                    </div>
-                    <p>{tr('shares.' + (a?.status ?? 'disabled'))}</p>
-                  </article>
-                )
-              })}
-          </div>
         </>
       )}
       {tab === 'connections' && (
