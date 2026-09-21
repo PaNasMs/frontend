@@ -1,3 +1,4 @@
+import { ModuleSources } from './module-sources'
 import { WaitingSurface } from '../shared/ui'
 import { DialogContent } from '../shared/ui'
 import { useQueryValue } from './navigation'
@@ -237,6 +238,7 @@ export function ModuleManager() {
           ? actions(selected)
           : !moduleId && (
               <div className="actions">
+                <ModuleSources />
                 <select
                   aria-label={tr('modules.filter')}
                   value={filter}
@@ -285,6 +287,11 @@ export function ModuleManager() {
           {tr('modules.catalogError')} {remote.error.message}
         </Notice>
       )}
+      {remote.data?.errors.map((item) => (
+        <Notice error key={item.repository}>
+          {item.repository}: {item.error}
+        </Notice>
+      ))}
       {remote.isPending && <p className="muted">{tr('modules.catalogLoading')}</p>}
 
       {catalog.isPending && <p className="muted">{tr('loading_modules_d860b4ba')}</p>}

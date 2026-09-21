@@ -1,4 +1,8 @@
 import {
+  Children,
+  cloneElement,
+  Fragment,
+  isValidElement,
   useLayoutEffect,
   useEffect,
   useRef,
@@ -100,10 +104,39 @@ export const DialogContent = forwardRef<
   { busy, message, hint, children, onEscapeKeyDown, onPointerDownOutside, onInteractOutside, ...props },
   ref,
 ) {
+  const flatten = (nodes: ReactNode, prefix = ''): ReactNode[] =>
+    Children.toArray(nodes).flatMap((node, index) =>
+      isValidElement<{ children?: ReactNode }>(node) && node.type === Fragment
+        ? flatten(node.props.children, `${prefix}${index}:`)
+        : [isValidElement(node) ? cloneElement(node, { key: `${prefix}${node.key ?? index}` }) : node],
+    )
+  const nodes = flatten(children)
+  const header: ReactNode[] = []
+  const body: ReactNode[] = []
+  let footer: ReactNode = null
+  nodes.forEach((node, index) => {
+    const element = isValidElement<{ className?: string }>(node) ? node : null
+    const classes = element?.props.className?.split(' ') ?? []
+    if (
+      element &&
+      (element.type === Dialog.Title ||
+        element.type === Dialog.Description ||
+        classes.some((name) => ['dialog-heading', 'share-wizard-heading'].includes(name)))
+    )
+      header.push(node)
+    else if (
+      index === nodes.length - 1 &&
+      element &&
+      (classes.includes('actions') || classes.includes('dialog-actions') || element.type === Dialog.Close)
+    )
+      footer = node
+    else body.push(node)
+  })
   return (
     <Dialog.Content
       {...props}
       ref={ref}
+      className={(props.className ?? '') + ' structured-dialog'}
       onEscapeKeyDown={(event) => {
         if (busy) event.preventDefault()
         onEscapeKeyDown?.(event)
@@ -117,7 +150,9 @@ export const DialogContent = forwardRef<
         onInteractOutside?.(event)
       }}
     >
-      {children}
+      {header.length > 0 && <header className="modal-header">{header}</header>}
+      <div className="modal-body">{body}</div>
+      {footer && <footer className="modal-footer">{footer}</footer>}
       {busy && <WaitingOverlay message={message} hint={hint} />}
     </Dialog.Content>
   )

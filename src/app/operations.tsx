@@ -88,6 +88,8 @@ export const operations: Record<string, Operation> = {
   'system.poweroff': { label: tr('power.poweroff'), fields: [] },
   'system.reboot': { label: tr('power.reboot'), fields: [] },
   'homes.move': { label: tr('homes.move'), fields: [] },
+  'module.source-add': { label: tr('repos.add'), fields: [] },
+  'module.source-remove': { label: tr('repos.remove'), fields: [] },
   'module.recover': { label: tr('jobs.recoverModules'), fields: [] },
   'updates.repair': { label: tr('jobs.repairPackages'), fields: [] },
   'homes.recover': { label: tr('homes.recover'), fields: [] },
@@ -994,26 +996,28 @@ function OperationForm({
             </div>
           </>
         ) : (
-          <Button
-            className="primary"
-            disabled={
-              plan.isPending ||
-              editable.some(
-                (field) =>
-                  field.type === 'folder' &&
-                  !(action === 'user.create' && field.key === 'home') &&
-                  !params[field.key],
-              ) ||
-              (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
-            }
-            onClick={() => plan.mutate()}
-          >
-            {plan.error
-              ? tr('check_again_f5a9c448')
-              : autoReview && editable.length === 0
-                ? tr('check_operation_availability_134d9204')
-                : tr('continue_3f75368a')}
-          </Button>
+          <div className="actions">
+            <Button
+              className="primary"
+              disabled={
+                plan.isPending ||
+                editable.some(
+                  (field) =>
+                    field.type === 'folder' &&
+                    !(action === 'user.create' && field.key === 'home') &&
+                    !params[field.key],
+                ) ||
+                (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
+              }
+              onClick={() => plan.mutate()}
+            >
+              {plan.error
+                ? tr('check_again_f5a9c448')
+                : autoReview && editable.length === 0
+                  ? tr('check_operation_availability_134d9204')
+                  : tr('continue_3f75368a')}
+            </Button>
+          </div>
         )}
       </DialogContent>
     </Dialog.Portal>

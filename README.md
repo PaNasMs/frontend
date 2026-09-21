@@ -129,3 +129,10 @@ interactive cards may use `--shadow-card-hover`, and menus/dialogs use
 Module cards keep their title/version separate from explicit
 installation and enabled states; lifecycle actions stay in the footer. Desktop
 shortcuts fill their grid cell, while widget and layout behavior is unchanged.
+
+Dialog content uses a shared header/body/footer layout with a scrollable body and
+stable actions. Nested tabs use an underline, while page-level tabs retain the
+full-height panel strip. Settings use a vertical navigation divider and flat content
+sections; tables inherit their containing page surface. General settings probe the
+new HTTP port before navigation, with a manual-link fallback. Module repositories
+are managed from the Modules toolbar and require explicit publisher-key review.

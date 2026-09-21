@@ -72,10 +72,21 @@ export async function moduleCatalog(): Promise<ModuleCatalog> {
   }
 }
 
-export type AvailableModule = InstalledModule & { reason: string; updateAvailable: boolean }
-export async function availableModules(): Promise<{ available: AvailableModule[] }> {
-  const result = await managed<{ available: AvailableModule[] }>('module-catalog')
+export type AvailableModule = InstalledModule & {
+  reason: string
+  updateAvailable: boolean
+  repository: string
+}
+export async function availableModules(): Promise<{
+  available: AvailableModule[]
+  errors: { repository: string; error: string }[]
+}> {
+  const result = await managed<{
+    available: AvailableModule[]
+    errors?: { repository: string; error: string }[]
+  }>('module-catalog')
   return {
+    errors: result.errors ?? [],
     available: result.available.map((module) => {
       const labels = module.translations?.[language(i18n.language)] ?? module.translations?.en
       return {

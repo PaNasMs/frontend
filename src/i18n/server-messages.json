@@ -3292,5 +3292,100 @@
     "en": "The interrupted HTTP port change was rolled back.",
     "ru": "Прерванное изменение порта HTTP отменено.",
     "uk": "Перервану зміну порту HTTP скасовано."
+  },
+  {
+    "key": "repos.server.url",
+    "en": "Invalid module repository URL",
+    "ru": "Некорректный URL репозитория модулей"
+  },
+  {
+    "key": "repos.server.https",
+    "en": "Use an HTTPS repository URL without credentials, query or fragment",
+    "ru": "Укажите HTTPS-адрес без логина, пароля, параметров и фрагмента"
+  },
+  {
+    "key": "repos.server.public",
+    "en": "Use a public HTTPS repository URL",
+    "ru": "Укажите публичный HTTPS-адрес репозитория"
+  },
+  {
+    "key": "repos.server.key",
+    "en": "The repository must use an Ed25519 public key",
+    "ru": "Репозиторий должен использовать публичный ключ Ed25519"
+  },
+  {
+    "key": "repos.server.publisher",
+    "en": "Choose a unique repository publisher ID",
+    "ru": "Идентификатор издателя должен быть уникальным"
+  },
+  {
+    "key": "repos.server.collision",
+    "en": "This publisher ID already uses another public key",
+    "ru": "Этот идентификатор издателя уже связан с другим публичным ключом"
+  },
+  {
+    "key": "repos.server.id",
+    "en": "Choose a unique repository ID",
+    "ru": "Идентификатор репозитория должен быть уникальным"
+  },
+  {
+    "key": "repos.server.limit",
+    "en": "At most 16 module repositories are supported",
+    "ru": "Можно добавить не более 16 репозиториев"
+  },
+  {
+    "key": "repos.server.duplicate",
+    "en": "This module repository is already configured",
+    "ru": "Этот репозиторий уже добавлен"
+  },
+  {
+    "key": "repos.server.changed",
+    "en": "Repository signing key changed. Review the repository again.",
+    "ru": "Ключ подписи изменился. Проверьте репозиторий заново."
+  },
+  {
+    "key": "repos.server.missing",
+    "en": "Module repository not found",
+    "ru": "Репозиторий модулей не найден"
+  },
+  {
+    "key": "repos.server.trust",
+    "en": "Trust this publisher to provide executable NAS modules",
+    "ru": "Доверить этому издателю поставку исполняемых модулей NAS"
+  },
+  {
+    "key": "repos.server.retain",
+    "en": "Installed modules are retained",
+    "ru": "Установленные модули сохранятся"
+  },
+  {
+    "key": "repos.server.added",
+    "en": "Module repository added",
+    "ru": "Репозиторий модулей добавлен"
+  },
+  {
+    "key": "repos.server.removed",
+    "en": "Module repository removed",
+    "ru": "Репозиторий модулей удалён"
+  },
+  {
+    "key": "repos.server.publisherLine",
+    "en": "Publisher: {{v0}}",
+    "ru": "Издатель: {{v0}}"
+  },
+  {
+    "key": "repos.server.moduleDuplicate",
+    "en": "Duplicate module ID: {{v0}}",
+    "ru": "Повторяющийся идентификатор модуля: {{v0}}"
+  },
+  {
+    "key": "repos.server.publisherMismatch",
+    "en": "Module publisher differs from repository publisher",
+    "ru": "Издатель модуля отличается от издателя репозитория"
+  },
+  {
+    "key": "repos.server.installedPublisher",
+    "en": "Installed module belongs to another publisher",
+    "ru": "Установленный модуль принадлежит другому издателю"
   }
 ]

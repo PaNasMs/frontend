@@ -49,6 +49,23 @@ export function WebSettings() {
       })
       await waitForJob(async () => (await managed<Job[]>('jobs')).find((item) => item.id === job.id))
       await new Promise((resolve) => setTimeout(resolve, 8000))
+      for (let attempt = 0; attempt < 12; attempt++) {
+        try {
+          const response = await fetch(new URL('/api/v1/health', address), {
+            credentials: 'omit',
+            cache: 'no-store',
+            signal: AbortSignal.timeout(1500),
+          })
+          const health = await response.json()
+          if (response.ok && health.status === 'ok' && health.product === 'PaNasMs') {
+            window.location.assign(address.href)
+            return
+          }
+        } catch {
+          /* The new listener may not be ready yet. */
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+      }
       setReady(true)
     } catch (reason) {
       setError((reason as Error).message)
