@@ -3442,5 +3442,23 @@
     "key": "up.server.space",
     "en": "At least 1 GiB of free space is required for update and rollback",
     "ru": "Для обновления и отката нужен минимум 1 ГиБ свободного места"
+  },
+  {
+    "key": "alerts.trashHelp",
+    "en": "Check Trash and the original folder. A missing source alone does not prove the item reached Trash.",
+    "ru": "Проверьте корзину и исходную папку. Отсутствие исходного файла само по себе не означает, что он попал в корзину.",
+    "uk": "Перевірте кошик і початкову папку. Відсутність початкового файла сама по собі не означає, що він потрапив до кошика."
+  },
+  {
+    "key": "alerts.mkdirHelp",
+    "en": "Check whether the intended folder exists before creating it again.",
+    "ru": "Проверьте, существует ли нужная папка, прежде чем создавать её повторно.",
+    "uk": "Перевірте, чи існує потрібна папка, перш ніж створювати її повторно."
+  },
+  {
+    "key": "alerts.permissionsHelp",
+    "en": "Review current ownership and permissions before applying another change.",
+    "ru": "Проверьте текущего владельца и права доступа перед новым изменением.",
+    "uk": "Перевірте поточного власника та права доступу перед новою зміною."
   }
 ]

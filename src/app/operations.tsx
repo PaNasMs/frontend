@@ -1130,7 +1130,7 @@ export function JobsList() {
   )
 }
 
-function JobRecovery({ job, onClose }: { job: Job; onClose: () => void }) {
+export function JobRecovery({ job, onClose }: { job: Job; onClose: () => void }) {
   const q = useQueryClient()
   const [report, setReport] = useState<RecoveryReport | undefined>(job.recovery)
   const inspect = useMutation({
@@ -1144,6 +1144,7 @@ function JobRecovery({ job, onClose }: { job: Job; onClose: () => void }) {
     mutationFn: () => managed('acknowledge', { id: job.id }),
     onSuccess: () => {
       void q.invalidateQueries({ queryKey: ['jobs'] })
+      void q.invalidateQueries({ queryKey: ['notifications'] })
       onClose()
     },
   })
@@ -1169,6 +1170,7 @@ function JobRecovery({ job, onClose }: { job: Job; onClose: () => void }) {
           <Dialog.Description>
             {operations[job.action]?.label ?? job.action} · {job.target}
           </Dialog.Description>
+          <p>{job.stage}</p>
           <p>{tr('jobs.explanation')}</p>
           {(inspect.error || acknowledge.error) && (
             <Notice error>{(inspect.error || acknowledge.error)?.message}</Notice>

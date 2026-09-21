@@ -1858,5 +1858,12 @@
   "up.server.jobs": "Wait for active operations: {{v0}}",
   "up.server.modules": "Incompatible installed modules: {{v0}}",
   "up.server.required": "Restore the failed update before starting another operation",
-  "up.server.space": "At least 1 GiB of free space is required for update and rollback"
+  "up.server.space": "At least 1 GiB of free space is required for update and rollback",
+  "alerts.inspect": "View operation result",
+  "alerts.openSource": "Open related section",
+  "alerts.reviewHint": "This is an earlier operation failure, not a diagnosis of the current state. Review the result, then acknowledge it.",
+  "alerts.problemHint": "Check the related section for the current condition and available actions.",
+  "alerts.trashHelp": "Check Trash and the original folder. A missing source alone does not prove the item reached Trash.",
+  "alerts.mkdirHelp": "Check whether the intended folder exists before creating it again.",
+  "alerts.permissionsHelp": "Review current ownership and permissions before applying another change."
 }

@@ -1,9 +1,11 @@
 import { tr, locale } from '../i18n/index'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { request } from '../api/client'
-import { Notice } from '../shared/ui'
+import { Notice, Button, Icon } from '../shared/ui'
+import { mdiTextBoxSearchOutline, mdiClose, mdiArrowRight } from '@mdi/js'
+import { JobRecovery, managed, type Job } from './operations'
 export type Alert = {
   id: string
   message: string
@@ -20,6 +22,10 @@ export function notify(message: string) {
   window.dispatchEvent(new CustomEvent('panasms:toast', { detail: message }))
 }
 export function NotificationsList() {
+  const q = useQueryClient()
+  const [selected, setSelected] = useState<Job | null>(null)
+  const inspect = useMutation({mutationFn: (id: string) => managed<Job>('job', undefined, id), onSuccess: setSelected})
+  const dismiss = useMutation({mutationFn: (id: string) => request('notifications?id='+encodeURIComponent(id), 'DELETE'), onSuccess: () => q.invalidateQueries({queryKey:['notifications']})})
   const data = useQuery({
     queryKey: ['notifications'],
     queryFn: () => request<Alert[]>('notifications'),
@@ -28,6 +34,9 @@ export function NotificationsList() {
   return (
     <>
       {data.error && <Notice error>{data.error.message}</Notice>}
+      {(inspect.error || dismiss.error) && <Notice error>{(inspect.error || dismiss.error)?.message}</Notice>}
+      {selected && <JobRecovery job={selected} onClose={() => setSelected(null)} />}
+      {data.data?.some(a => a.active && a.id.startsWith('job:')) && <p className="small muted">{tr('alerts.reviewHint')}</p>}
       {data.data?.map((a) => (
         <article className="surface" key={a.id}>
           <span className={`badge ${a.active ? 'warning' : ''}`}>
@@ -41,6 +50,12 @@ export function NotificationsList() {
           </span>
           <p>{a.message}</p>
           <span className="small muted">{new Date(a.updated).toLocaleString(locale())}</span>
+          {a.active && !a.id.startsWith('job:') && <p className="small muted">{tr('alerts.problemHint')}</p>}
+          <div className="job-actions">
+            {a.id.startsWith('job:') ? <Button title={tr('alerts.inspect')} aria-label={tr('alerts.inspect')} disabled={inspect.isPending} onClick={() => inspect.mutate(a.id.slice(4))}><Icon path={mdiTextBoxSearchOutline}/></Button> :
+              <Link className="button" title={tr('alerts.openSource')} aria-label={tr('alerts.openSource')} to={a.id.startsWith('update:') ? '/settings/updates' : a.id.startsWith('cpu-') || a.id.startsWith('cooling-') ? '/settings/general' : '/storage/disks'}><Icon path={mdiArrowRight}/></Link>}
+            {!a.active && <Button title={tr('dismiss_notification_5e107a81')} aria-label={tr('dismiss_notification_5e107a81')} disabled={dismiss.isPending} onClick={()=>dismiss.mutate(a.id)}><Icon path={mdiClose}/></Button>}
+          </div>
         </article>
       ))}
       {data.data?.length === 0 && <Notice>{tr('no_notifications_yet_be3ce152')}</Notice>}
