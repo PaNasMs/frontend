@@ -71,10 +71,10 @@ export function SystemUpdates() {
     <h3>{tr('up.history')}</h3>
     {data?.history.length ? <div className="table-wrap"><table><thead><tr><th>{tr('up.date')}</th><th>{tr('up.version')}</th><th>{tr('up.result')}</th></tr></thead><tbody>{data.history.map((row)=><tr key={row.id}><td>{new Date(row.finishedAt ?? row.startedAt ?? '').toLocaleString(locale())}</td><td>{row.version ?? '—'}</td><td>{tr('up.phase.'+row.phase)}{row.error && <p className="small">{row.error}</p>}</td></tr>)}</tbody></table></div> : <p className="muted">{tr('up.empty')}</p>}
     <Dialog.Root open={!!operation || !!data?.busy} onOpenChange={(open)=>{if(!open && !working)setOperation(null)}}><Dialog.Portal><Dialog.Overlay className="dialog-overlay"/><DialogContent className="settings-dialog power-dialog" busy={working} message={tr('up.phase.'+(data?.state.phase ?? 'queued'))} hint={tr('up.wait')}>
-      <div className="dialog-heading"><Dialog.Title>{tr(operation==='rollback'?'up.rollback':'up.install')}</Dialog.Title><Dialog.Close asChild><Button title={tr('close_4ae50d30')}><Icon path={mdiClose}/></Button></Dialog.Close></div>
-      <Dialog.Description>{tr(operation==='rollback'?'up.rollbackHint':'up.installHint')}</Dialog.Description>
+      <div className="dialog-heading"><Dialog.Title>{tr(operation ? 'up.'+operation : 'up.title')}</Dialog.Title><Dialog.Close asChild><Button title={tr('close_4ae50d30')}><Icon path={mdiClose}/></Button></Dialog.Close></div>
+      <Dialog.Description>{tr(operation ? (operation==='rollback'?'up.rollbackHint':'up.installHint') : 'up.wait')}</Dialog.Description>
       {error && <Notice error>{error}</Notice>}
-      <div className="actions"><Dialog.Close asChild><Button>{tr('cancel_0ec753be')}</Button></Dialog.Close><Button className="primary" onClick={()=>void apply('system.update.'+operation)}>{tr('homes.confirmButton')}</Button></div>
+      {operation && <div className="actions"><Dialog.Close asChild><Button>{tr('cancel_0ec753be')}</Button></Dialog.Close><Button className="primary" onClick={()=>void apply('system.update.'+operation)}>{tr('homes.confirmButton')}</Button></div>}
     </DialogContent></Dialog.Portal></Dialog.Root>
   </div>
 }
