@@ -1865,5 +1865,9 @@
   "alerts.problemHint": "Check the related section for the current condition and available actions.",
   "alerts.trashHelp": "Check Trash and the original folder. A missing source alone does not prove the item reached Trash.",
   "alerts.mkdirHelp": "Check whether the intended folder exists before creating it again.",
-  "alerts.permissionsHelp": "Review current ownership and permissions before applying another change."
+  "alerts.permissionsHelp": "Review current ownership and permissions before applying another change.",
+  "alerts.severity.info": "Information",
+  "alerts.severity.success": "Success",
+  "alerts.severity.warning": "Warning",
+  "alerts.severity.error": "Error"
 }

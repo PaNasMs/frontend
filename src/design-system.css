@@ -1652,3 +1652,14 @@ td {
 .update-preferences { margin-top: 24px; padding-block: 20px; border-block: 1px solid var(--line); }
 .update-preferences .field { max-width: 420px; }
 .update-settings table td { overflow-wrap: anywhere; }
+
+.notification-message { display:flex; align-items:flex-start; gap:10px; }
+.notification-message p { flex:1; min-width:0; margin:0; overflow-wrap:anywhere; }
+.notification-severity { display:inline-flex; flex:none; margin-top:2px; color:var(--accent); }
+.notification-severity.success { color:var(--success); }
+.notification-severity.warning { color:var(--warning); }
+.notification-severity.error { color:var(--error); }
+.notification-footer { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; }
+.notification-footer time { min-width:0; }
+.notification-footer .job-actions { display:flex; flex:none; gap:4px; margin:0; }
+.activity-list .notification-message p { margin:0; }
