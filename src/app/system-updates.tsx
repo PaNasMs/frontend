@@ -12,7 +12,7 @@ import { notify } from './notifications'
 import type { ActiveTask } from './active-tasks'
 
 type Settings = { channel: 'stable' | 'testing'; mode: 'notify' | 'download' | 'auto'; hour: number }
-type State = { id?: string; phase?: string; error?: string; version?: string; startedAt?: string; finishedAt?: string }
+type State = { operation?: string; id?: string; phase?: string; error?: string; version?: string; startedAt?: string; finishedAt?: string }
 type UpdateInfo = { settings: Settings; installed: Record<string, string>; candidate: { version: string; run: string; createdAt: string } | null; available: boolean; busy: boolean; rollbackAvailable: boolean; checkedAt?: string; state: State; history: State[] }
 export function useSystemUpdates() {
   return useQuery({ queryKey: ['system-updates'], queryFn: () => managed<UpdateInfo>('system-updates'), enabled: isAdministrator(), refetchInterval: 5000, retry: false })
@@ -32,11 +32,12 @@ export function SystemUpdates() {
   const installing = useRef(false)
   useEffect(() => { if (data) setSettings(data.settings) }, [data?.settings.channel, data?.settings.mode, data?.settings.hour])
   useEffect(() => {
-    if (data?.busy && ['installing', 'verifying', 'rolling-back'].includes(data.state.phase ?? '')) installing.current = true
+    if (data?.busy && ['install', 'rollback'].includes(data.state.operation ?? '')) installing.current = true
     if (installing.current && data && !data.busy && ['complete', 'rolled-back'].includes(data.state.phase ?? '')) window.location.reload()
   }, [data?.busy, data?.state.phase])
   async function apply(action: string, params: Record<string, unknown> = {}) {
     setBusy(true); setError('')
+    if (action==='system.update.install' || action==='system.update.rollback') installing.current=true
     try {
       const plan = await managed<{ fingerprint: string; confirmation: string }>('plan', { action, params })
       const job = await managed<{ id: string }>('run', { id: newID(), action, params, fingerprint: plan.fingerprint, confirmation: plan.confirmation })
