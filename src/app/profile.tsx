@@ -158,7 +158,7 @@ export function ProfilePage() {
               <h2>{tr('wallpaper_b59390bb')}</h2>
               <WallpaperSettings />
             </section>
-            <div hidden={section !== 'account'}>
+            <div className="surface" hidden={section !== 'account'}>
               <AvatarSettings />
             </div>
             <section className="surface" hidden={section !== 'appearance'}>

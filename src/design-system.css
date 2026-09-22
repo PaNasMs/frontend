@@ -1527,7 +1527,9 @@ td {
 }
 .profile-settings .user-session-list > .surface {
   padding-block: 16px;
-  border-bottom: 1px solid var(--line);
+}
+.profile-settings .user-session-list > .surface + .surface {
+  border-top: 1px solid var(--line);
 }
 .table-wrap {
   border: 0;
