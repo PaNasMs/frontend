@@ -16,27 +16,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request, APIError, type Accounts } from '../api/client'
 import { reconcileSubmission } from '../shared/operation-submission'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
-type RecoveryReport = {
-  message: string
-  checks: { label: string; value: unknown }[]
-  route: string
-  recoveryAction?: string
-}
-export type Job = {
-  id: string
-  user: string
-  action: string
-  target: string
-  status: string
-  stage: string
-  created: string
-  updated: string
-  canCancel: boolean
-  cancelRequested: boolean
-  needsReview: boolean
-  recovery?: RecoveryReport
-  result: Record<string, unknown>
-}
+import type { components } from '../api/schema'
+type RecoveryReport = components['schemas']['JobRecovery']
+export type Job = components['schemas']['ManagementJob']
+type ManagementViews = components['schemas']['ManagementViews']
 export type Field = {
   key: string
   label: string
@@ -394,6 +377,8 @@ export const operations: Record<string, Operation> = {
     fields: [{ key: 'target', label: tr('mount_point_b3caf3fe') }],
   },
 }
+export function managed<K extends keyof ManagementViews>(view: K, body?: undefined, target?: string): Promise<NonNullable<ManagementViews[K]>>
+export function managed<T>(view: string, body?: unknown, target?: string): Promise<T>
 export async function managed<T>(view: string, body?: unknown, target?: string): Promise<T> {
   const submit = () =>
     request<

@@ -1,3 +1,4 @@
+import type { components } from '../api/schema'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -11,9 +12,9 @@ import { isAdministrator } from './module-registry'
 import { notify } from './notifications'
 import type { ActiveTask } from './active-tasks'
 
-type Settings = { channel: 'stable' | 'testing'; mode: 'notify' | 'download' | 'auto'; hour: number }
-type State = { operation?: string; id?: string; phase?: string; error?: string; version?: string; startedAt?: string; finishedAt?: string }
-type UpdateInfo = { settings: Settings; installed: Record<string, string>; candidate: { version: string; run: string; createdAt: string } | null; available: boolean; busy: boolean; rollbackAvailable: boolean; checkedAt?: string; state: State; history: State[] }
+type Settings = components['schemas']['UpdateSettings']
+type State = components['schemas']['UpdateState']
+type UpdateInfo = components['schemas']['SystemUpdates']
 export function useSystemUpdates() {
   return useQuery({ queryKey: ['system-updates'], queryFn: () => managed<UpdateInfo>('system-updates'), enabled: isAdministrator(), refetchInterval: 5000, retry: false })
 }

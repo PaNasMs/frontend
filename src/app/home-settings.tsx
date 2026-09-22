@@ -1,3 +1,4 @@
+import type { components } from '../api/schema'
 import { FolderField } from '../shared/folder-picker'
 import { WaitingSurface } from '../shared/ui'
 import { DialogContent } from '../shared/ui'
@@ -11,7 +12,7 @@ import { Button, Icon, Notice } from '../shared/ui'
 import { managed, type Job } from './operations'
 import { newID } from './dashboard'
 
-type Homes = { path: string; users: { name: string; home: string }[]; recovery: boolean }
+type Homes = components['schemas']['HomeLocations']
 type Blocker = {
   title: string
   kind: string

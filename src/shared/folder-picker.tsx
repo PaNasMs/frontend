@@ -1,3 +1,4 @@
+import type { components } from '../api/schema'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -9,7 +10,7 @@ import { Button, DialogContent, Icon, Notice } from './ui'
 
 type FolderPolicy = 'share' | 'home' | 'mount'
 type FolderRow = { name: string; path: string; reason?: string }
-type Folders = { roots: (string | FolderRow)[]; path: string; folders: FolderRow[] }
+type Folders = components['schemas']['FolderLocations']
 
 export function FolderPicker({
   onChoose,

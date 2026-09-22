@@ -271,11 +271,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Read a management view using the authenticated administrator identity */
+        /**
+         * Read an authorized management snapshot
+         * @description ManagementViews maps each core view to its response schema. Ordinary users are restricted to their own account/session/jobs and authorized module views. Domain validation errors use Error with HTTP 200 for compatibility. Unknown views never execute mutations.
+         */
         get: {
             parameters: {
                 query: {
-                    view: "homes" | "homes-check" | "jobs" | "storage-options" | "raid-candidates" | "smart" | "services" | "journal" | "updates" | "files" | "nfs" | "power" | "network";
+                    /** @description Core views: job, jobs, accounts, account-details, account-sessions, homes, homes-check, sharing, share-folders, home-folders, mount-folders, modules, module-sources, module-catalog, web-access, system-updates, network, storage-options, raid-candidates, smart, services, journal, updates, nfs, power. Additional module queries require an enabled module. */
+                    view: string;
                     target?: string;
                 };
                 header?: never;
@@ -284,24 +288,42 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Typed view result or explicit error; never shell output */
+                /** @description Selected core snapshot, module-owned JSON response, or domain error */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ManagementJob"] | components["schemas"]["ManagementJob"][] | components["schemas"]["AccountInventory"] | components["schemas"]["ManagedAccount"] | components["schemas"]["SSHSession"][] | components["schemas"]["HomeLocations"] | components["schemas"]["HomePreflight"] | components["schemas"]["ShareInventory"] | components["schemas"]["FolderLocations"] | components["schemas"]["FolderLocations"] | components["schemas"]["FolderLocations"] | components["schemas"]["InstalledModules"] | components["schemas"]["ModuleSources"] | components["schemas"]["ModuleCatalog"] | components["schemas"]["WebAccess"] | components["schemas"]["SystemUpdates"] | components["schemas"]["NetworkView"] | components["schemas"]["StorageOptions"] | components["schemas"]["RaidCandidates"] | components["schemas"]["SmartReport"] | components["schemas"]["ServicesView"] | components["schemas"]["JournalView"] | components["schemas"]["PackageUpdates"] | components["schemas"]["NFSExports"] | components["schemas"]["PowerState"] | components["schemas"]["Error"] | {
+                            [key: string]: unknown;
+                        };
+                    };
                 };
-                /** @description Administrator required */
+                /** @description Access denied */
                 403: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description System handler or task journal unavailable */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
                 };
             };
         };
         put?: never;
-        /** Preview, enqueue, safely cancel, inspect or acknowledge a task, or clear reviewed history */
+        /**
+         * Preview, submit, cancel, inspect or acknowledge an operation
+         * @description plan requires action/params and returns OperationPlan or Error; run requires id/action/params/fingerprint/confirmation and returns JobAccepted. cancel/recover/acknowledge require id; clear-history accepts {}. Queued work is not replayed after restart. Cancellation is cooperative, never a kill request. IDs must be unique per logical submission; retry uncertain submissions with the same ID.
+         */
         post: {
             parameters: {
                 query: {
@@ -313,42 +335,72 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description Client idempotency identifier */
-                        id?: string;
-                        /** @description Allowlisted domain action; arbitrary commands are rejected */
-                        action?: string;
-                        params?: {
-                            [key: string]: unknown;
-                        };
-                        /** @description Fresh preview state digest */
-                        fingerprint?: string;
-                        /** @description Exact target acknowledgement from preview */
-                        confirmation?: string;
-                    };
+                    "application/json": components["schemas"]["ManagementRequest"];
                 };
             };
             responses: {
-                /** @description Preview with target/details/fingerprint/confirmation */
+                /** @description Plan, existing job ID, recovery report, acknowledgement or domain error */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["OperationPlan"] | components["schemas"]["JobAccepted"] | components["schemas"]["JobRecovery"] | components["schemas"]["OperationOK"] | components["schemas"]["Error"];
+                    };
                 };
-                /** @description Persistent job accepted */
+                /** @description Durably accepted job */
                 202: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["JobAccepted"];
+                    };
                 };
-                /** @description Conflict or task can no longer be cancelled */
+                /** @description Invalid request or mode */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Access denied */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Stale state or task conflict */
                 409: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Queue full */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Handler or journal unavailable; reconcile by ID before retrying */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
                 };
             };
         };
@@ -411,21 +463,26 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Persistent deduplicated active and resolved alerts */
+                /** @description Persistent alerts; an ordinary user receives an empty list */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["Notification"][];
+                    };
                 };
             };
         };
         put?: never;
         post?: never;
-        /** Clear resolved alert and event history; active warnings remain */
+        /** Dismiss resolved history for the caller; active warnings remain */
         delete: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Omit to dismiss all resolved history */
+                    id?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -560,6 +617,154 @@ export interface paths {
                 };
             };
         };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Authenticated same-origin WebSocket invalidations
+         * @description Server messages match EventEnvelope. Reread HTTP snapshots after resync/reconnect; there is no replay cursor. No commands are accepted. Slow clients disconnect; revoked sessions close with code 1008.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description WebSocket established */
+                101: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Sign-in required */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Invalid origin */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/modules/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a module bundle for inspection before installation */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+            responses: {
+                /** @description Staged archive reference for module.install preview */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Administrator required */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Agent unavailable */
+                503: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/module-assets/{module}/{asset}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read a manifest-listed UI asset from an enabled module */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    module: string;
+                    /** @description Relative asset path */
+                    asset: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Asset with its native content type and no-store policy */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Module disabled or asset not listed in its signed manifest */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -831,6 +1036,559 @@ export interface components {
             newPassword?: string;
             key?: string;
             id?: string;
+        };
+        ManagementRequest: {
+            id?: string;
+            action?: string;
+            /** @description Action-specific parameters validated by the owning core component or installed module. Secrets are never persisted in the job journal. */
+            params?: {
+                [key: string]: unknown;
+            };
+            fingerprint?: string;
+            confirmation?: string;
+        };
+        OperationPlan: {
+            target: string;
+            details: string[];
+            fingerprint: string;
+            confirmation: string;
+        };
+        JobAccepted: {
+            id: string;
+        };
+        OperationOK: {
+            /** @constant */
+            ok: true;
+        };
+        HomeLocations: {
+            path: string;
+            users: {
+                name: string;
+                home: string;
+            }[];
+            recovery: boolean;
+        };
+        HomeBlocker: {
+            title: string;
+            kind: string;
+            user: string;
+            unit: string;
+            reason: string;
+            processes: {
+                name: string;
+                pid: number;
+            }[];
+        };
+        HomePreflight: components["schemas"]["OperationPlan"] | {
+            blockers: components["schemas"]["HomeBlocker"][];
+        };
+        FolderEntry: {
+            name: string;
+            path: string;
+            reason?: string;
+        };
+        FolderLocations: {
+            roots: (string | components["schemas"]["FolderEntry"])[];
+            path: string;
+            folders: components["schemas"]["FolderEntry"][];
+        };
+        SSHSession: {
+            id: string;
+            user: string;
+            uid: string | null;
+            kind: string;
+            address: string;
+            leader: string | null;
+            state: string | null;
+            created: string | null;
+        };
+        ManagedAccount: {
+            username: string;
+            name: string;
+            home: string;
+            shell: string;
+            category: string;
+            primaryGroup: string;
+            expiry: string;
+            reason: string;
+            passwordStatus?: string;
+            uid: number;
+            gid: number;
+            minDays?: number;
+            maxDays?: number;
+            warnDays?: number;
+            inactiveDays?: number;
+            expiryDay?: number;
+            panel: boolean;
+            disabled: boolean;
+            expired: boolean;
+            ssh: boolean;
+            forcePasswordChange?: boolean;
+            groups: string[];
+            keys?: {
+                id: string;
+                type: string;
+                fingerprint: string;
+                comment: string;
+            }[];
+            keysError?: string;
+            smb?: {
+                enabled: boolean;
+                status: string;
+            };
+        };
+        ManagedGroup: {
+            name: string;
+            gid: number;
+            members: string[];
+            primaryMembers: string[];
+            editable: boolean;
+            system: boolean;
+        };
+        AccountInventory: {
+            users: components["schemas"]["ManagedAccount"][];
+            groups: components["schemas"]["ManagedGroup"][];
+            shells: string[];
+            passwordPolicy: string;
+            sshAvailable: boolean;
+        };
+        SharedFolder: {
+            name: string;
+            path: string;
+            smb: boolean;
+            nfs: boolean;
+            readOnly: boolean;
+            readers: string[];
+            writers: string[];
+            clients: string[];
+        };
+        ShareInventory: {
+            shares: components["schemas"]["SharedFolder"][];
+            accounts: {
+                [key: string]: {
+                    enabled: boolean;
+                    status: string;
+                    uid: number;
+                };
+            };
+            drift: boolean;
+            recovery: boolean;
+            smbAvailable: boolean;
+            services: {
+                [key: string]: string;
+            };
+            /** @description Redacted smbstatus JSON; fields depend on the installed Samba version. */
+            sessions: {
+                [key: string]: unknown;
+            };
+        };
+        NFSExports: {
+            exports: {
+                path: string;
+                clients: string[];
+                readOnly: boolean;
+            }[];
+        };
+        ModuleManifest: {
+            id: string;
+            title: string;
+            version: string;
+            signer: string;
+            core: string;
+            enabled: boolean;
+            description?: string;
+            dependencies?: {
+                [key: string]: string;
+            };
+            packages?: {
+                [key: string]: string;
+            };
+            requiredBy: string[];
+            files: {
+                [key: string]: string;
+            };
+            translations?: {
+                [key: string]: {
+                    title: string;
+                    description?: string;
+                };
+            };
+        };
+        InstalledModules: {
+            core: string;
+            api: number;
+            installed: components["schemas"]["ModuleManifest"][];
+        };
+        AvailableModule: components["schemas"]["ModuleManifest"] & {
+            reason: string;
+            updateAvailable: boolean;
+            repository: string;
+        };
+        ModuleCatalog: {
+            available: components["schemas"]["AvailableModule"][];
+            errors: {
+                repository: string;
+                error: string;
+            }[];
+        };
+        ModuleSource: {
+            id: string;
+            url: string;
+            official: boolean;
+            fingerprint?: string;
+            signers: string[];
+        };
+        ModuleSources: {
+            sources: components["schemas"]["ModuleSource"][];
+        };
+        WebAccess: {
+            port: number;
+            pending: boolean;
+            error: string;
+        };
+        PowerState: {
+            throttled: string;
+            undervoltage: boolean;
+            throttling: boolean;
+            pastUndervoltage: boolean;
+        };
+        ServicesView: {
+            services: {
+                unit: string;
+                load?: string;
+                active?: string;
+                sub?: string;
+                description?: string;
+                enabled: string;
+            }[];
+        };
+        JournalView: {
+            entries: {
+                time: string | null;
+                priority: string | null;
+                unit: string | null;
+                message: string;
+            }[];
+        };
+        PackageUpdates: {
+            packages: string[];
+            packageDetails: {
+                name: string;
+                installed: string;
+                available: string;
+                source: string;
+                action: string;
+            }[];
+            rebootRequired: boolean;
+        };
+        UpdateSettings: {
+            /** @enum {string} */
+            channel: "stable" | "testing";
+            /** @enum {string} */
+            mode: "notify" | "download" | "auto";
+            hour: number;
+        };
+        UpdateState: {
+            operation?: string;
+            id?: string;
+            phase?: string;
+            error?: string;
+            version?: string | null;
+            startedAt?: string;
+            finishedAt?: string;
+        };
+        UpdateRelease: {
+            version: string;
+            run?: string;
+            createdAt?: string;
+        };
+        SystemUpdates: {
+            settings: components["schemas"]["UpdateSettings"];
+            installed: {
+                [key: string]: string;
+            };
+            candidate: components["schemas"]["UpdateRelease"] | null;
+            checkedAt: string | null;
+            available: boolean;
+            busy: boolean;
+            rollbackAvailable: boolean;
+            state: components["schemas"]["UpdateState"];
+            history: components["schemas"]["UpdateState"][];
+        };
+        IPConfig: {
+            method: string;
+            addresses: string[];
+            gateway: string;
+            dns: string[];
+            ignoreAutoDns: boolean;
+            neverDefault: boolean;
+            metric: number;
+            routes: {
+                destination: string;
+                gateway: string;
+                metric: number;
+            }[];
+        };
+        InterfaceConfig: {
+            ipv4: components["schemas"]["IPConfig"];
+            ipv6: components["schemas"]["IPConfig"];
+            mtu: number;
+        };
+        WifiNetwork: {
+            id: string;
+            ssid: string;
+            ssidHex: string;
+            security: string;
+            signal: number;
+            frequency: number;
+        };
+        WifiInterface: {
+            enabled?: boolean;
+            hardwareEnabled?: boolean;
+            mode?: number;
+            clients?: number;
+            networks: components["schemas"]["WifiNetwork"][];
+            saved: {
+                uuid: string;
+                name: string;
+                ssid: string;
+            }[];
+            activeAP: string;
+        };
+        WifiRadio: {
+            present: boolean;
+            enabled: boolean;
+            hardwareEnabled: boolean;
+        };
+        NetworkInterface: {
+            name: string;
+            kind: string;
+            mac: string;
+            state: string;
+            profile: string;
+            uuid?: string;
+            index: number;
+            mtu: number;
+            nmState?: number;
+            adminUp: boolean;
+            carrier?: boolean;
+            managed?: boolean;
+            editable: boolean;
+            addresses: string[];
+            dns: string[];
+            config: components["schemas"]["InterfaceConfig"] | null;
+            wifi?: components["schemas"]["WifiInterface"];
+            sharingGroup?: string | null;
+            sharing?: {
+                available: boolean;
+                ap: boolean;
+                bands: string[];
+                channels?: {
+                    [key: string]: number[];
+                };
+                phy?: string;
+                concurrent?: boolean;
+            };
+        };
+        NetworkShareGroup: {
+            id: string;
+            name: string;
+            source: string;
+            outputs: string[];
+            /** @enum {string} */
+            mode: "bridge" | "nat";
+            wifi: {
+                [key: string]: {
+                    ssid: string;
+                    band: string;
+                    channel?: number;
+                };
+            };
+            enabled: boolean;
+            autostart: boolean;
+            bridge: string;
+            /** @enum {string} */
+            status: "active" | "stopped" | "upstream" | "error";
+            addresses: string[];
+        };
+        NetworkView: {
+            backend: string;
+            interfaces: components["schemas"]["NetworkInterface"][];
+            routes: {
+                family: number;
+                dst?: string;
+                gateway?: string;
+                dev?: string;
+                metric?: number;
+                table?: string | number;
+                protocol?: string;
+                type?: string;
+            }[];
+            change: {
+                id: string;
+                interface: string;
+                user: string;
+                status: string;
+                deadline: number;
+                addresses: string[];
+            } | null;
+            serverTime: number;
+            timeout: number;
+            wifi: components["schemas"]["WifiRadio"] | null;
+            sharing: {
+                groups: components["schemas"]["NetworkShareGroup"][];
+                ready: boolean;
+            };
+        };
+        SmartSchedule: {
+            test: string;
+            weekday: number;
+            hour: number;
+            weeks?: number;
+            startDate?: string;
+        };
+        MediaInfo: {
+            kind: string;
+            readOnly: boolean;
+            name?: string;
+            manufacturerId?: string;
+            manufactured?: string;
+            revision?: string;
+            usbId?: string;
+            usbVersion?: string;
+            linkMbps?: string;
+            manufacturer?: string;
+        };
+        StorageOptionDevice: {
+            path: string;
+            kname: string;
+            type?: string;
+            size?: number;
+            fstype?: string | null;
+            uuid?: string | null;
+            mountpoints?: (string | null)[];
+            smartSchedules?: components["schemas"]["SmartSchedule"][];
+            smartSchedule?: components["schemas"]["SmartSchedule"] | null;
+            media?: components["schemas"]["MediaInfo"];
+            mountSettings?: {
+                point: string;
+                automount: boolean;
+                readOnly: boolean;
+            } | null;
+            protectedReason: string;
+            busyReason: string;
+            raidReason: string;
+            raidEligible: boolean;
+            ejectable: boolean;
+            filesystemHealth?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        StorageOptions: {
+            sleepSettings: {
+                minutes: number;
+            };
+            sleepStatus: {
+                [key: string]: {
+                    device: string;
+                    minutes: number | null;
+                    status: string;
+                    error?: string;
+                };
+            };
+            devices: components["schemas"]["StorageOptionDevice"][];
+            formats: string[];
+            capabilities: {
+                [key: string]: {
+                    create: boolean;
+                    grow: boolean;
+                    shrink: boolean;
+                    resizeRequiresMount?: boolean;
+                    resizeRequiresUnmount?: boolean;
+                };
+            };
+        };
+        RaidCandidates: {
+            devices: {
+                path: string;
+                kname: string;
+                type: string;
+                size: number;
+            }[];
+        };
+        /** @description Native smartctl JSON report, versioned by smartctl (json_format_version). Keys vary by SATA/NVMe/USB support; absence is not health success. */
+        SmartReport: {
+            json_format_version: number[];
+            smartctl: {
+                [key: string]: unknown;
+            };
+            device?: {
+                [key: string]: unknown;
+            };
+            temperature?: {
+                current?: number;
+            };
+            smart_status?: {
+                passed?: boolean;
+            };
+        } & {
+            [key: string]: unknown;
+        };
+        /** @description Query-name to response-schema map. Each GET response is the value for the selected view, not this mapping object. Installed modules own additional query contracts. */
+        ManagementViews: {
+            job?: components["schemas"]["ManagementJob"];
+            jobs?: components["schemas"]["ManagementJob"][];
+            accounts?: components["schemas"]["AccountInventory"];
+            "account-details"?: components["schemas"]["ManagedAccount"];
+            "account-sessions"?: components["schemas"]["SSHSession"][];
+            homes?: components["schemas"]["HomeLocations"];
+            "homes-check"?: components["schemas"]["HomePreflight"];
+            sharing?: components["schemas"]["ShareInventory"];
+            "share-folders"?: components["schemas"]["FolderLocations"];
+            "home-folders"?: components["schemas"]["FolderLocations"];
+            "mount-folders"?: components["schemas"]["FolderLocations"];
+            modules?: components["schemas"]["InstalledModules"];
+            "module-sources"?: components["schemas"]["ModuleSources"];
+            "module-catalog"?: components["schemas"]["ModuleCatalog"];
+            "web-access"?: components["schemas"]["WebAccess"];
+            "system-updates"?: components["schemas"]["SystemUpdates"];
+            network?: components["schemas"]["NetworkView"];
+            "storage-options"?: components["schemas"]["StorageOptions"];
+            "raid-candidates"?: components["schemas"]["RaidCandidates"];
+            smart?: components["schemas"]["SmartReport"];
+            services?: components["schemas"]["ServicesView"];
+            journal?: components["schemas"]["JournalView"];
+            updates?: components["schemas"]["PackageUpdates"];
+            nfs?: components["schemas"]["NFSExports"];
+            power?: components["schemas"]["PowerState"];
+        };
+        Notification: {
+            id: string;
+            message: string;
+            /** @enum {string} */
+            severity: "info" | "success" | "warning" | "error";
+            active: boolean;
+            created: string;
+            updated: string;
+        };
+        EventEnvelope: {
+            /** @constant */
+            version: 1;
+            /** @enum {unknown} */
+            type: "resync" | "storage.changed" | "jobs.changed" | "notifications.changed" | "cooling.unavailable" | "metrics.unavailable";
+            data: null;
+        } | {
+            /** @constant */
+            version: 1;
+            /** @constant */
+            type: "metrics";
+            data: components["schemas"]["Metrics"];
+        } | {
+            /** @constant */
+            version: 1;
+            /** @constant */
+            type: "cooling";
+            data: components["schemas"]["CoolingState"];
         };
     };
     responses: never;
