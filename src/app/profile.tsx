@@ -1,3 +1,4 @@
+import { LinkedAccounts } from './external-connections'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useRouteTab } from './navigation'
 import { WallpaperSettings } from './wallpaper'
@@ -19,7 +20,7 @@ type Profile = components['schemas']['Profile']
 export function ProfilePage() {
   const [section, setSection] = useRouteTab(
     '/profile',
-    ['account', 'appearance', 'security', 'activity'],
+    ['account', 'appearance', 'security', 'connections', 'activity'],
     'account',
   )
   const [deleteKey, setDeleteKey] = useState('')
@@ -90,13 +91,14 @@ export function ProfilePage() {
       {update.error && <Notice error>{update.error.message}</Notice>}
       <Tabs.Root className="tabbed-page" value={section} onValueChange={setSection}>
         <Tabs.List className="tabs">
-          {(['account', 'appearance', 'security', 'activity'] as const).map((id) => (
+          {(['account', 'appearance', 'security', 'connections', 'activity'] as const).map((id) => (
             <Tabs.Trigger value={id} key={id}>
               {tr('ui.' + id)}
             </Tabs.Trigger>
           ))}
         </Tabs.List>
         <Tabs.Content value={section} className="profile-grid">
+          {section === 'connections' && <LinkedAccounts />}
           <section className="surface" hidden={section !== 'appearance'}>
             <h2>{tr('ui.theme')}</h2>
             <label className="field">

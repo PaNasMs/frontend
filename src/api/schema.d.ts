@@ -4,6 +4,110 @@
  */
 
 export interface paths {
+    "/api/v1/external/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Public availability; no client secrets or account information. */
+        get: operations["getExternalProviders"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/external/settings/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Administrator only. Returns a secretConfigured flag, never the secret. */
+        get: operations["getExternalGoogleSettings"];
+        /** @description Administrator only. Saves encrypted client credentials and cancels pending OAuth flows. */
+        put: operations["putExternalGoogleSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/external/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Lists only connections owned by the current Linux identity. */
+        get: operations["getExternalConnections"];
+        put?: never;
+        post?: never;
+        /** @description Requires current Linux password. Unlinks an owned identity and revokes all owner panel sessions. */
+        delete: operations["unlinkExternalConnection"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/external/google/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Starts browser-bound Google OIDC authorization through the fixed HTTPS relay. Linking also requires the existing panel session and current Linux password. */
+        post: operations["startExternalGoogle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/external/google/poll": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Requires the HttpOnly flow cookie from start. Poll at most once every three seconds. Expiration, cancellation, restart or settings changes require a new flow. */
+        post: operations["pollExternalGoogle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/external/google/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Cancels the flow belonging to the browser cookie. */
+        post: operations["cancelExternalGoogle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -776,6 +880,50 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ExternalGoogleSettings: {
+            /** @constant */
+            provider: "google";
+            clientId: string;
+            secretConfigured: boolean;
+            enabled: boolean;
+            redirectUri: string;
+        };
+        ExternalGoogleSettingsInput: {
+            clientId: string;
+            /** @description Empty preserves the existing secret only when the client ID is unchanged. */
+            clientSecret: string;
+            enabled: boolean;
+        };
+        ExternalConnection: {
+            id: string;
+            provider: string;
+            email: string;
+            name: string;
+            created: number;
+        };
+        ExternalStart: {
+            /** @enum {string} */
+            purpose: "login" | "link";
+            /** @description Current Linux password required for linking; never sent to the gateway. */
+            password?: string;
+        };
+        ExternalAuthorization: {
+            url: string;
+            expiresIn: number;
+        };
+        ExternalFlowStatus: {
+            /** @enum {string} */
+            status: "pending" | "linked" | "authenticated";
+        };
+        ExternalProviders: {
+            google: {
+                enabled: boolean;
+            };
+        };
+        ExternalUnlink: {
+            id: string;
+            password: string;
+        };
         JobRecovery: {
             message: string;
             checks: {
@@ -1599,6 +1747,265 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getExternalProviders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalProviders"];
+                };
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getExternalGoogleSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalGoogleSettings"];
+                };
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    putExternalGoogleSettings: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExternalGoogleSettingsInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalGoogleSettings"];
+                };
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getExternalConnections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalConnection"][];
+                };
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    unlinkExternalConnection: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExternalUnlink"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    startExternalGoogle: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExternalStart"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalAuthorization"];
+                };
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    pollExternalGoogle: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalFlowStatus"];
+                };
+            };
+            /** @description Authorization still pending */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalFlowStatus"];
+                };
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cancelExternalGoogle: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Failure; external.* error codes describe authorization failures. */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     getHealth: {
         parameters: {
             query?: never;

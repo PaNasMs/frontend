@@ -158,3 +158,7 @@ whose results still need review.
 Network-card action icons stay aligned with the interface heading. The labeled
 Wi-Fi switch occupies a separate row beneath the actions, so it does not push
 the entire toolbar below the title.
+
+## External connections
+
+Google account linking and optional panel sign-in use NAS-specific OAuth credentials. See the [architecture, setup and Cloud Sync handoff](https://github.com/PaNasMs/panasms/blob/main/documentation/external-connections.md).

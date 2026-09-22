@@ -1,3 +1,4 @@
+import { ExternalSettings } from './external-connections'
 import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { tr, locale } from '../i18n/index'
@@ -285,6 +286,7 @@ registerModule({
   icon: mdiServer,
   component: SystemPage,
   settings: [
+    { id: 'connections', title: tr('external.title'), icon: mdiServer, component: ExternalSettings },
     { id: 'updates', title: tr('up.title'), icon: mdiDownload, component: SystemUpdates },
     {
       id: 'general',

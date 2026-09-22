@@ -1,3 +1,4 @@
+import { GoogleConnect } from './external-connections'
 import { useState } from 'react'
 import { WaitingOverlay } from '../shared/ui'
 import { tr } from '../i18n/index'
@@ -103,6 +104,7 @@ export default function Login() {
           </Button>
           {login.isPending && <WaitingOverlay />}
         </form>
+        <GoogleConnect />
         <p className="small muted">{tr('accounts.loginHelp')}</p>
       </section>
       <div className="login-foot">{tr('panasms_prototype_0_1_f18e5220')}</div>
