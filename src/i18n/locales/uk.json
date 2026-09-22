@@ -1927,5 +1927,15 @@
   "external.revokeHelp": "Припинити подальший доступ для {{consumer}}? Виданий токен Google може діяти до завершення строку.",
   "external.grantStatus.active": "Активний",
   "external.grantStatus.unavailable": "Недоступний",
-  "external.grantStatus.reconnect_required": "Потрібен повторний дозвіл"
+  "external.grantStatus.reconnect_required": "Потрібен повторний дозвіл",
+  "uploads.title": "Завантаження файлів",
+  "uploads.queued": "У черзі",
+  "uploads.running": "Завантаження",
+  "uploads.succeeded": "Завершено",
+  "uploads.failed": "Помилки",
+  "uploads.cancelled": "Скасовано",
+  "uploads.open": "Відкрити папку",
+  "uploads.cancel": "Скасувати завантаження",
+  "uploads.dismiss": "Прибрати зі списку",
+  "uploads.errors": "Помилок: {{count}}"
 }

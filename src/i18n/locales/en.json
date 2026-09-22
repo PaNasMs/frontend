@@ -1927,5 +1927,15 @@
   "external.revokeHelp": "Stop future access for {{consumer}}? Its current Google access token may remain valid until it expires.",
   "external.grantStatus.active": "Active",
   "external.grantStatus.unavailable": "Unavailable",
-  "external.grantStatus.reconnect_required": "Reconnect required"
+  "external.grantStatus.reconnect_required": "Reconnect required",
+  "uploads.title": "Uploading files",
+  "uploads.queued": "Queued",
+  "uploads.running": "Uploading",
+  "uploads.succeeded": "Completed",
+  "uploads.failed": "Errors",
+  "uploads.cancelled": "Cancelled",
+  "uploads.open": "Open folder",
+  "uploads.cancel": "Cancel upload",
+  "uploads.dismiss": "Dismiss",
+  "uploads.errors": "Errors: {{count}}"
 }

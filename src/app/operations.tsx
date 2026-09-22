@@ -1,3 +1,4 @@
+import { FileUploadTasks, useFileUploads } from './file-uploads'
 import { useUpdateTask } from './system-updates'
 import { FolderField } from '../shared/folder-picker'
 import { MultiSelect } from '../shared/multi-select'
@@ -1015,6 +1016,7 @@ function OperationForm({
   )
 }
 export function JobsList() {
+  const uploads = useFileUploads()
   const raidTasks = useRaidTasks()
   const updates = useUpdateTask()
   const systemTasks = { ...raidTasks, tasks: [...updates, ...raidTasks.tasks] }
@@ -1037,6 +1039,7 @@ export function JobsList() {
     <>
       {data.error && <Notice error>{data.error.message}</Notice>}
       {cancel.error && <Notice error>{cancel.error.message}</Notice>}
+      <FileUploadTasks />
       <SystemTasks {...systemTasks} />
       <div className="jobs-list">
         {data.data?.map((j) => (
@@ -1108,7 +1111,7 @@ export function JobsList() {
         ))}
       </div>
       {selected && <JobRecovery job={selected} onClose={() => setSelected(null)} />}
-      {data.data?.length === 0 && systemTasks.tasks.length === 0 && (
+      {data.data?.length === 0 && systemTasks.tasks.length === 0 && uploads.length === 0 && (
         <Notice>{tr('no_operations_yet_6c83f498')}</Notice>
       )}
     </>

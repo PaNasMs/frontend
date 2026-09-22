@@ -1791,3 +1791,34 @@ td {
   align-items: center;
   gap: 0.75rem;
 }
+
+.file-context-menu .button.icon-only,
+.file-context-menu .button.raid-action,
+.file-context-menu .button {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: auto;
+  min-height: 36px;
+  aspect-ratio: auto;
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px 10px;
+  gap: 10px;
+}
+.file-context-menu .button::after {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: normal;
+  text-align: left;
+}
+.file-delete-targets { max-height: 180px; overflow: auto; padding-left: 20px; overflow-wrap: anywhere; }
+.file-delete-targets li + li { margin-top: 6px; }
+.upload-task { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.upload-task-heading { display: flex; gap: 8px; align-items: center; }
+.upload-task-heading strong { flex: 1; }
+.upload-task-heading .button { flex: none; }
+.upload-task-path { overflow-wrap: anywhere; margin: 8px 0; font-size: .875rem; }
+.upload-task progress { width: 100%; display: block; margin: 8px 0; }
+.upload-task details { font-size: .875rem; margin-top: 8px; overflow-wrap: anywhere; }

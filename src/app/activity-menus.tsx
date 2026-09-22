@@ -1,3 +1,4 @@
+import { useFileUploads, uploadActive, type UploadTask } from './file-uploads'
 import { useExclusivePopover } from '../shared/interaction'
 import { tr } from '../i18n/index'
 import { useEffect, useRef, type ReactNode } from 'react'
@@ -83,6 +84,8 @@ function ActivityMenu({
   )
 }
 export function ActivityMenus() {
+  const uploads = useFileUploads()
+  const q = useQueryClient()
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
   const admin = session.data?.role === 'admin'
   const jobs = useQuery({
@@ -100,11 +103,15 @@ export function ActivityMenus() {
           icon={mdiFormatListChecks}
           clearLabel={tr('clear_completed_task_history_be777d80')}
           canClear={
+            uploads.some((task) => !uploadActive(task)) ||
             !!jobs.data?.some(
               (j) => ['succeeded', 'failed', 'interrupted', 'cancelled'].includes(j.status) && !j.needsReview,
             )
           }
-          clear={() => managed('clear-history', {})}
+          clear={async () => {
+            await managed('clear-history', {})
+            q.setQueryData<UploadTask[]>(['file-uploads'], (old) => old?.filter(uploadActive))
+          }}
         >
           <JobsList />
         </ActivityMenu>

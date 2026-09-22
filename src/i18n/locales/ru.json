@@ -1927,5 +1927,15 @@
   "external.revokeHelp": "Прекратить дальнейший доступ для {{consumer}}? Выданный токен Google может действовать до истечения срока.",
   "external.grantStatus.active": "Активно",
   "external.grantStatus.unavailable": "Недоступно",
-  "external.grantStatus.reconnect_required": "Нужно повторное разрешение"
+  "external.grantStatus.reconnect_required": "Нужно повторное разрешение",
+  "uploads.title": "Загрузка файлов",
+  "uploads.queued": "В очереди",
+  "uploads.running": "Загрузка",
+  "uploads.succeeded": "Завершено",
+  "uploads.failed": "Ошибки",
+  "uploads.cancelled": "Отменено",
+  "uploads.open": "Открыть папку",
+  "uploads.cancel": "Отменить загрузку",
+  "uploads.dismiss": "Убрать из списка",
+  "uploads.errors": "Ошибок: {{count}}"
 }

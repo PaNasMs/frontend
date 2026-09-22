@@ -1,3 +1,4 @@
+import { useFileUploads, uploadActive, uploadPercent } from './file-uploads'
 import { useUpdateTask } from './system-updates'
 import { tr } from '../i18n/index'
 import { useRaidTasks } from './raid-tasks'
@@ -26,7 +27,11 @@ export function OngoingTasks() {
   params.set('panel', 'jobs')
   const jobsHref = `${location.pathname}?${params}`
   const updates = useUpdateTask()
-  const tasks = [...updates, ...raids, ...longJobs(jobs.data ?? [], now, operations)]
+  const uploads = useFileUploads().filter(uploadActive).map(task => ({
+    id: task.id, title: tr('uploads.title'), target: task.destination,
+    stage: task.name, paused: false, percent: uploadPercent(task), href: undefined,
+  }))
+  const tasks = [...uploads, ...updates, ...raids, ...longJobs(jobs.data ?? [], now, operations)]
   if (!tasks.length) return null
   return (
     <div className="ongoing-tasks" aria-label={tr('long_running_tasks_ef6b1f6c')}>
