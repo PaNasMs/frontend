@@ -76,7 +76,8 @@ export function ExternalSettings() {
               onChange={(e) => setSecret(e.target.value)}
               autoComplete="new-password"
               required={!data.data?.secretConfigured || id.draft !== data.data.clientId}
-              placeholder={data.data?.secretConfigured ? tr('external.keepSecret') : ''}
+              placeholder={data.data?.secretConfigured && id.draft === data.data.clientId ? '••••••••' : ''}
+              title={data.data?.secretConfigured ? tr('external.keepSecret') : undefined}
               maxLength={4096}
             />
           </label>
