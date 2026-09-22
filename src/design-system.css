@@ -1518,6 +1518,17 @@ td {
   border-top: 1px solid var(--line);
   padding-top: 24px;
 }
+.profile-settings .surface {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  background: transparent;
+}
+.profile-settings .user-session-list > .surface {
+  padding-block: 16px;
+  border-bottom: 1px solid var(--line);
+}
 .table-wrap {
   border: 0;
   border-radius: 0;
