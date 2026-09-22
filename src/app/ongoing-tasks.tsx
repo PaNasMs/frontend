@@ -1,4 +1,4 @@
-import { useFileUploads, uploadActive, uploadPercent } from './file-uploads'
+import { useFileUploads, uploadActive, uploadPercent, fileTaskTitle } from './file-uploads'
 import { useUpdateTask } from './system-updates'
 import { tr } from '../i18n/index'
 import { useRaidTasks } from './raid-tasks'
@@ -27,11 +27,13 @@ export function OngoingTasks() {
   params.set('panel', 'jobs')
   const jobsHref = `${location.pathname}?${params}`
   const updates = useUpdateTask()
-  const uploads = useFileUploads().filter(uploadActive).map(task => ({
-    id: task.id, title: tr('uploads.title'), target: task.destination,
-    stage: task.name, paused: false, percent: uploadPercent(task), href: undefined,
+  const fileTasks = useFileUploads()
+  const activeFileJobs = new Set(fileTasks.flatMap(task => task.jobIds ?? (task.jobId ? [task.jobId] : [])))
+  const uploads = fileTasks.filter(uploadActive).map(task => ({
+    id: task.id, title: fileTaskTitle(task), target: task.destination,
+    stage: task.status === 'waiting' ? tr('uploads.waiting') : task.stage || task.name, paused: task.status === 'waiting', percent: uploadPercent(task), href: undefined,
   }))
-  const tasks = [...uploads, ...updates, ...raids, ...longJobs(jobs.data ?? [], now, operations)]
+  const tasks = [...uploads, ...updates, ...raids, ...longJobs((jobs.data ?? []).filter(job => !activeFileJobs.has(job.id)), now, operations)]
   if (!tasks.length) return null
   return (
     <div className="ongoing-tasks" aria-label={tr('long_running_tasks_ef6b1f6c')}>

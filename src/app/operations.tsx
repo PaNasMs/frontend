@@ -1017,6 +1017,7 @@ function OperationForm({
 }
 export function JobsList() {
   const uploads = useFileUploads()
+  const activeFileJobs = new Set(uploads.flatMap(task => task.jobIds ?? (task.jobId ? [task.jobId] : [])))
   const raidTasks = useRaidTasks()
   const updates = useUpdateTask()
   const systemTasks = { ...raidTasks, tasks: [...updates, ...raidTasks.tasks] }
@@ -1042,7 +1043,7 @@ export function JobsList() {
       <FileUploadTasks />
       <SystemTasks {...systemTasks} />
       <div className="jobs-list">
-        {data.data?.map((j) => (
+        {data.data?.filter(j => !activeFileJobs.has(j.id)).map((j) => (
           <article className="surface" key={j.id}>
             <div className="volume-heading">
               <h3>

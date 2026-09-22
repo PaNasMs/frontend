@@ -1822,3 +1822,8 @@ td {
 .upload-task-path { overflow-wrap: anywhere; margin: 8px 0; font-size: .875rem; }
 .upload-task progress { width: 100%; display: block; margin: 8px 0; }
 .upload-task details { font-size: .875rem; margin-top: 8px; overflow-wrap: anywhere; }
+
+.file-destination-dialog, .file-conflict-dialog { width: min(560px, calc(100vw - 32px)); }
+.file-destination-tree { max-height: 320px; overflow: auto; padding: 8px 0; list-style: none; border-block: 1px solid var(--line); }
+.file-destination-path { overflow-wrap: anywhere; font-size: .875rem; }
+.file-destination-tree .file-tree-link { color: var(--text); }
