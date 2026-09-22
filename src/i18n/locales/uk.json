@@ -1911,5 +1911,21 @@
   "external.alreadyLinked": "Не вдалося прив’язати акаунт Google. Можливо, він уже пов’язаний із користувачем NAS.",
   "external.notLinked": "Цей акаунт Google не прив’язаний. Увійдіть із паролем Linux і прив’яжіть його в Мій профіль → Підключення.",
   "external.accountUnavailable": "Пов’язаний користувач NAS недоступний або доступ відкликаний.",
-  "external.apply": "Застосувати"
+  "external.apply": "Застосувати",
+  "external.allowDrive": "Дозволити доступ до Google Drive",
+  "external.granted": "Доступ до Google Drive надано",
+  "external.driveHelp": "Дозволити модулю {{consumer}} читати, створювати, змінювати та видаляти файли вибраного Google Drive, зокрема після виходу з панелі. Підтвердьте пароль NAS, потім дозвольте доступ у Google.",
+  "external.driveReadHelp": "Дозволити модулю {{consumer}} читати файли вибраного Google Drive, зокрема після виходу з панелі. Підтвердьте пароль NAS, потім дозвольте доступ у Google.",
+  "external.grantUnavailable": "Дозвіл або модуль недоступні. Перевірте прив’язаний обліковий запис і стан модуля.",
+  "external.reconnectRequired": "Google Drive потребує повторного дозволу доступу.",
+  "external.refreshUnavailable": "Не вдалося оновити доступ до Google Drive. Спробуйте пізніше.",
+  "external.consumerDenied": "Модулю недоступний цей дозвіл.",
+  "external.permissions": "Дозволи модулів",
+  "external.noGrants": "Дозволи модулям не надано.",
+  "external.revoke": "Відкликати дозвіл",
+  "external.revoked": "Дозвіл відкликано",
+  "external.revokeHelp": "Припинити подальший доступ для {{consumer}}? Виданий токен Google може діяти до завершення строку.",
+  "external.grantStatus.active": "Активний",
+  "external.grantStatus.unavailable": "Недоступний",
+  "external.grantStatus.reconnect_required": "Потрібен повторний дозвіл"
 }

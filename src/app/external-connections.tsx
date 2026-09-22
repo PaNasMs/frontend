@@ -8,6 +8,7 @@ import { Button, Icon, Notice, DialogContent, WaitingSurface } from '../shared/u
 import { useDraft, useUnsavedForm } from '../shared/interaction'
 import { tr } from '../i18n'
 import { notify } from './notifications'
+import { ExternalGrants } from './external-grants'
 
 type GoogleSettings = components['schemas']['ExternalGoogleSettings']
 type Connection = components['schemas']['ExternalConnection']
@@ -111,7 +112,22 @@ export function ExternalSettings() {
   )
 }
 
-export function GoogleConnect({ link = false, onComplete }: { link?: boolean; onComplete?: () => void }) {
+export type GrantRequest = {
+  connectionId: string
+  consumer: string
+  capability: 'google-drive' | 'google-drive-readonly'
+}
+export function GoogleConnect({
+  link = false,
+  grant,
+  onComplete,
+}: {
+  link?: boolean
+  grant?: GrantRequest
+  onComplete?: (grantId?: string) => void
+}) {
+  link = link || !!grant
+  const queryClient = useQueryClient()
   const provider = useQuery({
     queryKey: ['external-providers'],
     queryFn: () => request<{ google: { enabled: boolean } }>('external/providers'),
@@ -125,7 +141,8 @@ export function GoogleConnect({ link = false, onComplete }: { link?: boolean; on
   const start = useMutation({
     mutationFn: () =>
       request<{ url: string }>('external/google/start', 'POST', {
-        purpose: link ? 'link' : 'login',
+        purpose: grant ? 'grant' : link ? 'link' : 'login',
+        ...grant,
         password: link ? password : '',
       }),
     onSuccess: (value) => {
@@ -143,15 +160,16 @@ export function GoogleConnect({ link = false, onComplete }: { link?: boolean; on
     let timer: ReturnType<typeof setTimeout>
     const poll = async () => {
       try {
-        const result = await request<{ status: string }>('external/google/poll', 'POST', {})
+        const result = await request<{ status: string; grantId?: string }>('external/google/poll', 'POST', {})
         if (disposed) return
-        if (result.status === 'linked' || result.status === 'authenticated') {
+        if (result.status === 'linked' || result.status === 'authenticated' || result.status === 'granted') {
           setWaiting(false)
           setOpen(false)
           setAuthorizeURL('')
           if (link) {
-            notify(tr('external.linked'))
-            onComplete?.()
+            notify(tr(result.status === 'granted' ? 'external.granted' : 'external.linked'))
+            void queryClient.invalidateQueries({ queryKey: ['external-grants'] })
+            onComplete?.(result.grantId)
           } else window.location.assign('/')
           return
         }
@@ -172,7 +190,7 @@ export function GoogleConnect({ link = false, onComplete }: { link?: boolean; on
       disposed = true
       clearTimeout(timer)
     }
-  }, [open, waiting, link, onComplete])
+  }, [open, waiting, link, onComplete, queryClient])
   function close() {
     setOpen(false)
     setWaiting(false)
@@ -193,7 +211,7 @@ export function GoogleConnect({ link = false, onComplete }: { link?: boolean; on
         }}
       >
         <Icon path={mdiGoogle} />
-        {tr(link ? 'external.linkGoogle' : 'external.signIn')}
+        {tr(grant ? 'external.allowDrive' : link ? 'external.linkGoogle' : 'external.signIn')}
       </Button>
       <Dialog.Root
         open={open}
@@ -205,12 +223,25 @@ export function GoogleConnect({ link = false, onComplete }: { link?: boolean; on
           <Dialog.Overlay className="dialog-overlay" />
           <DialogContent className="settings-dialog power-dialog" busy={start.isPending}>
             <div className="dialog-heading">
-              <Dialog.Title>{tr(link ? 'external.linkGoogle' : 'external.signIn')}</Dialog.Title>
+              <Dialog.Title>
+                {tr(grant ? 'external.allowDrive' : link ? 'external.linkGoogle' : 'external.signIn')}
+              </Dialog.Title>
               <Button type="button" title={tr('external.close')} onClick={close}>
                 <Icon path={mdiClose} />
               </Button>
             </div>
-            <Dialog.Description>{tr(link ? 'external.linkHelp' : 'external.loginHelp')}</Dialog.Description>
+            <Dialog.Description>
+              {tr(
+                grant
+                  ? grant.capability === 'google-drive-readonly'
+                    ? 'external.driveReadHelp'
+                    : 'external.driveHelp'
+                  : link
+                    ? 'external.linkHelp'
+                    : 'external.loginHelp',
+                { consumer: grant?.consumer },
+              )}
+            </Dialog.Description>
             {error && <Notice error>{error}</Notice>}
             {link && !waiting && (
               <label className="field">
@@ -303,6 +334,7 @@ export function LinkedAccounts() {
           void q.invalidateQueries({ queryKey: ['external-connections'] })
         }}
       />
+      <ExternalGrants connections={data.data ?? []} />
       <Dialog.Root
         open={!!selected}
         onOpenChange={(value) => {

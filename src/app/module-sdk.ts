@@ -14,7 +14,10 @@ import * as runtime from './module-registry'
 import * as completion from '../shared/job-completion'
 import * as layout from './desktop-layout'
 import * as client from '../api/client'
+import { GoogleConnect } from './external-connections'
+const external = { GoogleConnect }
 export const SDK = {
+  external,
   navigation,
   i18n,
   react,

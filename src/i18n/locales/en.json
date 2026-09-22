@@ -1911,5 +1911,21 @@
   "external.alreadyLinked": "Could not link this Google account. It may already be linked to a NAS user.",
   "external.notLinked": "This Google account is not linked. Sign in with your Linux password and link it in My profile → Connections.",
   "external.accountUnavailable": "The linked NAS user is unavailable or access has been revoked.",
-  "external.apply": "Apply"
+  "external.apply": "Apply",
+  "external.allowDrive": "Allow Google Drive access",
+  "external.granted": "Google Drive permission granted",
+  "external.driveHelp": "Allow {{consumer}} to read, create, change and delete files in the selected Google Drive account, including while you are signed out. Confirm your NAS password, then approve access in Google.",
+  "external.driveReadHelp": "Allow {{consumer}} to read files in the selected Google Drive account, including while you are signed out. Confirm your NAS password, then approve access in Google.",
+  "external.grantUnavailable": "This permission or its module is unavailable. Check the linked account and module status.",
+  "external.reconnectRequired": "Google Drive needs authorization again. Reconnect the account permission.",
+  "external.refreshUnavailable": "Could not refresh Google Drive access. Try again later.",
+  "external.consumerDenied": "This module cannot use the requested permission.",
+  "external.permissions": "Module permissions",
+  "external.noGrants": "No module permissions granted.",
+  "external.revoke": "Revoke permission",
+  "external.revoked": "Permission revoked",
+  "external.revokeHelp": "Stop future access for {{consumer}}? Its current Google access token may remain valid until it expires.",
+  "external.grantStatus.active": "Active",
+  "external.grantStatus.unavailable": "Unavailable",
+  "external.grantStatus.reconnect_required": "Reconnect required"
 }

@@ -1911,5 +1911,21 @@
   "external.alreadyLinked": "Не удалось привязать аккаунт Google. Возможно, он уже связан с пользователем NAS.",
   "external.notLinked": "Этот аккаунт Google не привязан. Войдите с паролем Linux и привяжите его в Мой профиль → Подключения.",
   "external.accountUnavailable": "Связанный пользователь NAS недоступен или доступ отозван.",
-  "external.apply": "Применить"
+  "external.apply": "Применить",
+  "external.allowDrive": "Разрешить доступ к Google Drive",
+  "external.granted": "Доступ к Google Drive разрешён",
+  "external.driveHelp": "Разрешить модулю {{consumer}} читать, создавать, изменять и удалять файлы выбранного Google Drive, в том числе после выхода из панели. Подтвердите пароль NAS, затем разрешите доступ в Google.",
+  "external.driveReadHelp": "Разрешить модулю {{consumer}} читать файлы выбранного Google Drive, в том числе после выхода из панели. Подтвердите пароль NAS, затем разрешите доступ в Google.",
+  "external.grantUnavailable": "Разрешение или модуль недоступны. Проверьте привязанный аккаунт и состояние модуля.",
+  "external.reconnectRequired": "Google Drive требует повторного разрешения доступа.",
+  "external.refreshUnavailable": "Не удалось обновить доступ к Google Drive. Повторите позже.",
+  "external.consumerDenied": "Модулю недоступно это разрешение.",
+  "external.permissions": "Разрешения модулей",
+  "external.noGrants": "Разрешения модулям не выданы.",
+  "external.revoke": "Отозвать разрешение",
+  "external.revoked": "Разрешение отозвано",
+  "external.revokeHelp": "Прекратить дальнейший доступ для {{consumer}}? Выданный токен Google может действовать до истечения срока.",
+  "external.grantStatus.active": "Активно",
+  "external.grantStatus.unavailable": "Недоступно",
+  "external.grantStatus.reconnect_required": "Нужно повторное разрешение"
 }

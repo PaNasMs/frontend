@@ -57,6 +57,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/external/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Current user's consumer-bound permissions; metadata only, never credentials. */
+        get: operations["getExternalGrants"];
+        put?: never;
+        post?: never;
+        /** @description Password-confirmed local revocation; stops future token delivery/refresh. Already-issued access tokens can remain valid at Google until expiry. */
+        delete: operations["revokeExternalGrant"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/external/google/start": {
         parameters: {
             query?: never;
@@ -66,7 +84,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Starts browser-bound Google OIDC authorization through the fixed HTTPS relay. Linking also requires the existing panel session and current Linux password. */
+        /** @description Starts browser-bound Google OIDC authorization through the fixed HTTPS relay. Grant purpose adds the registered capability scope and offline consent, bound to connectionId and consumer. Linking and grants require the existing panel session and current Linux password. */
         post: operations["startExternalGoogle"];
         delete?: never;
         options?: never;
@@ -903,9 +921,25 @@ export interface components {
         };
         ExternalStart: {
             /** @enum {string} */
-            purpose: "login" | "link";
+            purpose: "login" | "link" | "grant";
             /** @description Current Linux password required for linking; never sent to the gateway. */
             password?: string;
+            /** @description Owned linked identity; required for purpose grant. */
+            connectionId?: string;
+            /** @description Registered installed module; required for purpose grant. */
+            consumer?: string;
+            /** @description Reviewed capability identifier; required for purpose grant. Never arbitrary scopes. */
+            capability?: string;
+        };
+        ExternalGrant: {
+            id: string;
+            connectionId: string;
+            consumer: string;
+            capability: string;
+            scope: string;
+            /** @enum {string} */
+            status: "active" | "unavailable" | "reconnect_required";
+            created: number;
         };
         ExternalAuthorization: {
             url: string;
@@ -913,7 +947,9 @@ export interface components {
         };
         ExternalFlowStatus: {
             /** @enum {string} */
-            status: "pending" | "linked" | "authenticated";
+            status: "pending" | "linked" | "authenticated" | "granted";
+            /** @description Present on successful grant; no tokens are returned to the browser. */
+            grantId?: string;
         };
         ExternalProviders: {
             google: {
@@ -1899,6 +1935,64 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["Error"];
                 };
+            };
+        };
+    };
+    getExternalGrants: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Permission metadata */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalGrant"][];
+                };
+            };
+            /** @description Authorization or storage error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    revokeExternalGrant: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExternalUnlink"];
+            };
+        };
+        responses: {
+            /** @description Revoked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Authorization or storage error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
