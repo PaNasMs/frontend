@@ -57,7 +57,9 @@ function Shell() {
     queryKey: ['session'],
     queryFn: () => request<Identity>('session'),
     retry: false,
-    refetchInterval: 30000,
+    refetchInterval: (query) => (query.state.data ? 30000 : false),
+    refetchOnWindowFocus: (query) => !!query.state.data,
+    refetchOnReconnect: (query) => !!query.state.data,
   })
   const q = useQueryClient()
   const menu = useRef<HTMLDetailsElement>(null)
