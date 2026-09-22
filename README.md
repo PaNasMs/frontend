@@ -10,6 +10,9 @@ for core and module interfaces. The public guide is the shared design baseline.
 [Project website and English UI screenshots](https://panasms.github.io/) ·
 [Website source](https://github.com/PaNasMs/panasms.github.io)
 
+[Set up Google sign-in](https://github.com/PaNasMs/panasms/blob/main/documentation/google-sign-in-setup.md)
+— a step-by-step guide with screenshots for administrators and NAS users.
+
 ## Interface
 
 - Per-user desktop grid, widgets, wallpaper, shortcuts and taskbar ordering.
