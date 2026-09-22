@@ -1514,7 +1514,7 @@ td {
   padding: 0;
   background: transparent;
 }
-.general-settings > .surface + .surface {
+.general-settings > .surface:not([hidden]) ~ .surface:not([hidden]) {
   border-top: 1px solid var(--line);
   padding-top: 24px;
 }
