@@ -40,7 +40,7 @@ export function ExternalSettings() {
     },
   })
   return (
-    <WaitingSurface busy={save.isPending}>
+    <WaitingSurface busy={save.isPending} className="general-settings">
       <section className="surface">
         <div className="page-heading">
           <h2>{tr('external.title')}</h2>
