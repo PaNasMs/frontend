@@ -12,7 +12,7 @@ implementation and review; do not maintain a separate module-specific standard.
 [Project website and English UI screenshots](https://panasms.github.io/) ·
 [Website source](https://github.com/PaNasMs/panasms.github.io)
 
-[Set up Google sign-in](https://github.com/PaNasMs/panasms/blob/main/documentation/google-sign-in-setup.md)
+[Set up Google sign-in](https://panasms.github.io/docs/setup/google/)
 — a step-by-step guide with screenshots for administrators and NAS users.
 
 ## Interface
