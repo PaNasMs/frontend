@@ -221,27 +221,50 @@ export function GoogleConnect({
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent className="settings-dialog power-dialog" busy={start.isPending}>
-            <div className="dialog-heading">
-              <Dialog.Title>
-                {tr(grant ? 'external.allowDrive' : link ? 'external.linkGoogle' : 'external.signIn')}
-              </Dialog.Title>
-              <Button type="button" title={tr('external.close')} onClick={close}>
-                <Icon path={mdiClose} />
-              </Button>
-            </div>
-            <Dialog.Description>
-              {tr(
-                grant
-                  ? grant.capability === 'google-drive-readonly'
-                    ? 'external.driveReadHelp'
-                    : 'external.driveHelp'
-                  : link
-                    ? 'external.linkHelp'
-                    : 'external.loginHelp',
-                { consumer: grant?.consumer },
-              )}
-            </Dialog.Description>
+          <DialogContent
+            className="settings-dialog power-dialog"
+            busy={start.isPending}
+            header={
+              <>
+                {' '}
+                <div className="dialog-heading">
+                  <Dialog.Title>
+                    {tr(grant ? 'external.allowDrive' : link ? 'external.linkGoogle' : 'external.signIn')}
+                  </Dialog.Title>
+                </div>
+                <Dialog.Description>
+                  {tr(
+                    grant
+                      ? grant.capability === 'google-drive-readonly'
+                        ? 'external.driveReadHelp'
+                        : 'external.driveHelp'
+                      : link
+                        ? 'external.linkHelp'
+                        : 'external.loginHelp',
+                    { consumer: grant?.consumer },
+                  )}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button type="button" onClick={close} data-dialog-cancel>
+                  {tr('external.cancel')}
+                </Button>
+                {!waiting && (
+                  <Button
+                    type="button"
+                    disabled={start.isPending || (link && !password)}
+                    onClick={() => start.mutate()}
+                  >
+                    {tr('external.continue')}
+                  </Button>
+                )}
+              </div>
+            }
+            variant="form"
+            intent="edit"
+          >
             {error && <Notice error>{error}</Notice>}
             {link && !waiting && (
               <label className="field">
@@ -265,20 +288,6 @@ export function GoogleConnect({
                 {tr('external.openGoogle')}
               </a>
             )}
-            <div className="actions">
-              <Button type="button" onClick={close}>
-                {tr('external.cancel')}
-              </Button>
-              {!waiting && (
-                <Button
-                  type="button"
-                  disabled={start.isPending || (link && !password)}
-                  onClick={() => start.mutate()}
-                >
-                  {tr('external.continue')}
-                </Button>
-              )}
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>
@@ -346,9 +355,36 @@ export function LinkedAccounts() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent className="settings-dialog power-dialog" busy={remove.isPending}>
-            <Dialog.Title>{tr('external.unlink')}</Dialog.Title>
-            <Dialog.Description>{tr('external.unlinkHelp')}</Dialog.Description>
+          <DialogContent
+            className="settings-dialog power-dialog"
+            busy={remove.isPending}
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr('external.unlink')}</Dialog.Title>
+                <Dialog.Description>{tr('external.unlinkHelp')}</Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button
+                  onClick={() => {
+                    setSelected(null)
+                    setPassword('')
+                  }}
+                  data-dialog-cancel
+                >
+                  {tr('external.cancel')}
+                </Button>
+                <Button disabled={!password || remove.isPending} onClick={() => remove.mutate()}>
+                  {tr('external.unlink')}
+                </Button>
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             <strong>{selected?.email}</strong>
             <label className="field">
               {tr('external.currentPassword')}
@@ -360,19 +396,6 @@ export function LinkedAccounts() {
               />
             </label>
             {remove.error && <Notice error>{errorText(remove.error)}</Notice>}
-            <div className="actions">
-              <Button
-                onClick={() => {
-                  setSelected(null)
-                  setPassword('')
-                }}
-              >
-                {tr('external.cancel')}
-              </Button>
-              <Button disabled={!password || remove.isPending} onClick={() => remove.mutate()}>
-                {tr('external.unlink')}
-              </Button>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

@@ -378,7 +378,11 @@ export const operations: Record<string, Operation> = {
     fields: [{ key: 'target', label: tr('mount_point_b3caf3fe') }],
   },
 }
-export function managed<K extends keyof ManagementViews>(view: K, body?: undefined, target?: string): Promise<NonNullable<ManagementViews[K]>>
+export function managed<K extends keyof ManagementViews>(
+  view: K,
+  body?: undefined,
+  target?: string,
+): Promise<NonNullable<ManagementViews[K]>>
 export function managed<T>(view: string, body?: unknown, target?: string): Promise<T>
 export async function managed<T>(view: string, body?: unknown, target?: string): Promise<T> {
   const submit = () =>
@@ -707,46 +711,60 @@ function OperationForm({
               : 'checking_whether_this_operation_is_available_75110126',
           )}
           className="eject-confirm-dialog file-confirm-dialog"
+          header={
+            <>
+              {' '}
+              <Dialog.Title>
+                {action === 'file.trash' || action === 'file.delete'
+                  ? tr('delete_04963db0')
+                  : operations[action].label}
+              </Dialog.Title>
+              <Dialog.Description>{fileQuestions[action]}</Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="actions">
+              <Dialog.Close asChild>
+                <Button disabled={run.isPending} autoFocus data-dialog-cancel>
+                  {action === 'file.trash' || action === 'file.delete'
+                    ? tr('cancel_0ec753be')
+                    : tr('no_f82a8219')}
+                </Button>
+              </Dialog.Close>
+              {action === 'file.trash' || action === 'file.delete' ? (
+                <>
+                  <Button
+                    className="primary"
+                    disabled={!plan.data || run.isPending || action === 'file.delete'}
+                    onClick={() => run.mutate('file.trash')}
+                  >
+                    {tr('move_to_trash_f8b39dea')}
+                  </Button>
+                  <Button disabled={!plan.data || run.isPending} onClick={() => run.mutate('file.delete')}>
+                    {tr('delete_86ea33ae')}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  className="primary"
+                  disabled={!plan.data || run.isPending}
+                  onClick={() => run.mutate()}
+                >
+                  {tr('yes_8d2fab2d')}
+                </Button>
+              )}
+            </div>
+          }
+          variant="compact"
+          intent="confirm"
+          dirty={false}
         >
-          <Dialog.Title>
-            {action === 'file.trash' || action === 'file.delete'
-              ? tr('delete_04963db0')
-              : operations[action].label}
-          </Dialog.Title>
-          <Dialog.Description>{fileQuestions[action]}</Dialog.Description>
           {plan.error && <Notice error>{plan.error.message}</Notice>}
           {run.error && <Notice error>{run.error.message}</Notice>}
 
           {(action === 'file.trash' || action === 'file.delete') && (
             <p className="muted">{tr('delete_cannot_be_undone_from_the_trash_79e7714a')}</p>
           )}
-          <div className="actions">
-            {action === 'file.trash' || action === 'file.delete' ? (
-              <>
-                <Button
-                  className="primary"
-                  disabled={!plan.data || run.isPending || action === 'file.delete'}
-                  onClick={() => run.mutate('file.trash')}
-                >
-                  {tr('move_to_trash_f8b39dea')}
-                </Button>
-                <Button disabled={!plan.data || run.isPending} onClick={() => run.mutate('file.delete')}>
-                  {tr('delete_86ea33ae')}
-                </Button>
-              </>
-            ) : (
-              <Button className="primary" disabled={!plan.data || run.isPending} onClick={() => run.mutate()}>
-                {tr('yes_8d2fab2d')}
-              </Button>
-            )}
-            <Dialog.Close asChild>
-              <Button disabled={run.isPending} autoFocus>
-                {action === 'file.trash' || action === 'file.delete'
-                  ? tr('cancel_0ec753be')
-                  : tr('no_f82a8219')}
-              </Button>
-            </Dialog.Close>
-          </div>
         </DialogContent>
       </Dialog.Portal>
     )
@@ -760,26 +778,68 @@ function OperationForm({
             ? 'applying_changes_and_refreshing_data_2f929fed'
             : 'checking_whether_this_operation_is_available_75110126',
         )}
+        dirty={JSON.stringify(params) !== JSON.stringify(defaults(action))}
         className={
           fileOperation
             ? 'settings-dialog operation-dialog file-operation-dialog'
             : 'settings-dialog operation-dialog'
         }
+        header={
+          <>
+            {' '}
+            <div className="dialog-heading">
+              <Dialog.Title>
+                {actions.length === 1 ? operations[action].label : tr('manage_81edf08c')}
+              </Dialog.Title>
+            </div>
+            <Dialog.Description className="muted">
+              {description ??
+                (fileOperation
+                  ? tr('specify_operation_parameters_00bcd45c')
+                  : tr('review_the_selected_items_and_settings_changes_are_5a8cb6d3'))}
+            </Dialog.Description>{' '}
+          </>
+        }
+        footer={
+          plan.data ? (
+            <div className="actions">
+              <Dialog.Close asChild>
+                <Button disabled={run.isPending} data-dialog-cancel>
+                  {tr('cancel_555ad1c0')}
+                </Button>
+              </Dialog.Close>
+              <Button className="primary" disabled={run.isPending} onClick={() => run.mutate()}>
+                {tr('confirm_0467ae4b')}
+              </Button>
+            </div>
+          ) : (
+            <div className="actions">
+              <Button
+                className="primary"
+                disabled={
+                  plan.isPending ||
+                  editable.some(
+                    (field) =>
+                      field.type === 'folder' &&
+                      !(action === 'user.create' && field.key === 'home') &&
+                      !params[field.key],
+                  ) ||
+                  (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
+                }
+                onClick={() => plan.mutate()}
+              >
+                {plan.error
+                  ? tr('check_again_f5a9c448')
+                  : autoReview && editable.length === 0
+                    ? tr('check_operation_availability_134d9204')
+                    : tr('continue_3f75368a')}
+              </Button>
+            </div>
+          )
+        }
+        variant="form"
+        intent="edit"
       >
-        <div className="dialog-heading">
-          <Dialog.Title>
-            {actions.length === 1 ? operations[action].label : tr('manage_81edf08c')}
-          </Dialog.Title>
-          <Dialog.Close asChild>
-            <Button aria-label={tr('close_4ae50d30')}>✕</Button>
-          </Dialog.Close>
-        </div>
-        <Dialog.Description className="muted">
-          {description ??
-            (fileOperation
-              ? tr('specify_operation_parameters_00bcd45c')
-              : tr('review_the_selected_items_and_settings_changes_are_5a8cb6d3'))}
-        </Dialog.Description>
         {!fileOperation && context.length > 0 && (
           <dl className="operation-context">
             {context.map((item) => (
@@ -978,46 +1038,15 @@ function OperationForm({
                 <div key={i}>{d}</div>
               ))}
             </Notice>
-            <div className="actions">
-              <Button className="primary" disabled={run.isPending} onClick={() => run.mutate()}>
-                {tr('confirm_0467ae4b')}
-              </Button>
-              <Dialog.Close asChild>
-                <Button disabled={run.isPending}>{tr('cancel_555ad1c0')}</Button>
-              </Dialog.Close>
-            </div>
           </>
-        ) : (
-          <div className="actions">
-            <Button
-              className="primary"
-              disabled={
-                plan.isPending ||
-                editable.some(
-                  (field) =>
-                    field.type === 'folder' &&
-                    !(action === 'user.create' && field.key === 'home') &&
-                    !params[field.key],
-                ) ||
-                (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
-              }
-              onClick={() => plan.mutate()}
-            >
-              {plan.error
-                ? tr('check_again_f5a9c448')
-                : autoReview && editable.length === 0
-                  ? tr('check_operation_availability_134d9204')
-                  : tr('continue_3f75368a')}
-            </Button>
-          </div>
-        )}
+        ) : null}
       </DialogContent>
     </Dialog.Portal>
   )
 }
 export function JobsList() {
   const uploads = useFileUploads()
-  const activeFileJobs = new Set(uploads.flatMap(task => task.jobIds ?? (task.jobId ? [task.jobId] : [])))
+  const activeFileJobs = new Set(uploads.flatMap((task) => task.jobIds ?? (task.jobId ? [task.jobId] : [])))
   const raidTasks = useRaidTasks()
   const updates = useUpdateTask()
   const systemTasks = { ...raidTasks, tasks: [...updates, ...raidTasks.tasks] }
@@ -1043,73 +1072,77 @@ export function JobsList() {
       <FileUploadTasks />
       <SystemTasks {...systemTasks} />
       <div className="jobs-list">
-        {data.data?.filter(j => !activeFileJobs.has(j.id)).map((j) => (
-          <article className="surface" key={j.id}>
-            <div className="volume-heading">
-              <h3>
-                {(
-                  {
-                    'module.install': tr('ui.moduleInstall'),
-                    'module.remove': tr('ui.moduleRemove'),
-                    'module.enable': tr('ui.moduleEnable'),
-                    'module.disable': tr('ui.moduleDisable'),
-                    'share.account': tr('ui.applyUser'),
-                  } as Record<string, string>
-                )[j.action] ??
-                  operations[j.action]?.label ??
-                  j.action}
-              </h3>
-              <span
-                className={`badge ${j.status === 'failed' || j.status === 'interrupted' ? 'warning' : ''}`}
-              >
-                {names[j.status]}
+        {data.data
+          ?.filter((j) => !activeFileJobs.has(j.id))
+          .map((j) => (
+            <article className="surface" key={j.id}>
+              <div className="volume-heading">
+                <h3>
+                  {(
+                    {
+                      'module.install': tr('ui.moduleInstall'),
+                      'module.remove': tr('ui.moduleRemove'),
+                      'module.enable': tr('ui.moduleEnable'),
+                      'module.disable': tr('ui.moduleDisable'),
+                      'share.account': tr('ui.applyUser'),
+                    } as Record<string, string>
+                  )[j.action] ??
+                    operations[j.action]?.label ??
+                    j.action}
+                </h3>
+                <span
+                  className={`badge ${j.status === 'failed' || j.status === 'interrupted' ? 'warning' : ''}`}
+                >
+                  {names[j.status]}
+                </span>
+              </div>
+              <p>{j.target || (Array.isArray(j.result.modules) ? j.result.modules.join(', ') : '')}</p>
+              <p className="muted">{j.stage}</p>
+              {typeof j.result.original === 'string' && (
+                <p className="small">
+                  {tr('original_path_e1626da3') + ' '}
+                  {j.result.original}
+                </p>
+              )}
+              {typeof j.result.path === 'string' && (
+                <p className="small">
+                  {tr('in_trash_d8442913') + ' '}
+                  {j.result.path}
+                </p>
+              )}
+              <span className="small muted">
+                {j.user} · {new Date(j.created).toLocaleString(locale())}
               </span>
-            </div>
-            <p>{j.target || (Array.isArray(j.result.modules) ? j.result.modules.join(', ') : '')}</p>
-            <p className="muted">{j.stage}</p>
-            {typeof j.result.original === 'string' && (
-              <p className="small">
-                {tr('original_path_e1626da3') + ' '}
-                {j.result.original}
-              </p>
-            )}
-            {typeof j.result.path === 'string' && (
-              <p className="small">
-                {tr('in_trash_d8442913') + ' '}
-                {j.result.path}
-              </p>
-            )}
-            <span className="small muted">
-              {j.user} · {new Date(j.created).toLocaleString(locale())}
-            </span>
-            <div className="job-actions">
-              {j.canCancel && (
-                <Button
-                  title={tr('jobs.cancel')}
-                  aria-label={tr('jobs.cancel')}
-                  disabled={cancel.isPending}
-                  onClick={() => cancel.mutate(j.id)}
-                >
-                  <Icon path={mdiCancel} />
-                </Button>
+              <div className="job-actions">
+                {j.canCancel && (
+                  <Button
+                    title={tr('jobs.cancel')}
+                    aria-label={tr('jobs.cancel')}
+                    disabled={cancel.isPending}
+                    onClick={() => cancel.mutate(j.id)}
+                  >
+                    <Icon path={mdiCancel} />
+                  </Button>
+                )}
+                {['failed', 'interrupted', 'cancelled'].includes(j.status) && (
+                  <Button
+                    title={tr('jobs.inspect')}
+                    aria-label={tr('jobs.inspect')}
+                    onClick={() => setSelected(j)}
+                  >
+                    <Icon path={mdiRestore} />
+                  </Button>
+                )}
+                {j.needsReview && <span className="badge warning">{tr('jobs.needsReview')}</span>}
+              </div>
+              {j.cancelRequested && j.status === 'running' && (
+                <p className="muted">{tr('jobs.cancelling')}</p>
               )}
-              {['failed', 'interrupted', 'cancelled'].includes(j.status) && (
-                <Button
-                  title={tr('jobs.inspect')}
-                  aria-label={tr('jobs.inspect')}
-                  onClick={() => setSelected(j)}
-                >
-                  <Icon path={mdiRestore} />
-                </Button>
+              {j.status === 'running' && !j.canCancel && !j.cancelRequested && (
+                <p className="small muted">{tr('jobs.locked')}</p>
               )}
-              {j.needsReview && <span className="badge warning">{tr('jobs.needsReview')}</span>}
-            </div>
-            {j.cancelRequested && j.status === 'running' && <p className="muted">{tr('jobs.cancelling')}</p>}
-            {j.status === 'running' && !j.canCancel && !j.cancelRequested && (
-              <p className="small muted">{tr('jobs.locked')}</p>
-            )}
-          </article>
-        ))}
+            </article>
+          ))}
       </div>
       {selected && <JobRecovery job={selected} onClose={() => setSelected(null)} />}
       {data.data?.length === 0 && systemTasks.tasks.length === 0 && uploads.length === 0 && (
@@ -1154,11 +1187,60 @@ export function JobRecovery({ job, onClose }: { job: Job; onClose: () => void })
     >
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay" />
-        <DialogContent className="dialog-content job-recovery" busy={busy}>
-          <Dialog.Title>{tr('jobs.inspect')}</Dialog.Title>
-          <Dialog.Description>
-            {operations[job.action]?.label ?? job.action} · {job.target}
-          </Dialog.Description>
+        <DialogContent
+          className="dialog-content job-recovery"
+          busy={busy}
+          header={
+            <>
+              {' '}
+              <Dialog.Title>{tr('jobs.inspect')}</Dialog.Title>
+              <Dialog.Description>
+                {operations[job.action]?.label ?? job.action} · {job.target}
+              </Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="job-actions">
+              <Button
+                title={tr('jobs.refresh')}
+                aria-label={tr('jobs.refresh')}
+                disabled={busy}
+                onClick={() => inspect.mutate()}
+              >
+                <Icon path={mdiRefresh} />
+              </Button>
+              {report?.recoveryAction && operations[report.recoveryAction] && (
+                <OperationButton
+                  actions={[report.recoveryAction]}
+                  label={operations[report.recoveryAction].label}
+                  icon={mdiRestore}
+                  autoReview
+                />
+              )}
+              {report && (
+                <Link className="button" to={report.route} onClick={onClose}>
+                  {tr('jobs.openSection')}
+                </Link>
+              )}
+              {report && (
+                <Button
+                  title={tr('jobs.acknowledge')}
+                  aria-label={tr('jobs.acknowledge')}
+                  disabled={busy}
+                  onClick={() => acknowledge.mutate()}
+                >
+                  <Icon path={mdiCheck} />
+                </Button>
+              )}
+              <Button disabled={busy} onClick={onClose}>
+                {tr('homes.close')}
+              </Button>
+            </div>
+          }
+          variant="details"
+          intent="inspect"
+          dirty={false}
+        >
           <p>{job.stage}</p>
           <p>{tr('jobs.explanation')}</p>
           {(inspect.error || acknowledge.error) && (
@@ -1184,42 +1266,6 @@ export function JobRecovery({ job, onClose }: { job: Job; onClose: () => void })
               <p className="small muted">{tr('jobs.snapshot')}</p>
             </>
           )}
-          <div className="job-actions">
-            <Button
-              title={tr('jobs.refresh')}
-              aria-label={tr('jobs.refresh')}
-              disabled={busy}
-              onClick={() => inspect.mutate()}
-            >
-              <Icon path={mdiRefresh} />
-            </Button>
-            {report?.recoveryAction && operations[report.recoveryAction] && (
-              <OperationButton
-                actions={[report.recoveryAction]}
-                label={operations[report.recoveryAction].label}
-                icon={mdiRestore}
-                autoReview
-              />
-            )}
-            {report && (
-              <Link className="button" to={report.route} onClick={onClose}>
-                {tr('jobs.openSection')}
-              </Link>
-            )}
-            {report && (
-              <Button
-                title={tr('jobs.acknowledge')}
-                aria-label={tr('jobs.acknowledge')}
-                disabled={busy}
-                onClick={() => acknowledge.mutate()}
-              >
-                <Icon path={mdiCheck} />
-              </Button>
-            )}
-            <Button disabled={busy} onClick={onClose}>
-              {tr('homes.close')}
-            </Button>
-          </div>
         </DialogContent>
       </Dialog.Portal>
     </Dialog.Root>

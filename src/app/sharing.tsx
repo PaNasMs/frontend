@@ -1,6 +1,7 @@
 import { FolderField } from '../shared/folder-picker'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import * as Tabs from '@radix-ui/react-tabs'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -47,7 +48,7 @@ type State = {
 }
 const empty: Share = {
   name: '',
-  path: '/srv/',
+  path: '',
   smb: true,
   nfs: false,
   readers: [],
@@ -113,138 +114,150 @@ export function SharingPage() {
           </Button>
         </div>
       </div>
-      <nav className="sharing-tabs">
-        {['folders', 'connections'].map((t) => (
-          <Button key={t} className={t === tab ? 'active' : ''} onClick={() => setSearch({ tab: t })}>
-            {tr('shares.' + t)}
-          </Button>
-        ))}
-      </nav>
-      {data.error && <Notice error>{data.error.message}</Notice>}
-      {(data.data?.drift || data.data?.recovery) && (
-        <Notice error>
-          {tr('shares.drift')}
-          <OperationButton actions={['share.recover']} initial={{}} fields={[]} autoReview onDone={refresh} />
-        </Notice>
-      )}
-      {data.data && (
-        <p className="small muted">
-          SMB: {tr('shares.service.' + data.data.services.smbd)} · NFS:{' '}
-          {tr('shares.service.' + data.data.services['nfs-kernel-server'])}
-        </p>
-      )}
-      {tab === 'folders' && (
-        <>
-          <p className="muted">{tr('shares.permissionsHint')}</p>
-          <div className="sharing-grid">
-            {data.data?.shares.map((s) => (
-              <article className="surface sharing-card" key={s.name}>
-                <div className="user-section-heading">
-                  <h2>
-                    <Icon path={mdiShareVariant} /> {s.name}
-                  </h2>
-                  <div className="row">
-                    <Button
-                      title={tr('shares.edit')}
-                      aria-label={tr('shares.edit')}
-                      onClick={() => setEditing(s)}
-                    >
-                      <Icon path={mdiPencil} />
-                    </Button>
-                    <OperationButton
-                      label={tr('shares.permissions')}
-                      icon={mdiShieldKeyOutline}
-                      actions={['folder.permissions']}
-                      initial={{ target: s.path }}
-                      choices={choices}
-                      fields={[
-                        { key: 'owner', label: tr('owner_username_6137717d'), type: 'select' },
-                        { key: 'group', label: tr('group_ae8ad7b5'), type: 'select' },
-                        {
-                          key: 'mode',
-                          label: tr('unix_folder_permissions_076ccf72'),
-                          type: 'select',
-                          options: ['0700', '0750', '0770', '0755', '0775', '2770', '2775'],
-                          value: '2770',
-                        },
-                      ]}
-                    />
-                    <OperationButton
-                      label={tr('shares.remove')}
-                      icon={mdiDeleteOutline}
-                      actions={['share.remove']}
-                      initial={{ target: s.name }}
-                      fields={[]}
-                      autoReview
-                      onDone={refresh}
-                    />
-                  </div>
-                </div>
-                <p className="sharing-path">{s.path}</p>
-                <p>
-                  {[s.smb && 'SMB', s.nfs && 'NFS'].filter(Boolean).join(' · ') || tr('shares.unpublished')}
-                </p>
-                {s.smb && (
-                  <p className="small">
-                    {tr('shares.readers')}: {s.readers.join(', ') || '—'}
-                    <br />
-                    {tr('shares.writers')}: {s.writers.join(', ') || '—'}
-                  </p>
-                )}
-                {s.nfs && (
-                  <p className="small">
-                    NFS: {s.clients.join(', ')} ·{' '}
-                    {tr(s.readOnly ? 'read_only_c5eb2661' : 'read_and_write_823409cc')}
-                  </p>
-                )}
-              </article>
-            ))}
-          </div>
-          {data.data?.shares.length === 0 && <Notice>{tr('no_folders_shared_yet_0db807d5')}</Notice>}
-          {legacy.data?.exports.map((s) => (
-            <article className="surface sharing-card" key={s.path}>
-              <h2>NFS · {s.path}</h2>
-              <p>{s.clients.join(', ')}</p>
+      <Tabs.Root className="tabbed-page sharing-page" value={tab} onValueChange={(tab) => setSearch({ tab })}>
+        <Tabs.List className="tabs">
+          <Tabs.Trigger value="folders">{tr('shares.folders')}</Tabs.Trigger>
+          <Tabs.Trigger value="connections">{tr('shares.connections')}</Tabs.Trigger>
+        </Tabs.List>
+        <Tabs.Content value={tab}>
+          {data.error && <Notice error>{data.error.message}</Notice>}
+          {(data.data?.drift || data.data?.recovery) && (
+            <Notice error>
+              {tr('shares.drift')}
               <OperationButton
-                actions={['nfs.export', 'nfs.export-remove']}
-                initial={{ target: s.path, clients: s.clients.join(','), readOnly: s.readOnly }}
+                actions={['share.recover']}
+                initial={{}}
+                fields={[]}
+                autoReview
                 onDone={refresh}
               />
-            </article>
-          ))}
-        </>
-      )}
-      {tab === 'connections' && (
-        <>
-          <p className="muted">{tr('shares.connectionsHint')}</p>
-          {data.data?.sessions.error && <Notice error>{data.data.sessions.error}</Notice>}
-          <div className="sharing-grid">
-            {Object.entries(data.data?.sessions.sessions ?? {}).map(([id, s]) => (
-              <article className="surface sharing-card" key={id}>
-                <div className="user-section-heading">
-                  <strong>{s.username}</strong>
+            </Notice>
+          )}
+          <div className="sharing-summary muted">
+            <p className="sharing-hint">
+              {tr(tab === 'folders' ? 'shares.permissionsHint' : 'shares.connectionsHint')}
+            </p>
+            {data.data && (
+              <p className="sharing-services small">
+                SMB: {tr('shares.service.' + data.data.services.smbd)} · NFS:{' '}
+                {tr('shares.service.' + data.data.services['nfs-kernel-server'])}
+              </p>
+            )}
+          </div>
+          {tab === 'folders' && (
+            <>
+              <div className="sharing-grid">
+                {data.data?.shares.map((s) => (
+                  <article className="surface sharing-card" key={s.name}>
+                    <div className="user-section-heading">
+                      <h2>
+                        <Icon path={mdiShareVariant} /> {s.name}
+                      </h2>
+                      <div className="row">
+                        <Button
+                          title={tr('shares.edit')}
+                          aria-label={tr('shares.edit')}
+                          onClick={() => setEditing(s)}
+                        >
+                          <Icon path={mdiPencil} />
+                        </Button>
+                        <OperationButton
+                          label={tr('shares.permissions')}
+                          icon={mdiShieldKeyOutline}
+                          actions={['folder.permissions']}
+                          initial={{ target: s.path }}
+                          choices={choices}
+                          fields={[
+                            { key: 'owner', label: tr('owner_username_6137717d'), type: 'select' },
+                            { key: 'group', label: tr('group_ae8ad7b5'), type: 'select' },
+                            {
+                              key: 'mode',
+                              label: tr('unix_folder_permissions_076ccf72'),
+                              type: 'select',
+                              options: ['0700', '0750', '0770', '0755', '0775', '2770', '2775'],
+                              value: '2770',
+                            },
+                          ]}
+                        />
+                        <OperationButton
+                          label={tr('shares.remove')}
+                          icon={mdiDeleteOutline}
+                          actions={['share.remove']}
+                          initial={{ target: s.name }}
+                          fields={[]}
+                          autoReview
+                          onDone={refresh}
+                        />
+                      </div>
+                    </div>
+                    <p className="sharing-path">{s.path}</p>
+                    <p className="sharing-protocols">
+                      {[s.smb && 'SMB', s.nfs && 'NFS'].filter(Boolean).join(' · ') ||
+                        tr('shares.unpublished')}
+                    </p>
+                    {s.smb && (
+                      <p className="small">
+                        {tr('shares.readers')}: {s.readers.join(', ') || '—'}
+                        <br />
+                        {tr('shares.writers')}: {s.writers.join(', ') || '—'}
+                      </p>
+                    )}
+                    {s.nfs && (
+                      <p className="small">
+                        NFS: {s.clients.join(', ')} ·{' '}
+                        {tr(s.readOnly ? 'read_only_c5eb2661' : 'read_and_write_823409cc')}
+                      </p>
+                    )}
+                  </article>
+                ))}
+              </div>
+              {data.data?.shares.length === 0 && <Notice>{tr('no_folders_shared_yet_0db807d5')}</Notice>}
+              {legacy.data?.exports.map((s) => (
+                <article className="surface sharing-card" key={s.path}>
+                  <h2>NFS · {s.path}</h2>
+                  <p>{s.clients.join(', ')}</p>
                   <OperationButton
-                    actions={['share.disconnect']}
-                    label={tr('shares.disconnect')}
-                    icon={mdiClose}
-                    initial={{ target: s.username }}
-                    fields={[]}
-                    autoReview
+                    actions={['nfs.export', 'nfs.export-remove']}
+                    initial={{ target: s.path, clients: s.clients.join(','), readOnly: s.readOnly }}
                     onDone={refresh}
                   />
-                </div>
-                <p>{s.remote_machine || s.hostname}</p>
-              </article>
-            ))}
-          </div>
-          {!Object.keys(data.data?.sessions.sessions ?? {}).length && (
-            <Notice>{tr('shares.noConnections')}</Notice>
+                </article>
+              ))}
+            </>
           )}
-        </>
-      )}
+          {tab === 'connections' && (
+            <>
+              {data.data?.sessions.error && <Notice error>{data.data.sessions.error}</Notice>}
+              <div className="sharing-grid">
+                {Object.entries(data.data?.sessions.sessions ?? {}).map(([id, s]) => (
+                  <article className="surface sharing-card" key={id}>
+                    <div className="user-section-heading">
+                      <strong>{s.username}</strong>
+                      <OperationButton
+                        actions={['share.disconnect']}
+                        label={tr('shares.disconnect')}
+                        icon={mdiClose}
+                        initial={{ target: s.username }}
+                        fields={[]}
+                        autoReview
+                        onDone={refresh}
+                      />
+                    </div>
+                    <p>{s.remote_machine || s.hostname}</p>
+                  </article>
+                ))}
+              </div>
+              {!Object.keys(data.data?.sessions.sessions ?? {}).length && (
+                <Notice>{tr('shares.noConnections')}</Notice>
+              )}
+            </>
+          )}
+        </Tabs.Content>
+      </Tabs.Root>
       {editing && (
         <ShareEditor
           original={editing}
+          existing={!!data.data?.shares.some((s) => s.name === editing.name && s.path === editing.path)}
           accounts={users.data}
           close={() => setEditing(null)}
           done={() => {
@@ -258,11 +271,13 @@ export function SharingPage() {
 }
 function ShareEditor({
   original,
+  existing,
   accounts,
   close,
   done,
 }: {
   original: Share
+  existing: boolean
   accounts?: Accounts
   close: () => void
   done: () => void
@@ -272,12 +287,18 @@ function ShareEditor({
   const update = (key: string, v: unknown) => setValue((s) => ({ ...s, [key]: v }))
   const save = useMutation({
     mutationFn: async () => {
-      const params = { ...value, target: original.name }
+      const params = { ...value, target: existing ? original.name : '' }
       const p = await managed<{ fingerprint: string; confirmation: string }>('plan', {
         action: 'share.save',
         params,
       })
-      const job = await managed<{ id: string }>('run', { id: newID(), action: 'share.save', params, ...p })
+      const job = await managed<{ id: string }>('run', {
+        id: newID(),
+        action: 'share.save',
+        params,
+        fingerprint: p.fingerprint,
+        confirmation: p.confirmation,
+      })
       await waitForJob(async () => (await managed<Job[]>('jobs')).find((j) => j.id === job.id))
     },
     onSuccess: () => {
@@ -309,27 +330,49 @@ function ShareEditor({
         <Dialog.Overlay className="dialog-overlay" />
         <DialogContent
           className="settings-dialog sharing-dialog"
+          dirty={
+            JSON.stringify(value) !== JSON.stringify({ ...original, clients: original.clients.join(',') })
+          }
           busy={save.isPending}
           message={tr('applying_changes_and_refreshing_data_2f929fed')}
+          header={
+            <>
+              {' '}
+              <div className="dialog-heading">
+                <Dialog.Title>{tr(existing ? 'shares.edit' : 'shares.add')}</Dialog.Title>
+              </div>
+              <Dialog.Description>{tr('shares.step' + step)}</Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="dialog-actions">
+              {step > 0 && <Button onClick={() => setStep(0)}>{tr('shares.back')}</Button>}
+              <Button
+                onClick={() => (step === 0 ? setStep(1) : save.mutate())}
+                disabled={save.isPending || !value.name || !value.path}
+              >
+                <Icon path={mdiCheck} />
+                {tr(step === 0 ? 'shares.next' : 'shares.save')}
+              </Button>
+            </div>
+          }
+          variant="form"
+          intent="edit"
         >
-          <div className="dialog-heading">
-            <Dialog.Title>{tr(original.name ? 'shares.edit' : 'shares.add')}</Dialog.Title>
-            <Button title={tr('close_4ae50d30')} onClick={close} disabled={save.isPending}>
-              <Icon path={mdiClose} />
-            </Button>
-          </div>
-          <Dialog.Description>{tr('shares.step' + step)}</Dialog.Description>
           {step === 0 && (
             <>
-              <label className="field">
-                {tr('shares.name')}
-                <input value={value.name} onChange={(e) => update('name', e.target.value)} />
-              </label>
               <FolderField
                 label={tr('shares.path')}
                 value={value.path}
-                onChange={(path) => update('path', path)}
+                onChange={(path) =>
+                  setValue((s) => ({ ...s, path, name: path.split('/').filter(Boolean).at(-1) ?? '' }))
+                }
               />
+              {value.name && (
+                <p className="small muted">
+                  {tr('shares.name')}: <strong>{value.name}</strong>
+                </p>
+              )}
               <div className="row">
                 {(['smb', 'nfs'] as const).map((k) => (
                   <label className="check" key={k}>
@@ -405,16 +448,6 @@ function ShareEditor({
             </>
           )}
           {save.error && <Notice error>{save.error.message}</Notice>}
-          <div className="dialog-actions">
-            {step > 0 && <Button onClick={() => setStep(0)}>{tr('shares.back')}</Button>}
-            <Button
-              onClick={() => (step === 0 ? setStep(1) : save.mutate())}
-              disabled={save.isPending || !value.name || !value.path}
-            >
-              <Icon path={mdiCheck} />
-              {tr(step === 0 ? 'shares.next' : 'shares.save')}
-            </Button>
-          </div>
         </DialogContent>
       </Dialog.Portal>
     </Dialog.Root>

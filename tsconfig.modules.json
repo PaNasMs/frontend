@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@panasms/external": ["src/app/external-connections"],
       "@panasms/ui": ["src/shared/ui"],
       "@panasms/runtime": ["src/app/module-registry"],
       "@panasms/operations": ["src/app/operations"],

@@ -61,6 +61,7 @@ export function ModuleManager() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [stage, setStage] = useState('')
+  const [accepted, setAccepted] = useState(false)
   async function preview(action: string, params: Record<string, string>) {
     setError('')
     setBusy(true)
@@ -101,6 +102,7 @@ export function ModuleManager() {
     setError('')
     setBusy(true)
     setStage(tr('in_progress_da4341a2'))
+    setAccepted(false)
     try {
       const job = await managed<{
         id: string
@@ -111,6 +113,8 @@ export function ModuleManager() {
         fingerprint: operation.plan.fingerprint,
         confirmation: operation.plan.confirmation,
       })
+      setAccepted(true)
+      setPending(null)
       await waitForJob(
         async () => {
           const jobs = await managed<Job[]>('jobs')
@@ -205,7 +209,7 @@ export function ModuleManager() {
   )
   const moduleName = (id: string) => catalog.data?.installed.find((item) => item.id === id)?.title ?? id
   return (
-    <WaitingSurface busy={busy && !pending} message={stage || undefined}>
+    <WaitingSurface busy={busy && !pending && !accepted} message={stage || undefined}>
       <div className="page-heading">
         <div className="module-page-title">
           {moduleId && (
@@ -313,7 +317,7 @@ export function ModuleManager() {
         items.length > 0 &&
         visibleItems.length === 0 && <p className="muted">{tr('modules.filterEmpty')}</p>}
       {!moduleId && (
-        <div className="module-list">
+        <div className="module-list module-catalog">
           {visibleItems.map((module) => (
             <article
               className={`surface module-card${installedIds.has(module.id) && !module.enabled ? ' module-card-disabled' : ''}`}
@@ -339,6 +343,9 @@ export function ModuleManager() {
                   )}
                 </span>
               </div>
+              <p className="module-card-description muted">
+                {module.description || tr('no_description_provided_7eeedaab')}
+              </p>
               <div className="module-card-footer">
                 <span
                   className={`module-status ${installedIds.has(module.id) ? (module.enabled ? 'enabled' : 'disabled') : 'available'}`}
@@ -368,8 +375,8 @@ export function ModuleManager() {
         </div>
       )}
       {selected && (
-        <div className="module-details">
-          <section className="surface">
+        <div className="surface module-details">
+          <section>
             <h2>{tr('about_this_module_debf7d50')}</h2>
             <p>{selected.description || tr('no_description_provided_7eeedaab')}</p>
             <dl className="module-facts">
@@ -381,7 +388,7 @@ export function ModuleManager() {
               <dd>{selected.id}</dd>
             </dl>
           </section>
-          <section className="surface">
+          <section>
             <h2>{tr('dependencies_898afdf0')}</h2>
             <dl className="module-facts">
               <dt>{tr('panasms_core_a9f23ebe')}</dt>
@@ -451,37 +458,40 @@ export function ModuleManager() {
             busy={busy}
             message={stage || undefined}
             className="settings-dialog operation-dialog"
+            header={
+              <>
+                {' '}
+                <div className="page-heading">
+                  <Dialog.Title>
+                    {pending?.action === 'module.install'
+                      ? tr('install_modules_bfc8911f')
+                      : tr('change_module_4e519bcb')}
+                  </Dialog.Title>
+                </div>
+                <Dialog.Description>
+                  {tr('review_the_changes_before_applying_0b26d959')}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button disabled={busy} onClick={() => setPending(null)} data-dialog-cancel>
+                  {tr('cancel_0ec753be')}
+                </Button>
+                <Button disabled={busy} onClick={() => void apply()}>
+                  {tr('confirm_0467ae4b')}
+                </Button>
+              </div>
+            }
+            variant="form"
+            intent="confirm"
+            dirty={false}
           >
-            <div className="page-heading">
-              <Dialog.Title>
-                {pending?.action === 'module.install'
-                  ? tr('install_modules_bfc8911f')
-                  : tr('change_module_4e519bcb')}
-              </Dialog.Title>
-              <Button
-                title={tr('close_4ae50d30')}
-                aria-label={tr('close_4ae50d30')}
-                disabled={busy}
-                onClick={() => setPending(null)}
-              >
-                <Icon path={mdiClose} />
-              </Button>
-            </div>
-            <Dialog.Description>{tr('review_the_changes_before_applying_0b26d959')}</Dialog.Description>
             <ul>
               {pending?.plan.details.map((d, i) => (
                 <li key={i}>{d}</li>
               ))}
             </ul>
-
-            <div className="actions">
-              <Button disabled={busy} onClick={() => void apply()}>
-                {tr('confirm_0467ae4b')}
-              </Button>
-              <Button disabled={busy} onClick={() => setPending(null)}>
-                {tr('cancel_0ec753be')}
-              </Button>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

@@ -230,16 +230,42 @@ export function useVolumeAccess() {
           onPointerDownOutside={(e) => {
             if (busy) e.preventDefault()
           }}
+          header={
+            <>
+              {' '}
+              <Dialog.Title>{tr('drive_errors_53b12628')}</Dialog.Title>
+              <Dialog.Description>
+                {tr('volume_3c0fb401') + ' '}
+                <strong>{prompt?.volume.name}</strong>
+                {' ' + tr('has_a_file_system_problem_902df8e5')}{' '}
+                {prompt?.discovery
+                  ? tr('repair_now_the_volume_will_remain_unmounted_7578f67c')
+                  : tr('it_must_be_repaired_before_mounting_you_can_also_o_0ac3ec97')}
+              </Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="actions">
+              <Button
+                disabled={busy || !prompt?.choice.repairAvailable}
+                onClick={() => void choose('repair')}
+              >
+                {tr('repair_9b1c9a02')}
+              </Button>
+              {!prompt?.discovery && (
+                <Button disabled={busy} onClick={() => void choose('readonly')}>
+                  {tr('read_only_c5eb2661')}
+                </Button>
+              )}
+              <Button disabled={busy} onClick={cancel} data-dialog-cancel>
+                {prompt?.discovery ? tr('skip_fe100801') : tr('cancel_0ec753be')}
+              </Button>
+            </div>
+          }
+          variant="compact"
+          intent="confirm"
+          dirty={false}
         >
-          <Dialog.Title>{tr('drive_errors_53b12628')}</Dialog.Title>
-          <Dialog.Description>
-            {tr('volume_3c0fb401') + ' '}
-            <strong>{prompt?.volume.name}</strong>
-            {' ' + tr('has_a_file_system_problem_902df8e5')}{' '}
-            {prompt?.discovery
-              ? tr('repair_now_the_volume_will_remain_unmounted_7578f67c')
-              : tr('it_must_be_repaired_before_mounting_you_can_also_o_0ac3ec97')}
-          </Dialog.Description>
           <p className="small muted">{tr('repair_may_modify_damaged_files_e0203e09')}</p>
           {prompt && (
             <details className="small">
@@ -264,19 +290,6 @@ export function useVolumeAccess() {
                 : tr('checking_and_mounting_a11d30a6')}
             </p>
           )}
-          <div className="actions">
-            <Button disabled={busy || !prompt?.choice.repairAvailable} onClick={() => void choose('repair')}>
-              {tr('repair_9b1c9a02')}
-            </Button>
-            {!prompt?.discovery && (
-              <Button disabled={busy} onClick={() => void choose('readonly')}>
-                {tr('read_only_c5eb2661')}
-              </Button>
-            )}
-            <Button disabled={busy} onClick={cancel}>
-              {prompt?.discovery ? tr('skip_fe100801') : tr('cancel_0ec753be')}
-            </Button>
-          </div>
         </DialogContent>
       </Dialog.Portal>
     </Dialog.Root>
@@ -382,29 +395,39 @@ export function EjectButton({
             e.preventDefault()
             cancel.current?.focus()
           }}
+          header={
+            <>
+              {' '}
+              <Dialog.Title>
+                {tr('eject_15625872')}
+                {label}»?
+              </Dialog.Title>
+              <Dialog.Description className="muted">
+                {tr('mounted_partitions_will_be_unmounted_e6ec4adc')}
+              </Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="actions">
+              <Dialog.Close asChild>
+                <button ref={cancel} className="button" disabled={eject.isPending} data-dialog-cancel>
+                  {tr('no_f82a8219')}
+                </button>
+              </Dialog.Close>
+              <Button className="primary" disabled={eject.isPending} onClick={() => eject.mutate()}>
+                {tr('yes_8d2fab2d')}
+              </Button>
+            </div>
+          }
+          variant="compact"
+          intent="confirm"
+          dirty={false}
         >
-          <Dialog.Title>
-            {tr('eject_15625872')}
-            {label}»?
-          </Dialog.Title>
-          <Dialog.Description className="muted">
-            {tr('mounted_partitions_will_be_unmounted_e6ec4adc')}
-          </Dialog.Description>
           {eject.error && (
             <p className="error-text" role="alert">
               {eject.error.message}
             </p>
           )}
-          <div className="actions">
-            <Button className="primary" disabled={eject.isPending} onClick={() => eject.mutate()}>
-              {tr('yes_8d2fab2d')}
-            </Button>
-            <Dialog.Close asChild>
-              <button ref={cancel} className="button" disabled={eject.isPending}>
-                {tr('no_f82a8219')}
-              </button>
-            </Dialog.Close>
-          </div>
         </DialogContent>
       </Dialog.Portal>
     </Dialog.Root>
@@ -451,6 +474,7 @@ export function RemovableMenu() {
   }, [])
   useEffect(() => {
     if (!data.data) return
+    if (document.querySelector('[role="dialog"]')) return
     const currentKeys = new Set((data.data?.devices ?? []).map(recoveryKey))
     for (const key of offeredRecovery) if (!currentKeys.has(key)) offeredRecovery.delete(key)
     for (const volume of data.data?.devices ?? []) {

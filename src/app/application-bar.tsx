@@ -1,4 +1,5 @@
 import { tr } from '../i18n/index'
+import { modules } from './module-registry'
 import { OngoingTasks } from './ongoing-tasks'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -195,6 +196,10 @@ export function ApplicationBar() {
       </nav>
       <span className="application-separator" aria-hidden="true" />
       <OngoingTasks />
+      {modules().filter(module => module.backgroundIndicator).map(module => {
+        const Indicator = module.backgroundIndicator!
+        return <Indicator key={module.id} />
+      })}
       {open && (
         <section className="app-launcher-menu" aria-label={tr('nas_applications_5f56f294')}>
           <h2>{tr('applications_946ee087')}</h2>

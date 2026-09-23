@@ -62,22 +62,37 @@ export function PowerMenu() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog power-dialog">
-            <Dialog.Title>{tr('power.' + action)}</Dialog.Title>
-            <Dialog.Description>
-              {tr(scheduled ? 'power.scheduled.' + action : 'power.confirm.' + action)}
-            </Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog power-dialog"
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr('power.' + action)}</Dialog.Title>
+                <Dialog.Description>
+                  {tr(scheduled ? 'power.scheduled.' + action : 'power.confirm.' + action)}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Dialog.Close asChild>
+                  <Button disabled={busy} data-dialog-cancel>
+                    {tr(scheduled ? 'homes.close' : 'homes.cancel')}
+                  </Button>
+                </Dialog.Close>
+                {!scheduled && (
+                  <Button disabled={busy} onClick={() => void run()}>
+                    {tr('homes.confirmButton')}
+                  </Button>
+                )}
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             {error && <Notice error>{error}</Notice>}
-            <div className="actions">
-              {!scheduled && (
-                <Button disabled={busy} onClick={() => void run()}>
-                  {tr('homes.confirmButton')}
-                </Button>
-              )}
-              <Dialog.Close asChild>
-                <Button disabled={busy}>{tr(scheduled ? 'homes.close' : 'homes.cancel')}</Button>
-              </Dialog.Close>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

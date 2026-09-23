@@ -44,20 +44,37 @@ export function ConfirmDialog({
             event.preventDefault()
             cancelRef.current?.focus()
           }}
-        >
-          <Dialog.Title>{title}</Dialog.Title>
-          <Dialog.Description asChild>
-            <div className="muted">{children}</div>
-          </Dialog.Description>
-          <div className="dialog-actions">
-            <button type="button" className="button" ref={cancelRef} data-cancel onClick={onCancel} autoFocus>
-              {tr('cancel_0ec753be')}
-            </button>
-            <button type="button" className="button primary" onClick={onConfirm}>
-              {accept}
-            </button>
-          </div>
-        </DialogContent>
+          header={
+            <>
+              {' '}
+              <Dialog.Title>{title}</Dialog.Title>
+              <Dialog.Description asChild>
+                <div className="muted">{children}</div>
+              </Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="dialog-actions">
+              <button
+                type="button"
+                className="button"
+                ref={cancelRef}
+                data-cancel
+                onClick={onCancel}
+                autoFocus
+                data-dialog-cancel
+              >
+                {tr('cancel_0ec753be')}
+              </button>
+              <button type="button" className="button primary" onClick={onConfirm}>
+                {accept}
+              </button>
+            </div>
+          }
+          variant="compact"
+          intent="confirm"
+          dirty={false}
+        ></DialogContent>
       </Dialog.Portal>
     </Dialog.Root>
   )

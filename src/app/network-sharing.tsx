@@ -174,26 +174,39 @@ export function SharingLayout<T extends ShareInterface>({
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog share-confirm">
-            <Dialog.Title>{confirm && tr('share.' + confirm.action)}</Dialog.Title>
-            <Dialog.Description>
-              {tr('share.confirmAction', { name: confirm?.group.name })}
-            </Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog share-confirm"
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{confirm && tr('share.' + confirm.action)}</Dialog.Title>
+                <Dialog.Description>
+                  {tr('share.confirmAction', { name: confirm?.group.name })}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="dialog-actions">
+                <Button disabled={busy} onClick={() => setConfirm(null)} data-dialog-cancel>
+                  {tr('share.cancel')}
+                </Button>
+                <Button
+                  disabled={busy}
+                  onClick={async () => {
+                    if (confirm && (await run('network.share.' + confirm.action, { id: confirm.group.id })))
+                      setConfirm(null)
+                  }}
+                >
+                  {tr('share.confirm')}
+                </Button>
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             {error && <Notice>{error}</Notice>}
-            <div className="dialog-actions">
-              <Button
-                disabled={busy}
-                onClick={async () => {
-                  if (confirm && (await run('network.share.' + confirm.action, { id: confirm.group.id })))
-                    setConfirm(null)
-                }}
-              >
-                {tr('share.confirm')}
-              </Button>
-              <Button disabled={busy} onClick={() => setConfirm(null)}>
-                {tr('share.cancel')}
-              </Button>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>
@@ -264,22 +277,58 @@ function SharingWizard({
           message={tr('share.applying')}
           hint={tr('share.applyingHint')}
           className="settings-dialog share-wizard"
+          dirty={
+            JSON.stringify(outputs) !== JSON.stringify(group?.outputs ?? []) ||
+            JSON.stringify(wifi) !== JSON.stringify(group?.wifi ?? {}) ||
+            name !== (group?.name ?? tr('share.defaultName', { name: source })) ||
+            autostart !== (group?.autostart ?? true) ||
+            mode !== (group?.mode ?? (upstream.kind === 'ethernet' ? 'bridge' : 'nat'))
+          }
+          header={
+            <>
+              {' '}
+              <div className="share-wizard-heading">
+                <Dialog.Title>{tr(group ? 'share.edit' : 'share.create')}</Dialog.Title>
+              </div>
+              <Dialog.Description>
+                {tr('share.step', { current: step + 1, total: aps.length + 2 })} · {source}
+              </Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="dialog-actions">
+              <Button
+                disabled={busy || !valid}
+                onClick={async () => {
+                  if (!last) {
+                    setStep(step + 1)
+                    setShowPassword(false)
+                    return
+                  }
+                  const success = await run('network.share.save', {
+                    ...(group ? { id: group.id } : {}),
+                    source,
+                    outputs,
+                    mode,
+                    name,
+                    autostart,
+                    wifi: Object.fromEntries(aps.map((n) => [n, wifi[n]])),
+                  })
+                  if (success) close()
+                }}
+              >
+                {tr(busy ? 'share.applying' : last ? 'share.enable' : 'share.next')}
+              </Button>
+              {step > 0 && (
+                <Button disabled={busy} onClick={() => setStep(step - 1)}>
+                  {tr('share.back')}
+                </Button>
+              )}
+            </div>
+          }
+          variant="form"
+          intent="edit"
         >
-          <div className="share-wizard-heading">
-            <Dialog.Title>{tr(group ? 'share.edit' : 'share.create')}</Dialog.Title>
-            <Button
-              title={tr('share.cancel')}
-              aria-label={tr('share.cancel')}
-              disabled={busy}
-              onClick={close}
-            >
-              <Icon path={mdiClose} />
-            </Button>
-          </div>
-          <Dialog.Description>
-            {tr('share.step', { current: step + 1, total: aps.length + 2 })} · {source}
-          </Dialog.Description>
-
           <div className="share-wizard-body" aria-busy={busy}>
             {step === 0 ? (
               <>
@@ -440,35 +489,6 @@ function SharingWizard({
               </>
             )}
             {error && <Notice>{error}</Notice>}
-          </div>
-          <div className="dialog-actions">
-            <Button
-              disabled={busy || !valid}
-              onClick={async () => {
-                if (!last) {
-                  setStep(step + 1)
-                  setShowPassword(false)
-                  return
-                }
-                const success = await run('network.share.save', {
-                  ...(group ? { id: group.id } : {}),
-                  source,
-                  outputs,
-                  mode,
-                  name,
-                  autostart,
-                  wifi: Object.fromEntries(aps.map((n) => [n, wifi[n]])),
-                })
-                if (success) close()
-              }}
-            >
-              {tr(busy ? 'share.applying' : last ? 'share.enable' : 'share.next')}
-            </Button>
-            {step > 0 && (
-              <Button disabled={busy} onClick={() => setStep(step - 1)}>
-                {tr('share.back')}
-              </Button>
-            )}
           </div>
         </DialogContent>
       </Dialog.Portal>

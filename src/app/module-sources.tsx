@@ -85,24 +85,46 @@ export function ModuleSources() {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay" />
-        <DialogContent className="settings-dialog" busy={busy || data.isPending}>
-          <div className="dialog-heading">
-            <Dialog.Title>{tr('repos.title')}</Dialog.Title>
-            <Dialog.Close asChild>
-              <Button title={tr('close_4ae50d30')}>
-                <Icon path={mdiClose} />
-              </Button>
-            </Dialog.Close>
-          </div>
-          <Dialog.Description>
-            {tr(
-              review
-                ? review.action === 'module.source-add'
-                  ? 'repos.trust'
-                  : 'repos.removeHint'
-                : 'repos.description',
-            )}
-          </Dialog.Description>
+        <DialogContent
+          className="settings-dialog"
+          busy={busy}
+          dirty={!!url}
+          header={
+            <>
+              {' '}
+              <div className="dialog-heading">
+                <Dialog.Title>{tr('repos.title')}</Dialog.Title>
+              </div>
+              <Dialog.Description>
+                {tr(
+                  review
+                    ? review.action === 'module.source-add'
+                      ? 'repos.trust'
+                      : 'repos.removeHint'
+                    : 'repos.description',
+                )}
+              </Dialog.Description>{' '}
+            </>
+          }
+          footer={
+            <div className="actions">
+              {review ? (
+                <>
+                  <Button onClick={() => setReview(null)}>{tr('cancel_0ec753be')}</Button>
+                  <Button className="primary" onClick={() => void apply()}>
+                    {tr('homes.confirmButton')}
+                  </Button>
+                </>
+              ) : (
+                <Dialog.Close asChild>
+                  <Button data-dialog-cancel>{tr('close_4ae50d30')}</Button>
+                </Dialog.Close>
+              )}
+            </div>
+          }
+          variant="form"
+          intent="edit"
+        >
           {error && <Notice error>{error}</Notice>}
           {data.error && <Notice error>{data.error.message}</Notice>}
           {review ? (
@@ -151,20 +173,6 @@ export function ModuleSources() {
               </form>
             </>
           )}
-          <div className="actions">
-            {review ? (
-              <>
-                <Button onClick={() => setReview(null)}>{tr('cancel_0ec753be')}</Button>
-                <Button className="primary" onClick={() => void apply()}>
-                  {tr('homes.confirmButton')}
-                </Button>
-              </>
-            ) : (
-              <Dialog.Close asChild>
-                <Button>{tr('close_4ae50d30')}</Button>
-              </Dialog.Close>
-            )}
-          </div>
         </DialogContent>
       </Dialog.Portal>
     </Dialog.Root>

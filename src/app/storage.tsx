@@ -5,6 +5,8 @@ import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
 import {
   mdiPause,
+  mdiTimerOutline,
+  mdiClipboardSearchOutline,
   mdiFan,
   mdiPlay,
   mdiLinux,
@@ -31,7 +33,7 @@ import {
 } from './storage-widgets'
 import { DiskSettings } from './disk-settings'
 import { OperationButton, managed, type Job } from './operations'
-import { useEffect, useState, type ReactNode, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react'
 import { StorageVolumes, type StorageOptions, type MediaInfo } from './storage-volumes'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -327,6 +329,28 @@ function Disk({
     </article>
   )
 }
+function smartTestType(value: string) {
+  const types: Record<string, string> = {
+    'Short offline': 'short_test_adb0ab92',
+    'Extended offline': 'extended_test_00c16405',
+    'Conveyance offline': 'smartDetails.conveyance',
+    'Selective offline': 'smartDetails.selective',
+  }
+  return types[value] ? tr(types[value]) : value
+}
+function smartTestStatus(value: string) {
+  const states: Record<string, string> = {
+    'completed without error': 'smartDetails.passed',
+    'aborted by host': 'smartDetails.aborted',
+    'interrupted (host reset)': 'smartDetails.interrupted',
+    'completed: read failure': 'smartDetails.readFailure',
+    'completed: electrical failure': 'smartDetails.electricalFailure',
+    'completed: servo/seek failure': 'smartDetails.seekFailure',
+    'completed: unknown failure': 'smartDetails.failed',
+    'self-test routine in progress': 'smartDetails.running',
+  }
+  return states[value.toLowerCase()] ? tr(states[value.toLowerCase()]) : value
+}
 function SmartDialog({
   d,
   t,
@@ -344,6 +368,13 @@ function SmartDialog({
   error?: string
   onBaseline: (value?: number) => void
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const [smartTab, setSmartTab] = useState('attributes')
+  const scrollPositions = useRef<Record<string, number>>({})
+  useLayoutEffect(() => {
+    const body = dialogRef.current?.querySelector('.modal-body')
+    if (body) body.scrollTop = scrollPositions.current[smartTab] ?? 0
+  }, [smartTab])
   const tests = useQuery({
     queryKey: ['smart-tests', d.path],
     queryFn: () =>
@@ -359,12 +390,15 @@ function SmartDialog({
         ata_smart_self_test_log?: {
           standard?: {
             table?: {
-              num: number
+              num?: number
+              remaining_percent?: number
+              lba_first_error?: number | string
               type: {
                 string: string
               }
               status: {
                 string: string
+                passed?: boolean
               }
               lifetime_hours: number
             }[]
@@ -377,19 +411,65 @@ function SmartDialog({
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="dialog-overlay" />
-      <DialogContent busy={tests.isPending} className="settings-dialog smart-dialog">
-        <div className="dialog-heading">
-          <Dialog.Title>SMART · {d.model?.trim() || d.name}</Dialog.Title>
-          <Dialog.Close asChild>
-            <Button aria-label={tr('close_smart_9d349423')}>✕</Button>
-          </Dialog.Close>
-        </div>
-        <Dialog.Description className="muted small">
-          {d.serial || d.name} · {d.path}
-          {t?.observedAt
-            ? ` · ${t.stale || !live ? tr('last_reading_8cb720b8') : tr('measured_fe4f59b5')} ${new Date(t.observedAt * 1000).toLocaleString(locale())}`
-            : ''}
-        </Dialog.Description>
+      <DialogContent
+        className="settings-dialog smart-dialog"
+        ref={dialogRef}
+        header={
+          <>
+            {' '}
+            <div className="dialog-heading smart-heading">
+              <div className="dialog-heading">
+                <Dialog.Title>SMART · {d.model?.trim() || d.name}</Dialog.Title>
+              </div>
+              <div className="smart-meta-row">
+                <Dialog.Description className="muted small">
+                  {d.serial || d.name} · {d.path}
+                  {t?.observedAt
+                    ? ` · ${t.stale || !live ? tr('last_reading_8cb720b8') : tr('measured_fe4f59b5')} ${new Date(t.observedAt * 1000).toLocaleString(locale())}`
+                    : ''}
+                </Dialog.Description>
+                <div className="smart-test-toolbar" aria-label={tr('disk_tests_7d387b78')}>
+                  {['smart.short', 'smart.long', 'smart.abort'].map((action) => (
+                    <OperationButton
+                      key={action}
+                      label={
+                        {
+                          'smart.short': tr('short_test_adb0ab92'),
+                          'smart.long': tr('extended_test_00c16405'),
+                          'smart.abort': tr('stop_test_21590215'),
+                        }[action]
+                      }
+                      icon={
+                        {
+                          'smart.short': mdiTimerOutline,
+                          'smart.long': mdiClipboardSearchOutline,
+                          'smart.abort': mdiStopCircleOutline,
+                        }[action]
+                      }
+                      onDone={() => {
+                        void tests.refetch()
+                      }}
+                      actions={[action]}
+                      initial={{ target: d.path }}
+                      context={[
+                        {
+                          key: 'target',
+                          label: tr('disk_ca040760'),
+                          value: `${d.serial || d.name} · ${d.path}`,
+                        },
+                      ]}
+                      autoReview
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>{' '}
+          </>
+        }
+        variant="details"
+        intent="inspect"
+        dirty={false}
+      >
         {t?.warnings?.length ? (
           <Notice error>
             {t.warnings
@@ -430,62 +510,93 @@ function SmartDialog({
         )}
         {error && <Notice error>{error}</Notice>}
         {tests.error && <Notice error>{tests.error.message}</Notice>}
-        <p className="small muted">{tests.data?.ata_smart_data?.self_test?.status?.string}</p>
-        {tests.data?.ata_smart_self_test_log?.standard?.table?.slice(0, 5).map((row) => (
-          <p className="small" key={row.num}>
-            {row.type.string} · {row.status.string}
-            {' ' + tr('power_on_time_4ab54eee') + ' '}
-            {row.lifetime_hours}
-            {' ' + tr('h_285cc400')}
-          </p>
-        ))}
-        <div className="smart-test-actions">
-          <h3>{tr('disk_tests_7d387b78')}</h3>
-          <div className="actions">
-            {['smart.short', 'smart.long', 'smart.abort'].map((action) => (
-              <OperationButton
-                key={action}
-                label={
-                  {
-                    'smart.short': tr('short_test_adb0ab92'),
-                    'smart.long': tr('extended_test_00c16405'),
-                    'smart.abort': tr('stop_test_21590215'),
-                  }[action]
-                }
-                actions={[action]}
-                initial={{ target: d.path }}
-                context={[
-                  { key: 'target', label: tr('disk_ca040760'), value: `${d.serial || d.name} · ${d.path}` },
-                ]}
-                autoReview
-              />
-            ))}
-          </div>
-        </div>
-        {t?.attributes?.length ? (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>{tr('attribute_5338f9a4')}</th>
-                  <th>{tr('raw_value_5ede9cfc')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {t.attributes.map((a) => (
-                  <tr key={a.id}>
-                    <td>{a.id}</td>
-                    <td>{warningNames[a.name] ?? a.name}</td>
-                    <td>{a.raw?.string ?? a.raw?.value ?? '—'}</td>
-                  </tr>
+        <Tabs.Root
+          value={smartTab}
+          onValueChange={(value) => {
+            scrollPositions.current[smartTab] =
+              dialogRef.current?.querySelector('.modal-body')?.scrollTop ?? 0
+            setSmartTab(value)
+          }}
+          className="smart-tabs"
+        >
+          <Tabs.List className="tabs">
+            <Tabs.Trigger value="attributes">{tr('smartDetails.attributes')}</Tabs.Trigger>
+            <Tabs.Trigger value="results">{tr('smartDetails.results')}</Tabs.Trigger>
+          </Tabs.List>
+          <Tabs.Content value="attributes">
+            {t?.attributes?.length ? (
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>{tr('attribute_5338f9a4')}</th>
+                      <th>{tr('raw_value_5ede9cfc')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {t.attributes.map((a) => (
+                      <tr key={a.id}>
+                        <td>{a.id}</td>
+                        <td>{warningNames[a.name] ?? a.name}</td>
+                        <td>{a.raw?.string ?? a.raw?.value ?? '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <Notice>{tr('smart_attributes_are_not_available_yet_a2fed2da')}</Notice>
+            )}
+          </Tabs.Content>
+          <Tabs.Content value="results">
+            {tests.data?.ata_smart_data?.self_test?.status && (
+              <p className="smart-current-status">
+                {tr('smartDetails.current')}:{' '}
+                {tests.data.ata_smart_data.self_test.status.remaining_percent != null
+                  ? tr('smartDetails.remaining', {
+                      value: tests.data.ata_smart_data.self_test.status.remaining_percent,
+                    })
+                  : smartTestStatus(tests.data.ata_smart_data.self_test.status.string ?? '')}
+              </p>
+            )}
+            <p className="small muted">{tr('smartDetails.historyHint')}</p>
+            {tests.data?.ata_smart_self_test_log?.standard?.table?.length ? (
+              <ol className="smart-test-history">
+                {tests.data.ata_smart_self_test_log.standard.table.map((row, index) => (
+                  <li key={index}>
+                    <div className="smart-result-heading">
+                      <strong>{smartTestType(row.type.string)}</strong>
+                      <span className={row.status.passed === false ? 'smart-result-failed' : undefined}>
+                        {smartTestStatus(row.status.string)}
+                      </span>
+                    </div>
+                    <dl className="module-facts">
+                      <dt>{tr('smartDetails.powerOnHours')}</dt>
+                      <dd>
+                        {row.lifetime_hours.toLocaleString(locale())} {tr('h_285cc400')}
+                      </dd>
+                      {row.remaining_percent != null && (
+                        <>
+                          <dt>{tr('smartDetails.remainingLabel')}</dt>
+                          <dd>{row.remaining_percent}%</dd>
+                        </>
+                      )}
+                      {row.lba_first_error != null && (
+                        <>
+                          <dt>{tr('smartDetails.firstError')}</dt>
+                          <dd>{row.lba_first_error}</dd>
+                        </>
+                      )}
+                    </dl>
+                  </li>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <Notice>{tr('smart_attributes_are_not_available_yet_a2fed2da')}</Notice>
-        )}
+              </ol>
+            ) : (
+              !tests.isPending && !tests.error && <Notice>{tr('smartDetails.noHistory')}</Notice>
+            )}
+          </Tabs.Content>
+        </Tabs.Root>
       </DialogContent>
     </Dialog.Portal>
   )
@@ -1036,6 +1147,8 @@ export function StoragePage() {
               {tr('disk_cooling_074f9995') + ' '}
               {live ? `${telemetry.data.status.dutyPercent}%` : tr('data_is_out_of_date_ea94b7bf')}
               {' ' + tr('requested_power_9ddc5388')}
+              {telemetry.data.status.reason === 'initializing-sensors' &&
+                ` · ${tr('cooling_initializing_sensors')}`}
             </p>
           )}
         </Tabs.Content>

@@ -40,6 +40,6 @@ export function bytes(n: number) {
   }
   return `${n.toLocaleString(locale(), { maximumFractionDigits: 1 })} ${u[i]}`
 }
-export { DialogContent, WaitingOverlay, WaitingSurface } from './waiting'
+export { DialogContent, CloseIcon, WaitingOverlay, WaitingSurface } from './waiting'
 
 export { ConfirmDialog, UnsavedChanges, useDraft, useExclusivePopover } from './interaction'

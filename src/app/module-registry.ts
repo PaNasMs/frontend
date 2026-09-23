@@ -29,7 +29,9 @@ export type ModuleDefinition = {
   path: string
   routes?: string[]
   icon: string
-  component: ComponentType
+  keepAlive?: boolean
+  backgroundIndicator?: ComponentType
+  component: ComponentType<{ active?: boolean }>
   settings?: SettingsSection[]
   widgets?: Record<string, WidgetDefinition>
 }

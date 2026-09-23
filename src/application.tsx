@@ -7,9 +7,9 @@ import { useWallpaper, wallpaperURL } from './app/wallpaper'
 import { PowerMenu } from './app/power-menu'
 import { ApplicationBar } from './app/application-bar'
 import { registerShortcuts } from './app/desktop-layout'
-import { StrictMode, Suspense, lazy, useEffect, useRef } from 'react'
+import { StrictMode, Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider, Outlet, Link, Navigate, useLocation } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Outlet, Link, Navigate, useLocation, matchPath } from 'react-router-dom'
 import {
   QueryClient,
   QueryClientProvider,
@@ -46,6 +46,21 @@ const query = new QueryClient({
   },
 })
 const Login = lazy(() => import('./app/login'))
+function PersistentModules() {
+  const { pathname } = useLocation()
+  const [visited, setVisited] = useState<string[]>([])
+  const retained = modules().filter((module) => module.keepAlive)
+  const active = retained.find((module) =>
+    [module.path, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)]
+      .some((path) => matchPath(path, pathname)),
+  )
+  if (active && !visited.includes(active.id)) setVisited([...visited, active.id])
+  return retained.filter((module) => visited.includes(module.id)).map((module) => (
+    <div key={module.id} hidden={module.id !== active?.id}>
+      <module.component active={module.id === active?.id} />
+    </div>
+  ))
+}
 function Shell() {
   const routeLocation = useLocation()
   const avatar = useQuery({
@@ -192,6 +207,7 @@ function Shell() {
           <Navigate to="/" replace />
         ) : (
           <DirtyFormsProvider>
+            {session.data?.role === 'admin' && <PersistentModules key={session.data.username} />}
             <Outlet />
           </DirtyFormsProvider>
         )}
@@ -220,7 +236,7 @@ async function boot() {
             ...modules().flatMap((m) =>
               [m.path, ...(m.routes ?? []).map((route) => `${m.path}/${route}`)].map((path) => ({
                 path,
-                element: <m.component />,
+                element: m.keepAlive ? null : <m.component />,
                 errorElement: <PageError />,
               })),
             ),

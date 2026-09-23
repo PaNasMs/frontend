@@ -118,19 +118,47 @@ export function WifiControls({
         </button>
       </span>
       <Dialog.Root
-        open={open}
+        open={open && !confirm}
         onOpenChange={(value) => {
           if (!disabled && !value) close()
         }}
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog wifi-dialog">
-            <Dialog.Title>
-              {choice ? (choice === 'hidden' ? tr('wifi.hidden') : choice.ssid) : tr('wifi.networks')} ·{' '}
-              {name}
-            </Dialog.Title>
-            <Dialog.Description>{tr('wifi.connectHint')}</Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog wifi-dialog"
+            header={
+              <>
+                {' '}
+                <Dialog.Title>
+                  {choice ? (choice === 'hidden' ? tr('wifi.hidden') : choice.ssid) : tr('wifi.networks')} ·{' '}
+                  {name}
+                </Dialog.Title>
+                <Dialog.Description>{tr('wifi.connectHint')}</Dialog.Description>{' '}
+              </>
+            }
+            variant="form"
+            intent="edit"
+            footer={
+              <div className="actions">
+                <Button form="modal-wifi" disabled={disabled}>
+                  {tr('wifi.connect')}
+                </Button>
+                <Button
+                  form="modal-wifi"
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => {
+                    setChoice(null)
+                    setPassword('')
+                  }}
+                >
+                  {tr('homes.cancel')}
+                </Button>
+              </div>
+            }
+          >
             {error && <Notice error>{error}</Notice>}
             {!choice ? (
               <>
@@ -209,16 +237,6 @@ export function WifiControls({
                   ))}
                 </div>
                 {!networks.length && <p className="muted">{tr('wifi.empty')}</p>}
-                <div className="actions">
-                  <Button
-                    title={tr('homes.cancel')}
-                    aria-label={tr('homes.cancel')}
-                    disabled={disabled}
-                    onClick={close}
-                  >
-                    <Icon path={mdiClose} />
-                  </Button>
-                </div>
               </>
             ) : (
               <form
@@ -226,6 +244,7 @@ export function WifiControls({
                   event.preventDefault()
                   void connect()
                 }}
+                id="modal-wifi"
               >
                 {choice === 'hidden' && (
                   <>
@@ -271,19 +290,6 @@ export function WifiControls({
                     />
                   </label>
                 )}
-                <div className="actions">
-                  <Button disabled={disabled}>{tr('wifi.connect')}</Button>
-                  <Button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                      setChoice(null)
-                      setPassword('')
-                    }}
-                  >
-                    {tr('homes.cancel')}
-                  </Button>
-                </div>
               </form>
             )}
           </DialogContent>
@@ -297,41 +303,58 @@ export function WifiControls({
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog wifi-confirm">
-            <Dialog.Title>
-              {tr(confirm === 'disconnect' ? 'wifi.disconnect' : enabled ? 'wifi.turnOff' : 'wifi.turnOn')} ·{' '}
-              {name}
-            </Dialog.Title>
-            <Dialog.Description>
-              {tr(
-                confirm === 'radio'
-                  ? sharing && enabled
-                    ? 'wifi.sharingOffHint'
-                    : 'wifi.radioHint'
-                  : 'wifi.disconnectHint',
-              )}
-            </Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog wifi-confirm"
+            header={
+              <>
+                {' '}
+                <Dialog.Title>
+                  {tr(
+                    confirm === 'disconnect' ? 'wifi.disconnect' : enabled ? 'wifi.turnOff' : 'wifi.turnOn',
+                  )}{' '}
+                  · {name}
+                </Dialog.Title>
+                <Dialog.Description>
+                  {tr(
+                    confirm === 'radio'
+                      ? sharing && enabled
+                        ? 'wifi.sharingOffHint'
+                        : 'wifi.radioHint'
+                      : 'wifi.disconnectHint',
+                  )}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Dialog.Close asChild>
+                  <Button disabled={disabled} data-dialog-cancel>
+                    {tr('homes.cancel')}
+                  </Button>
+                </Dialog.Close>
+                <Button
+                  disabled={disabled}
+                  onClick={async () => {
+                    const action = confirm === 'disconnect' ? 'network.wifi.disconnect' : 'network.wifi.radio'
+                    if (
+                      await run(action, {
+                        interface: name,
+                        ...(confirm === 'radio' ? { enabled: !enabled } : {}),
+                      })
+                    )
+                      setConfirm(null)
+                  }}
+                >
+                  {tr('wifi.apply')}
+                </Button>
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             {error && <Notice error>{error}</Notice>}
-            <div className="actions">
-              <Button
-                disabled={disabled}
-                onClick={async () => {
-                  const action = confirm === 'disconnect' ? 'network.wifi.disconnect' : 'network.wifi.radio'
-                  if (
-                    await run(action, {
-                      interface: name,
-                      ...(confirm === 'radio' ? { enabled: !enabled } : {}),
-                    })
-                  )
-                    setConfirm(null)
-                }}
-              >
-                {tr('wifi.apply')}
-              </Button>
-              <Dialog.Close asChild>
-                <Button disabled={disabled}>{tr('homes.cancel')}</Button>
-              </Dialog.Close>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

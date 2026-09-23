@@ -106,14 +106,29 @@ export function UserSessions({ user }: { user: string }) {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent className="dialog-content user-confirm" busy={end.isPending}>
-            <Dialog.Title>{tr('accounts.endSession')}</Dialog.Title>
-            <Dialog.Description>{tr('accounts.confirmEnd')}</Dialog.Description>
+          <DialogContent
+            className="dialog-content user-confirm"
+            busy={end.isPending}
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr('accounts.endSession')}</Dialog.Title>
+                <Dialog.Description>{tr('accounts.confirmEnd')}</Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button onClick={() => setSelected(null)} data-dialog-cancel>
+                  {tr('no_f82a8219')}
+                </Button>
+                <Button onClick={() => end.mutate()}>{tr('yes_8d2fab2d')}</Button>
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             {end.error && <Notice error>{end.error.message}</Notice>}
-            <div className="actions">
-              <Button onClick={() => end.mutate()}>{tr('yes_8d2fab2d')}</Button>
-              <Button onClick={() => setSelected(null)}>{tr('no_f82a8219')}</Button>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

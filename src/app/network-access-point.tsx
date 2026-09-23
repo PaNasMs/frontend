@@ -51,23 +51,49 @@ export function AccessPointDialog({
         <DialogContent
           className="settings-dialog network-details-dialog"
           busy={busy}
+          dirty={dirty}
           message={tr('share.applying')}
           hint={tr('share.applyingHint')}
+          header={
+            <>
+              {' '}
+              <div className="share-wizard-heading">
+                <Dialog.Title>
+                  {tr('network.wifiSettings')} · {name}
+                </Dialog.Title>
+              </div>
+              <Dialog.Description hidden>
+                {tr('network.wifiSettings')} · {name}
+              </Dialog.Description>{' '}
+            </>
+          }
+          variant="form"
+          intent="edit"
+          footer={
+            <div className="actions">
+              <Button
+                form="modal-network-access-point"
+                type="button"
+                title={tr('share.cancel')}
+                aria-label={tr('share.cancel')}
+                disabled={busy}
+                onClick={close}
+                data-dialog-cancel
+              >
+                {tr('share.cancel')}
+              </Button>
+              <Button
+                form="modal-network-access-point"
+                type="submit"
+                title={tr('network.apply')}
+                aria-label={tr('network.apply')}
+                disabled={busy || disabled || !valid || !dirty}
+              >
+                {tr('network.apply')}
+              </Button>
+            </div>
+          }
         >
-          <div className="share-wizard-heading">
-            <Dialog.Title>
-              {tr('network.wifiSettings')} · {name}
-            </Dialog.Title>
-            <Button
-              title={tr('share.cancel')}
-              aria-label={tr('share.cancel')}
-              disabled={busy}
-              onClick={close}
-            >
-              <Icon path={mdiClose} />
-            </Button>
-          </div>
-          <Dialog.Description hidden>{tr('network.wifiSettings')} · {name}</Dialog.Description>
           {iface.wifi && radio && (
             <div className="network-ap-radio">
               <WifiControls
@@ -102,6 +128,7 @@ export function AccessPointDialog({
                 setPassword('')
               }
             }}
+            id="modal-network-access-point"
           >
             <label className="field">
               SSID
@@ -161,25 +188,6 @@ export function AccessPointDialog({
               <dd>{iface.wifi?.clients ?? '—'}</dd>
             </dl>
             {group.enabled && <p className="small muted">{tr('network.apApplyHint')}</p>}
-            <div className="actions">
-              <Button
-                type="submit"
-                title={tr('network.apply')}
-                aria-label={tr('network.apply')}
-                disabled={busy || disabled || !valid || !dirty}
-              >
-                <Icon path={mdiCheck} />
-              </Button>
-              <Button
-                type="button"
-                title={tr('share.cancel')}
-                aria-label={tr('share.cancel')}
-                disabled={busy}
-                onClick={close}
-              >
-                <Icon path={mdiClose} />
-              </Button>
-            </div>
           </form>
         </DialogContent>
       </Dialog.Portal>

@@ -47,6 +47,11 @@ export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'dis
       {data.data && !data.data.available && (
         <Notice error>{tr('cooling_controller_unavailable_4df552be')}</Notice>
       )}
+      {kind === 'disk' && data.data?.status.reason === 'initializing-sensors' && (
+        <p role="status" className="small muted">
+          {tr('cooling_initializing_sensors')}
+        </p>
+      )}
       {kind === 'cpu' && data.data?.status.cpu && !data.data.status.cpu.available && (
         <Notice error>{tr('could_not_apply_the_cpu_profile_06fc2905')}</Notice>
       )}

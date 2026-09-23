@@ -120,25 +120,41 @@ export function WebSettings() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent className="settings-dialog power-dialog" busy={busy} message={tr('web.waiting')}>
-            <Dialog.Title>{tr('web.confirm')}</Dialog.Title>
-            <Dialog.Description>{tr(ready ? 'web.openNew' : 'web.restart')}</Dialog.Description>
+          <DialogContent
+            className="settings-dialog power-dialog"
+            busy={busy}
+            message={tr('web.waiting')}
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr('web.confirm')}</Dialog.Title>
+                <Dialog.Description>{tr(ready ? 'web.openNew' : 'web.restart')}</Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button onClick={() => setOpen(false)} data-dialog-cancel>
+                  {tr('cancel_0ec753be')}
+                </Button>
+                {ready ? (
+                  <a className="button primary" href={address.href}>
+                    {tr('web.open')}
+                  </a>
+                ) : (
+                  <Button className="primary" onClick={() => void save()}>
+                    {tr('apply_768af677')}
+                  </Button>
+                )}
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             <p>
               <a href={address.href}>{address.href}</a>
             </p>
             {error && <Notice error>{error}</Notice>}
-            <div className="actions">
-              <Button onClick={() => setOpen(false)}>{tr('cancel_0ec753be')}</Button>
-              {ready ? (
-                <a className="button primary" href={address.href}>
-                  {tr('web.open')}
-                </a>
-              ) : (
-                <Button className="primary" onClick={() => void save()}>
-                  {tr('apply_768af677')}
-                </Button>
-              )}
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

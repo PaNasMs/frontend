@@ -65,11 +65,38 @@ export function ExternalGrants({
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent className="settings-dialog power-dialog" busy={revoke.isPending}>
-            <Dialog.Title>{tr('external.revoke')}</Dialog.Title>
-            <Dialog.Description>
-              {tr('external.revokeHelp', { consumer: selected?.consumer })}
-            </Dialog.Description>
+          <DialogContent
+            className="settings-dialog power-dialog"
+            busy={revoke.isPending}
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr('external.revoke')}</Dialog.Title>
+                <Dialog.Description>
+                  {tr('external.revokeHelp', { consumer: selected?.consumer })}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button
+                  onClick={() => {
+                    setSelected(null)
+                    setPassword('')
+                  }}
+                  data-dialog-cancel
+                >
+                  {tr('external.cancel')}
+                </Button>
+                <Button disabled={!password || revoke.isPending} onClick={() => revoke.mutate()}>
+                  {tr('external.revoke')}
+                </Button>
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             <label className="field">
               {tr('external.currentPassword')}
               <input
@@ -80,19 +107,6 @@ export function ExternalGrants({
               />
             </label>
             {revoke.error && <Notice error>{revoke.error.message}</Notice>}
-            <div className="actions">
-              <Button disabled={!password || revoke.isPending} onClick={() => revoke.mutate()}>
-                {tr('external.revoke')}
-              </Button>
-              <Button
-                onClick={() => {
-                  setSelected(null)
-                  setPassword('')
-                }}
-              >
-                {tr('external.cancel')}
-              </Button>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

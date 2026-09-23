@@ -204,15 +204,17 @@ export function HddCoolingWidget() {
       </div>
       <WidgetFoot>
         <strong className="widget-state">
-          {temperature == null
-            ? tr('no_temperature_data_d4c65083')
-            : stale
-              ? tr('last_readings_de14326f')
-              : temperature >= 55
-                ? tr('overheating_17bd9f41')
-                : temperature >= 45
-                  ? tr('hot_a52970c6')
-                  : tr('temperature_normal_c0591d63')}
+          {state?.status.reason === 'initializing-sensors'
+            ? tr('cooling_initializing_sensors')
+            : temperature == null
+              ? tr('no_temperature_data_d4c65083')
+              : stale
+                ? tr('last_readings_de14326f')
+                : temperature >= 55
+                  ? tr('overheating_17bd9f41')
+                  : temperature >= 45
+                    ? tr('hot_a52970c6')
+                    : tr('temperature_normal_c0591d63')}
         </strong>
         <span>{fan == null ? tr('fan_speed_unavailable_0afbdb35') : tr('fan_6c98836d', { v0: fan })}</span>
       </WidgetFoot>

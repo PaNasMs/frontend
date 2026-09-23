@@ -4142,14 +4142,17 @@ body:has(.has-wallpaper) {
 .module-page-title h1 {
   overflow-wrap: anywhere;
 }
-.module-details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-.module-details > .surface,
+.module-details,
 .module-empty {
   padding: 24px;
+}
+.module-details > section + section {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 24px;
+}
+.module-details .module-facts {
+  grid-template-columns: minmax(110px, 200px) minmax(0, 1fr);
 }
 .module-details h2 {
   margin-top: 0;
@@ -4175,9 +4178,6 @@ body:has(.has-wallpaper) {
   overflow-wrap: anywhere;
 }
 @media (max-width: 700px) {
-  .module-details {
-    grid-template-columns: 1fr;
-  }
   .module-page-title {
     gap: 10px;
   }

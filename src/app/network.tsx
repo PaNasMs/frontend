@@ -301,6 +301,7 @@ function NetworkPage() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [seconds, setSeconds] = useState(0)
+  const [dismissedChange, setDismissedChange] = useState<string | null>(null)
   const change = data.data?.change
   const pending = change && ['pending', 'applying'].includes(change.status) ? change : null
   useEffect(() => {
@@ -357,19 +358,59 @@ function NetworkPage() {
       {data.error && <Notice error>{data.error.message}</Notice>}
       {error && !edit && !removePort && <Notice error>{error}</Notice>}
       {data.data?.backend === 'readonly' && <Notice>{tr('network.readonly')}</Notice>}
-      {pending && (
-        <Dialog.Root open>
+      {pending && dismissedChange === pending.id && (
+        <Button onClick={() => setDismissedChange(null)}>
+          {tr('network.pending', { interface: pending.interface, seconds })}
+        </Button>
+      )}
+      {pending && dismissedChange !== pending.id && (
+        <Dialog.Root
+          open
+          onOpenChange={(open) => {
+            if (!open && !busy) setDismissedChange(pending.id)
+          }}
+        >
           <Dialog.Portal>
             <Dialog.Overlay className="dialog-overlay" />
             <DialogContent
               busy={busy}
               className="settings-dialog share-confirm"
-              onEscapeKeyDown={(e) => e.preventDefault()}
               onPointerDownOutside={(e) => e.preventDefault()}
+              header={
+                <>
+                  {' '}
+                  <Dialog.Title>{tr('network.title')}</Dialog.Title>
+                  <Dialog.Description>
+                    {tr('network.confirmHint')} {tr('network.closeCountdown')}
+                  </Dialog.Description>{' '}
+                </>
+              }
+              variant="compact"
+              intent="confirm"
+              dirty={false}
+              footer={
+                pending.user === session.data?.username ? (
+                  <div className="actions">
+                    <Button
+                      disabled={busy || !seconds || pending.status !== 'pending'}
+                      onClick={() => void run('network.confirm', { id: pending.id })}
+                    >
+                      {tr('network.keep')}
+                    </Button>
+                    <Button
+                      disabled={busy || !seconds || pending.status !== 'pending'}
+                      onClick={() => void run('network.rollback', { id: pending.id })}
+                    >
+                      {tr('network.rollback')}
+                    </Button>
+                  </div>
+                ) : (
+                  <p>{tr('network.pendingUser', { user: pending.user })}</p>
+                )
+              }
             >
-              <Dialog.Title>{tr('network.title')}</Dialog.Title>
               <strong>{tr('network.pending', { interface: pending.interface, seconds })}</strong>
-              <Dialog.Description>{tr('network.confirmHint')}</Dialog.Description>
+
               {error && <Notice error>{error}</Notice>}
               {pending.addresses.length > 0 && (
                 <div className="network-new-addresses">
@@ -386,24 +427,6 @@ function NetworkPage() {
                     )
                   })}
                 </div>
-              )}
-              {pending.user === session.data?.username ? (
-                <div className="actions">
-                  <Button
-                    disabled={busy || !seconds || pending.status !== 'pending'}
-                    onClick={() => void run('network.confirm', { id: pending.id })}
-                  >
-                    {tr('network.keep')}
-                  </Button>
-                  <Button
-                    disabled={busy || !seconds || pending.status !== 'pending'}
-                    onClick={() => void run('network.rollback', { id: pending.id })}
-                  >
-                    {tr('network.rollback')}
-                  </Button>
-                </div>
-              ) : (
-                <p>{tr('network.pendingUser', { user: pending.user })}</p>
               )}
             </DialogContent>
           </Dialog.Portal>
@@ -642,33 +665,46 @@ function NetworkPage() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog share-confirm">
-            <Dialog.Title>{tr('share.removePort')}</Dialog.Title>
-            <Dialog.Description>
-              {tr('share.removePortQuestion', { name: removePort?.name ?? '' })}
-              {removePort?.group.outputs.length === 1 && ' ' + tr('share.removeLastPort')}
-            </Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog share-confirm"
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr('share.removePort')}</Dialog.Title>
+                <Dialog.Description>
+                  {tr('share.removePortQuestion', { name: removePort?.name ?? '' })}
+                  {removePort?.group.outputs.length === 1 && ' ' + tr('share.removeLastPort')}
+                </Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button disabled={busy} onClick={() => setRemovePort(null)} data-dialog-cancel>
+                  {tr('share.cancel')}
+                </Button>
+                <Button
+                  disabled={busy}
+                  onClick={async () => {
+                    if (
+                      removePort &&
+                      (await run('network.share.remove-port', {
+                        id: removePort.group.id,
+                        interface: removePort.name,
+                      }))
+                    )
+                      setRemovePort(null)
+                  }}
+                >
+                  {tr('share.removePortYes')}
+                </Button>
+              </div>
+            }
+            variant="compact"
+            intent="confirm"
+            dirty={false}
+          >
             {error && <Notice error>{error}</Notice>}
-            <div className="actions">
-              <Button
-                disabled={busy}
-                onClick={async () => {
-                  if (
-                    removePort &&
-                    (await run('network.share.remove-port', {
-                      id: removePort.group.id,
-                      interface: removePort.name,
-                    }))
-                  )
-                    setRemovePort(null)
-                }}
-              >
-                {tr('share.removePortYes')}
-              </Button>
-              <Button disabled={busy} onClick={() => setRemovePort(null)}>
-                {tr('share.cancel')}
-              </Button>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>
@@ -680,19 +716,23 @@ function NetworkPage() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog network-details-dialog">
-            <div className="share-wizard-heading">
-              <Dialog.Title>
-                {tr('share.details')} · {details}
-              </Dialog.Title>
-              <Dialog.Close asChild>
-                <Button title={tr('share.cancel')} aria-label={tr('share.cancel')}>
-                  <Icon path={mdiClose} />
-                </Button>
-              </Dialog.Close>
-            </div>
-            <Dialog.Description hidden>{details}</Dialog.Description>
-
+          <DialogContent
+            className="settings-dialog network-details-dialog"
+            header={
+              <>
+                {' '}
+                <div className="share-wizard-heading">
+                  <Dialog.Title>
+                    {tr('share.details')} · {details}
+                  </Dialog.Title>
+                </div>
+                <Dialog.Description hidden>{details}</Dialog.Description>{' '}
+              </>
+            }
+            variant="details"
+            intent="inspect"
+            dirty={false}
+          >
             {detailed ? (
               <dl>
                 <dt>{tr('network.profile')}</dt>
@@ -764,11 +804,34 @@ function NetworkPage() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog network-dialog">
-            <Dialog.Title>
-              {tr('network.edit')} · {edit?.name}
-            </Dialog.Title>
-            <Dialog.Description>{tr('network.editHint')}</Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog network-dialog"
+            dirty={!!config && JSON.stringify(config) !== JSON.stringify(edit?.config)}
+            header={
+              <>
+                {' '}
+                <Dialog.Title>
+                  {tr('network.edit')} · {edit?.name}
+                </Dialog.Title>
+                <Dialog.Description>{tr('network.editHint')}</Dialog.Description>{' '}
+              </>
+            }
+            variant="form"
+            intent="edit"
+            footer={
+              <div className="actions">
+                <Dialog.Close asChild>
+                  <Button form="modal-network" type="button" disabled={busy} data-dialog-cancel>
+                    {tr('homes.cancel')}
+                  </Button>
+                </Dialog.Close>
+                <Button form="modal-network" disabled={busy || !!pending}>
+                  {tr('network.apply')}
+                </Button>
+              </div>
+            }
+          >
             {error && <Notice error>{error}</Notice>}
             {config && (
               <div className="network-new-addresses">
@@ -796,6 +859,7 @@ function NetworkPage() {
                   }
                   void run('network.configure', { interface: edit.name, config: normalized })
                 }}
+                id="modal-network"
               >
                 <fieldset disabled={busy} className="network-form-body">
                   <div className="network-ip-grid">
@@ -824,14 +888,6 @@ function NetworkPage() {
                     </label>
                   </details>
                 </fieldset>
-                <div className="actions">
-                  <Button disabled={busy || !!pending}>{tr('network.apply')}</Button>
-                  <Dialog.Close asChild>
-                    <Button type="button" disabled={busy}>
-                      {tr('homes.cancel')}
-                    </Button>
-                  </Dialog.Close>
-                </div>
               </form>
             )}
           </DialogContent>

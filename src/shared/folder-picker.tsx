@@ -1,8 +1,8 @@
 import type { components } from '../api/schema'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import { mdiFolderOutline, mdiArrowUp, mdiChevronRight, mdiClose, mdiHarddisk } from '@mdi/js'
+import { mdiChevronDown, mdiFolderOutline, mdiArrowUp, mdiChevronRight, mdiClose, mdiHarddisk } from '@mdi/js'
 import { managed } from '../app/operations'
 import { tr } from '../i18n'
 import { serverText } from '../i18n/server'
@@ -12,18 +12,85 @@ type FolderPolicy = 'share' | 'home' | 'mount'
 type FolderRow = { name: string; path: string; reason?: string }
 type Folders = components['schemas']['FolderLocations']
 
+function FolderBranch({
+  node,
+  selected,
+  policy,
+  choose,
+  root = false,
+}: {
+  node: FolderRow
+  selected: string
+  policy: FolderPolicy
+  choose: (path: string) => void
+  root?: boolean
+}) {
+  const [expanded, setExpanded] = useState(false)
+  useEffect(() => {
+    if (selected === node.path || selected.startsWith(node.path + '/')) setExpanded(true)
+  }, [selected, node.path])
+  const data = useQuery({
+    queryKey: ['folder-picker', policy, node.path],
+    queryFn: () => managed<Folders>(`${policy}-folders`, undefined, node.path),
+    enabled: expanded && !node.reason,
+  })
+  const title = root && node.name === 'Home' ? tr('picker.home') : node.name
+  return (
+    <li>
+      <div className="folder-tree-row" data-selected={selected === node.path}>
+        <Button
+          type="button"
+          aria-expanded={expanded}
+          title={`${tr(expanded ? 'picker.collapse' : 'picker.expand')} · ${title}`}
+          disabled={!!node.reason}
+          onClick={() => setExpanded(!expanded)}
+        >
+          <Icon path={expanded ? mdiChevronDown : mdiChevronRight} size={16} />
+        </Button>
+        <button
+          type="button"
+          title={node.reason ? serverText(node.reason) : node.path}
+          disabled={!!node.reason}
+          onClick={() => {
+            choose(node.path)
+            setExpanded(true)
+          }}
+        >
+          <Icon path={root ? mdiHarddisk : mdiFolderOutline} size={18} />
+          <span>{title}</span>
+        </button>
+      </div>
+      {expanded && (
+        <ul>
+          {data.isPending && <li>{tr('loading_interface_f69ec4bd')}</li>}
+          {data.error && (
+            <li>
+              <Notice error>{data.error.message}</Notice>
+            </li>
+          )}
+          {data.data?.folders.map((child) => (
+            <FolderBranch key={child.path} node={child} selected={selected} policy={policy} choose={choose} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
+
 export function FolderPicker({
   onChoose,
   policy = 'share',
   newFolder = false,
   defaultName = '',
+  initialPath = '',
 }: {
   onChoose: (path: string) => void
   policy?: FolderPolicy
   newFolder?: boolean
   defaultName?: string
+  initialPath?: string
 }) {
-  const [path, setPath] = useState('')
+  const [path, setPath] = useState(initialPath)
   const [name, setName] = useState(defaultName)
   const data = useQuery({
     queryKey: ['folder-picker', policy, path],
@@ -71,23 +138,40 @@ export function FolderPicker({
       {policy === 'home' && <p className="folder-policy-hint">{tr('ui.homeLocationPolicy')}</p>}
       {data.isPending && <Notice>{tr('loading_interface_f69ec4bd')}</Notice>}
       {data.error && <Notice error>{data.error.message}</Notice>}
-      <ul className="folder-picker-list">
-        {rows.map((row) => (
-          <li key={row.path}>
-            <button type="button" disabled={!!row.reason} onClick={() => setPath(row.path)}>
-              <Icon path={path ? mdiFolderOutline : mdiHarddisk} />
-              <span>
-                <strong>{row.name}</strong>
-                {row.reason && <small>{serverText(row.reason)}</small>}
-              </span>
-              {!row.reason && <Icon path={mdiChevronRight} size={18} />}
-            </button>
-          </li>
-        ))}
-        {!data.isPending && !data.error && !rows.length && (
-          <li className="folder-empty">{tr('ui.noSubfolders')}</li>
-        )}
-      </ul>
+      <div className="folder-picker-columns">
+        <nav className="folder-picker-tree" aria-label={tr('picker.locations')}>
+          <strong>{tr('picker.locations')}</strong>
+          <ul>
+            {roots.map((root) => (
+              <FolderBranch
+                key={root.path}
+                node={root}
+                selected={path}
+                policy={policy}
+                choose={setPath}
+                root
+              />
+            ))}
+          </ul>
+        </nav>
+        <ul className="folder-picker-list">
+          {rows.map((row) => (
+            <li key={row.path}>
+              <button type="button" disabled={!!row.reason} onClick={() => setPath(row.path)}>
+                <Icon path={path ? mdiFolderOutline : mdiHarddisk} />
+                <span>
+                  <strong>{row.name}</strong>
+                  {row.reason && <small>{serverText(row.reason)}</small>}
+                </span>
+                {!row.reason && <Icon path={mdiChevronRight} size={18} />}
+              </button>
+            </li>
+          ))}
+          {!data.isPending && !data.error && !rows.length && (
+            <li className="folder-empty">{tr('ui.noSubfolders')}</li>
+          )}
+        </ul>
+      </div>
       {newFolder && (
         <label className="field">
           {tr('folder_name_198ad630')}
@@ -169,19 +253,25 @@ export function FolderField({
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay folder-picker-overlay" />
-          <DialogContent className="settings-dialog folder-picker-dialog">
-            <div className="dialog-heading">
-              <Dialog.Title>{label}</Dialog.Title>
-              <Dialog.Close asChild>
-                <Button type="button" title={tr('close_4ae50d30')}>
-                  <Icon path={mdiClose} />
-                </Button>
-              </Dialog.Close>
-            </div>
-            <Dialog.Description>
-              {tr(newFolder ? 'ui.newFolderDestination' : 'ui.chooseFolder')}
-            </Dialog.Description>
+          <DialogContent
+            className="settings-dialog folder-picker-dialog"
+            header={
+              <>
+                {' '}
+                <div className="dialog-heading">
+                  <Dialog.Title>{label}</Dialog.Title>
+                </div>
+                <Dialog.Description>
+                  {tr(newFolder ? 'ui.newFolderDestination' : 'ui.chooseFolder')}
+                </Dialog.Description>{' '}
+              </>
+            }
+            variant="form"
+            intent="edit"
+            dirty={false}
+          >
             <FolderPicker
+              initialPath={newFolder ? '' : value}
               policy={policy}
               newFolder={newFolder}
               defaultName={defaultName ?? value.split('/').filter(Boolean).at(-1) ?? ''}

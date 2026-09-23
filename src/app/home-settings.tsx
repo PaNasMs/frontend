@@ -169,9 +169,34 @@ export function HomeSettings() {
       >
         <Dialog.Portal>
           <Dialog.Overlay className="dialog-overlay" />
-          <DialogContent busy={busy} className="settings-dialog">
-            <Dialog.Title>{tr(error ? 'homes.blocked' : 'homes.move')}</Dialog.Title>
-            <Dialog.Description>{error || tr('homes.confirm')}</Dialog.Description>
+          <DialogContent
+            busy={busy}
+            className="settings-dialog"
+            header={
+              <>
+                {' '}
+                <Dialog.Title>{tr(error ? 'homes.blocked' : 'homes.move')}</Dialog.Title>
+                <Dialog.Description>{error || tr('homes.confirm')}</Dialog.Description>{' '}
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Dialog.Close asChild>
+                  <Button disabled={busy} data-dialog-cancel>
+                    {tr(error ? 'homes.close' : 'homes.cancel')}
+                  </Button>
+                </Dialog.Close>
+                {!error && (
+                  <Button disabled={busy} onClick={() => void run()}>
+                    {tr('homes.confirmButton')}
+                  </Button>
+                )}
+              </div>
+            }
+            variant="form"
+            intent="confirm"
+            dirty={false}
+          >
             {error && blockers.length > 0 && (
               <ul className="home-blockers">
                 {blockers.map((item, index) => (
@@ -216,16 +241,6 @@ export function HomeSettings() {
                 )}
               </>
             )}
-            <div className="actions">
-              {!error && (
-                <Button disabled={busy} onClick={() => void run()}>
-                  {tr('homes.confirmButton')}
-                </Button>
-              )}
-              <Dialog.Close asChild>
-                <Button disabled={busy}>{tr(error ? 'homes.close' : 'homes.cancel')}</Button>
-              </Dialog.Close>
-            </div>
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>
