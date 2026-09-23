@@ -4,8 +4,10 @@ React SPA for **Pavlo's NAS Management System**, currently in the 0.2.x prototyp
 Production output is static HTML, CSS and JavaScript served by the
 [backend](https://github.com/PaNasMs/backend); Node.js is only a build/development dependency.
 
-Follow the [PaNasMs UI/UX guidelines](https://github.com/PaNasMs/panasms/blob/main/documentation/ui-ux-guidelines.md)
-for core and module interfaces. The public guide is the shared design baseline.
+Follow the [PaNasMs interface design standard](https://github.com/PaNasMs/panasms/blob/main/docs/ui-design-guidelines.md)
+for core and module interfaces. It unifies page layout, visual tokens, dialogs,
+toasts, interaction rules and acceptance checks. Use it before design,
+implementation and review; do not maintain a separate module-specific standard.
 
 [Project website and English UI screenshots](https://panasms.github.io/) ·
 [Website source](https://github.com/PaNasMs/panasms.github.io)
