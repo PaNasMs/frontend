@@ -88,6 +88,10 @@ export function ExternalSettings() {
           </label>
           <p className="muted small">
             {tr('external.setupHelp')}{' '}
+            <a href="https://panasms.github.io/docs/setup/google/" target="_blank" rel="noopener noreferrer">
+              {tr('external.setupGuide')}
+            </a>
+            {' · '}
             <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener noreferrer">
               Google Cloud Console
             </a>

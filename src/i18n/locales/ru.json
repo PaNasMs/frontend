@@ -1883,6 +1883,7 @@
   "external.clientSecret": "Client secret",
   "external.redirect": "Разрешённый URI перенаправления",
   "external.keepSecret": "Оставьте пустым, чтобы сохранить текущий секрет",
+  "external.setupGuide": "Пошаговая инструкция (на английском)",
   "external.setupHelp": "Создайте OAuth-клиент типа «Веб-приложение» и укажите этот URI без изменений. Разрешите доступ нужным пользователям Google.",
   "external.enable": "Разрешить привязку аккаунтов и вход через Google",
   "external.scopeHelp": "Для входа запрашиваются только идентификатор, email и профиль Google. Доступ к Drive подключается отдельно. Вход с паролем Linux остаётся доступен.",

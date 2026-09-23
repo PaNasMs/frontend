@@ -1883,6 +1883,7 @@
   "external.clientSecret": "Client secret",
   "external.redirect": "Authorized redirect URI",
   "external.keepSecret": "Leave empty to keep the saved secret",
+  "external.setupGuide": "Step-by-step setup guide",
   "external.setupHelp": "Create a Web application OAuth client and register this exact redirect URI. Enable access for the intended Google users.",
   "external.enable": "Enable Google account linking and sign-in",
   "external.scopeHelp": "Sign-in requests only your Google identity, email and profile. Drive access is separate. Linux password sign-in remains available.",
