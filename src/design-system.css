@@ -317,14 +317,14 @@ dd,
   margin: 0 0 24px;
   overflow-x: auto;
 }
-.tabs button {
+.tabs :is(button, a) {
   min-height: 44px;
   font-size: 0.875rem;
   padding: 10px 16px;
   white-space: nowrap;
   border-radius: 8px 8px 0 0;
 }
-.tabs button[data-state='active'] {
+.tabs :is(button, a)[data-state='active'] {
   background: var(--panel);
   color: var(--accent);
   border-bottom: 2px solid var(--accent);
@@ -1018,7 +1018,7 @@ td {
   overflow-y: hidden;
   scrollbar-width: none;
 }
-.tabbed-page > .tabs button {
+.tabbed-page > .tabs :is(button, a) {
   flex-shrink: 0;
   min-height: 48px;
   border: 0;
@@ -1028,7 +1028,7 @@ td {
   background: transparent;
   color: var(--muted);
 }
-.tabbed-page > .tabs button[data-state='active'] {
+.tabbed-page > .tabs :is(button, a)[data-state='active'] {
   background: var(--panel);
   color: var(--accent);
   box-shadow: inset 0 3px var(--accent);
@@ -1504,7 +1504,7 @@ td {
   gap: 20px;
   margin-bottom: 20px;
 }
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs button {
+:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs :is(button, a) {
   min-height: 42px;
   padding: 10px 2px;
   border: 0;
@@ -1512,7 +1512,7 @@ td {
   background: transparent;
   box-shadow: none;
 }
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs button[data-state='active'] {
+:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs :is(button, a)[data-state='active'] {
   background: transparent;
   box-shadow: inset 0 -2px var(--accent);
 }
@@ -2058,13 +2058,23 @@ td {
   visibility: hidden; pointer-events: none;
 }
 .notification-toasts {
+  grid-template-columns: minmax(0, 1fr);
   right: max(28px, env(safe-area-inset-right));
   width: min(360px, calc(100vw - 56px));
   max-width: calc(100vw - 56px);
   gap: 28px;
   pointer-events: none;
 }
-.notification-toast { padding: 16px 24px 16px 16px; overflow: visible; pointer-events: auto; }
+.notification-toast {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 16px 24px 16px 16px;
+  overflow: visible;
+  pointer-events: auto;
+}
+.notification-toast > * { min-width: 0; }
+.notification-toast > div { flex-wrap: wrap; gap: 8px; }
 .notification-toast .toast-close {
   position: absolute; top: -22px; right: -22px;
   color: var(--text);
@@ -2082,3 +2092,5 @@ td {
   .structured-dialog :is(.modal-body, .modal-footer) { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { .structured-dialog { animation: none !important; } }
+
+.tabs a { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }

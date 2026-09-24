@@ -401,14 +401,14 @@ p {
   border-bottom: 1px solid var(--line);
   margin-bottom: 25px;
 }
-.tabs button {
+.tabs :is(button, a) {
   border: 0;
   background: transparent;
   padding: 10px 0 16px;
   color: var(--muted);
   font-size: 14px;
 }
-.tabs button[data-state='active'] {
+.tabs :is(button, a)[data-state='active'] {
   color: var(--accent);
   box-shadow: 0 2px var(--accent);
 }
@@ -805,7 +805,7 @@ summary {
   .tabs {
     gap: 18px;
   }
-  .tabs button {
+  .tabs :is(button, a) {
     font-size: 12px;
   }
   .settings-layout {

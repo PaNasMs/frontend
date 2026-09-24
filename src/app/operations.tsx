@@ -1,3 +1,4 @@
+import { modules } from './module-registry'
 import { FileUploadTasks, useFileUploads } from './file-uploads'
 import { useUpdateTask } from './system-updates'
 import { FolderField } from '../shared/folder-picker'
@@ -1070,6 +1071,10 @@ export function JobsList() {
       {data.error && <Notice error>{data.error.message}</Notice>}
       {cancel.error && <Notice error>{cancel.error.message}</Notice>}
       <FileUploadTasks />
+      {modules().map((module) => {
+        const Tasks = module.tasks
+        return Tasks ? <Tasks key={module.id} /> : null
+      })}
       <SystemTasks {...systemTasks} />
       <div className="jobs-list">
         {data.data

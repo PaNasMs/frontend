@@ -83,12 +83,14 @@ export function FolderPicker({
   newFolder = false,
   defaultName = '',
   initialPath = '',
+  hint,
 }: {
   onChoose: (path: string) => void
   policy?: FolderPolicy
   newFolder?: boolean
   defaultName?: string
   initialPath?: string
+  hint?: string
 }) {
   const [path, setPath] = useState(initialPath)
   const [name, setName] = useState(defaultName)
@@ -135,7 +137,7 @@ export function FolderPicker({
           ))}
         </nav>
       </div>
-      {policy === 'home' && <p className="folder-policy-hint">{tr('ui.homeLocationPolicy')}</p>}
+      {policy === 'home' && <p className="folder-policy-hint">{hint ?? tr('ui.homeLocationPolicy')}</p>}
       {data.isPending && <Notice>{tr('loading_interface_f69ec4bd')}</Notice>}
       {data.error && <Notice error>{data.error.message}</Notice>}
       <div className="folder-picker-columns">

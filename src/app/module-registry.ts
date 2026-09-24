@@ -30,6 +30,7 @@ export type ModuleDefinition = {
   routes?: string[]
   icon: string
   keepAlive?: boolean
+  tasks?: ComponentType
   backgroundIndicator?: ComponentType
   component: ComponentType<{ active?: boolean }>
   settings?: SettingsSection[]

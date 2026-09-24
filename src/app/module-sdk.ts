@@ -5,6 +5,7 @@ const i18n = { ...translation, registerServerMessages, serverText }
 import * as react from 'react'
 import * as jsx from 'react/jsx-runtime'
 import * as query from '@tanstack/react-query'
+import * as tabs from '@radix-ui/react-tabs'
 import * as dialog from '@radix-ui/react-dialog'
 import * as router from 'react-router-dom'
 import * as ui from '../shared/ui'
@@ -24,6 +25,7 @@ export const SDK = {
   jsx,
   query,
   dialog,
+  tabs,
   router,
   ui,
   operations,

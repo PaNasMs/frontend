@@ -43,3 +43,5 @@ export function bytes(n: number) {
 export { DialogContent, CloseIcon, WaitingOverlay, WaitingSurface } from './waiting'
 
 export { ConfirmDialog, UnsavedChanges, useDraft, useExclusivePopover } from './interaction'
+
+export { FolderPicker } from './folder-picker'
