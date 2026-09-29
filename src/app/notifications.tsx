@@ -15,7 +15,7 @@ import {
 } from '@mdi/js'
 import { JobRecovery, managed, type Job } from './operations'
 export type Alert = {
-  severity?: 'info' | 'success' | 'warning' | 'error'
+  severity?: 'info' | 'success' | 'warning' | 'error' | 'critical'
   id: string
   message: string
   active: boolean
@@ -27,6 +27,7 @@ const severityIcons = {
   success: mdiCheckCircleOutline,
   warning: mdiAlertOutline,
   error: mdiAlertCircleOutline,
+ critical: mdiAlertCircleOutline,
 }
 function Importance({ alert }: { alert: Alert }) {
   const severity = alert.severity ?? 'info'

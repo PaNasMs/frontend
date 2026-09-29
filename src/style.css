@@ -4453,3 +4453,22 @@ form th,
 .sharing-permissions label { display: grid; grid-template-columns: minmax(0,1fr) minmax(150px,1fr); gap: .75rem; align-items: center; margin-bottom: .4rem; }
 .sharing-permissions span { overflow-wrap: anywhere; }
 .sharing-dialog .dialog-actions { display: flex; gap: .5rem; margin-top: 1rem; }
+
+.delivery-fields { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; min-width: 0; }
+.delivery-fields h3 { margin: 16px 0 0; }
+.delivery-pair { display: grid; grid-template-columns: minmax(0, 1fr) 100px; gap: 16px; }
+.delivery-route { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 200px); gap: 16px; align-items: center; }
+.delivery-route small { display: block; color: var(--muted); font-size: 0.875rem; }
+.delivery-device { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
+.notification-severity.critical { color: var(--error); }
+@media (max-width: 639px) { .delivery-route { grid-template-columns: 1fr; gap: 8px; } }
+
+.delivery-test { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; max-width: 488px; }
+.delivery-test > .button { width: 40px; height: 40px; align-self: end; }
+
+.telegram-link-code { display: block; overflow-wrap: anywhere; user-select: all; margin-block: 8px; }
+
+
+.delivery-route-select { min-width: 0; max-width: 560px; }
+.delivery-route-select .field-label { display: block; margin-bottom: 6px; }
+.delivery-route-select > p { margin: 6px 0 0; }

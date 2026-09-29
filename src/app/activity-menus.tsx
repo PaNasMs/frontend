@@ -121,7 +121,7 @@ export function ActivityMenus() {
         title={tr('notifications_ee3c35f3')}
         icon={mdiBellOutline}
         clearLabel={tr('clear_history_active_warnings_will_remain_03fdf588')}
-        canClear={admin && !!alerts.data?.some((a) => !a.active)}
+        canClear={!!alerts.data?.some((a) => !a.active)}
         clear={() => request('notifications', 'DELETE')}
       >
         <NotificationsList />

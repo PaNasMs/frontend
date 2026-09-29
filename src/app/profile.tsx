@@ -1,3 +1,4 @@
+import { NotificationPreferences } from './notification-settings'
 import { LinkedAccounts } from './external-connections'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useRouteTab } from './navigation'
@@ -30,7 +31,7 @@ type Profile = components['schemas']['Profile']
 export function ProfilePage() {
   const [section, setSection] = useRouteTab(
     '/profile',
-    ['account', 'appearance', 'security', 'connections', 'activity'],
+    ['account', 'appearance', 'security', 'connections', 'notifications', 'activity'],
     'account',
   )
   const [deleteKey, setDeleteKey] = useState('')
@@ -107,7 +108,7 @@ export function ProfilePage() {
         onValueChange={setSection}
       >
         <Tabs.List className="settings-nav" aria-label={tr('my_profile_88060502')}>
-          {(['account', 'appearance', 'security', 'connections', 'activity'] as const).map((id) => (
+          {(['account', 'appearance', 'security', 'connections', 'notifications', 'activity'] as const).map((id) => (
             <Tabs.Trigger value={id} key={id}>
               <Icon
                 path={
@@ -116,6 +117,7 @@ export function ProfilePage() {
                     appearance: mdiPaletteOutline,
                     security: mdiShieldAccountOutline,
                     connections: mdiLinkVariant,
+ notifications: mdiShieldAccountOutline,
                     activity: mdiHistory,
                   }[id]
                 }
@@ -127,6 +129,7 @@ export function ProfilePage() {
         <div className="settings-content">
           <Tabs.Content value={section} className="general-settings">
             {section === 'connections' && <LinkedAccounts />}
+ {section === 'notifications' && <NotificationPreferences />}
             <section className="surface" hidden={section !== 'appearance'}>
               <h2>{tr('ui.theme')}</h2>
               <label className="field">

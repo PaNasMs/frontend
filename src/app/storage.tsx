@@ -1142,7 +1142,7 @@ export function StoragePage() {
                 )
               })}
           </div>
-          {telemetry.data && (
+          {telemetry.data && telemetry.data.config.hardwareMode !== 'none' && (
             <p className="small muted">
               {tr('disk_cooling_074f9995') + ' '}
               {live ? `${telemetry.data.status.dutyPercent}%` : tr('data_is_out_of_date_ea94b7bf')}

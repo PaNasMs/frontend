@@ -3460,5 +3460,40 @@
     "en": "Review current ownership and permissions before applying another change.",
     "ru": "Проверьте текущего владельца и права доступа перед новым изменением.",
     "uk": "Перевірте поточного власника та права доступу перед новою зміною."
+  },
+  {
+    "key": "cooling.gpio_busy",
+    "en": "GPIO{{v0}} is used by {{v1}}",
+    "ru": "GPIO{{v0}} занят: {{v1}}"
+  },
+  {
+    "key": "cooling.gpio_peripheral",
+    "en": "GPIO{{v0}} is assigned to a peripheral",
+    "ru": "GPIO{{v0}} используется периферийным устройством"
+  },
+  {
+    "key": "cooling.channel_busy",
+    "en": "PWM channel {{v0}} is already in use",
+    "ru": "Канал ШИМ {{v0}} уже используется"
+  },
+  {
+    "key": "cooling.board_unsupported",
+    "en": "GPIO cooling currently supports Raspberry Pi 5 only",
+    "ru": "Управление охлаждением через GPIO пока поддерживается только на Raspberry Pi 5"
+  },
+  {
+    "key": "cooling.gpio_unavailable",
+    "en": "RP1 GPIO controller is unavailable",
+    "ru": "Контроллер GPIO RP1 недоступен"
+  },
+  {
+    "key": "cooling.pwm_unavailable",
+    "en": "RP1 PWM0 controller is unavailable",
+    "ru": "Контроллер ШИМ RP1 PWM0 недоступен"
+  },
+  {
+    "key": "cooling.apply_timeout",
+    "en": "cooling controller did not apply settings; previous configuration restored",
+    "ru": "Контроллер охлаждения не применил настройки. Предыдущая конфигурация восстановлена."
   }
 ]

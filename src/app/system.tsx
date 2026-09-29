@@ -1,3 +1,4 @@
+import { NotificationSettings } from './notification-settings'
 import { ExternalSettings } from './external-connections'
 import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -5,6 +6,9 @@ import { tr, locale } from '../i18n/index'
 import { registerModule } from './module-registry'
 import {
   mdiServer,
+  mdiCogOutline,
+  mdiBellOutline,
+  mdiLinkVariant,
   mdiChip,
   mdiClockOutline,
   mdiMemory,
@@ -286,12 +290,13 @@ registerModule({
   icon: mdiServer,
   component: SystemPage,
   settings: [
-    { id: 'connections', title: tr('external.title'), icon: mdiServer, component: ExternalSettings },
+    { id: 'notifications', title: tr('delivery.title'), icon: mdiBellOutline, component: NotificationSettings },
+    { id: 'connections', title: tr('external.title'), icon: mdiLinkVariant, component: ExternalSettings },
     { id: 'updates', title: tr('up.title'), icon: mdiDownload, component: SystemUpdates },
     {
       id: 'general',
       title: tr('web.general'),
-      icon: mdiServer,
+      icon: mdiCogOutline,
       component: () => (
         <div className="general-settings">
           <WebSettings />

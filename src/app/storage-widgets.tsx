@@ -186,7 +186,7 @@ export function HddCoolingWidget() {
   const stale =
     !state?.available ||
     disks.some((disk) => disk.stale || disk.state !== 'active' || disk.temperature == null)
-  const fan = state?.available ? state.status.dutyPercent : null
+  const fan = state?.available && state.config.hardwareMode !== 'none' ? state.status.dutyPercent : null
   return (
     <>
       <div className="widget-ring-row">

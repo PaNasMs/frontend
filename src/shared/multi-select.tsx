@@ -8,8 +8,14 @@ export function MultiSelect({
   values,
   options,
   onChange,
+  searchable = true,
+  showSummary = true,
+  placeholder,
 }: {
   label: string
+  searchable?: boolean
+  showSummary?: boolean
+  placeholder?: string
   values: string[]
   options: { id: string; label: string; description?: string; disabled?: boolean }[]
   onChange: (values: string[]) => void
@@ -52,14 +58,14 @@ export function MultiSelect({
                     {name}
                   </span>
                 ))
-              : tr('ui.chooseValues')}
+              : (placeholder ?? tr('ui.chooseValues'))}
             {selected.length > 3 && <span className="selection-chip">+{selected.length - 3}</span>}
           </span>
           <span className="multi-select-count">{values.length}</span>
           <Icon path={mdiChevronDown} size={18} />
         </summary>
         <div className="multi-select-popover">
-          <label className="multi-select-search">
+          {searchable && <label className="multi-select-search">
             <Icon path={mdiMagnify} size={18} />
             <input
               aria-label={tr('ui.searchOptions')}
@@ -67,7 +73,7 @@ export function MultiSelect({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-          </label>
+          </label>}
           <div className="multi-select-options" role="group" aria-label={label}>
             {visible.map((option) => (
               <label className="multi-select-option" key={option.id}>
@@ -91,7 +97,7 @@ export function MultiSelect({
           </div>
         </div>
       </details>
-      {selected.length > 0 && <p className="multi-select-summary">{selected.join(', ')}</p>}
+      {showSummary && selected.length > 0 && <p className="multi-select-summary">{selected.join(', ')}</p>}
     </div>
   )
 }
