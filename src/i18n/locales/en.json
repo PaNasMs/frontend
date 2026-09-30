@@ -1892,7 +1892,7 @@
   "external.signIn": "Sign in with Google",
   "external.linkHelp": "Confirm your Linux password, then choose your {{provider}} account. Linking does not change your NAS permissions.",
   "external.loginHelp": "Choose a {{provider}} account already linked to your NAS user. Complete authorization in the new tab and return here.",
-  "external.currentPassword": "Current Linux password",
+  "external.currentPassword": "Your current NAS password",
   "external.waiting": "Waiting for {{provider}} authorization…",
   "external.openGoogle": "Open Google authorization",
   "external.close": "Close",
@@ -1922,8 +1922,8 @@
   "external.apply": "Apply",
   "external.allowDrive": "Allow Google Drive access",
   "external.granted": "Google Drive permission granted",
-  "external.driveHelp": "Allow {{consumer}} to read, create, change and delete files in the selected Google Drive account, including while you are signed out. Confirm your NAS password, then approve access in Google.",
-  "external.driveReadHelp": "Allow {{consumer}} to read files in the selected Google Drive account, including while you are signed out. Confirm your NAS password, then approve access in Google.",
+  "external.driveHelp": "Allow {{consumer}} to read, create, change and delete files in this Google Drive. Existing account authorization will be reused; Google will ask only if additional permission is needed.",
+  "external.driveReadHelp": "Allow {{consumer}} to read files in this Google Drive. Google will ask only if the required permission has not been granted.",
   "external.grantUnavailable": "This permission or its module is unavailable. Check the linked account and module status.",
   "external.reconnectRequired": "Google Drive needs authorization again. Reconnect the account permission.",
   "external.refreshUnavailable": "Could not refresh Google Drive access. Try again later.",
@@ -1956,7 +1956,7 @@
   "fileTasks.skipped": "Skipped: {{count}}",
   "fileTasks.conflict": "Name conflict",
   "fileTasks.exists": "An item with this name already exists at the destination.",
-  "fileTasks.directoryReplace": "Replace will replace the entire existing folder and its contents; folders will not be merged.",
+  "fileTasks.directoryReplace": "Folders are merged. Your choice applies to conflicting files inside them; other destination files are preserved.",
   "fileTasks.replaceUnavailable": "Replacement is unavailable for the source itself, a link, or a different item type. Choose rename or skip.",
   "fileTasks.newName": "New name when renaming",
   "fileTasks.applyAll": "Apply this choice to the remaining conflicts in this task",
@@ -2211,5 +2211,6 @@
   "external.scope.github": "Only profile access (read:user) is requested. No repository or SSH-key access. Sign-in uses a previously linked account.",
   "external.scope.dropbox": "Only account information is requested. File access and panel sign-in are not enabled.",
   "external.allowDropbox": "Allow Dropbox file access",
-  "external.dropboxFilesHelp": "Allow {{consumer}} to read, create, change and delete files in the selected Dropbox account, including while you are signed out. Confirm your NAS password, then approve access in Dropbox."
+  "external.dropboxFilesHelp": "Allow {{consumer}} to read, create, change and delete files in this Dropbox. Existing account authorization will be reused; Dropbox will ask only if additional permission is needed.",
+  "external.fileAccessOnLink": "Authorize file access for NAS features (Files, Cloud Sync and compatible modules)"
 }

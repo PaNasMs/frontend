@@ -196,19 +196,28 @@ export function ProviderConnect({
   })
   const [open, setOpen] = useState(false)
   const [password, setPassword] = useState('')
+  const [fileAccess, setFileAccess] = useState(true)
   const [authorizeURL, setAuthorizeURL] = useState('')
   const [error, setError] = useState('')
   const [waiting, setWaiting] = useState(false)
   const start = useMutation({
     mutationFn: () =>
-      request<{ url: string }>(`external/${providerId}/start`, 'POST', {
+      request<{ url?: string; status?: string; grantId?: string }>(`external/${providerId}/start`, 'POST', {
         purpose: grant ? 'grant' : link ? 'link' : 'login',
         ...grant,
-        password: link ? password : '',
+        password: link && !grant ? password : '',
+        fileAccess: link && !grant && providerId !== 'github' && fileAccess,
       }),
     onSuccess: (value) => {
       setPassword('')
       setError('')
+      if (value.status === 'granted') {
+        setOpen(false)
+        void queryClient.invalidateQueries({ queryKey: ['external-grants'] })
+        onComplete?.(value.grantId)
+        return
+      }
+      if (!value.url) { setError(tr('external.unavailable')); return }
       setAuthorizeURL(value.url)
       setWaiting(true)
       window.open(value.url, '_blank', 'noopener,noreferrer')
@@ -327,7 +336,7 @@ export function ProviderConnect({
                 {!waiting && (
                   <Button
                     type="button"
-                    disabled={start.isPending || (link && !password)}
+                    disabled={start.isPending || (link && !grant && !password)}
                     onClick={() => start.mutate()}
                   >
                     {tr('external.continue')}
@@ -339,7 +348,7 @@ export function ProviderConnect({
             intent="edit"
           >
             {error && <Notice error>{error}</Notice>}
-            {link && !waiting && (
+            {link && !grant && !waiting && (
               <label className="field">
                 {tr('external.currentPassword')}
                 <input
@@ -349,6 +358,9 @@ export function ProviderConnect({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
+            )}
+            {link && !grant && providerId !== 'github' && !waiting && (
+              <label className="check"><input type="checkbox" checked={fileAccess} onChange={e => setFileAccess(e.target.checked)} />{tr('external.fileAccessOnLink')}</label>
             )}
             {waiting && (
               <div className="external-oauth-wait">

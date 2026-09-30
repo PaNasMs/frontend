@@ -48,3 +48,5 @@ assert.equal(exports.longJobs([job], 12000, { 'file.copy': { label: 'Копир�
 for (const status of ['queued', 'succeeded', 'failed', 'cancelled'])
   assert.equal(exports.longJobs([{ ...job, status }], 12000, {}).length, 0)
 console.log('External RAID activity, pause, completion and long-running job selection passed')
+assert.equal(exports.longJobs([{ ...job, percent: 42.5 }], 12000, {})[0].percent, 42.5)
+assert.equal(exports.longJobs([job], 12000, {})[0].percent, undefined)

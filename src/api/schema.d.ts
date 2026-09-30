@@ -1783,8 +1783,13 @@ export interface components {
         ExternalStart: {
             /** @enum {string} */
             purpose: "login" | "link" | "grant";
-            /** @description Current Linux password required for linking; never sent to the gateway. */
+            /** @description Current NAS user password required for linking, not module grants; never sent to the gateway. */
             password?: string;
+            /**
+             * @description For Google/Dropbox linking, authorize file access once for later module grants.
+             * @default false
+             */
+            fileAccess: boolean;
             /** @description Owned linked identity; required for purpose grant. */
             connectionId?: string;
             /** @description Registered installed module; required for purpose grant. */
@@ -1844,6 +1849,8 @@ export interface components {
             /** @enum {string} */
             status: "queued" | "running" | "succeeded" | "failed" | "cancelled" | "interrupted";
             stage: string;
+            /** @description Known operation progress; absent while total work is unknown */
+            percent?: number;
             created: string;
             updated: string;
             result: {
@@ -1965,6 +1972,8 @@ export interface components {
                     y: number;
                 }[];
             };
+            /** @description Personal Files sidebar folder bookmarks. */
+            filePins?: string[];
             smartCrcBaselines?: {
                 [key: string]: number;
             };

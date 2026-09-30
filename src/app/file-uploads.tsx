@@ -20,6 +20,7 @@ const uploadKey = ['file-uploads'] as const
 export type UploadTask = {
   id: string
   kind?: 'upload' | 'copy' | 'move' | 'trash' | 'delete'
+  jobPercent?: number
   processed?: number
   skipped?: number
   stage?: string
@@ -49,14 +50,18 @@ export const uploadActive = (task: UploadTask) =>
 export const uploadPercent = (task: UploadTask) =>
   task.status === 'succeeded'
     ? 100
-    : Math.min(
-        99,
-        task.kind && task.kind !== 'upload'
-          ? Math.floor(((task.processed ?? task.completed) / task.count) * 100)
-          : task.total
-            ? Math.floor((task.loaded / task.total) * 100)
-            : 0,
-      )
+    : task.kind && task.kind !== 'upload' && task.jobPercent == null
+      ? undefined
+      : Math.min(
+          99,
+          task.kind && task.kind !== 'upload'
+            ? Math.floor(
+                (((task.processed ?? task.completed) + (task.jobPercent ?? 0) / 100) / task.count) * 100,
+              )
+            : task.total
+              ? Math.floor((task.loaded / task.total) * 100)
+              : 0,
+        )
 export function useFileUploads() {
   const q = useQueryClient()
   return (
@@ -138,7 +143,7 @@ export function FileUploadTasks() {
                 · {bytes(task.loaded)} / {bytes(task.total)}
               </>
             )}
-            {uploadActive(task) ? ` · ${uploadPercent(task)}%` : ''}
+            {uploadActive(task) && uploadPercent(task) != null ? ` · ${uploadPercent(task)}%` : ''}
           </small>
           {task.stage && <p className="muted small">{task.stage}</p>}
           {task.errors.length > 0 && (

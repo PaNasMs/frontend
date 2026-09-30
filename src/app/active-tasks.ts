@@ -62,6 +62,7 @@ export function longJobs(
       title: labels[job.action]?.label ?? job.action,
       target: job.target,
       stage: job.stage,
+      percent: job.percent,
       paused: false,
     }))
 }

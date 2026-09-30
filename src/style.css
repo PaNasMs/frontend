@@ -2510,7 +2510,7 @@ summary {
 
 .file-manager {
   display: grid;
-  grid-template-columns: 205px minmax(0, 1fr);
+  grid-template-columns: 290px minmax(0, 1fr);
   height: 65vh;
   min-height: 480px;
   background: var(--panel);
@@ -4472,3 +4472,6 @@ form th,
 .delivery-route-select { min-width: 0; max-width: 560px; }
 .delivery-route-select .field-label { display: block; margin-bottom: 6px; }
 .delivery-route-select > p { margin: 6px 0 0; }
+
+.file-sidebar .file-pin-remove { width: 28px; min-width: 28px; padding: 4px; flex: none; color: var(--muted); }
+.file-sidebar .file-pin-remove:hover { color: var(--text); }
