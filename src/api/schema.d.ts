@@ -88,7 +88,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Starts provider-bound OAuth authorization (Google OIDC) through the fixed HTTPS relay. GitHub supports login/link; Dropbox supports link only. Grant is Google-only. Grant purpose adds the registered capability scope and offline consent, bound to connectionId and consumer. Linking and grants require the existing panel session and current Linux password. */
+        /** @description Starts provider-bound OAuth authorization (Google OIDC) through the fixed HTTPS relay. GitHub supports login/link; Dropbox supports link and file-access grants. Google and Dropbox support grant. Grant purpose adds the registered capability scope and offline consent, bound to connectionId and consumer. Linking and grants require the existing panel session and current Linux password. */
         post: operations["startExternalProvider"];
         delete?: never;
         options?: never;

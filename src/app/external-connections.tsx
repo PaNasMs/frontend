@@ -167,7 +167,7 @@ function ProviderSettingsForm({ provider }: { provider: Provider }) {
 export type GrantRequest = {
   connectionId: string
   consumer: string
-  capability: 'google-drive' | 'google-drive-readonly'
+  capability: 'google-drive' | 'google-drive-readonly' | 'dropbox-files'
 }
 export function GoogleConnect(props: {
   link?: boolean
@@ -275,7 +275,7 @@ export function ProviderConnect({
         }}
       >
         <Icon path={providerIcons[providerId]} />
-        {tr(grant ? 'external.allowDrive' : link ? 'external.linkProvider' : 'external.signInProvider', {
+        {tr(grant ? (providerId === 'dropbox' ? 'external.allowDropbox' : 'external.allowDrive') : link ? 'external.linkProvider' : 'external.signInProvider', {
           provider: providerNames[providerId],
         })}
       </Button>
@@ -297,7 +297,7 @@ export function ProviderConnect({
                   <Dialog.Title>
                     {tr(
                       grant
-                        ? 'external.allowDrive'
+                        ? (providerId === 'dropbox' ? 'external.allowDropbox' : 'external.allowDrive')
                         : link
                           ? 'external.linkProvider'
                           : 'external.signInProvider',
@@ -308,7 +308,7 @@ export function ProviderConnect({
                 <Dialog.Description>
                   {tr(
                     grant
-                      ? grant.capability === 'google-drive-readonly'
+                      ? providerId === 'dropbox' ? 'external.dropboxFilesHelp' : grant.capability === 'google-drive-readonly'
                         ? 'external.driveReadHelp'
                         : 'external.driveHelp'
                       : link

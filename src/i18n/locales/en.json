@@ -2209,5 +2209,7 @@
   "external.setup.dropbox": "Create a scoped Dropbox app, enable account_info.read and add this exact redirect URI. Enter the app key as Client ID and the app secret below.",
   "external.scope.google": "Sign-in requests only identity, email and profile. Drive access is separate. Linux password sign-in remains available.",
   "external.scope.github": "Only profile access (read:user) is requested. No repository or SSH-key access. Sign-in uses a previously linked account.",
-  "external.scope.dropbox": "Only account information is requested. File access and panel sign-in are not enabled."
+  "external.scope.dropbox": "Only account information is requested. File access and panel sign-in are not enabled.",
+  "external.allowDropbox": "Allow Dropbox file access",
+  "external.dropboxFilesHelp": "Allow {{consumer}} to read, create, change and delete files in the selected Dropbox account, including while you are signed out. Confirm your NAS password, then approve access in Dropbox."
 }
