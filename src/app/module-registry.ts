@@ -30,6 +30,7 @@ export type ModuleDefinition = {
   routes?: string[]
   icon: string
   keepAlive?: boolean
+  taskHistory?: { queryKey: readonly string[]; status: () => Promise<{ canClear: boolean }>; clear: () => Promise<unknown> }
   tasks?: ComponentType
   backgroundIndicator?: ComponentType
   component: ComponentType<{ active?: boolean }>

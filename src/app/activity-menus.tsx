@@ -2,12 +2,13 @@ import { useFileUploads, uploadActive, type UploadTask } from './file-uploads'
 import { useExclusivePopover } from '../shared/interaction'
 import { tr } from '../i18n/index'
 import { useEffect, useRef, type ReactNode } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'react-router-dom'
 import { mdiBellOutline, mdiFormatListChecks, mdiDeleteSweepOutline } from '@mdi/js'
 import { request, type Identity } from '../api/client'
 import { Button, Icon, Notice } from '../shared/ui'
 import { JobsList, managed, type Job } from './operations'
+import { modules } from './module-registry'
 import { NotificationsList, type Alert } from './notifications'
 function ActivityMenu({
   id,
@@ -84,6 +85,12 @@ function ActivityMenu({
   )
 }
 export function ActivityMenus() {
+  const histories = modules().filter(module => module.taskHistory)
+  const moduleHistory = useQueries({ queries: histories.map(module => ({
+    queryKey: ['module-task-history', module.id],
+    queryFn: module.taskHistory!.status,
+    refetchInterval: 2000,
+  })) })
   const uploads = useFileUploads()
   const q = useQueryClient()
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
@@ -103,14 +110,23 @@ export function ActivityMenus() {
           icon={mdiFormatListChecks}
           clearLabel={tr('clear_completed_task_history_be777d80')}
           canClear={
+            moduleHistory.some(history => history.data?.canClear) ||
             uploads.some((task) => !uploadActive(task)) ||
             !!jobs.data?.some(
               (j) => ['succeeded', 'failed', 'interrupted', 'cancelled'].includes(j.status) && !j.needsReview,
             )
           }
           clear={async () => {
-            await managed('clear-history', {})
+            const results = await Promise.allSettled([
+              managed('clear-history', {}),
+              ...histories.map(module => module.taskHistory!.clear()),
+            ])
             q.setQueryData<UploadTask[]>(['file-uploads'], (old) => old?.filter(uploadActive))
+            await Promise.all(histories.map(module => q.invalidateQueries({ queryKey: module.taskHistory!.queryKey })))
+            await q.invalidateQueries({ queryKey: ['module-task-history'] })
+            await q.invalidateQueries({ queryKey: ['jobs'] })
+            const failed = results.find(result => result.status === 'rejected')
+            if (failed?.status === 'rejected') throw failed.reason
           }}
         >
           <JobsList />
