@@ -10,15 +10,18 @@ export async function waitForJob(
   read: () => Promise<Completion | undefined>,
   pause = () => new Promise<void>((resolve) => setTimeout(resolve, 500)),
   attempts = 120,
-  timeoutMs = 65000,
+  timeoutMs = attempts * 500 + 5000,
 ) {
   let expired = false
   let timer: ReturnType<typeof setTimeout> | undefined
   const uncertain = () => new Error(tr('the_operation_has_not_been_confirmed_yet_check_its_2e47d73a'))
   const poll = async () => {
     for (let attempt = 0; attempt < attempts && !expired; attempt++) {
-      const job = await read().catch(() => {
-        throw uncertain()
+      const job = await read().catch((error: unknown) => {
+        const status = (error as { status?: number } | null)?.status
+        if (typeof status === 'number' && status >= 400 && status < 500 && status !== 408 && status !== 429)
+          throw uncertain()
+        return undefined
       })
       if (expired) return
       if (job?.status === 'succeeded') return
