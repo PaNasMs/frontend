@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import { mdiCheck } from '@mdi/js'
 import { request, type Identity } from '../api/client'
 import { tr } from '../i18n'
-import { Button, Icon, Notice, DialogContent } from '../shared/ui'
+import { Button, Notice, DialogContent } from '../shared/ui'
 import { managed, type Job } from './operations'
 import { newID } from './dashboard'
 import { waitForJob } from '../shared/job-completion'
@@ -108,7 +107,6 @@ export function WebSettings() {
           className="primary"
           disabled={!valid || !data.data || data.data.pending || Number(port) === data.data.port}
         >
-          <Icon path={mdiCheck} />
           {tr('apply_768af677')}
         </Button>
       </form>

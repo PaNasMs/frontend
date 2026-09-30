@@ -47,10 +47,13 @@ try {
   const base = process.env.EXTERNAL_TEST_URL ?? 'http://127.0.0.1:5173'
   await page.goto(base + '/tests/external-connections.html')
   await expect(page.getByRole('heading', { name: 'External connections', exact: true })).toBeVisible()
-  await expect(page.getByLabel('Client secret', { exact: true })).toHaveCount(3)
-  for (const field of await page.getByLabel('Client secret', { exact: true }).all()) {
+  for (const provider of ['Google', 'GitHub', 'Dropbox']) {
+    await page.getByRole('tab', { name: provider, exact: true }).click()
+    const field = page.getByLabel('Client secret', { exact: true })
+    await expect(field).toHaveCount(1)
     await expect(field).toHaveValue('')
     await expect(field).toHaveAttribute('placeholder', '••••••••')
+    await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeVisible()
   }
   await expect(page.getByTestId('login').getByRole('button')).toHaveCount(2)
   await page.getByRole('button', { name: 'Link GitHub account', exact: true }).click()

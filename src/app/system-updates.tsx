@@ -2,7 +2,7 @@ import type { components } from '../api/schema'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import { mdiRefresh, mdiDownload, mdiUpdate, mdiRestore, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiRefresh, mdiDownload, mdiUpdate, mdiRestore, mdiClose } from '@mdi/js'
 import { tr, locale } from '../i18n'
 import { Button, Icon, Notice, DialogContent, WaitingOverlay } from '../shared/ui'
 import { managed, type Job } from './operations'
@@ -186,10 +186,10 @@ export function SystemUpdates() {
         <p className="small muted">{tr('up.policy')}</p>
         <Button
           type="submit"
-          title={tr('apply_768af677')}
+          className="primary"
           disabled={working || JSON.stringify(settings) === JSON.stringify(data?.settings)}
         >
-          <Icon path={mdiCheck} />
+          {tr('apply_768af677')}
         </Button>
         {busy && !operation && <WaitingOverlay />}
       </form>

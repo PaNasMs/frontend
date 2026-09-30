@@ -5,7 +5,7 @@ import { DialogContent } from '../shared/ui'
 import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import { mdiFolderMoveOutline, mdiRestore } from '@mdi/js'
+import { mdiRestore } from '@mdi/js'
 import { request, type Identity } from '../api/client'
 import { tr } from '../i18n'
 import { Button, Icon, Notice } from '../shared/ui'
@@ -142,11 +142,12 @@ export function HomeSettings() {
                   }}
                 />
                 <Button
+                  className="primary"
                   disabled={busy || running || !destination || destination === data.data.path}
                   title={tr('homes.move')}
                   aria-label={tr('homes.move')}
                 >
-                  <Icon path={mdiFolderMoveOutline} />
+                  {tr('homes.move')}
                 </Button>
               </form>
             </>

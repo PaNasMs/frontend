@@ -50,7 +50,7 @@ export function NotificationSettings() {
       <h3>{tr('delivery.push')}</h3><p className="muted small">{tr('delivery.https')}</p>
       <label className="field">{tr('delivery.contact')}<input type="email" value={draft.contact} onChange={e => setDraft({ ...draft, contact: e.target.value })} /></label>
       <p className="muted small">{tr('delivery.secretsHelp')}</p>
-      <div className="actions"><Button type="submit" disabled={!dirty}>{tr('delivery.save')}</Button></div>
+      <div className="actions"><Button type="submit" className="primary" disabled={!dirty}>{tr('apply_768af677')}</Button></div>
       </fieldset>
     </form>
     <a href="/profile/notifications">{tr('delivery.personalLink')}</a>
@@ -93,7 +93,7 @@ export function NotificationPreferences() {
           onChange={values => setDraft({ ...draft, routes: { ...draft.routes, [level]: values as Preferences['routes'][typeof level] } })} />
         <p className="muted small">{tr('delivery.' + level + 'Help')}</p>
       </div>)}
-      <div className="actions"><Button type="submit" disabled={!dirty}>{tr('delivery.save')}</Button></div>
+      <div className="actions"><Button type="submit" className="primary" disabled={!dirty}>{tr('apply_768af677')}</Button></div>
       </fieldset>
     </form>
   </section><section className="surface"><TelegramConnection /></section><section className="surface">

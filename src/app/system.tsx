@@ -291,7 +291,7 @@ registerModule({
   component: SystemPage,
   settings: [
     { id: 'notifications', title: tr('delivery.title'), icon: mdiBellOutline, component: NotificationSettings },
-    { id: 'connections', title: tr('external.title'), icon: mdiLinkVariant, component: ExternalSettings },
+    { id: 'connections', routes: ['google', 'github', 'dropbox'], title: tr('external.title'), icon: mdiLinkVariant, component: ExternalSettings },
     { id: 'updates', title: tr('up.title'), icon: mdiDownload, component: SystemUpdates },
     {
       id: 'general',

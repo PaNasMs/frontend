@@ -8,7 +8,7 @@ import '../src/design-system.css'
 await initializeLanguage(new URLSearchParams(location.search).get('language') ?? 'en')
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-    <MemoryRouter>
+    <MemoryRouter initialEntries={['/settings/connections/google']}>
       <main className="settings-content" style={{ padding: 24 }}>
         <ExternalSettings />
         <LinkedAccounts />

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import * as Tabs from '@radix-ui/react-tabs'
+import { useRouteTab } from './navigation'
 import * as Dialog from '@radix-ui/react-dialog'
-import { mdiGoogle, mdiGithub, mdiDropbox, mdiLinkVariantOff, mdiCheck } from '@mdi/js'
+import { mdiGoogle, mdiGithub, mdiDropbox, mdiLinkVariantOff } from '@mdi/js'
 import { request, APIError } from '../api/client'
 import type { components } from '../api/schema'
 import { Button, Icon, Notice, DialogContent, WaitingSurface } from '../shared/ui'
@@ -19,6 +21,7 @@ type Connection = components['schemas']['ExternalConnection']
 const errorText = (error: unknown) => tr(error instanceof Error ? error.message : 'external.unavailable')
 
 export function ExternalSettings() {
+  const [tab, setTab] = useRouteTab('/settings/connections', providers, 'google')
   return (
     <div className="general-settings">
       <div>
@@ -27,9 +30,20 @@ export function ExternalSettings() {
         </div>
         <p className="muted">{tr('external.settingsHelp')}</p>
       </div>
-      {providers.map((provider) => (
-        <ProviderSettingsForm key={provider} provider={provider} />
-      ))}
+      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
+        <Tabs.List className="tabs" aria-label={tr('external.title')}>
+          {providers.map((provider) => (
+            <Tabs.Trigger key={provider} value={provider}>
+              {providerNames[provider]}
+            </Tabs.Trigger>
+          ))}
+        </Tabs.List>
+        {providers.map((provider) => (
+          <Tabs.Content key={provider} value={provider}>
+            <ProviderSettingsForm provider={provider} />
+          </Tabs.Content>
+        ))}
+      </Tabs.Root>
     </div>
   )
 }
@@ -140,8 +154,8 @@ function ProviderSettingsForm({ provider }: { provider: Provider }) {
           </label>
           <p className="muted small">{tr(`external.scope.${provider}`)}</p>
           <div className="actions">
-            <Button title={tr('external.apply')} disabled={save.isPending || !data.data}>
-              <Icon path={mdiCheck} />
+            <Button className="primary" disabled={save.isPending || !data.data}>
+              {tr('apply_768af677')}
             </Button>
           </div>
         </form>
