@@ -106,18 +106,14 @@ function ProviderSettingsForm({ provider }: { provider: Provider }) {
           </label>
           <p className="muted small">
             {tr(`external.setup.${provider}`)}{' '}
-            {(provider === 'google' || provider === 'github') && (
-              <>
-                <a
-                  href={`https://panasms.github.io/docs/setup/${provider}/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {tr('external.setupGuide')}
-                </a>
-                {' · '}
-              </>
-            )}
+            <a
+              href={`https://panasms.github.io/docs/setup/${provider}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {tr('external.setupGuide')}
+            </a>
+            {' · '}
             <a
               href={
                 {
