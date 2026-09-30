@@ -1,3 +1,5 @@
+import { LuksActions } from './storage-luks'
+import { SnapshotActions } from './storage-snapshots'
 import { tr } from '../i18n/index'
 import {
   mdiPlus,
@@ -59,6 +61,7 @@ export type StorageOptions = {
       hour: number
       weeks: number
       startDate?: string
+      nextScheduledAt?: string | null
     }[]
     smartSchedule?: {
       test: string
@@ -71,6 +74,7 @@ export type StorageOptions = {
     mountSettings?: {
       point: string
       automount: boolean
+      mountPolicy?: string
       readOnly: boolean
     }
     protectedReason: string
@@ -358,6 +362,7 @@ export function StorageVolumes({
                   <>
                     {selected.fstype === 'crypto_LUKS' ? (
                       <>
+                        <LuksActions target={selected.path} unlocked={!!children} />
                         {action(
                           'luks.open',
                           tr('unlock_volume_60949765'),
@@ -372,6 +377,9 @@ export function StorageVolumes({
                               attached ? 'mount.detach' : 'mount.attach',
                               attached ? tr('unmount_volume_045babe0') : tr('mount_volume_9aa3b71f'),
                               children ? tr('select_the_target_volume_first_bbfb3e40') : '',
+                            )}
+                            {selected.fstype === 'btrfs' && attached && (
+                              <SnapshotActions target={selected.path} />
                             )}
                             {action('mount.settings', tr('mount_options_64cffcf3'), '', {
                               point: point || '/srv/' + (selected.label || selected.name),

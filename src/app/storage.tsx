@@ -990,6 +990,27 @@ export function StoragePage() {
                           />
                         )}
 
+                        {['raid1', 'raid5', 'raid6'].includes(a.level) && (
+                          <OperationButton
+                            label={tr('storage.raid_convert')}
+                            icon={mdiSwapHorizontal}
+                            actions={['raid.convert']}
+                            disabled={!idle || missing > 0}
+                            initial={{
+                              target: a.device,
+                              level: a.level === 'raid5' ? '6' : '5',
+                              replacement: '',
+                            }}
+                            fields={
+                              a.level === 'raid6'
+                                ? []
+                                : [{ key: 'replacement', label: tr('storage.extra_disk'), type: 'device' }]
+                            }
+                            candidatesFor={a.level === 'raid6' ? undefined : a.device}
+                            context={context}
+                            description={`${a.level.toUpperCase()} → RAID${a.level === 'raid5' ? '6' : '5'}`}
+                          />
+                        )}
                         <OperationButton
                           label={checking ? tr('stop_array_check_befc81d8') : tr('check_array_80a1807f')}
                           icon={checking ? mdiStopCircleOutline : mdiShieldCheckOutline}
@@ -1280,7 +1301,7 @@ function ReshapeControl({ array }: { array: Storage['arrays'][number] }) {
         className="raid-action"
         title={label}
         aria-label={label}
-        disabled={mutation.isPending || (paused && array.degraded !== '0')}
+        disabled={mutation.isPending}
         onClick={() => mutation.mutate()}
       >
         <Icon path={paused ? mdiPlay : mdiPause} />

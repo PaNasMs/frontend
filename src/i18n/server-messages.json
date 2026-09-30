@@ -3495,5 +3495,395 @@
     "key": "cooling.apply_timeout",
     "en": "cooling controller did not apply settings; previous configuration restored",
     "ru": "Контроллер охлаждения не применил настройки. Предыдущая конфигурация восстановлена."
+  },
+  {
+    "key": "server_1f222edfe7aa",
+    "en": "Could not verify storage dependencies. No changes were made.",
+    "ru": "Не удалось проверить зависимости накопителя. Изменения не внесены."
+  },
+  {
+    "key": "server_cd8a782f2835",
+    "en": "Could not read the partition table. No changes were made.",
+    "ru": "Не удалось прочитать таблицу разделов. Изменения не внесены."
+  },
+  {
+    "key": "server_55febc4d7a6b",
+    "en": "Partition metadata is inconsistent. No changes were made.",
+    "ru": "Данные о разделах противоречат друг другу. Изменения не внесены."
+  },
+  {
+    "key": "server_fcab564887b0",
+    "en": "Existing signatures prevent creating a partition. Prepare the disk explicitly first.",
+    "ru": "На накопителе обнаружены существующие данные или неподдерживаемая разметка. Для их удаления сначала явно подготовьте диск."
+  },
+  {
+    "key": "server_557323ad6ad9",
+    "en": "Unsupported partition table. No changes were made.",
+    "ru": "Неподдерживаемая таблица разделов. Изменения не внесены."
+  },
+  {
+    "key": "server_0fb5e0a0769a",
+    "en": "A new GPT partition table will be created on the empty device.",
+    "ru": "На пустом накопителе будет создана новая таблица разделов GPT."
+  },
+  {
+    "key": "storage.server.ac5dfad22a2d",
+    "en": "Invalid LUKS UUID",
+    "ru": "Некорректный UUID LUKS",
+    "uk": "Некоректний UUID LUKS"
+  },
+  {
+    "key": "storage.server.73c6f007d4d2",
+    "en": "Select an existing folder without symbolic links",
+    "ru": "Выберите существующую папку без символических ссылок",
+    "uk": "Виберіть наявну папку без символічних посилань"
+  },
+  {
+    "key": "storage.server.d7b2cff2789e",
+    "en": "Enter a password that unlocks a different key slot",
+    "ru": "Введите пароль другого слота ключа",
+    "uk": "Введіть пароль іншого слота ключа"
+  },
+  {
+    "key": "storage.server.6eda85550555",
+    "en": "Operation complete.",
+    "ru": "Операция завершена.",
+    "uk": "Операцію завершено."
+  },
+  {
+    "key": "storage.server.0945c37c6e8a",
+    "en": "This LUKS volume or mapping already has an unmanaged crypttab entry",
+    "ru": "Этот том LUKS или имя уже настроены в crypttab вне панели",
+    "uk": "Цей том LUKS або ім’я вже налаштовані в crypttab поза панеллю"
+  },
+  {
+    "key": "storage.server.57f8328a8963",
+    "en": "No free LUKS key slot",
+    "ru": "Нет свободного слота ключа LUKS",
+    "uk": "Немає вільного слота ключа LUKS"
+  },
+  {
+    "key": "storage.server.31a06ae84691",
+    "en": "A new password will be added. Existing passwords remain valid.",
+    "ru": "Будет добавлен новый пароль. Существующие пароли останутся действительными.",
+    "uk": "Буде додано новий пароль. Наявні паролі залишаться дійсними."
+  },
+  {
+    "key": "storage.server.f0464a896404",
+    "en": "The last LUKS key cannot be removed",
+    "ru": "Нельзя удалить последний ключ LUKS",
+    "uk": "Не можна видалити останній ключ LUKS"
+  },
+  {
+    "key": "storage.server.e78ffb242fbf",
+    "en": "Disable automatic unlocking before removing its key",
+    "ru": "Перед удалением этого ключа отключите автоматическую разблокировку",
+    "uk": "Перед видаленням цього ключа вимкніть автоматичне розблокування"
+  },
+  {
+    "key": "storage.server.29dd75a71c94",
+    "en": "The selected key will be revoked. Old header backups can restore revoked keys.",
+    "ru": "Выбранный ключ будет отозван. Старые резервные копии заголовка могут восстановить отозванные ключи.",
+    "uk": "Вибраний ключ буде відкликано. Старі резервні копії заголовка можуть відновити відкликані ключі."
+  },
+  {
+    "key": "storage.server.3acfdb54bcf0",
+    "en": "Key slot: {{v0}}",
+    "ru": "Слот ключа: {{v0}}",
+    "uk": "Слот ключа: {{v0}}"
+  },
+  {
+    "key": "storage.server.c972164d2512",
+    "en": "Use the existing automatic-unlock name",
+    "ru": "Используйте существующее имя автоматической разблокировки",
+    "uk": "Використайте наявне ім’я автоматичного розблокування"
+  },
+  {
+    "key": "storage.server.ad7c25687143",
+    "en": "A root-only key will be stored on the system disk. This does not protect against theft of the whole NAS.",
+    "ru": "Ключ с доступом только для root будет сохранён на системном диске. Это не защищает от кражи всего NAS.",
+    "uk": "Ключ із доступом лише для root буде збережено на системному диску. Це не захищає від крадіжки всього NAS."
+  },
+  {
+    "key": "storage.server.66843cdcea8e",
+    "en": "Automatic unlocking takes effect at the next startup. Keep a separate working password and header backup.",
+    "ru": "Автоматическая разблокировка начнёт работать при следующем запуске. Сохраните отдельно рабочий пароль и резервную копию заголовка.",
+    "uk": "Автоматичне розблокування запрацює під час наступного запуску. Збережіть окремо робочий пароль і резервну копію заголовка."
+  },
+  {
+    "key": "storage.server.bd514f0f701f",
+    "en": "Automatic unlocking is not configured",
+    "ru": "Автоматическая разблокировка не настроена",
+    "uk": "Автоматичне розблокування не налаштовано"
+  },
+  {
+    "key": "storage.server.23e92a68b63c",
+    "en": "Keep another working LUKS key first",
+    "ru": "Сначала сохраните другой рабочий ключ LUKS",
+    "uk": "Спочатку збережіть інший робочий ключ LUKS"
+  },
+  {
+    "key": "storage.server.f7428315f09f",
+    "en": "Automatic unlocking will be disabled and its stored key revoked. The current mapping stays open.",
+    "ru": "Автоматическая разблокировка будет отключена, её ключ — отозван. Текущий том останется разблокированным.",
+    "uk": "Автоматичне розблокування буде вимкнено, його ключ — відкликано. Поточний том залишиться розблокованим."
+  },
+  {
+    "key": "storage.server.8b0b2f9519bb",
+    "en": "A header backup already exists in this folder",
+    "ru": "В этой папке уже есть резервная копия заголовка",
+    "uk": "У цій папці вже є резервна копія заголовка"
+  },
+  {
+    "key": "storage.server.9f02a00c6eec",
+    "en": "Store this backup separately. It can restore revoked keys and does not contain your files.",
+    "ru": "Храните эту копию отдельно. Она может восстановить отозванные ключи и не содержит ваши файлы.",
+    "uk": "Зберігайте цю копію окремо. Вона може відновити відкликані ключі та не містить ваших файлів."
+  },
+  {
+    "key": "storage.server.9018535dc25d",
+    "en": "Disable automatic unlocking before restoring a header",
+    "ru": "Перед восстановлением заголовка отключите автоматическую разблокировку",
+    "uk": "Перед відновленням заголовка вимкніть автоматичне розблокування"
+  },
+  {
+    "key": "storage.server.2c7f35620f13",
+    "en": "LUKS header backup not found",
+    "ru": "Резервная копия заголовка LUKS не найдена",
+    "uk": "Резервну копію заголовка LUKS не знайдено"
+  },
+  {
+    "key": "storage.server.03e46887fc22",
+    "en": "The backup belongs to another LUKS volume",
+    "ru": "Копия относится к другому тому LUKS",
+    "uk": "Копія належить іншому тому LUKS"
+  },
+  {
+    "key": "storage.server.8ed20ff73092",
+    "en": "Restoring the header replaces current keys with keys from the backup. Files are not restored.",
+    "ru": "Восстановление заголовка заменит текущие ключи ключами из копии. Файлы не восстанавливаются.",
+    "uk": "Відновлення заголовка замінить поточні ключі ключами з копії. Файли не відновлюються."
+  },
+  {
+    "key": "storage.server.81ab65b3ecc4",
+    "en": "LUKS header backup is too large",
+    "ru": "Резервная копия заголовка LUKS слишком большая",
+    "uk": "Резервна копія заголовка LUKS завелика"
+  },
+  {
+    "key": "storage.server.cf0bd02f33fb",
+    "en": "Snapshots require a Btrfs file system",
+    "ru": "Для снимков требуется файловая система Btrfs",
+    "uk": "Для знімків потрібна файлова система Btrfs"
+  },
+  {
+    "key": "storage.server.73ccdf337955",
+    "en": "Mount the Btrfs volume at one location first",
+    "ru": "Сначала смонтируйте том Btrfs в одной точке",
+    "uk": "Спочатку змонтуйте том Btrfs в одній точці"
+  },
+  {
+    "key": "storage.server.01201a7cc0d2",
+    "en": "The destination is read-only. Check the file system before retrying.",
+    "ru": "Назначение доступно только для чтения. Перед повтором проверьте файловую систему.",
+    "uk": "Призначення доступне лише для читання. Перед повторенням перевірте файлову систему."
+  },
+  {
+    "key": "storage.server.88f2d594737a",
+    "en": "Links in the snapshot path are not allowed",
+    "ru": "Ссылки в пути снимков запрещены",
+    "uk": "Посилання в шляху знімків заборонені"
+  },
+  {
+    "key": "storage.server.225e01f227ba",
+    "en": "Snapshot no longer exists",
+    "ru": "Снимок больше не существует",
+    "uk": "Знімок більше не існує"
+  },
+  {
+    "key": "storage.server.2a4a86a3aa5c",
+    "en": "Only read-only snapshots managed by PaNasMs can be used here",
+    "ru": "Здесь доступны только снимки PaNasMs в режиме чтения",
+    "uk": "Тут доступні лише знімки PaNasMs у режимі читання"
+  },
+  {
+    "key": "storage.server.50a87d9b991f",
+    "en": "The snapshot directory must be owned by root and private",
+    "ru": "Папка снимков должна принадлежать root и быть недоступной другим пользователям",
+    "uk": "Папка знімків має належати root і бути недоступною іншим користувачам"
+  },
+  {
+    "key": "storage.server.196f655399b5",
+    "en": "The snapshot is read-only. Nested subvolumes are not included. A snapshot is not a backup against disk failure.",
+    "ru": "Снимок доступен только для чтения. Вложенные подтома не включаются. Снимок не защищает от поломки диска.",
+    "uk": "Знімок доступний лише для читання. Вкладені підтоми не включаються. Знімок не захищає від несправності диска."
+  },
+  {
+    "key": "storage.server.b6375259a733",
+    "en": "Unmount the snapshot before deleting or restoring it",
+    "ru": "Перед удалением или восстановлением отмонтируйте снимок",
+    "uk": "Перед видаленням або відновленням відмонтуйте знімок"
+  },
+  {
+    "key": "storage.server.8400bfeea728",
+    "en": "This snapshot will be deleted. The current files will be preserved.",
+    "ru": "Этот снимок будет удалён. Текущие файлы сохранятся.",
+    "uk": "Цей знімок буде видалено. Поточні файли збережуться."
+  },
+  {
+    "key": "storage.server.1d7b96157a6c",
+    "en": "A writable copy will be restored in a new folder. Current files will not be replaced.",
+    "ru": "Копия с доступом для записи будет восстановлена в новой папке. Текущие файлы не заменяются.",
+    "uk": "Копію з доступом для запису буде відновлено в новій папці. Поточні файли не замінюються."
+  },
+  {
+    "key": "storage.server.b4e7da8ccf39",
+    "en": "RAID conversion requires MD 1.2 metadata",
+    "ru": "Для преобразования RAID требуются метаданные MD 1.2",
+    "uk": "Для перетворення RAID потрібні метадані MD 1.2"
+  },
+  {
+    "key": "storage.server.7ca236b9f52f",
+    "en": "Wait for RAID maintenance and recover missing members before changing its level",
+    "ru": "Перед изменением уровня дождитесь завершения операций RAID и восстановите отсутствующих участников",
+    "uk": "Перед зміною рівня дочекайтеся завершення операцій RAID і відновіть відсутніх учасників"
+  },
+  {
+    "key": "storage.server.77bf01f129fe",
+    "en": "Supported conversions: RAID1 to RAID5, RAID5 to RAID6, RAID6 to RAID5",
+    "ru": "Доступные преобразования: RAID1 → RAID5, RAID5 → RAID6, RAID6 → RAID5",
+    "uk": "Доступні перетворення: RAID1 → RAID5, RAID5 → RAID6, RAID6 → RAID5"
+  },
+  {
+    "key": "storage.server.161706b83eae",
+    "en": "Remove or use existing spare disks before changing the RAID level",
+    "ru": "Перед изменением уровня RAID удалите или используйте существующие резервные диски",
+    "uk": "Перед зміною рівня RAID видаліть або використайте наявні резервні диски"
+  },
+  {
+    "key": "storage.server.46d3a7a99ca6",
+    "en": "All RAID members must be synchronized",
+    "ru": "Все участники RAID должны быть синхронизированы",
+    "uk": "Усі учасники RAID мають бути синхронізовані"
+  },
+  {
+    "key": "storage.server.11757f8a94fd",
+    "en": "RAID recovery data must be stored outside the array being changed",
+    "ru": "Данные восстановления RAID должны храниться вне изменяемого массива",
+    "uk": "Дані відновлення RAID мають зберігатися поза змінюваним масивом"
+  },
+  {
+    "key": "storage.server.1adaaafb0f32",
+    "en": "Not enough free space on the system disk for RAID recovery data",
+    "ru": "На системном диске недостаточно места для данных восстановления RAID",
+    "uk": "На системному диску недостатньо місця для даних відновлення RAID"
+  },
+  {
+    "key": "storage.server.478cde587138",
+    "en": "Invalid RAID UUID",
+    "ru": "Некорректный UUID RAID",
+    "uk": "Некоректний UUID RAID"
+  },
+  {
+    "key": "storage.server.22243c15a298",
+    "en": "File systems are not resized. Reshape continues in the background; do not remove member disks.",
+    "ru": "Размер файловых систем не меняется. Перестройка продолжается в фоне; не извлекайте диски массива.",
+    "uk": "Розмір файлових систем не змінюється. Перебудова триває у фоні; не виймайте диски масиву."
+  },
+  {
+    "key": "storage.server.bdead6e12604",
+    "en": "Recovery data will be kept on the system disk until the conversion finishes.",
+    "ru": "Данные восстановления сохраняются на системном диске до завершения преобразования.",
+    "uk": "Дані відновлення зберігаються на системному диску до завершення перетворення."
+  },
+  {
+    "key": "storage.server.ddf32f07da28",
+    "en": "RAID conversion started. Check progress on the array card before changing storage again.",
+    "ru": "Преобразование RAID запущено. Перед следующими изменениями проверьте прогресс на карточке массива.",
+    "uk": "Перетворення RAID запущено. Перед наступними змінами перевірте прогрес на картці масиву."
+  },
+  {
+    "key": "storage.server.2e580ba8849e",
+    "en": "RAID recovery record does not match this array",
+    "ru": "Запись восстановления RAID не соответствует массиву",
+    "uk": "Запис відновлення RAID не відповідає масиву"
+  },
+  {
+    "key": "storage.server.14e7b55f5456",
+    "en": "RAID1 conversion requires a two-disk mirror",
+    "ru": "Для преобразования RAID1 требуется зеркало из двух дисков",
+    "uk": "Для перетворення RAID1 потрібне дзеркало з двох дисків"
+  },
+  {
+    "key": "storage.server.dfb32608dc87",
+    "en": "This conversion does not need an additional disk",
+    "ru": "Для этого преобразования дополнительный диск не нужен",
+    "uk": "Для цього перетворення додатковий диск не потрібен"
+  },
+  {
+    "key": "storage.server.4d46b7f1dba8",
+    "en": "An earlier RAID recovery file exists. Verify the previous conversion before starting another one",
+    "ru": "Остался файл восстановления RAID. Проверьте предыдущее преобразование перед следующим",
+    "uk": "Залишився файл відновлення RAID. Перевірте попереднє перетворення перед наступним"
+  },
+  {
+    "key": "storage.server.0320b1dec8d0",
+    "en": "Redundancy will decrease: RAID5 tolerates one failed disk instead of two. One member becomes a spare; usable capacity is preserved.",
+    "ru": "Отказоустойчивость снизится: RAID5 выдерживает отказ одного диска вместо двух. Один участник станет резервным; полезная ёмкость сохранится.",
+    "uk": "Відмовостійкість знизиться: RAID5 витримує відмову одного диска замість двох. Один учасник стане резервним; корисна місткість збережеться."
+  },
+  {
+    "key": "storage.server.6382ae63f8b3",
+    "en": "Invalid RAID recovery record",
+    "ru": "Некорректная запись восстановления RAID",
+    "uk": "Некоректний запис відновлення RAID"
+  },
+  {
+    "key": "storage.server.dd90f6eeefd9",
+    "en": "Unknown automatic mount policy",
+    "ru": "Неизвестный режим автоматического монтирования",
+    "uk": "Невідомий режим автоматичного монтування"
+  },
+  {
+    "key": "storage.server.2d92eedd121d",
+    "en": "Manual mounting; remember this mount point without mounting at startup.",
+    "ru": "Монтировать вручную; сохранить точку монтирования без подключения при запуске.",
+    "uk": "Монтувати вручну; зберегти точку монтування без підключення під час запуску."
+  },
+  {
+    "key": "storage.server.34d2996eec6d",
+    "en": "Mount at startup; a missing device will not block boot.",
+    "ru": "Монтировать при запуске; отсутствие устройства не заблокирует загрузку.",
+    "uk": "Монтувати під час запуску; відсутність пристрою не заблокує завантаження."
+  },
+  {
+    "key": "storage.server.dc3c08564112",
+    "en": "Mount on first access after startup; unmount after 10 idle minutes when not busy.",
+    "ru": "Монтировать при первом обращении после запуска; отмонтировать после 10 минут простоя, если том не занят.",
+    "uk": "Монтувати при першому зверненні після запуску; відмонтувати після 10 хвилин простою, якщо том не зайнятий."
+  },
+  {
+    "key": "storage.server.55e01ad7bb0a",
+    "en": "Changes to automatic mounting take effect at the next startup. The current mount is unchanged.",
+    "ru": "Изменения автоматического монтирования применятся при следующем запуске. Текущее подключение не меняется.",
+    "uk": "Зміни автоматичного монтування застосуються під час наступного запуску. Поточне підключення не змінюється."
+  },
+  {
+    "key": "storage.server.6e30193aaf54",
+    "en": "Install systemd-cryptsetup before enabling automatic unlocking",
+    "ru": "Перед включением автоматической разблокировки установите systemd-cryptsetup",
+    "uk": "Перед увімкненням автоматичного розблокування встановіть systemd-cryptsetup"
+  },
+  {
+    "key": "storage.server.7e9500ae7e49",
+    "en": "User home folders on this volume: {{v0}}. Move these homes before unmounting the volume.",
+    "ru": "Домашние папки пользователей на этом томе: {{v0}}. Перенесите их перед отключением тома.",
+    "uk": "Домашні папки користувачів на цьому томі: {{v0}}. Перенесіть їх перед відключенням тому."
+  },
+  {
+    "key": "storage.server.1cdeda353372",
+    "en": "Finish or recover the RAID conversion before removing PaNasMs",
+    "ru": "Перед удалением PaNasMs завершите или восстановите преобразование RAID",
+    "uk": "Перед видаленням PaNasMs завершіть або відновіть перетворення RAID"
   }
 ]

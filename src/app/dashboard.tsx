@@ -369,6 +369,7 @@ export function Dashboard() {
   )
 }
 export function HistoryPage() {
+  const [hovered, setHovered] = useState<Record<string, number | undefined>>({})
   const [openValues, setOpenValues] = useState<Record<string, boolean>>({})
   const [technical, setTechnical] = useState(false)
   const [disk, setDisk] = useQueryValue('disk')
@@ -395,6 +396,10 @@ export function HistoryPage() {
             : m.network?.[network]?.[key.endsWith('read') ? 'read' : 'write'],
     )
     const max = key === 'cpu' || key === 'memory' ? 100 : Math.max(1, ...values.map((v) => v ?? 0))
+    const present = values.filter((v): v is number => v != null && Number.isFinite(v))
+    const format = (value: number) =>
+      key === 'cpu' || key === 'memory' ? `${value.toFixed(1)}%` : `${bytes(value)}/s`
+    const selected = hovered[key]
     const points = values.map((val, i) =>
       val == null
         ? null
@@ -412,11 +417,68 @@ export function HistoryPage() {
     })
     return (
       <div className="chart-content">
-        <svg viewBox="0 0 1000 200" role="img" aria-label={tr('history_87c7eb93', { v0: key })}>
+        <svg
+          viewBox="0 0 1000 200"
+          role="img"
+          aria-label={tr('history_87c7eb93', { v0: key })}
+          tabIndex={0}
+          onPointerMove={(event) => {
+            const bounds = event.currentTarget.getBoundingClientRect()
+            const index = Math.max(
+              0,
+              Math.min(
+                rows.length - 1,
+                Math.round(((event.clientX - bounds.left) / bounds.width) * (rows.length - 1)),
+              ),
+            )
+            setHovered((previous) => ({ ...previous, [key]: index }))
+          }}
+          onPointerLeave={() => setHovered((previous) => ({ ...previous, [key]: undefined }))}
+          onKeyDown={(event) => {
+            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+            event.preventDefault()
+            setHovered((previous) => ({
+              ...previous,
+              [key]: Math.max(
+                0,
+                Math.min(rows.length - 1, (previous[key] ?? 0) + (event.key === 'ArrowRight' ? 1 : -1)),
+              ),
+            }))
+          }}
+          onBlur={() => setHovered((previous) => ({ ...previous, [key]: undefined }))}
+        >
           {segments.map((s, i) => (
             <polyline key={i} points={s.join(' ')} fill="none" stroke="currentColor" strokeWidth="2" />
           ))}
+          {selected != null && rows[selected] && (
+            <line
+              x1={rows.length > 1 ? (selected / (rows.length - 1)) * 1000 : 0}
+              x2={rows.length > 1 ? (selected / (rows.length - 1)) * 1000 : 0}
+              y1="0"
+              y2="200"
+              stroke="currentColor"
+              strokeDasharray="4 4"
+            />
+          )}
         </svg>
+        <div className="chart-summary" aria-live="polite">
+          {selected != null && rows[selected] ? (
+            <span>
+              {new Date(rows[selected].observedAt).toLocaleString()} ·{' '}
+              {values[selected] == null ? '—' : format(values[selected])}
+            </span>
+          ) : (
+            <span>
+              {present.length
+                ? tr('storage.chart_summary', {
+                    min: format(Math.min(...present)),
+                    avg: format(present.reduce((a, b) => a + b, 0) / present.length),
+                    max: format(Math.max(...present)),
+                  })
+                : '—'}
+            </span>
+          )}
+        </div>
         <div className="chart-summary">
           <span>0 — {key === 'cpu' || key === 'memory' ? '100%' : bytes(max) + '/s'}</span>
           <span>

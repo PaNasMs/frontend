@@ -2485,6 +2485,8 @@ export interface components {
             };
         };
         SmartSchedule: {
+            /** @description Next configured calendar slot in NAS local time, including UTC offset. Runtime conditions may skip the test. */
+            nextScheduledAt?: string | null;
             test: string;
             weekday: number;
             hour: number;
@@ -2516,6 +2518,8 @@ export interface components {
             media?: components["schemas"]["MediaInfo"];
             mountSettings?: {
                 point: string;
+                /** @enum {string} */
+                mountPolicy?: "manual" | "boot" | "on-demand";
                 automount: boolean;
                 readOnly: boolean;
             } | null;
@@ -2580,6 +2584,20 @@ export interface components {
         };
         /** @description Query-name to response-schema map. Each GET response is the value for the selected view, not this mapping object. Installed modules own additional query contracts. */
         ManagementViews: {
+            "storage-luks"?: {
+                target: string;
+                uuid: string;
+                slots: number[];
+                automatic: boolean;
+                managedSlot: number | null;
+            };
+            "storage-snapshots"?: {
+                target: string;
+                point: string;
+                snapshots: {
+                    name: string;
+                }[];
+            };
             job?: components["schemas"]["ManagementJob"];
             jobs?: components["schemas"]["ManagementJob"][];
             accounts?: components["schemas"]["AccountInventory"];

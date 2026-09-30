@@ -42,6 +42,8 @@ export function useEvents(enabled: boolean) {
               'users',
               'storage',
               'management-storage',
+              'storage-luks',
+              'storage-snapshots',
               'services',
               'files',
               'updates',

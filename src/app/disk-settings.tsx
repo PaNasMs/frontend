@@ -1,7 +1,7 @@
 import { useDraft } from '../shared/interaction'
 import { WaitingSurface } from '../shared/ui'
 import { useRouteTab } from './navigation'
-import { tr } from '../i18n/index'
+import { tr, locale } from '../i18n/index'
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -177,6 +177,16 @@ export function DiskSettings() {
                                 {schedule.weeks === 2
                                   ? tr('every_two_weeks_dc123b88')
                                   : tr('weekly_10c12f72')}
+                                {schedule.nextScheduledAt && (
+                                  <>
+                                    <br />
+                                    {tr('storage.next_smart', {
+                                      value: new Date(
+                                        schedule.nextScheduledAt.slice(0, 19) + 'Z',
+                                      ).toLocaleString(locale(), { timeZone: 'UTC' }),
+                                    })}
+                                  </>
+                                )}
                                 {schedule.weeks === 2 && schedule.startDate ? (
                                   <>
                                     <br />

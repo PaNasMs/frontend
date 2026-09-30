@@ -48,7 +48,13 @@ const point = {
 const size = { key: 'sizeMiB', label: tr('new_size_mib_43cfeb96'), type: 'number' } as Field
 const mounting = [
   point,
-  { key: 'automount', label: tr('mount_at_startup_9c96dc46'), type: 'check', value: true },
+  {
+    key: 'mountPolicy',
+    label: tr('storage.mount_policy'),
+    type: 'select',
+    options: ['manual', 'boot', 'on-demand'],
+    value: 'manual',
+  },
   { key: 'readOnly', label: tr('read_only_c5eb2661'), type: 'check', value: false },
 ] as Field[]
 export const operations: Record<string, Operation> = {
@@ -140,6 +146,14 @@ export const operations: Record<string, Operation> = {
     fields: [{ key: 'target', label: tr('path_1b46c650') }],
   },
   'disk.prepare': { label: tr('wipe_device_79e13b21'), fields: [target] },
+  'raid.convert': {
+    label: tr('storage.raid_convert'),
+    fields: [
+      target,
+      { key: 'level', label: tr('storage.raid_level'), type: 'select', options: ['5', '6'] },
+      { key: 'replacement', label: tr('storage.extra_disk'), type: 'device' },
+    ],
+  },
   'raid.create': {
     label: tr('create_array_f5677d02'),
     fields: [
@@ -198,6 +212,22 @@ export const operations: Record<string, Operation> = {
       },
     ],
   },
+  'filesystem.snapshot-create': {
+    label: tr('storage.snapshot_create'),
+    fields: [target, { key: 'name', label: tr('storage.snapshot_name') }],
+  },
+  'filesystem.snapshot-delete': {
+    label: tr('storage.snapshot_delete'),
+    fields: [target, { key: 'snapshot', label: tr('storage.snapshot'), type: 'select' }],
+  },
+  'filesystem.snapshot-restore': {
+    label: tr('storage.snapshot_restore'),
+    fields: [
+      target,
+      { key: 'snapshot', label: tr('storage.snapshot'), type: 'select' },
+      { key: 'name', label: tr('storage.restore_folder') },
+    ],
+  },
   'filesystem.resize': {
     label: tr('resize_file_system_af722666'),
     fields: [
@@ -211,6 +241,48 @@ export const operations: Record<string, Operation> = {
   'mount.settings': { label: tr('mount_options_64cffcf3'), fields: [target, ...mounting] },
   'mount.detach': { label: tr('unmount_volume_045babe0'), fields: [target] },
   'disk.eject': { label: tr('safely_eject_disk_c9c9731f'), fields: [target] },
+  'luks.key-add': {
+    label: tr('storage.key_add'),
+    fields: [
+      target,
+      { key: 'passphrase', label: tr('luks_password_c94fe95f'), type: 'password' },
+      { key: 'password', label: tr('storage.new_key'), type: 'password' },
+    ],
+  },
+  'luks.key-remove': {
+    label: tr('storage.key_remove'),
+    fields: [
+      target,
+      { key: 'slot', label: tr('storage.key_slot'), type: 'select' },
+      { key: 'passphrase', label: tr('storage.remaining_password'), type: 'password' },
+    ],
+  },
+  'luks.auto-enable': {
+    label: tr('storage.auto_enable'),
+    fields: [
+      target,
+      { key: 'name', label: tr('unlocked_volume_name_3bcaa317') },
+      { key: 'passphrase', label: tr('luks_password_c94fe95f'), type: 'password' },
+    ],
+  },
+  'luks.auto-disable': {
+    label: tr('storage.auto_disable'),
+    fields: [target, { key: 'passphrase', label: tr('luks_password_c94fe95f'), type: 'password' }],
+  },
+  'luks.header-backup': {
+    label: tr('storage.header_backup'),
+    fields: [
+      target,
+      { key: 'folder', label: tr('storage.header_folder'), type: 'folder', folderPolicy: 'share' },
+    ],
+  },
+  'luks.header-restore': {
+    label: tr('storage.header_restore'),
+    fields: [
+      target,
+      { key: 'folder', label: tr('storage.header_folder'), type: 'folder', folderPolicy: 'share' },
+    ],
+  },
   'luks.create': {
     label: tr('create_encrypted_volume_a70fa700'),
     fields: [
@@ -944,7 +1016,9 @@ function OperationForm({
                           change(
                             f.key,
                             f.type !== 'devices'
-                              ? e.target.value
+                              ? f.key === 'slot' && e.target.value !== ''
+                                ? Number(e.target.value)
+                                : e.target.value
                               : [...e.target.selectedOptions].map((o) => o.value),
                           )
                         }
@@ -966,7 +1040,9 @@ function OperationForm({
                         onChange={(e) => change(f.key, e.target.value)}
                       >
                         {(f.key === 'format' ? (inv.data?.formats ?? []) : f.options)?.map((o) => (
-                          <option key={o}>{o}</option>
+                          <option key={o} value={o}>
+                            {f.key === 'mountPolicy' ? tr(`storage.mount_${o}`) : o}
+                          </option>
                         ))}
                       </select>
                     ) : (
