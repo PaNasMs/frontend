@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import { mdiGoogle, mdiLinkVariantOff, mdiCheck, mdiClose } from '@mdi/js'
+import { mdiGoogle, mdiGithub, mdiDropbox, mdiLinkVariantOff, mdiCheck } from '@mdi/js'
 import { request, APIError } from '../api/client'
 import type { components } from '../api/schema'
 import { Button, Icon, Notice, DialogContent, WaitingSurface } from '../shared/ui'
@@ -10,15 +10,34 @@ import { tr } from '../i18n'
 import { notify } from './notifications'
 import { ExternalGrants } from './external-grants'
 
-type GoogleSettings = components['schemas']['ExternalGoogleSettings']
+type Provider = 'google' | 'github' | 'dropbox'
+const providers: Provider[] = ['google', 'github', 'dropbox']
+const providerNames = { google: 'Google', github: 'GitHub', dropbox: 'Dropbox' }
+const providerIcons = { google: mdiGoogle, github: mdiGithub, dropbox: mdiDropbox }
+type ProviderSettings = components['schemas']['ExternalProviderSettings']
 type Connection = components['schemas']['ExternalConnection']
 const errorText = (error: unknown) => tr(error instanceof Error ? error.message : 'external.unavailable')
 
 export function ExternalSettings() {
+  return (
+    <div className="general-settings">
+      <div>
+        <div className="page-heading">
+          <h2>{tr('external.title')}</h2>
+        </div>
+        <p className="muted">{tr('external.settingsHelp')}</p>
+      </div>
+      {providers.map((provider) => (
+        <ProviderSettingsForm key={provider} provider={provider} />
+      ))}
+    </div>
+  )
+}
+function ProviderSettingsForm({ provider }: { provider: Provider }) {
   const q = useQueryClient()
   const data = useQuery({
-    queryKey: ['external-settings'],
-    queryFn: () => request<GoogleSettings>('external/settings/google'),
+    queryKey: ['external-settings', provider],
+    queryFn: () => request<ProviderSettings>(`external/settings/${provider}`),
   })
   const id = useDraft(data.data?.clientId ?? '')
   const enabled = useDraft(data.data?.enabled ?? false)
@@ -26,7 +45,7 @@ export function ExternalSettings() {
   useUnsavedForm(!!secret, () => setSecret(''))
   const save = useMutation({
     mutationFn: () =>
-      request<GoogleSettings>('external/settings/google', 'PUT', {
+      request<ProviderSettings>(`external/settings/${provider}`, 'PUT', {
         clientId: id.draft.trim(),
         clientSecret: secret,
         enabled: enabled.draft,
@@ -35,20 +54,19 @@ export function ExternalSettings() {
       setSecret('')
       id.reset(value.clientId)
       enabled.reset(value.enabled)
-      q.setQueryData(['external-settings'], value)
+      q.setQueryData(['external-settings', provider], value)
       void q.invalidateQueries({ queryKey: ['external-providers'] })
       notify(tr('external.saved'))
     },
   })
   return (
-    <WaitingSurface busy={save.isPending} className="general-settings">
+    <WaitingSurface
+      busy={save.isPending || data.isPending}
+      className="general-settings external-provider-settings"
+    >
       <section className="surface">
-        <div className="page-heading">
-          <h2>{tr('external.title')}</h2>
-        </div>
-        <p className="muted">{tr('external.settingsHelp')}</p>
         <h3 className="external-provider-heading">
-          <Icon path={mdiGoogle} /> Google
+          <Icon path={providerIcons[provider]} /> {providerNames[provider]}
         </h3>
         {data.error && <Notice error>{errorText(data.error)}</Notice>}
         {save.error && <Notice error>{errorText(save.error)}</Notice>}
@@ -87,13 +105,31 @@ export function ExternalSettings() {
             <input readOnly value={data.data?.redirectUri ?? ''} onFocus={(e) => e.target.select()} />
           </label>
           <p className="muted small">
-            {tr('external.setupHelp')}{' '}
-            <a href="https://panasms.github.io/docs/setup/google/" target="_blank" rel="noopener noreferrer">
-              {tr('external.setupGuide')}
-            </a>
-            {' · '}
-            <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener noreferrer">
-              Google Cloud Console
+            {tr(`external.setup.${provider}`)}{' '}
+            {provider === 'google' && (
+              <>
+                <a
+                  href="https://panasms.github.io/docs/setup/google/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {tr('external.setupGuide')}
+                </a>
+                {' · '}
+              </>
+            )}
+            <a
+              href={
+                {
+                  google: 'https://console.cloud.google.com/auth/clients',
+                  github: 'https://github.com/settings/developers',
+                  dropbox: 'https://www.dropbox.com/developers/apps',
+                }[provider]
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {providerNames[provider]}
             </a>
           </p>
           <label className="external-toggle">
@@ -102,9 +138,11 @@ export function ExternalSettings() {
               checked={enabled.draft}
               onChange={(e) => enabled.setDraft(e.target.checked)}
             />
-            {tr('external.enable')}
+            {tr(provider === 'dropbox' ? 'external.enableLink' : 'external.enableProvider', {
+              provider: providerNames[provider],
+            })}
           </label>
-          <p className="muted small">{tr('external.scopeHelp')}</p>
+          <p className="muted small">{tr(`external.scope.${provider}`)}</p>
           <div className="actions">
             <Button title={tr('external.apply')} disabled={save.isPending || !data.data}>
               <Icon path={mdiCheck} />
@@ -121,11 +159,20 @@ export type GrantRequest = {
   consumer: string
   capability: 'google-drive' | 'google-drive-readonly'
 }
-export function GoogleConnect({
+export function GoogleConnect(props: {
+  link?: boolean
+  grant?: GrantRequest
+  onComplete?: (grantId?: string) => void
+}) {
+  return <ProviderConnect {...props} providerId="google" />
+}
+export function ProviderConnect({
+  providerId,
   link = false,
   grant,
   onComplete,
 }: {
+  providerId: Provider
   link?: boolean
   grant?: GrantRequest
   onComplete?: (grantId?: string) => void
@@ -134,7 +181,7 @@ export function GoogleConnect({
   const queryClient = useQueryClient()
   const provider = useQuery({
     queryKey: ['external-providers'],
-    queryFn: () => request<{ google: { enabled: boolean } }>('external/providers'),
+    queryFn: () => request<Record<Provider, { enabled: boolean; login: boolean }>>('external/providers'),
     retry: false,
   })
   const [open, setOpen] = useState(false)
@@ -144,7 +191,7 @@ export function GoogleConnect({
   const [waiting, setWaiting] = useState(false)
   const start = useMutation({
     mutationFn: () =>
-      request<{ url: string }>('external/google/start', 'POST', {
+      request<{ url: string }>(`external/${providerId}/start`, 'POST', {
         purpose: grant ? 'grant' : link ? 'link' : 'login',
         ...grant,
         password: link ? password : '',
@@ -164,7 +211,11 @@ export function GoogleConnect({
     let timer: ReturnType<typeof setTimeout>
     const poll = async () => {
       try {
-        const result = await request<{ status: string; grantId?: string }>('external/google/poll', 'POST', {})
+        const result = await request<{ status: string; grantId?: string }>(
+          `external/${providerId}/poll`,
+          'POST',
+          {},
+        )
         if (disposed) return
         if (result.status === 'linked' || result.status === 'authenticated' || result.status === 'granted') {
           setWaiting(false)
@@ -194,17 +245,16 @@ export function GoogleConnect({
       disposed = true
       clearTimeout(timer)
     }
-  }, [open, waiting, link, onComplete, queryClient])
+  }, [open, waiting, link, onComplete, queryClient, providerId])
   function close() {
     setOpen(false)
     setWaiting(false)
     setPassword('')
     setAuthorizeURL('')
     setError('')
-    void request('external/google/cancel', 'POST', {}).catch(() => {})
+    void request(`external/${providerId}/cancel`, 'POST', {}).catch(() => {})
   }
-  if (!provider.data?.google.enabled)
-    return link ? <p className="muted">{tr('external.notConfigured')}</p> : null
+  if (!provider.data?.[providerId].enabled || (!link && !provider.data?.[providerId].login)) return null
   return (
     <>
       <Button
@@ -214,8 +264,10 @@ export function GoogleConnect({
           if (!link) start.mutate()
         }}
       >
-        <Icon path={mdiGoogle} />
-        {tr(grant ? 'external.allowDrive' : link ? 'external.linkGoogle' : 'external.signIn')}
+        <Icon path={providerIcons[providerId]} />
+        {tr(grant ? 'external.allowDrive' : link ? 'external.linkProvider' : 'external.signInProvider', {
+          provider: providerNames[providerId],
+        })}
       </Button>
       <Dialog.Root
         open={open}
@@ -233,7 +285,14 @@ export function GoogleConnect({
                 {' '}
                 <div className="dialog-heading">
                   <Dialog.Title>
-                    {tr(grant ? 'external.allowDrive' : link ? 'external.linkGoogle' : 'external.signIn')}
+                    {tr(
+                      grant
+                        ? 'external.allowDrive'
+                        : link
+                          ? 'external.linkProvider'
+                          : 'external.signInProvider',
+                      { provider: providerNames[providerId] },
+                    )}
                   </Dialog.Title>
                 </div>
                 <Dialog.Description>
@@ -245,7 +304,7 @@ export function GoogleConnect({
                       : link
                         ? 'external.linkHelp'
                         : 'external.loginHelp',
-                    { consumer: grant?.consumer },
+                    { consumer: grant?.consumer, provider: providerNames[providerId] },
                   )}
                 </Dialog.Description>{' '}
               </>
@@ -284,12 +343,12 @@ export function GoogleConnect({
             {waiting && (
               <div className="external-oauth-wait">
                 <span className="waiting-spinner" aria-hidden="true" />
-                <p role="status">{tr('external.waiting')}</p>
+                <p role="status">{tr('external.waiting', { provider: providerNames[providerId] })}</p>
               </div>
             )}
             {authorizeURL && (
               <a className="button" href={authorizeURL} target="_blank" rel="noopener noreferrer">
-                {tr('external.openGoogle')}
+                {tr('external.openProvider', { provider: providerNames[providerId] })}
               </a>
             )}
           </DialogContent>
@@ -322,10 +381,13 @@ export function LinkedAccounts() {
       <div className="external-accounts">
         {data.data?.map((connection) => (
           <div className="external-account" key={connection.id}>
-            <Icon path={mdiGoogle} />
+            <Icon path={providerIcons[connection.provider as Provider] ?? mdiLinkVariantOff} />
             <div>
               <strong>{connection.name || connection.email}</strong>
-              <span className="muted">{connection.email}</span>
+              <span className="muted">
+                {providerNames[connection.provider as Provider] ?? connection.provider}
+                {connection.email && ` · ${connection.email}`}
+              </span>
             </div>
             <Button
               title={tr('external.unlink')}
@@ -341,12 +403,18 @@ export function LinkedAccounts() {
         ))}
       </div>
       {data.data?.length === 0 && <p className="muted">{tr('external.empty')}</p>}
-      <GoogleConnect
-        link
-        onComplete={() => {
-          void q.invalidateQueries({ queryKey: ['external-connections'] })
-        }}
-      />
+      <div className="actions">
+        {providers.map((provider) => (
+          <ProviderConnect
+            key={provider}
+            providerId={provider}
+            link
+            onComplete={() => {
+              void q.invalidateQueries({ queryKey: ['external-connections'] })
+            }}
+          />
+        ))}
+      </div>
       <ExternalGrants connections={data.data ?? []} />
       <Dialog.Root
         open={!!selected}
@@ -389,7 +457,10 @@ export function LinkedAccounts() {
             intent="confirm"
             dirty={false}
           >
-            <strong>{selected?.email}</strong>
+            <strong>
+              {selected &&
+                `${providerNames[selected.provider as Provider] ?? selected.provider} · ${selected.email || selected.name}`}
+            </strong>
             <label className="field">
               {tr('external.currentPassword')}
               <input

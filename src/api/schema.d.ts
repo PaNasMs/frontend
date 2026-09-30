@@ -21,17 +21,19 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/external/settings/google": {
+    "/api/v1/external/settings/{provider}": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         /** @description Administrator only. Returns a secretConfigured flag, never the secret. */
-        get: operations["getExternalGoogleSettings"];
+        get: operations["getExternalProviderSettings"];
         /** @description Administrator only. Saves encrypted client credentials and cancels pending OAuth flows. */
-        put: operations["putExternalGoogleSettings"];
+        put: operations["putExternalProviderSettings"];
         post?: never;
         delete?: never;
         options?: never;
@@ -75,51 +77,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/external/google/start": {
+    "/api/v1/external/{provider}/start": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         get?: never;
         put?: never;
-        /** @description Starts browser-bound Google OIDC authorization through the fixed HTTPS relay. Grant purpose adds the registered capability scope and offline consent, bound to connectionId and consumer. Linking and grants require the existing panel session and current Linux password. */
-        post: operations["startExternalGoogle"];
+        /** @description Starts provider-bound OAuth authorization (Google OIDC) through the fixed HTTPS relay. GitHub supports login/link; Dropbox supports link only. Grant is Google-only. Grant purpose adds the registered capability scope and offline consent, bound to connectionId and consumer. Linking and grants require the existing panel session and current Linux password. */
+        post: operations["startExternalProvider"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/external/google/poll": {
+    "/api/v1/external/{provider}/poll": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         get?: never;
         put?: never;
         /** @description Requires the HttpOnly flow cookie from start. Poll at most once every three seconds. Expiration, cancellation, restart or settings changes require a new flow. */
-        post: operations["pollExternalGoogle"];
+        post: operations["pollExternalProvider"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/external/google/cancel": {
+    "/api/v1/external/{provider}/cancel": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         get?: never;
         put?: never;
         /** @description Cancels the flow belonging to the browser cookie. */
-        post: operations["cancelExternalGoogle"];
+        post: operations["cancelExternalProvider"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1751,15 +1759,15 @@ export interface components {
             /** @enum {string} */
             channel: "email" | "telegram" | "push";
         };
-        ExternalGoogleSettings: {
-            /** @constant */
-            provider: "google";
+        ExternalProviderSettings: {
+            /** @enum {string} */
+            provider: "google" | "github" | "dropbox";
             clientId: string;
             secretConfigured: boolean;
             enabled: boolean;
             redirectUri: string;
         };
-        ExternalGoogleSettingsInput: {
+        ExternalProviderSettingsInput: {
             clientId: string;
             /** @description Empty preserves the existing secret only when the client ID is unchanged. */
             clientSecret: string;
@@ -1804,10 +1812,15 @@ export interface components {
             /** @description Present on successful grant; no tokens are returned to the browser. */
             grantId?: string;
         };
+        ExternalProviderAvailability: {
+            enabled: boolean;
+            /** @description Whether this provider supports panel login. */
+            login: boolean;
+        };
         ExternalProviders: {
-            google: {
-                enabled: boolean;
-            };
+            google: components["schemas"]["ExternalProviderAvailability"];
+            github: components["schemas"]["ExternalProviderAvailability"];
+            dropbox: components["schemas"]["ExternalProviderAvailability"];
         };
         ExternalUnlink: {
             id: string;
@@ -2690,11 +2703,13 @@ export interface operations {
             };
         };
     };
-    getExternalGoogleSettings: {
+    getExternalProviderSettings: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -2705,7 +2720,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ExternalGoogleSettings"];
+                    "application/json": components["schemas"]["ExternalProviderSettings"];
                 };
             };
             /** @description Failure; external.* error codes describe authorization failures. */
@@ -2719,18 +2734,20 @@ export interface operations {
             };
         };
     };
-    putExternalGoogleSettings: {
+    putExternalProviderSettings: {
         parameters: {
             query?: never;
             header: {
                 "X-PaNasMs-Request": "1";
             };
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ExternalGoogleSettingsInput"];
+                "application/json": components["schemas"]["ExternalProviderSettingsInput"];
             };
         };
         responses: {
@@ -2740,7 +2757,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ExternalGoogleSettings"];
+                    "application/json": components["schemas"]["ExternalProviderSettings"];
                 };
             };
             /** @description Failure; external.* error codes describe authorization failures. */
@@ -2874,13 +2891,15 @@ export interface operations {
             };
         };
     };
-    startExternalGoogle: {
+    startExternalProvider: {
         parameters: {
             query?: never;
             header: {
                 "X-PaNasMs-Request": "1";
             };
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         requestBody: {
@@ -2909,13 +2928,15 @@ export interface operations {
             };
         };
     };
-    pollExternalGoogle: {
+    pollExternalProvider: {
         parameters: {
             query?: never;
             header: {
                 "X-PaNasMs-Request": "1";
             };
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -2949,13 +2970,15 @@ export interface operations {
             };
         };
     };
-    cancelExternalGoogle: {
+    cancelExternalProvider: {
         parameters: {
             query?: never;
             header: {
                 "X-PaNasMs-Request": "1";
             };
-            path?: never;
+            path: {
+                provider: "google" | "github" | "dropbox";
+            };
             cookie?: never;
         };
         requestBody?: never;

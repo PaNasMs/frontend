@@ -1770,6 +1770,10 @@ td {
   margin: 0;
 }
 
+.external-provider-settings + .external-provider-settings {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
 .external-settings-form {
   display: grid;
   gap: 1rem;
