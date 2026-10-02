@@ -2229,5 +2229,9 @@
   "server_a9e1ed907eba": "{{v0}}: host/container network namespaces are not supported",
   "server_0c9192e24426": "{{v0}}: custom volume drivers/options are not supported",
   "server_65db3b87ef9c": "Docker data directory is unavailable",
-  "server_d56c67e4c69b": "Invalid container stop timeout"
+  "server_d56c67e4c69b": "Invalid container stop timeout",
+  "review.inspect": "Wait for recovery inspection to finish",
+  "review.setup": "Docker installation was interrupted. Retry setup to resume the saved configuration.",
+  "review.retained": "Completed; previous Docker data retained at {{v0}}",
+  "review.restored": "Docker restored at {{v0}}; incomplete copy retained at {{v1}}. Choose an empty folder before retrying."
 }

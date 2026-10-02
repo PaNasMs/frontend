@@ -30,7 +30,7 @@ export function WallpaperSettings() {
         headers: { 'Content-Type': file.type || 'application/octet-stream', 'X-PaNasMs-Request': '1' },
         body: file,
       })
-      const body = await response.json()
+      const body = await response.json().catch(() => ({}))
       if (!response.ok) throw Error(serverText(body.error ?? tr('could_not_upload_wallpaper_735ee215')))
       return body as Wallpaper
     },

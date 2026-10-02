@@ -10,11 +10,13 @@ export function useEvents(enabled: boolean) {
     let socket: WebSocket | undefined
     let timer: ReturnType<typeof setTimeout>
     let delay = 1000
+    let connected = false
     const connect = () => {
       socket = new WebSocket(
         `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/api/v1/events`,
       )
       socket.onopen = () => {
+        connected = true
         setState('online')
         delay = 1000
         void query.invalidateQueries()
@@ -36,21 +38,7 @@ export function useEvents(enabled: boolean) {
           if (event.type === 'notifications.changed')
             void query.invalidateQueries({ queryKey: ['notifications'] })
           if (event.type === 'jobs.changed') {
-            for (const key of [
-              'jobs',
-              'notifications',
-              'users',
-              'storage',
-              'management-storage',
-              'storage-luks',
-              'storage-snapshots',
-              'services',
-              'files',
-              'updates',
-              'nfs',
-              'network',
-            ])
-              void query.invalidateQueries({ queryKey: [key] })
+            void query.invalidateQueries()
           }
           if (event.type === 'resync') void query.invalidateQueries()
         } catch {
@@ -59,7 +47,7 @@ export function useEvents(enabled: boolean) {
       }
       socket.onclose = (e) => {
         if (stopped) return
-        setState('offline')
+        setState(connected ? 'offline' : 'connecting')
         if (e.code === 1008) {
           query.clear()
           location.assign('/')

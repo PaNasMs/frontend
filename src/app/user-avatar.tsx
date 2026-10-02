@@ -17,8 +17,8 @@ export function AvatarSettings() {
         headers: { 'X-PaNasMs-Request': '1' },
         body: file,
       })
-      const result = await r.json()
-      if (!r.ok) throw new Error(serverText(result.error))
+      const result = await r.json().catch(() => ({}))
+      if (!r.ok) throw new Error(serverText(result.error ?? tr('common.requestFailed', { status: r.status })))
       return result
     },
     onSuccess: (value) => q.setQueryData(['avatar'], value),

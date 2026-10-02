@@ -3987,5 +3987,25 @@
     "en": "Invalid container stop timeout",
     "ru": "Недопустимое время ожидания остановки контейнера",
     "uk": "Неприпустимий час очікування зупинки контейнера"
+  },
+  {
+    "key": "review.inspect",
+    "en": "Wait for recovery inspection to finish",
+    "ru": "Дождитесь завершения проверки восстановления"
+  },
+  {
+    "key": "review.setup",
+    "en": "Docker installation was interrupted. Retry setup to resume the saved configuration.",
+    "ru": "Установка Docker прервана. Повторите установку, чтобы продолжить с сохранёнными настройками."
+  },
+  {
+    "key": "review.retained",
+    "en": "Completed; previous Docker data retained at {{v0}}",
+    "ru": "Завершено; прежние данные Docker сохранены в {{v0}}"
+  },
+  {
+    "key": "review.restored",
+    "en": "Docker restored at {{v0}}; incomplete copy retained at {{v1}}. Choose an empty folder before retrying.",
+    "ru": "Docker восстановлен в {{v0}}; неполная копия сохранена в {{v1}}. Перед повторной попыткой выберите пустую папку."
   }
 ]
