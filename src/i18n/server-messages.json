@@ -4007,5 +4007,9 @@
     "key": "review.restored",
     "en": "Docker restored at {{v0}}; incomplete copy retained at {{v1}}. Choose an empty folder before retrying.",
     "ru": "Docker восстановлен в {{v0}}; неполная копия сохранена в {{v1}}. Перед повторной попыткой выберите пустую папку."
+  },
+  {
+    "key": "storage.dataLocationPolicy",
+    "en": "Choose a mounted writable local data filesystem, not the system disk or a network share"
   }
 ]
