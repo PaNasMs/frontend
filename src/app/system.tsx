@@ -300,9 +300,7 @@ registerModule({
       component: () => (
         <div className="general-settings">
           <WebSettings />
-          <section className="surface">
-            <CoolingSettings kind="cpu" />
-          </section>
+          <CoolingSettings kind="cpu" className="surface" />
         </div>
       ),
     },

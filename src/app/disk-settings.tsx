@@ -6,7 +6,7 @@ import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { newID } from './dashboard'
-import { CoolingSettings } from './cooling'
+import { CoolingSettings, DiskTelemetrySettings } from './cooling'
 import { OperationButton, managed } from './operations'
 import { request, type Storage, type Device, type Preferences } from '../api/client'
 import type { StorageOptions } from './storage-volumes'
@@ -82,9 +82,7 @@ export function DiskSettings() {
           <Tabs.Trigger value="advanced">{tr('advanced_settings_3cc80085')}</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="general">
-          <section className="disk-settings-section">
-            <CoolingSettings kind="disk" />
-          </section>
+          <CoolingSettings kind="disk" className="disk-settings-section" />
           <section className="disk-settings-section">
             <h2>{tr('disk_sleep_224ffae6')}</h2>
             <p className="small muted">{tr('a_shared_idle_timeout_for_all_non_system_sata_hdds_d9d621ce')}</p>
@@ -258,9 +256,8 @@ export function DiskSettings() {
           </section>
         </Tabs.Content>
         <Tabs.Content value="advanced">
-          <section className="disk-settings-section">
-            <CoolingSettings kind="disk" advanced />
-          </section>
+          <CoolingSettings kind="disk" advanced className="disk-settings-section" />
+          <DiskTelemetrySettings />
           <section className="disk-settings-section">
             <h2>{tr('acknowledged_crc_counts_434558cb')}</h2>
             <p className="small muted">{tr('your_acknowledged_sata_communication_error_counts__4fac524b')}</p>

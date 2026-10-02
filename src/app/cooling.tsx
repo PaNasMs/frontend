@@ -37,32 +37,37 @@ const headerPins: Record<number, number> = {
   26: 37,
   27: 13,
 }
-export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'disk'; advanced?: boolean }) {
+export function CoolingSettings({
+  kind,
+  advanced = false,
+  className,
+}: {
+  kind: 'cpu' | 'disk'
+  advanced?: boolean
+  className?: string
+}) {
   const q = useQueryClient()
   const data = useQuery({ queryKey: ['cooling'], queryFn: () => request<CoolingState>('cooling') })
   const cfg = data.data?.config
   const saved = kind === 'cpu' ? cfg?.cpuProfile : cfg?.profile
   const draft = useDraft<{
     profile: string
-    interval: number
     mode: HardwareMode
     control: number
     tach: number | null
   }>(
     {
       profile: saved ?? 'balanced',
-      interval: cfg?.sampleSeconds ?? 60,
       mode: cfg?.hardwareMode ?? 'none',
       control: cfg?.controlGPIO ?? 27,
       tach: cfg?.tachGPIO ?? null,
     },
     kind + String(advanced),
   )
-  const { profile, interval, mode, control, tach } = draft.draft
+  const { profile, mode, control, tach } = draft.draft
   const pins = Object.keys(headerPins).map(Number)
   const pinLabel = (pin: number) => `GPIO${pin} · ${tr('cooling.header_pin')} ${headerPins[pin]}`
   const setProfile = (profile: string) => draft.setDraft((p) => ({ ...p, profile }))
-  const setInterval = (interval: number) => draft.setDraft((p) => ({ ...p, interval }))
   const save = useMutation({
     mutationFn: async () => {
       const current = await request<CoolingState>('cooling')
@@ -71,7 +76,7 @@ export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'dis
         ...(kind === 'cpu'
           ? { cpuProfile: profile }
           : advanced
-            ? { sampleSeconds: interval, hardwareMode: mode, controlGPIO: control, tachGPIO: tach }
+            ? { hardwareMode: mode, controlGPIO: control, tachGPIO: tach }
             : { profile }),
       })
     },
@@ -82,8 +87,9 @@ export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'dis
     },
   })
   const dirty = !!cfg && draft.dirty
+  if (data.data?.capabilities?.[kind] === false) return null
   return (
-    <WaitingSurface busy={save.isPending}>
+    <WaitingSurface className={className} busy={save.isPending}>
       <h2>
         {kind === 'cpu'
           ? tr('cpu_cooling_6eab8340')
@@ -192,31 +198,64 @@ export function CoolingSettings({ kind, advanced = false }: { kind: 'cpu' | 'dis
               )}
             </>
           )}
-          {data.data?.status.hardwareError && <Notice error>{serverText(data.data.status.hardwareError)}</Notice>}
-          <p className="muted small">{tr('smart_and_temperature_are_read_without_waking_slee_e5a9e484')}</p>
-          <label className="field">
-            {tr('disk_polling_interval_seconds_f3fa0d34')}
-            <input
-              type="number"
-              min={30}
-              max={600}
-              value={interval}
-              onChange={(e) => setInterval(Number(e.target.value))}
-            />
-          </label>
+          {data.data?.status.hardwareError && (
+            <Notice error>{serverText(data.data.status.hardwareError)}</Notice>
+          )}
         </>
       )}
       {save.error && <Notice error>{save.error.message}</Notice>}
 
       <Button
         className="primary"
+        disabled={!dirty || (!data.data?.available && !(kind === 'disk' && advanced)) || save.isPending}
+        onClick={() => save.mutate()}
+      >
+        {tr('apply_768af677')}
+      </Button>
+    </WaitingSurface>
+  )
+}
+
+export function DiskTelemetrySettings() {
+  const q = useQueryClient()
+  const data = useQuery({ queryKey: ['cooling'], queryFn: () => request<CoolingState>('cooling') })
+  const draft = useDraft(data.data?.config.sampleSeconds ?? 60)
+  const save = useMutation({
+    mutationFn: async () => {
+      const current = await request<CoolingState>('cooling')
+      return request<CoolingState>('cooling', 'PUT', { ...current.config, sampleSeconds: draft.draft })
+    },
+    onSuccess: (state) => {
+      q.setQueryData(['cooling'], state)
+      draft.reset(draft.draft)
+      notify(tr('settings_saved_0c39426c'))
+    },
+  })
+  return (
+    <WaitingSurface busy={save.isPending} className="disk-settings-section">
+      <h2>{tr('disk_polling_interval_seconds_f3fa0d34')}</h2>
+      <p className="muted small">{tr('smart_and_temperature_are_read_without_waking_slee_e5a9e484')}</p>
+      {data.error && <Notice error>{data.error.message}</Notice>}
+      <label className="field">
+        {tr('disk_polling_interval_seconds_f3fa0d34')}
+        <input
+          type="number"
+          min={30}
+          max={600}
+          value={draft.draft}
+          onChange={(e) => draft.setDraft(Number(e.target.value))}
+        />
+      </label>
+      {save.error && <Notice error>{save.error.message}</Notice>}
+      <Button
+        className="primary"
         disabled={
-          !dirty ||
-          (!data.data?.available && !(kind === 'disk' && advanced)) ||
+          !data.data ||
+          !draft.dirty ||
           save.isPending ||
-          interval < 30 ||
-          interval > 600 ||
-          !Number.isInteger(interval)
+          !Number.isInteger(draft.draft) ||
+          draft.draft < 30 ||
+          draft.draft > 600
         }
         onClick={() => save.mutate()}
       >
