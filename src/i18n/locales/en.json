@@ -2212,5 +2212,22 @@
   "external.scope.dropbox": "Only account information is requested. File access and panel sign-in are not enabled.",
   "external.allowDropbox": "Allow Dropbox file access",
   "external.dropboxFilesHelp": "Allow {{consumer}} to read, create, change and delete files in this Dropbox. Existing account authorization will be reused; Dropbox will ask only if additional permission is needed.",
-  "external.fileAccessOnLink": "Authorize file access for NAS features (Files, Cloud Sync and compatible modules)"
+  "external.fileAccessOnLink": "Authorize file access for NAS features (Files, Cloud Sync and compatible modules)",
+  "server_55aa8353810b": "Maintenance lock unavailable",
+  "server_95c29df121d0": "System maintenance in progress; retry after the update",
+  "server_8779f5241e49": "System agent is stopping; retry after restart",
+  "server_5f75d327c112": "Cancelled before start: system agent is stopping",
+  "server_f87fb42afbf7": "Active requests or tasks prevent maintenance; wait and retry",
+  "server_08fde1a617df": "Module publisher differs from the installed publisher: {{v0}}",
+  "server_0a636bb3abc6": "Module downgrade is not supported: {{v0}}",
+  "server_53fbff72e869": "Update module {{v0}} to a maintenance-aware version before updating the system",
+  "server_a74ecc4fd798": "Wait for active module tasks: {{v0}}",
+  "server_d81f02847bd4": "Cannot check active tasks in module {{v0}}",
+  "server_7aee95f90a34": "Command {{v0}} is taking longer than expected; waiting for a safe completion",
+  "server_c67ab5db122c": "Host system path cannot be mounted into a container: {{v0}}",
+  "server_697c5900efff": "{{v0}}: {{v1}} requires host-level privileges and is not supported by the panel",
+  "server_a9e1ed907eba": "{{v0}}: host/container network namespaces are not supported",
+  "server_0c9192e24426": "{{v0}}: custom volume drivers/options are not supported",
+  "server_65db3b87ef9c": "Docker data directory is unavailable",
+  "server_d56c67e4c69b": "Invalid container stop timeout"
 }
