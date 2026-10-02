@@ -2042,6 +2042,11 @@ export interface components {
             cpuProfile: "quiet" | "balanced" | "performance";
         };
         CoolingState: {
+            /** @description Supported control interfaces, independent of controller service health. GPIO support does not prove a fan is wired. */
+            capabilities?: {
+                cpu: boolean;
+                disk: boolean;
+            };
             config: components["schemas"]["CoolingSettings"];
             available: boolean;
             status: {
