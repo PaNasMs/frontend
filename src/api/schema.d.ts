@@ -2042,6 +2042,8 @@ export interface components {
             cpuProfile: "quiet" | "balanced" | "performance";
         };
         CoolingState: {
+            /** @description Whether the optional cooling/telemetry controller has a configuration on this host. */
+            configured?: boolean;
             /** @description Supported control interfaces, independent of controller service health. GPIO support does not prove a fan is wired. */
             capabilities?: {
                 cpu: boolean;

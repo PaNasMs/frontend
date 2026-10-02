@@ -207,7 +207,12 @@ export function CoolingSettings({
 
       <Button
         className="primary"
-        disabled={!dirty || (!data.data?.available && !(kind === 'disk' && advanced)) || save.isPending}
+        disabled={
+          !dirty ||
+          data.data?.configured === false ||
+          (!data.data?.available && !(kind === 'disk' && advanced)) ||
+          save.isPending
+        }
         onClick={() => save.mutate()}
       >
         {tr('apply_768af677')}
@@ -231,6 +236,7 @@ export function DiskTelemetrySettings() {
       notify(tr('settings_saved_0c39426c'))
     },
   })
+  if (data.data?.configured === false) return null
   return (
     <WaitingSurface busy={save.isPending} className="disk-settings-section">
       <h2>{tr('disk_polling_interval_seconds_f3fa0d34')}</h2>
