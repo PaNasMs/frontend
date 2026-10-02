@@ -408,7 +408,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Core views: job, jobs, accounts, account-details, account-sessions, homes, homes-check, sharing, share-folders, home-folders, mount-folders, modules, module-sources, module-catalog, web-access, system-updates, network, storage-options, raid-candidates, smart, services, journal, updates, nfs, power. Additional module queries require an enabled module. */
+                    /** @description Core views: job, jobs, accounts, account-details, account-sessions, homes, homes-check, sharing, share-folders, home-folders, data-folders, mount-folders, modules, module-sources, module-catalog, web-access, system-updates, network, storage-options, raid-candidates, smart, services, journal, updates, nfs, power. Additional module queries require an enabled module. */
                     view: string;
                     target?: string;
                 };
@@ -2630,6 +2630,7 @@ export interface components {
             sharing?: components["schemas"]["ShareInventory"];
             "share-folders"?: components["schemas"]["FolderLocations"];
             "home-folders"?: components["schemas"]["FolderLocations"];
+            "data-folders"?: components["schemas"]["FolderLocations"];
             "mount-folders"?: components["schemas"]["FolderLocations"];
             modules?: components["schemas"]["InstalledModules"];
             "module-sources"?: components["schemas"]["ModuleSources"];

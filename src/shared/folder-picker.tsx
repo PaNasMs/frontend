@@ -8,7 +8,7 @@ import { tr } from '../i18n'
 import { serverText } from '../i18n/server'
 import { Button, DialogContent, Icon, Notice } from './ui'
 
-type FolderPolicy = 'share' | 'home' | 'mount'
+type FolderPolicy = 'share' | 'home' | 'mount' | 'data'
 type FolderRow = { name: string; path: string; reason?: string }
 type Folders = components['schemas']['FolderLocations']
 
@@ -137,7 +137,7 @@ export function FolderPicker({
           ))}
         </nav>
       </div>
-      {policy === 'home' && <p className="folder-policy-hint">{hint ?? tr('ui.homeLocationPolicy')}</p>}
+      {(policy === 'home' || hint) && <p className="folder-policy-hint">{hint ?? tr('ui.homeLocationPolicy')}</p>}
       {data.isPending && <Notice>{tr('loading_interface_f69ec4bd')}</Notice>}
       {data.error && <Notice error>{data.error.message}</Notice>}
       <div className="folder-picker-columns">

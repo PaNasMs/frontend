@@ -2233,5 +2233,6 @@
   "review.inspect": "Wait for recovery inspection to finish",
   "review.setup": "Docker installation was interrupted. Retry setup to resume the saved configuration.",
   "review.retained": "Completed; previous Docker data retained at {{v0}}",
-  "review.restored": "Docker restored at {{v0}}; incomplete copy retained at {{v1}}. Choose an empty folder before retrying."
+  "review.restored": "Docker restored at {{v0}}; incomplete copy retained at {{v1}}. Choose an empty folder before retrying.",
+  "storage.dataLocationPolicy": "Choose a mounted writable local data filesystem, not the system disk or a network share"
 }
