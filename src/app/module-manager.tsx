@@ -378,7 +378,7 @@ export function ModuleManager() {
         <div className="surface module-details">
           <section>
             <h2>{tr('about_this_module_debf7d50')}</h2>
-            <p>{selected.description || tr('no_description_provided_7eeedaab')}</p>
+            <p className="module-long-description">{selected.longDescription || selected.description || tr('no_description_provided_7eeedaab')}</p>
             <dl className="module-facts">
               <dt>{tr('version_97c248cb')}</dt>
               <dd>{selected.version}</dd>

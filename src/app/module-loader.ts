@@ -1,9 +1,9 @@
+import { localizedModuleText, type ModuleText } from './module-text'
 import { language, i18n, tr } from '../i18n'
 import './module-sdk'
 import { managed } from './operations'
 import { modules } from './module-registry'
-export type InstalledModule = {
-  translations?: Partial<Record<'en' | 'ru' | 'uk', { title: string; description?: string }>>
+export type InstalledModule = ModuleText & {
   id: string
   title: string
   version: string
@@ -61,14 +61,7 @@ export async function moduleCatalog(): Promise<ModuleCatalog> {
   const result = await managed<ModuleCatalog>('modules')
   return {
     ...result,
-    installed: result.installed.map((module) => {
-      const labels = module.translations?.[language(i18n.language)] ?? module.translations?.en
-      return {
-        ...module,
-        title: labels?.title || module.translations?.en?.title || module.title,
-        description: labels?.description || module.translations?.en?.description || module.description,
-      }
-    }),
+    installed: result.installed.map((module) => localizedModuleText(module, language(i18n.language))),
   }
 }
 
@@ -87,13 +80,6 @@ export async function availableModules(): Promise<{
   }>('module-catalog')
   return {
     errors: result.errors ?? [],
-    available: result.available.map((module) => {
-      const labels = module.translations?.[language(i18n.language)] ?? module.translations?.en
-      return {
-        ...module,
-        title: labels?.title || module.title,
-        description: labels?.description || module.description,
-      }
-    }),
+    available: result.available.map((module) => localizedModuleText(module, language(i18n.language))),
   }
 }
