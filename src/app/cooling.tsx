@@ -217,6 +217,13 @@ export function CoolingSettings({
       >
         {tr('apply_768af677')}
       </Button>
+      {kind === 'disk' && advanced && (
+        <>
+          <h3>{tr('power_saving_and_protection_af9b79e7')}</h3>
+          <p className="small muted">{tr('the_fan_stops_when_all_disks_are_asleep_and_system_560c9e8c')}</p>
+          <p className="small muted">{tr('system_operation_timeouts_and_profile_temperature__8ed0f40c')}</p>
+        </>
+      )}
     </WaitingSurface>
   )
 }
