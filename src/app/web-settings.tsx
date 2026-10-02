@@ -27,7 +27,6 @@ export function WebSettings() {
   }, [data.data?.port])
   const valid = /^\d+$/.test(port) && Number(port) >= 1 && Number(port) <= 65535
   const address = new URL(window.location.href)
-  address.protocol = 'http:'
   address.port = valid ? String(Number(port)) : ''
   address.pathname = '/settings/general'
   address.search = ''
