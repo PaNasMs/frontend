@@ -83,3 +83,25 @@ test('server messages and legacy history translate without changing paths, filen
   assert.equal(serverText('Unknown English server message'), 'Unknown English server message')
   assert.equal(input.error, `Cannot open ${path}`)
 })
+test('delete-array share blocker and removal details are localized as whole messages', async () => {
+  registerServerMessages('core', json('../src/i18n/server-messages.json'))
+  const shares = 'c05share (/srv/md127/c05share)'
+  const blocked =
+    'Operation on /dev/md127 has not started. Shared folders on this volume: ' +
+    shares +
+    '. Select “Also stop sharing folders on this array” in the delete dialog, or remove their shares in Shared folders first.'
+  for (const lang of ['ru', 'uk']) {
+    const dictionary = json('../src/i18n/locales/' + lang + '.json')
+    await i18n.changeLanguage(lang)
+    const text = serverText(blocked)
+    assert.doesNotMatch(text, /[A-Za-z]{4,} [a-z]{4,}/, lang)
+    assert.ok(text.includes('/dev/md127') && text.includes(shares), lang)
+    assert.ok(text.includes('«' + dictionary['storage.removeShares'] + '»'), lang)
+    assert.equal(
+      localizeResponse({ details: ['Sharing will be removed: ' + shares] }).details[0],
+      dictionary['server_f419b0e0b2c1'].replace('{{v0}}', shares),
+    )
+  }
+  await i18n.changeLanguage('en')
+  assert.equal(serverText(blocked), blocked)
+})

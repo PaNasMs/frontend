@@ -2312,5 +2312,12 @@
   "widget.healthy": "Healthy",
   "widget.degraded": "Degraded",
   "widget.syncing": "Synchronizing",
-  "ui.eject": "Eject"
+  "ui.eject": "Eject",
+  "storage.removeShares": "Also stop sharing folders on this array",
+  "server_e22b2ba4f198": "Shared folders on this volume: {{v0}}. Remove their shares in Shared folders first.",
+  "server_d121d04a7b6f": "Shared folders on this volume: {{v0}}. Select “Also stop sharing folders on this array” in the delete dialog, or remove their shares in Shared folders first.",
+  "server_f4eecec5136d": "Operation on {{v0}} has not started. Shared folders on this volume: {{v1}}. Remove their shares in Shared folders first.",
+  "server_64ca8f2b153e": "Operation on {{v0}} has not started. Shared folders on this volume: {{v1}}. Select “Also stop sharing folders on this array” in the delete dialog, or remove their shares in Shared folders first.",
+  "server_f419b0e0b2c1": "Sharing will be removed: {{v0}}",
+  "server_ad394570e4ff": "Choose whether to stop sharing folders on this array"
 }

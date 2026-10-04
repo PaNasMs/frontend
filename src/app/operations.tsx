@@ -31,6 +31,8 @@ export type Field = {
   defaultName?: string
   options?: string[]
   value?: unknown
+  // An optional field has a safe default: the dialog may review the operation before it is edited.
+  optional?: boolean
 }
 type Operation = {
   label: string
@@ -172,7 +174,13 @@ export const operations: Record<string, Operation> = {
   },
   'raid.pause': { label: tr('pause_reshape_8ab3f7ba'), fields: [target] },
   'raid.resume': { label: tr('resume_reshape_6ac07018'), fields: [target] },
-  'raid.delete': { label: tr('delete_array_9849a1e4'), fields: [target] },
+  'raid.delete': {
+    label: tr('delete_array_9849a1e4'),
+    fields: [
+      target,
+      { key: 'removeShares', label: tr('storage.removeShares'), type: 'check', value: false, optional: true },
+    ],
+  },
   'raid.grow': {
     label: tr('expand_array_120f4b44'),
     fields: [target, { ...target, key: 'replacement', label: tr('new_disk_7b12fee7') }],
@@ -698,13 +706,14 @@ function OperationForm({
     },
   })
   const editable = (fields ?? operations[action].fields).filter((f) => !context.some((c) => c.key === f.key))
+  const reviewsItself = autoReview && editable.every((f) => f.optional)
   const started = useRef(false)
   useEffect(() => {
-    if (autoReview && editable.length === 0 && !started.current) {
+    if (reviewsItself && !started.current) {
       started.current = true
       plan.mutate()
     }
-  }, [autoReview, editable.length, plan])
+  }, [reviewsItself, plan])
   const change = (key: string, value: unknown) => {
     setParams((p) => ({ ...p, [key]: value }))
     plan.reset()
@@ -909,7 +918,7 @@ function OperationForm({
               >
                 {plan.error
                   ? tr('check_again_f5a9c448')
-                  : autoReview && editable.length === 0
+                  : reviewsItself
                     ? tr('check_operation_availability_134d9204')
                     : tr('continue_3f75368a')}
               </Button>
