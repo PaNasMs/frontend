@@ -1605,16 +1605,22 @@ tbody tr:hover {
   .table-wrap:not(.keep-table) td:first-child {
     font-weight: 700;
   }
-  /* Each stacked cell names its column; the text comes from the header row (home/table-labels.ts). */
+  /* Each stacked cell names its column; the text comes from the header row (home/table-labels.ts).
+     The label hangs in the left gutter, so whatever the cell holds stays together on the right. */
   .table-wrap:not(.keep-table) td[data-label]:not(:first-child) {
-    display: grid;
-    grid-template-columns: minmax(0, 40%) minmax(0, 1fr);
-    gap: var(--space-3);
+    position: relative;
+    min-height: 1.75rem;
+    padding-left: calc(40% + var(--space-3));
   }
   .table-wrap:not(.keep-table) td[data-label]:not(:first-child)::before {
     content: attr(data-label);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 40%;
     color: var(--mute);
     font-weight: 500;
+    overflow-wrap: anywhere;
   }
 }
 @media (prefers-reduced-motion: reduce) {
