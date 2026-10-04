@@ -2611,8 +2611,51 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        NetworkAccess: {
+            config: {
+                enabled: boolean;
+                adapter: string;
+                ssid: string;
+                password: string;
+                /** @enum {string} */
+                band: "auto" | "bg" | "a";
+                delay: number;
+                onLoss: boolean;
+                usb: boolean;
+            };
+            devices: {
+                name: string;
+                mac: string;
+                kind: string;
+                connected: boolean;
+                profile: string;
+                ap: boolean;
+                bands: string[] | null;
+                addresses: string[] | null;
+                clients: number;
+                usable: boolean;
+                reserved: boolean;
+            }[];
+            state: {
+                phase: string;
+                interface?: string;
+                since?: number;
+                hadNetwork: boolean;
+                suppressed: boolean;
+                clients: number;
+                error?: string;
+                usbState: string;
+            };
+            usb: {
+                available: boolean;
+                port: string;
+                reason: string;
+                reboot: boolean;
+            };
+        };
         /** @description Query-name to response-schema map. Each GET response is the value for the selected view, not this mapping object. Installed modules own additional query contracts. */
         ManagementViews: {
+            "network-access"?: components["schemas"]["NetworkAccess"];
             "storage-luks"?: {
                 target: string;
                 uuid: string;

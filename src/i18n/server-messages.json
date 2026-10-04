@@ -4017,5 +4017,77 @@
   {
     "key": "storage.dataLocationPolicy",
     "en": "Choose a mounted writable local data filesystem, not the system disk or a network share"
+  },
+  {
+    "key": "access.error.0",
+    "en": "Manage this connection in Network access settings",
+    "ru": "Управляйте этим подключением в настройках сетевого доступа",
+    "uk": "Керуйте цим підключенням у налаштуваннях мережевого доступу"
+  },
+  {
+    "key": "access.error.1",
+    "en": "Choose a network wait between 30 and 900 seconds",
+    "ru": "Укажите задержку от 30 до 900 секунд",
+    "uk": "Укажіть затримку від 30 до 900 секунд"
+  },
+  {
+    "key": "access.error.2",
+    "en": "Enter a Wi-Fi name between 1 and 32 bytes",
+    "ru": "Укажите название Wi-Fi длиной от 1 до 32 байт",
+    "uk": "Укажіть назву Wi-Fi завдовжки від 1 до 32 байтів"
+  },
+  {
+    "key": "access.error.3",
+    "en": "Use a Wi-Fi password with 12 to 63 printable characters",
+    "ru": "Пароль Wi-Fi должен содержать от 12 до 63 печатных символов ASCII",
+    "uk": "Пароль Wi-Fi має містити від 12 до 63 друкованих символів ASCII"
+  },
+  {
+    "key": "access.error.4",
+    "en": "Choose an available Wi-Fi band",
+    "ru": "Выберите доступный диапазон Wi-Fi",
+    "uk": "Виберіть доступний діапазон Wi-Fi"
+  },
+  {
+    "key": "access.error.5",
+    "en": "Choose an available Wi-Fi adapter",
+    "ru": "Выберите доступный адаптер Wi-Fi",
+    "uk": "Виберіть доступний адаптер Wi-Fi"
+  },
+  {
+    "key": "access.error.6",
+    "en": "No unused subnet is available for direct access",
+    "ru": "Нет свободной подсети для прямого подключения",
+    "uk": "Немає вільної підмережі для прямого підключення"
+  },
+  {
+    "key": "access.error.7",
+    "en": "The selected Wi-Fi band is unavailable",
+    "ru": "Выбранный диапазон Wi-Fi недоступен",
+    "uk": "Вибраний діапазон Wi-Fi недоступний"
+  },
+  {
+    "key": "access.error.8",
+    "en": "USB device mode is unavailable on this board",
+    "ru": "Режим USB-устройства недоступен на этой плате",
+    "uk": "Режим USB-пристрою недоступний на цій платі"
+  },
+  {
+    "key": "access.error.9",
+    "en": "No suitable Wi-Fi adapter is available",
+    "ru": "Нет подходящего Wi-Fi адаптера",
+    "uk": "Немає відповідного Wi-Fi адаптера"
+  },
+  {
+    "key": "access.error.10",
+    "en": "A network operation is in progress; try again shortly",
+    "ru": "Выполняется сетевая операция; повторите попытку чуть позже",
+    "uk": "Виконується мережева операція; повторіть спробу трохи пізніше"
+  },
+  {
+    "key": "access.error.11",
+    "en": "Confirm or revert the pending network change first",
+    "ru": "Сначала подтвердите или отмените ожидающее изменение сети",
+    "uk": "Спочатку підтвердьте або скасуйте поточну зміну мережі"
   }
 ]

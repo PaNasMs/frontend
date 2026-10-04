@@ -78,6 +78,8 @@ export const operations: Record<string, Operation> = {
   'network.share.start': { label: tr('share.start'), fields: [] },
   'network.share.stop': { label: tr('share.stop'), fields: [] },
   'network.share.delete': { label: tr('share.delete'), fields: [] },
+  'network.access.save': { label: tr('access.title'), fields: [] },
+  'network.access.stop': { label: tr('access.stop'), fields: [] },
   'network.configure': { label: tr('network.configure'), fields: [] },
   'network.confirm': { label: tr('network.confirm'), fields: [] },
   'network.rollback': { label: tr('network.rollback'), fields: [] },

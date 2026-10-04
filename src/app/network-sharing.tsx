@@ -22,6 +22,7 @@ export type ShareInterface = {
   name: string
   kind: string
   system?: boolean
+  accessManaged?: boolean
   nmState?: number
   profile: string
   sharingGroup?: string
@@ -56,6 +57,7 @@ export function destinationReason(
   outputs: string[],
   groupId?: string,
 ) {
+  if (candidate.accessManaged || upstream.accessManaged) return 'busy'
   if (candidate.system || upstream.system) return 'system'
   if (candidate.sharingGroup && candidate.sharingGroup !== groupId) return 'busy'
   if (!candidate.sharing?.available) return 'unmanaged'
@@ -95,6 +97,7 @@ export function SharingLayout<T extends ShareInterface>({
     const canShare =
       sharing.ready &&
       !iface?.system &&
+      !iface?.accessManaged &&
       iface?.sharing?.available &&
       iface.nmState === 100 &&
       ['ethernet', 'wifi'].includes(iface.kind)

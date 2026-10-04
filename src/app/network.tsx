@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { DialogContent } from '../shared/ui'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -27,6 +28,7 @@ import { WifiControls, type WifiData, type WifiRadio } from './wifi'
 import { SharingLayout, type Sharing, type ShareGroup, type ShareInterface } from './network-sharing'
 import { notify } from './notifications'
 import { networkAppearance } from './network-state'
+import { NetworkAccessSettings } from './network-access'
 import { AccessPointDialog } from './network-access-point'
 import { connectionNetwork } from './network-details'
 
@@ -445,7 +447,9 @@ function NetworkPage() {
           {data.isPending && <p>{tr('network.loading')}</p>}
           {data.data && (
             <SharingLayout
-              interfaces={data.data.interfaces.filter((item) => showSystem || (!item.system && item.kind !== 'loopback'))}
+              interfaces={data.data.interfaces.filter(
+                (item) => showSystem || (!item.system && item.kind !== 'loopback'),
+              )}
               sharing={data.data.sharing ?? { groups: [], ready: false }}
               busy={busy || !!pending}
               error={error}
@@ -472,6 +476,11 @@ function NetworkPage() {
 
                       <div>
                         <strong>{item.name}</strong>
+                        {item.accessManaged && (
+                          <Link className="small" to="/settings/network">
+                            {tr(item.kind === 'wifi' ? 'access.fallback' : 'access.usb')}
+                          </Link>
+                        )}
                         <div className="small muted">
                           {tr(
                             'network.kind.' +
@@ -492,7 +501,7 @@ function NetworkPage() {
                           </Button>
                         )}
                         {actions}
-                        {!group && item.wifi && data.data?.wifi && (
+                        {!group && !item.accessManaged && item.wifi && data.data?.wifi && (
                           <WifiControls
                             busy={busy}
                             name={item.name}
@@ -904,6 +913,15 @@ registerModule({
   routes: ['interfaces', 'routes'],
   icon: mdiLan,
   component: NetworkPage,
+  settings: [
+    {
+      id: 'network',
+      title: tr('network.title'),
+      icon: mdiLan,
+      routes: ['fallback', 'usb'],
+      component: NetworkAccessSettings,
+    },
+  ],
   widgets: {
     network: {
       title: tr('network.title'),
