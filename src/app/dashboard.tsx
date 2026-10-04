@@ -222,7 +222,8 @@ export function Dashboard() {
         ref={grid}
         className="coordinate-grid"
         style={{
-          gridTemplateColumns: `repeat(${cols},minmax(0,112px))`,
+          gridTemplateColumns: `repeat(${cols},minmax(0,1fr))`,
+          maxWidth: cols * 176,
           gridTemplateRows: `repeat(${rows},100px)`,
         }}
       >
@@ -523,15 +524,28 @@ export function HistoryPage() {
   }
   return (
     <>
-      <h1>{tr('metrics_history_50331506')}</h1>
-      <label className="field">
-        {tr('period_b2822e2b')}
-        <select value={hours} onChange={(e) => setHours(Number(e.target.value))}>
-          <option value={1}>{tr('hour_9ce65a67')}</option>
-          <option value={24}>{tr('day_c91ce69e')}</option>
-          <option value={168}>{tr('week_9207563d')}</option>
-        </select>
-      </label>
+      <div className="page-heading">
+        <h1>{tr('metrics_history_50331506')}</h1>
+        <div className="segmented" role="radiogroup" aria-label={tr('period_b2822e2b')}>
+          {(
+            [
+              [1, 'hour_9ce65a67'],
+              [24, 'day_c91ce69e'],
+              [168, 'week_9207563d'],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              type="button"
+              role="radio"
+              key={value}
+              aria-checked={hours === value}
+              onClick={() => setHours(value)}
+            >
+              {tr(label)}
+            </button>
+          ))}
+        </div>
+      </div>
       {data.error && <Notice error>{data.error.message}</Notice>}
       {rows.length < 2 ? (
         <Notice>{tr('collecting_history_one_sample_per_minute_retained__7165e41c')}</Notice>

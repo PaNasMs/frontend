@@ -1435,39 +1435,6 @@ td {
   gap: 20px;
 }
 
-/* Page-level tabs retain their full-height strip; nested tabs use an underline. */
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page {
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs {
-  background: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  border-bottom: 1px solid var(--line);
-  gap: 20px;
-  margin-bottom: 20px;
-}
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs :is(button, a) {
-  min-height: 42px;
-  padding: 10px 2px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > .tabs :is(button, a)[data-state='active'] {
-  background: transparent;
-  box-shadow: inset 0 -2px var(--second);
-}
-:is(.settings-content, .tabbed-page, .structured-dialog) .tabbed-page > :is([role='tabpanel'], .tabbed-body) {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-}
 .settings-content {
   border: 0;
   border-left: 1px solid var(--line);

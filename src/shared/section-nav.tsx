@@ -49,7 +49,7 @@ function Label({ item }: { item: SectionItem }) {
 /**
  * The one navigation between the parts of a section: a rail from 1024px and a
  * switcher that opens a sheet below it. Tab items need a surrounding Tabs.Root;
- * items with `to` are route links and work anywhere.
+ * items with `to` are route links, and `tabs={false}` makes plain buttons.
  */
 export function SectionNav({
   label,
@@ -57,6 +57,7 @@ export function SectionNav({
   value,
   onChange,
   objects = false,
+  tabs = true,
   footer,
 }: {
   label: string
@@ -64,6 +65,8 @@ export function SectionNav({
   value: string
   onChange?: (id: string) => void
   objects?: boolean
+  /** False when the items are plain choices outside a Tabs.Root. */
+  tabs?: boolean
   footer?: ReactNode
 }) {
   const [open, setOpen] = useState(false)
@@ -97,7 +100,7 @@ export function SectionNav({
           ))}
           {footer}
         </nav>
-      ) : (
+      ) : tabs ? (
         <Tabs.List className={className} aria-label={label}>
           {groups((item) => (
             <Tabs.Trigger value={item.id}>
@@ -106,6 +109,19 @@ export function SectionNav({
           ))}
           {footer}
         </Tabs.List>
+      ) : (
+        <nav className={className} aria-label={label}>
+          {groups((item) => (
+            <button
+              type="button"
+              aria-current={item.id === value ? 'page' : undefined}
+              onClick={() => onChange?.(item.id)}
+            >
+              <Label item={item} />
+            </button>
+          ))}
+          {footer}
+        </nav>
       )}
       {current && (
         <Dialog.Root open={open} onOpenChange={setOpen}>

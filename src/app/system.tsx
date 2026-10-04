@@ -73,7 +73,9 @@ export function SystemPage() {
   })
   return (
     <>
-      <h1>{tr('system_3ac98f27')}</h1>
+      <div className="page-heading">
+        <h1>{tr('system_3ac98f27')}</h1>
+      </div>
       <Tabs.Root className="section-layout" orientation="vertical" activationMode="manual" value={tab} onValueChange={setTab}>
         <SectionNav
           label={tr('system_3ac98f27')}

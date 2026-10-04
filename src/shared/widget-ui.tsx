@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 import { request, type Metrics } from '../api/client'
 
 export type Tone = 'accent' | 'good' | 'warn' | 'crit' | 'muted'
-const toneVar = (tone: Tone) => `var(--${tone === 'accent' ? 'accent' : tone})`
+const toneVar = (tone: Tone) =>
+  `var(--${{ accent: 'second', good: 'ok', warn: 'warn', crit: 'danger', muted: 'mute' }[tone]})`
 
 /** Дуга 270° со срезом снизу: та же геометрия, что у кольцевых шкал CasaOS. */
 function arcPath(size: number, stroke: number, from: number, to: number) {
@@ -46,7 +47,7 @@ export function Ring({
         <path
           d={arcPath(size, stroke, 135, 405)}
           fill="none"
-          stroke="var(--panel-soft)"
+          stroke="var(--inset)"
           strokeWidth={stroke}
           strokeLinecap="round"
         />
@@ -170,10 +171,10 @@ export function MirrorSpark({
       aria-label={label}
     >
       {top.map((d, i) => (
-        <path key={i} d={d} fill="var(--muted)" opacity="0.2" />
+        <path key={i} d={d} fill="var(--mute)" opacity="0.2" />
       ))}
       {bottom.map((d, i) => (
-        <path key={i} d={d} fill="var(--accent)" opacity="0.2" />
+        <path key={i} d={d} fill="var(--second)" opacity="0.2" />
       ))}
       <line x1="0" y1={mid} x2={width} y2={mid} stroke="var(--line)" strokeWidth="1" />
     </svg>

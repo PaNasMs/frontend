@@ -337,7 +337,7 @@ function NetworkPage() {
   if (!admin) return <Notice>{tr('network.admin')}</Notice>
   return (
     <>
-      <div className="network-heading">
+      <div className="page-heading network-heading">
         <h1>{tr('network.title')}</h1>
         <Button
           title={tr('network.refresh')}
