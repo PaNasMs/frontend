@@ -48,7 +48,8 @@ try {
   await page.goto(base + '/tests/external-connections.html')
   await expect(page.getByRole('heading', { name: 'External connections', exact: true })).toBeVisible()
   for (const provider of ['Google', 'GitHub', 'Dropbox']) {
-    await page.getByRole('tab', { name: provider, exact: true }).click()
+    // Providers are disclosure groups on one page; opening one closes the previous.
+    await page.getByRole('button', { name: provider, exact: true }).click()
     const field = page.getByLabel('Client secret', { exact: true })
     await expect(field).toHaveCount(1)
     await expect(field).toHaveValue('')
@@ -59,7 +60,7 @@ try {
   await page.getByRole('button', { name: 'Link GitHub account', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Link GitHub account' })
   await expect(dialog).toBeVisible()
-  await dialog.getByLabel('Current Linux password').fill('test-only-password')
+  await dialog.getByLabel('Your current NAS password').fill('test-only-password')
   await dialog.getByRole('button', { name: 'Continue', exact: true }).click()
   await expect(dialog.getByText('Waiting for GitHub authorization…')).toBeVisible()
   await expect(dialog.getByRole('link', { name: 'Open GitHub authorization' })).toBeVisible()

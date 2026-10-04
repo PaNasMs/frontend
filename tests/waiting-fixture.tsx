@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { DialogContent } from '../src/shared/waiting'
 import { initializeLanguage } from '../src/i18n'
 import '../src/style.css'
+import '../src/home/components.css'
 function Fixture() {
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState('')

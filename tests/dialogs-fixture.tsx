@@ -8,6 +8,7 @@ import { NotificationToasts, notify } from '../src/app/notifications'
 import { initializeLanguage } from '../src/i18n'
 import '../src/style.css'
 import '../src/design-system.css'
+import '../src/home/components.css'
 function Fixture() {
   const [open, setOpen] = useState(false)
   const [nested, setNested] = useState(false)

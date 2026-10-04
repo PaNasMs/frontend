@@ -191,8 +191,23 @@ b {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
-.settings-content {
+.settings-content,
+.user-details,
+.container-detail-body {
   padding: var(--space-5);
+}
+.user-details {
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  -webkit-backdrop-filter: var(--glass);
+  backdrop-filter: var(--glass);
+}
+.profile-dropdown :is(a, button),
+.app-context-menu button,
+.file-context-menu :is(a, button),
+.activity-list,
+.launcher-entry {
+  font-size: 0.9375rem;
 }
 .settings-content .field {
   max-width: 640px;

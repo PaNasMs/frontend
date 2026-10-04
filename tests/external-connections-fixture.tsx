@@ -5,6 +5,7 @@ import { ExternalSettings, LinkedAccounts, ProviderConnect } from '../src/app/ex
 import { initializeLanguage } from '../src/i18n'
 import '../src/style.css'
 import '../src/design-system.css'
+import '../src/home/components.css'
 await initializeLanguage(new URLSearchParams(location.search).get('language') ?? 'en')
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>

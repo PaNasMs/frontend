@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { CoolingSettings, DiskTelemetrySettings, type CoolingState } from '../src/app/cooling'
 import { initializeLanguage } from '../src/i18n'
 import '../src/style.css'
+import '../src/home/components.css'
 const query = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } })
 function select(supported: boolean, available = true) {
   query.setQueryData<CoolingState>(['cooling'], {

@@ -210,7 +210,7 @@ export function ModuleManager() {
   const moduleName = (id: string) => catalog.data?.installed.find((item) => item.id === id)?.title ?? id
   return (
     <WaitingSurface busy={busy && !pending && !accepted} message={stage || undefined}>
-      <div className="page-heading">
+      <div className={moduleId ? 'page-heading detail' : 'page-heading'}>
         <div className="module-page-title">
           {moduleId && (
             <Link

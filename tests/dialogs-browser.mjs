@@ -61,7 +61,11 @@ try {
     await page.getByRole('button', { name: 'Open form', exact: true }).click()
     const d = await dialog.boundingBox(),
       x = await dialog.locator('.close-icon').boundingBox()
-    assert.ok(d.x >= 15 && d.x + d.width <= width - 15)
+    // Below 640px a dialog is a bottom sheet across the full width; wider screens keep 16px clearance.
+    if (width < 640) {
+      assert.ok(Math.abs(d.x) < 1 && Math.abs(d.width - width) < 1)
+      assert.ok(Math.abs(d.y + d.height - 650) < 1)
+    } else assert.ok(d.x >= 15 && d.x + d.width <= width - 15)
     assert.ok(x.x >= d.x && x.x + x.width <= d.x + d.width)
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
     await page.keyboard.press('Escape')

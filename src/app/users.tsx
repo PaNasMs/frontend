@@ -332,7 +332,7 @@ function AccountDetails({
   const user = data.data
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading detail">
         <div className="user-section-heading">
           <Button title={tr('accounts.back')} aria-label={tr('accounts.back')} onClick={onBack}>
             <Icon path={mdiArrowLeft} />
