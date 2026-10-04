@@ -1436,6 +1436,7 @@
   "share.defaultName": "Раздача через {{name}}",
   "share.step": "Шаг {{current}} из {{total}}",
   "share.where": "Куда раздавать подключение?",
+  "share.reason.system": "Системные интерфейсы нельзя использовать для раздачи подключения",
   "share.reason.busy": "Уже используется другой схемой",
   "share.reason.unmanaged": "Интерфейс недоступен для управления",
   "share.reason.noAP": "Режим точки доступа недоступен",

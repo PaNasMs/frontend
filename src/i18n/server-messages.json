@@ -1,5 +1,11 @@
 [
   {
+    "key": "share.reason.system",
+    "en": "System interfaces cannot be used for connection sharing",
+    "ru": "Системные интерфейсы нельзя использовать для раздачи подключения",
+    "uk": "Системні інтерфейси не можна використовувати для спільного доступу до з’єднання"
+  },
+  {
     "key": "server_b71e20152e8e",
     "en": "Command {{v0}} exited with code {{v1}}. Check the object's state and system journal.",
     "ru": "Команда {{v0}} завершилась с кодом {{v1}}. Проверьте состояние объекта и системный журнал."

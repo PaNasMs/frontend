@@ -445,7 +445,7 @@ function NetworkPage() {
           {data.isPending && <p>{tr('network.loading')}</p>}
           {data.data && (
             <SharingLayout
-              interfaces={data.data.interfaces.filter((item) => showSystem || item.kind !== 'loopback')}
+              interfaces={data.data.interfaces.filter((item) => showSystem || (!item.system && item.kind !== 'loopback'))}
               sharing={data.data.sharing ?? { groups: [], ready: false }}
               busy={busy || !!pending}
               error={error}

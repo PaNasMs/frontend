@@ -21,6 +21,7 @@ import { tr } from '../i18n'
 export type ShareInterface = {
   name: string
   kind: string
+  system?: boolean
   nmState?: number
   profile: string
   sharingGroup?: string
@@ -55,6 +56,7 @@ export function destinationReason(
   outputs: string[],
   groupId?: string,
 ) {
+  if (candidate.system || upstream.system) return 'system'
   if (candidate.sharingGroup && candidate.sharingGroup !== groupId) return 'busy'
   if (!candidate.sharing?.available) return 'unmanaged'
   if (candidate.kind === 'wifi' && (!candidate.sharing.ap || !candidate.sharing.bands.length)) return 'noAP'
@@ -92,6 +94,7 @@ export function SharingLayout<T extends ShareInterface>({
     const iface = interfaces.find((i) => i.name === name)
     const canShare =
       sharing.ready &&
+      !iface?.system &&
       iface?.sharing?.available &&
       iface.nmState === 100 &&
       ['ethernet', 'wifi'].includes(iface.kind)
@@ -242,7 +245,9 @@ function SharingWizard({
   const [step, setStep] = useState(0)
   const [showMode, setShowMode] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const destinations = interfaces.filter((i) => i.name !== source && ['ethernet', 'wifi'].includes(i.kind))
+  const destinations = interfaces.filter(
+    (i) => !i.system && i.name !== source && ['ethernet', 'wifi'].includes(i.kind),
+  )
   const aps = outputs.filter((name) => interfaces.find((i) => i.name === name)?.kind === 'wifi')
   const apName = aps[step - 1]
   const ap = wifi[apName] ?? { ssid: 'PaNasMs', band: 'bg', password: '' }

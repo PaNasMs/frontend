@@ -1436,6 +1436,7 @@
   "share.defaultName": "Sharing from {{name}}",
   "share.step": "Step {{current}} of {{total}}",
   "share.where": "Where should we share the connection?",
+  "share.reason.system": "System interfaces cannot be used for connection sharing",
   "share.reason.busy": "Used by another sharing group",
   "share.reason.unmanaged": "Interface is not managed",
   "share.reason.noAP": "Access point mode unavailable",

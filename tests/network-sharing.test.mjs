@@ -58,3 +58,21 @@ test('share action belongs only to connected eligible source cards without selec
   assert.equal((html.match(/<button/g) || []).length, 1)
   assert.doesNotMatch(html, /aria-pressed|network-card-select|network-selection-actions/)
 })
+
+test('system interfaces cannot be sharing sources or recipients', () => {
+  assert.equal(destinationReason({ ...ethernet, system: true }, source, [], []), 'system')
+  assert.equal(destinationReason(ethernet, { ...source, system: true }, [], []), 'system')
+})
+
+test('system interface cards never offer sharing even when managed and connected', async () => {
+  const { createElement } = await import('react')
+  const { renderToStaticMarkup } = await import('react-dom/server')
+  const { SharingLayout } = loadTypeScript(new URL('../src/app/network-sharing.tsx', import.meta.url))
+  const html = renderToStaticMarkup(createElement(SharingLayout, {
+    interfaces: [{ ...ethernet, name: 'veth1234', system: true, nmState: 100 }],
+    sharing: { ready: true, groups: [] },
+    renderCard: (item, group, actions) => createElement('article', null, actions),
+    busy: false, error: '', run: async () => true,
+  }))
+  assert.doesNotMatch(html, /<button/)
+})
