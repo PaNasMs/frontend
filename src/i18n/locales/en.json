@@ -2325,5 +2325,7 @@
   "server_f419b0e0b2c1": "Sharing will be removed: {{v0}}",
   "server_ad394570e4ff": "Choose whether to stop sharing folders on this array",
   "server_9f7de661fe61": "New file system: {{v0}}",
-  "server_2a2a4c51c77f": "Current file system: {{v0}}"
+  "server_2a2a4c51c77f": "Current file system: {{v0}}",
+  "server_0c1ed68e9759": "File system {{v0}} will use the whole device: {{v1}} MiB",
+  "server_8d6b82c2c3f5": "New file system size: {{v0}} of {{v1}} MiB"
 }
