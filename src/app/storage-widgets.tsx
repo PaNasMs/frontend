@@ -256,7 +256,20 @@ export function ArrayWidget() {
           const disk = disks.find((d) => flatten([d]).some((x) => x.kname === kname))
           const sample = telemetry.data?.status.disks.find((item) => item.device === disk?.path)
           const faulty = !!array.memberStates?.[kname]?.includes('faulty')
-          return { name: disk?.kname ?? kname, value: sample?.temperature ?? null, faulty }
+          // A cached reading is not a current one: say so instead of colouring it as live.
+          const asleep = sample?.state === 'sleeping'
+          const stale = !!sample?.stale || telemetry.isError || telemetry.data?.available === false
+          return {
+            name: disk?.kname ?? kname,
+            value: sample?.temperature ?? null,
+            faulty,
+            old: asleep || stale,
+            note: asleep
+              ? tr('disk_asleep_last_reading_c6138350')
+              : stale
+                ? tr('data_is_out_of_date_ea94b7bf')
+                : '',
+          }
         })
         return (
           <div className="widget-array" key={array.uuid || array.device}>
@@ -280,16 +293,21 @@ export function ArrayWidget() {
                   className={
                     member.faulty
                       ? 'tone-crit'
-                      : member.value == null
+                      : member.value == null || member.old
                         ? 'tone-muted'
                         : `tone-${diskTone(member.value)}`
                   }
+                  title={member.note || undefined}
                 >
                   <small>{member.name}</small>
                   <b>{member.faulty ? '!' : member.value == null ? '—' : `${Math.round(member.value)}°`}</b>
+                  {member.old && member.value != null && <span className="sr-only">{member.note}</span>}
                 </span>
               ))}
             </div>
+            {members.some((member) => member.old && member.value != null) && (
+              <small className="widget-array-note">{tr('last_readings_de14326f')}</small>
+            )}
           </div>
         )
       })}

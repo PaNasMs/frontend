@@ -532,8 +532,21 @@ tbody tr:hover {
   gap: var(--space-2);
   border: 0;
   border-radius: var(--radius-pill);
-  background: var(--panel);
+  background: none;
   box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+/* The backing is a pseudo-element: a filter on the bar itself would make it the
+   containing block of the fixed sheets that open from it. */
+.topbar::before,
+.phone-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--panel);
   -webkit-backdrop-filter: var(--glass);
   backdrop-filter: var(--glass);
 }
@@ -544,9 +557,9 @@ tbody tr:hover {
   gap: 2px;
   padding-right: 0;
 }
-.topbar nav a,
-.topbar button,
-.topbar summary,
+/* Only the triggers of the shell are round; buttons inside its menus keep their own shape. */
+:is(.application-bar, .topbar-right) > details > summary,
+.application-bar > nav > a,
 .topbar-action,
 .user-avatar,
 .desktop-home,
@@ -560,9 +573,9 @@ tbody tr:hover {
   color: var(--mute);
   background: transparent;
 }
-.topbar nav a:hover,
-.topbar button:hover,
-.topbar summary:hover,
+:is(.application-bar, .topbar-right) > details > summary:hover,
+.application-bar > nav > a:hover,
+.topbar-action:hover,
 .desktop-home:hover {
   background: var(--inset);
   color: var(--ink);
@@ -650,6 +663,12 @@ tbody tr:hover {
 .profile-dropdown :is(a, button),
 .app-context-menu button,
 .file-context-menu :is(a, button) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border: 0;
+  background: transparent;
+  text-align: left;
   min-height: var(--control);
   width: 100%;
   height: auto;
@@ -1194,6 +1213,21 @@ tbody tr:hover {
   font-size: 0.75rem;
   line-height: 1rem;
 }
+.widget-array-members .tone-muted b {
+  color: var(--mute);
+  font-weight: 500;
+}
+.widget-array-note {
+  color: var(--mute);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 .widget-array-members .tone-warn {
   background: var(--warn-bg);
   color: var(--warn);
@@ -1368,9 +1402,11 @@ tbody tr:hover {
   margin: var(--space-3) var(--space-4) 0;
   padding: 6px 6px 6px 20px;
   border-radius: var(--radius-pill);
-  background: var(--panel);
-  -webkit-backdrop-filter: var(--glass);
-  backdrop-filter: var(--glass);
+}
+/* An open sheet lifts its bar above the other one. */
+.phone-header:has(details[open]),
+.phone-dock:has(details[open], .app-launcher-menu) {
+  z-index: 45;
 }
 .phone-title {
   min-width: 0;
@@ -1382,15 +1418,29 @@ tbody tr:hover {
   font-weight: 700;
   letter-spacing: -0.01em;
 }
-.phone-header :is(summary, button) {
-  width: var(--control);
-  height: var(--control);
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
+.phone-header .topbar-right > details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: auto;
+  min-width: var(--control);
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
   background: var(--inset);
   color: var(--ink);
+}
+/* A module's own popover is a sheet on a phone like the shell's. */
+.phone-header details > :is(.profile-dropdown, .activity-dropdown, .removable-dropdown) {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: none;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-dialog);
 }
 .phone-dock {
   position: fixed;
@@ -1408,7 +1458,8 @@ tbody tr:hover {
   pointer-events: auto;
 }
 .topbar.phone-taskbar {
-  position: static;
+  position: relative;
+  z-index: 0;
   margin: 0;
   justify-content: space-between;
 }
@@ -1421,7 +1472,9 @@ tbody tr:hover {
 .phone-taskbar .application-bar nav {
   display: contents;
 }
-.phone-taskbar :is(nav a, button, summary, .desktop-home, .app-launcher) {
+.phone-taskbar > details > summary,
+.phone-taskbar .application-bar > :is(.app-launcher, .desktop-home),
+.phone-taskbar .application-bar > nav > a {
   width: 52px;
   min-width: 52px;
   height: 48px;
@@ -1521,6 +1574,13 @@ tbody tr:hover {
   .app-launcher-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+  .launcher-entry a {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-3);
+    padding: 0 14px;
+    text-align: left;
+  }
   /* A table becomes a list of cards. */
   .table-wrap:not(.keep-table) table,
   .table-wrap:not(.keep-table) tbody,
@@ -1544,6 +1604,17 @@ tbody tr:hover {
   }
   .table-wrap:not(.keep-table) td:first-child {
     font-weight: 700;
+  }
+  /* Each stacked cell names its column; the text comes from the header row (home/table-labels.ts). */
+  .table-wrap:not(.keep-table) td[data-label]:not(:first-child) {
+    display: grid;
+    grid-template-columns: minmax(0, 40%) minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+  .table-wrap:not(.keep-table) td[data-label]:not(:first-child)::before {
+    content: attr(data-label);
+    color: var(--mute);
+    font-weight: 500;
   }
 }
 @media (prefers-reduced-motion: reduce) {

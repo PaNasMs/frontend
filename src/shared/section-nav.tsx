@@ -151,11 +151,10 @@ export function SectionNav({
               dirty={false}
               header={<Dialog.Title>{label}</Dialog.Title>}
             >
-              <div className={className} role="list">
+              <div className={className}>
                 {groups((item) => (
                   <button
                     type="button"
-                    role="listitem"
                     aria-current={item.id === current.id ? 'page' : undefined}
                     onClick={() => choose(item)}
                   >

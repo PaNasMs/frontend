@@ -1,4 +1,5 @@
 import { applyTheme } from './home/theme'
+import { watchTableLabels } from './home/table-labels'
 import { PageError } from './shared/page-error'
 import { TooltipLayer } from './shared/tooltip'
 import { useExclusivePopover, DirtyFormsProvider } from './shared/interaction'
@@ -133,6 +134,7 @@ function Shell() {
   useEffect(() => {
     applyTheme(prefs.data?.theme)
   }, [prefs.data])
+  useEffect(() => watchTableLabels(document.body), [])
   const logout = useMutation({
     mutationFn: () => request('logout', 'POST'),
     onSuccess: () => {
@@ -167,6 +169,13 @@ function Shell() {
             {sectionTitle}
           </span>
           <div className="topbar-right">
+            {/* Running modules keep their indicator and actions on a phone too. */}
+            {modules()
+              .filter((module) => module.backgroundIndicator)
+              .map((module) => {
+                const Indicator = module.backgroundIndicator!
+                return <Indicator key={module.id} />
+              })}
             {session.data?.role === 'admin' && <RemovableMenu />}
             <ActivityMenus only="notifications" />
             <details className="profile-menu" ref={menu}>
