@@ -3,7 +3,7 @@ import { serverText } from '../i18n/server'
 import { tr } from '../i18n/index'
 import { useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { mdiImagePlus, mdiRestore } from '@mdi/js'
+import { mdiImagePlusOutline, mdiRestore } from '@mdi/js'
 import { request } from '../api/client'
 import { Button, Icon, Notice } from '../shared/ui'
 type Wallpaper = {
@@ -58,7 +58,7 @@ export function WallpaperSettings() {
           disabled={save.isPending}
           onClick={() => input.current?.click()}
         >
-          <Icon path={mdiImagePlus} />
+          <Icon path={mdiImagePlusOutline} />
         </Button>
         <Button
           title={tr('restore_default_background_77567c86')}

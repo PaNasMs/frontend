@@ -1,20 +1,7 @@
 import { DialogContent } from '../shared/ui'
 import { useState, type ReactNode } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import {
-  mdiShareVariant,
-  mdiPencilOutline,
-  mdiPlay,
-  mdiStop,
-  mdiDeleteOutline,
-  mdiClose,
-  mdiArrowRight,
-  mdiCheck,
-  mdiLan,
-  mdiWifi,
-  mdiEyeOutline,
-  mdiKeyVariant,
-} from '@mdi/js'
+import { mdiShareVariantOutline, mdiPencilOutline, mdiPlay, mdiStop, mdiDeleteOutline, mdiClose, mdiArrowRight, mdiCheck, mdiLan, mdiWifi, mdiEyeOutline, mdiKeyVariant } from '@mdi/js'
 import { Button, Icon, Notice } from '../shared/ui'
 import { tr } from '../i18n'
 
@@ -135,7 +122,7 @@ export function SharingLayout<T extends ShareInterface>({
         disabled={busy}
         onClick={() => setWizard({ source: name })}
       >
-        <Icon path={mdiShareVariant} size={20} />
+        <Icon path={mdiShareVariantOutline} size={20} />
       </Button>
     ) : null
     return (

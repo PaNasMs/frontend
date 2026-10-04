@@ -3,7 +3,7 @@ import { useDraft } from '../shared/interaction'
 import { useState } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery } from '@tanstack/react-query'
-import { mdiAccountPlusOutline, mdiAccountGroupOutline, mdiArrowLeft, mdiCheck, mdiDeleteOutline, mdiPencilOutline, mdiKeyPlus, mdiKeyChange, mdiFolderMoveOutline, mdiRefresh, mdiShieldAccountOutline, mdiToggleSwitch, mdiToggleSwitchOffOutline, mdiAccountOutline, mdiKeyOutline, mdiMonitor, mdiHistory } from '@mdi/js'
+import { mdiAccountPlusOutline, mdiAccountGroupOutline, mdiArrowLeft, mdiCheck, mdiDeleteOutline, mdiPencilOutline, mdiKeyPlus, mdiKeyChange, mdiFolderMoveOutline, mdiRefresh, mdiShieldAccountOutline, mdiToggleSwitchOutline, mdiToggleSwitchOffOutline, mdiAccountOutline, mdiKeyOutline, mdiMonitor, mdiHistory } from '@mdi/js'
 import { request, type Accounts } from '../api/client'
 import { Button, Icon, Notice, SectionNav } from '../shared/ui'
 import { tr } from '../i18n'
@@ -261,7 +261,7 @@ function Security({ account, inventory }: { account: Account; inventory: Invento
         <OperationButton
           actions={['share.account']}
           label={tr(account.smb?.enabled ? 'shares.disable' : 'shares.enable')}
-          icon={account.smb?.enabled ? mdiToggleSwitch : mdiToggleSwitchOffOutline}
+          icon={account.smb?.enabled ? mdiToggleSwitchOutline : mdiToggleSwitchOffOutline}
           initial={{ target: account.username, enabled: !account.smb?.enabled }}
           fields={[]}
           autoReview

@@ -3,7 +3,7 @@ import { useRouteTab } from './navigation'
 import { tr, locale } from '../i18n/index'
 import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
-import { mdiPause, mdiTimerOutline, mdiClipboardSearchOutline, mdiFan, mdiPlay, mdiLinux, mdiUsb, mdiUsbFlashDrive, mdiMicroSd, mdiChip, mdiCheckCircleOutline, mdiLockOutline, mdiPulse, mdiWeatherNight, mdiSync, mdiHelpCircleOutline, mdiHarddiskRemove, mdiAlertOutline, mdiChartPie } from '@mdi/js'
+import { mdiPause, mdiTimerOutline, mdiClipboardSearchOutline, mdiFan, mdiPlay, mdiLinux, mdiUsb, mdiUsbFlashDriveOutline, mdiMicroSd, mdiChip, mdiCheckCircleOutline, mdiLockOutline, mdiPulse, mdiWeatherNight, mdiSync, mdiHelpCircleOutline, mdiHarddiskRemove, mdiAlertOutline, mdiChartPieOutline } from '@mdi/js'
 import { EjectButton } from './removable'
 import { registerModule, registerWidgetSource } from './module-registry'
 import { HddCoolingWidget, DiskLoadWidget, SystemDiskWidget, useDiskTemperatureWidgets, ArrayWidget } from './storage-widgets'
@@ -14,15 +14,7 @@ import { StorageVolumes, type StorageOptions, type MediaInfo } from './storage-v
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  mdiHarddisk,
-  mdiRefresh,
-  mdiSwapHorizontal,
-  mdiShieldCheckOutline,
-  mdiStopCircleOutline,
-  mdiTrashCanOutline,
-  mdiCheckCircle,
-} from '@mdi/js'
+import { mdiHarddisk, mdiRefresh, mdiSwapHorizontal, mdiShieldCheckOutline, mdiStopCircleOutline, mdiTrashCanOutline, mdiCheckCircle } from '@mdi/js'
 import { request, type Storage, type Device, type Mount, type Preferences, type Metrics } from '../api/client'
 import type { CoolingState } from './cooling'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
@@ -128,7 +120,7 @@ function Disk({
       : media?.kind === 'emmc'
         ? mdiChip
         : media?.kind === 'usb-flash'
-          ? mdiUsbFlashDrive
+          ? mdiUsbFlashDriveOutline
           : media?.kind === 'usb'
             ? mdiUsb
             : mdiHarddisk
@@ -758,7 +750,7 @@ export function StoragePage() {
           }}
           items={[
             { id: 'disks', title: tr('disks_and_arrays_a0066b23'), icon: mdiHarddisk },
-            { id: 'mounts', title: tr('partitions_and_mounts_c5a470d6'), icon: mdiChartPie },
+            { id: 'mounts', title: tr('partitions_and_mounts_c5a470d6'), icon: mdiChartPieOutline },
           ]}
         />
         {data.isPending && <Notice>{tr('discovering_storage_2689e168')}</Notice>}

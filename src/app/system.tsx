@@ -4,7 +4,7 @@ import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { tr, locale } from '../i18n/index'
 import { registerModule } from './module-registry'
-import { mdiServer, mdiCogOutline, mdiBellOutline, mdiLinkVariant, mdiChip, mdiClockOutline, mdiMemory, mdiFan, mdiPower, mdiDotsHorizontal, mdiTextBoxSearchOutline, mdiRefresh, mdiDownload, mdiTextBoxOutline, mdiUpdate } from '@mdi/js'
+import { mdiServerOutline, mdiCogOutline, mdiBellOutline, mdiLinkVariant, mdiChip, mdiClockOutline, mdiMemory, mdiFan, mdiPower, mdiDotsHorizontal, mdiTextBoxSearchOutline, mdiRefresh, mdiDownload, mdiTextBoxOutline, mdiUpdate } from '@mdi/js'
 import { SystemUpdates } from './system-updates'
 import { WebSettings } from './web-settings'
 import { CoolingSettings } from './cooling'
@@ -280,7 +280,7 @@ registerModule({
   title: tr('system_3ac98f27'),
   path: '/system',
   routes: ['services', 'journal', 'updates'],
-  icon: mdiServer,
+  icon: mdiServerOutline,
   component: SystemPage,
   settings: [
     { id: 'notifications', title: tr('delivery.title'), icon: mdiBellOutline, component: NotificationSettings },

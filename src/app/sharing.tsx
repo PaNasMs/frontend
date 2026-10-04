@@ -4,18 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  mdiShareVariant,
-  mdiPlus,
-  mdiPencil,
-  mdiDeleteOutline,
-  mdiShieldKeyOutline,
-  mdiRefresh,
-  mdiCheck,
-  mdiClose,
-  mdiFolderNetworkOutline,
-  mdiLanConnect,
-} from '@mdi/js'
+import { mdiShareVariantOutline, mdiPlus, mdiPencilOutline, mdiDeleteOutline, mdiShieldKeyOutline, mdiRefresh, mdiCheck, mdiClose, mdiFolderNetworkOutline, mdiLanConnect } from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
 import { managed, OperationButton, type Job } from './operations'
@@ -163,7 +152,7 @@ export function SharingPage() {
                   <article className="surface sharing-card" key={s.name}>
                     <div className="user-section-heading">
                       <h2>
-                        <Icon path={mdiShareVariant} /> {s.name}
+                        <Icon path={mdiShareVariantOutline} /> {s.name}
                       </h2>
                       <div className="row">
                         <Button
@@ -171,7 +160,7 @@ export function SharingPage() {
                           aria-label={tr('shares.edit')}
                           onClick={() => setEditing(s)}
                         >
-                          <Icon path={mdiPencil} />
+                          <Icon path={mdiPencilOutline} />
                         </Button>
                         <OperationButton
                           label={tr('shares.permissions')}
@@ -469,6 +458,6 @@ registerModule({
   id: 'sharing',
   title: tr('shared_folders_5800977d'),
   path: '/sharing',
-  icon: mdiShareVariant,
+  icon: mdiShareVariantOutline,
   component: SharingPage,
 })

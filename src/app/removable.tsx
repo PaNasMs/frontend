@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
-import { mdiLink, mdiEject, mdiUsbFlashDrive, mdiMicroSd, mdiHarddisk } from '@mdi/js'
+import { mdiLink, mdiEjectOutline, mdiUsbFlashDriveOutline, mdiMicroSd, mdiHarddisk } from '@mdi/js'
 import * as Dialog from '@radix-ui/react-dialog'
 import { managed, type Job } from './operations'
 import { Button, Icon, bytes } from '../shared/ui'
@@ -383,7 +383,7 @@ export function EjectButton({
           title={tr('eject_0751a5d4', { v0: label })}
           disabled={disabled}
         >
-          <Icon path={mdiEject} />
+          <Icon path={mdiEjectOutline} />
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -496,7 +496,7 @@ export function RemovableMenu() {
           title={tr('removable_devices_a99b2360')}
           aria-label={tr('removable_devices_a99b2360')}
         >
-          <Icon path={mdiEject} />
+          <Icon path={mdiEjectOutline} />
         </summary>
         <div className="removable-dropdown">
           {mount.isPending && !access.prompting && <WaitingOverlay message={tr('mount_volume_9aa3b71f')} />}
@@ -518,7 +518,7 @@ export function RemovableMenu() {
                   <Icon
                     path={
                       d.media?.kind === 'usb-flash'
-                        ? mdiUsbFlashDrive
+                        ? mdiUsbFlashDriveOutline
                         : d.media?.kind === 'sd'
                           ? mdiMicroSd
                           : mdiHarddisk

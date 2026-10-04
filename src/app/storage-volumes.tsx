@@ -1,29 +1,7 @@
 import { LuksActions } from './storage-luks'
 import { SnapshotActions } from './storage-snapshots'
 import { tr } from '../i18n/index'
-import {
-  mdiPlus,
-  mdiFormatPaint,
-  mdiLock,
-  mdiLockOpen,
-  mdiArrowExpand,
-  mdiDeleteOutline,
-  mdiEraser,
-  mdiLink,
-  mdiLinkOff,
-  mdiCogOutline,
-  mdiClose,
-  mdiChevronRight,
-  mdiHarddisk,
-  mdiNas,
-  mdiMicroSd,
-  mdiUsbFlashDrive,
-  mdiFolderNetworkOutline,
-  mdiCheckCircleOutline,
-  mdiMinusCircleOutline,
-  mdiShieldLockOutline,
-  mdiSelectAll,
-} from '@mdi/js'
+import { mdiPlus, mdiFormatPaint, mdiLockOutline, mdiLockOpenOutline, mdiArrowExpand, mdiDeleteOutline, mdiEraser, mdiLink, mdiLinkOff, mdiCogOutline, mdiClose, mdiChevronRight, mdiHarddisk, mdiNas, mdiMicroSd, mdiUsbFlashDriveOutline, mdiFolderNetworkOutline, mdiCheckCircleOutline, mdiMinusCircleOutline, mdiShieldLockOutline, mdiSelectAll } from '@mdi/js'
 import { useState, type ReactNode } from 'react'
 import { MountVolumeButton } from './removable'
 import { OperationButton } from './operations'
@@ -144,9 +122,9 @@ export function StorageVolumes({
   const actionIcons: Record<string, string> = {
     'partition.create': mdiPlus,
     'filesystem.format': mdiFormatPaint,
-    'luks.create': mdiLock,
-    'luks.open': mdiLockOpen,
-    'luks.close': mdiLock,
+    'luks.create': mdiLockOutline,
+    'luks.open': mdiLockOpenOutline,
+    'luks.close': mdiLockOutline,
     'filesystem.resize': mdiArrowExpand,
     'partition.resize': mdiArrowExpand,
     'partition.delete': mdiDeleteOutline,
@@ -248,7 +226,7 @@ export function StorageVolumes({
           aria-pressed={selection?.root === owner.path && selection.path === device.path}
           onClick={() => choose({ root: owner.path, path: device.path })}
         >
-          <Icon path={device.fstype === 'crypto_LUKS' ? mdiLock : mdiHarddisk} />
+          <Icon path={device.fstype === 'crypto_LUKS' ? mdiLockOutline : mdiHarddisk} />
           <span className="hierarchy-name">
             <strong>{device.label || arrayNames[device.path] || device.name}</strong>
             <small>
@@ -498,7 +476,7 @@ export function StorageVolumes({
           const deviceIcon = d.type.startsWith('raid')
             ? mdiNas
             : d.tran === 'usb'
-              ? mdiUsbFlashDrive
+              ? mdiUsbFlashDriveOutline
               : d.name.startsWith('mmc')
                 ? mdiMicroSd
                 : mdiHarddisk

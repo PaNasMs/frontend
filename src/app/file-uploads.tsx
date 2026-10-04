@@ -67,6 +67,8 @@ export function useFileUploads() {
   return (
     useQuery<UploadTask[]>({
       queryKey: uploadKey,
+      // The list lives only in the cache; this keeps a global refetch from reporting a missing queryFn.
+      queryFn: () => q.getQueryData<UploadTask[]>(uploadKey) ?? [],
       enabled: false,
       gcTime: Infinity,
       initialData: () => q.getQueryData<UploadTask[]>(uploadKey) ?? [],

@@ -51,20 +51,11 @@ small {
 .workspace > *,
 .waiting-surface,
 .settings-content,
-.profile-grid > *,
 .field {
   min-width: 0;
 }
 .workspace.has-wallpaper {
   min-height: calc(100vh - 104px);
-}
-.has-wallpaper .desktop-wallpaper::after {
-  background: color-mix(in srgb, var(--wall) 82%, transparent);
-}
-.has-wallpaper h1,
-.has-wallpaper .page-heading {
-  color: var(--ink);
-  text-shadow: none;
 }
 .page-heading {
   align-items: center;
@@ -184,7 +175,7 @@ dd,
   background: var(--panel);
   backdrop-filter: none;
   border-bottom: 1px solid var(--line);
-  box-shadow: 0 1px 8px #00000008;
+  box-shadow: none;
   z-index: 30;
 }
 .topbar-right {
@@ -296,18 +287,6 @@ dd,
 .settings-content .field {
   max-width: 640px;
 }
-.profile-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 760px);
-  gap: 20px;
-  align-items: start;
-}
-.profile-grid .surface {
-  padding: 24px;
-}
-.profile-grid .surface > h2:not(:first-child) {
-  margin-top: 24px;
-}
 .user-form-grid {
   gap: 16px;
   max-width: 760px;
@@ -332,7 +311,7 @@ dd,
   font-size: 0.8125rem;
 }
 .dialog-overlay {
-  background: #07101bb3;
+  background: var(--scrim);
   backdrop-filter: blur(3px);
   z-index: 50;
 }
@@ -478,8 +457,7 @@ dd,
 .raid .disk-card.compact .small {
   font-size: 0.8125rem;
 }
-.disk-card.selected,
-.volume-row.selected {
+.disk-card.selected {
   border-color: var(--focus);
   background: var(--selection);
 }
@@ -681,11 +659,9 @@ td {
     flex-shrink: 0;
     white-space: nowrap;
   }
-  .settings-content,
-  .profile-grid .surface {
+  .settings-content {
     padding: 16px;
   }
-  .profile-grid,
   .user-form-grid,
   .network-ip-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -882,26 +858,6 @@ td {
 .dialog-content.user-confirm {
   width: min(420px, calc(100vw - 32px));
 }
-.has-wallpaper .desktop-heading h1 {
-  color: var(--ink);
-  text-shadow: none;
-  font-size: 1.75rem;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  padding: 8px 16px;
-}
-.has-wallpaper .shortcut-link > span:last-child {
-  color: var(--ink);
-  text-shadow: none;
-  background: var(--panel);
-  border-radius: var(--radius-sm);
-  padding: 2px 6px;
-  font-size: 0.8125rem;
-}
-.has-wallpaper .desktop-widget {
-  background: var(--panel);
-}
 .desktop-widget .tile-title {
   font-size: 0.8125rem;
 }
@@ -943,51 +899,6 @@ td {
 }
 
 /* Tabs and their content form one continuous surface. */
-.tabbed-page {
-  min-width: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--panel);
-}
-.tabbed-page > .tabs {
-  background: var(--inset);
-  padding: 0;
-  gap: 0;
-  margin: 0;
-  border: 0;
-  border-radius: calc(var(--radius-lg) - 1px) calc(var(--radius-lg) - 1px) 0 0;
-  box-shadow: inset 0 -1px var(--line);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-}
-.tabbed-page > .tabs :is(button, a) {
-  flex-shrink: 0;
-  min-height: 48px;
-  border: 0;
-  border-right: 1px solid var(--line);
-  border-radius: 0;
-  padding: 14px 20px;
-  background: transparent;
-  color: var(--mute);
-}
-.tabbed-page > .tabs :is(button, a)[data-state='active'] {
-  background: var(--panel);
-  color: var(--second);
-  box-shadow: inset 0 3px var(--second);
-}
-.tabbed-page > [role='tabpanel'],
-.tabbed-page > .tabbed-body {
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  background: var(--panel);
-  padding: 24px;
-  margin: 0;
-  min-width: 0;
-  max-width: none;
-}
-.tabbed-page > .user-details > [role='tabpanel'] > section > h2:first-child {
-  margin-top: 0;
-}
 .tabbed-body > .user-filters {
   margin: 0 0 20px;
 }
@@ -1410,10 +1321,6 @@ td {
   padding-top: 4px;
 }
 @media (max-width: 600px) {
-  .tabbed-page > [role='tabpanel'],
-  .tabbed-page > .tabbed-body {
-    padding: 16px;
-  }
   .folder-picker-footer {
     align-items: stretch;
     flex-direction: column;
@@ -1943,9 +1850,7 @@ td {
 .structured-dialog .modal-body { padding: 24px; scrollbar-gutter: stable; overflow-wrap: anywhere; }
 .structured-dialog .modal-footer { background: var(--panel); }
 .structured-dialog .modal-footer .actions, .structured-dialog .modal-footer .dialog-actions { flex-wrap: wrap; }
-.structured-dialog .modal-body :is(.share-wizard-body, .cloud-sync-form) { overflow: visible; max-height: none; }
 .structured-dialog .modal-body .table-wrap { max-width: 100%; overflow-x: auto; }
-.structured-dialog .modal-body .tabbed-page { box-shadow: none; border: 0; }
 .close-icon, .notification-toast .close-icon {
   display: inline-flex;
   align-items: center;

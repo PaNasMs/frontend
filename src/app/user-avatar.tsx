@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { mdiImagePlus, mdiDeleteOutline } from '@mdi/js'
+import { mdiImagePlusOutline, mdiDeleteOutline } from '@mdi/js'
 import { request } from '../api/client'
 import { tr } from '../i18n'
 import { serverText } from '../i18n/server'
@@ -51,7 +51,7 @@ export function AvatarSettings() {
             aria-label={tr('accounts.uploadAvatar')}
             onClick={() => input.current?.click()}
           >
-            <Icon path={mdiImagePlus} />
+            <Icon path={mdiImagePlusOutline} />
           </Button>
           <Button
             title={tr('accounts.removeAvatar')}

@@ -11,26 +11,36 @@ body {
   color: var(--ink);
   background-color: var(--wall);
   background-attachment: fixed;
+  /* Dark: a quiet night room, one warm lamp in the corner. */
   background-image:
-    radial-gradient(70% 60% at 92% 0%, rgba(246, 196, 83, 0.12) 0%, rgba(246, 196, 83, 0) 60%),
-    linear-gradient(165deg, #141922 0%, #1a212c 55%, #1f1d22 100%);
+    radial-gradient(60% 50% at 96% -4%, rgba(246, 196, 83, 0.14) 0%, rgba(246, 196, 83, 0) 62%),
+    radial-gradient(70% 60% at -6% 104%, rgba(88, 132, 214, 0.12) 0%, rgba(88, 132, 214, 0) 60%),
+    linear-gradient(165deg, #151a23 0%, #1a212c 52%, #1d1c22 100%);
 }
+/* Light: morning light on a pale wall. */
 :root[data-theme='light'] body {
   background-image:
-    radial-gradient(70% 60% at 92% 0%, rgba(242, 182, 50, 0.22) 0%, rgba(242, 182, 50, 0) 60%),
-    linear-gradient(165deg, #e8eef7 0%, #dce6f3 55%, #e6e3ea 100%);
+    radial-gradient(60% 50% at 96% -4%, rgba(242, 182, 50, 0.26) 0%, rgba(242, 182, 50, 0) 62%),
+    radial-gradient(70% 60% at -6% 104%, rgba(120, 156, 226, 0.2) 0%, rgba(120, 156, 226, 0) 60%),
+    linear-gradient(165deg, #eaf0f8 0%, #dde6f2 52%, #e8e4ea 100%);
 }
+/* Dark translucent: deeper colour so the panels have something to let through. */
 :root[data-surface='glass'] body {
   background-image:
-    radial-gradient(80% 70% at 88% 4%, #8a621a 0%, rgba(138, 98, 26, 0) 58%),
-    radial-gradient(85% 80% at 4% 96%, #27508f 0%, rgba(39, 80, 143, 0) 60%),
-    linear-gradient(165deg, #141922 0%, #0f131a 100%);
+    radial-gradient(55% 55% at 92% 2%, #a9761d 0%, rgba(169, 118, 29, 0) 62%),
+    radial-gradient(60% 60% at 2% 98%, #2a57a3 0%, rgba(42, 87, 163, 0) 62%),
+    radial-gradient(45% 45% at 78% 88%, rgba(31, 121, 113, 0.75) 0%, rgba(31, 121, 113, 0) 65%),
+    radial-gradient(40% 40% at 18% 10%, rgba(120, 74, 150, 0.45) 0%, rgba(120, 74, 150, 0) 65%),
+    linear-gradient(165deg, #151a23 0%, #0f131a 100%);
 }
+/* Light translucent: the same room in daylight. */
 :root[data-theme='light'][data-surface='glass'] body {
   background-image:
-    radial-gradient(80% 70% at 88% 4%, #ffd27a 0%, rgba(255, 210, 122, 0) 58%),
-    radial-gradient(85% 80% at 4% 96%, #86b0f0 0%, rgba(134, 176, 240, 0) 60%),
-    linear-gradient(165deg, #eaf0f8 0%, #d5e0ef 100%);
+    radial-gradient(55% 55% at 92% 2%, #ffd27a 0%, rgba(255, 210, 122, 0) 62%),
+    radial-gradient(60% 60% at 2% 98%, #8fb4f2 0%, rgba(143, 180, 242, 0) 62%),
+    radial-gradient(45% 45% at 78% 88%, rgba(150, 224, 205, 0.85) 0%, rgba(150, 224, 205, 0) 65%),
+    radial-gradient(40% 40% at 18% 10%, rgba(247, 190, 172, 0.7) 0%, rgba(247, 190, 172, 0) 65%),
+    linear-gradient(165deg, #edf2f9 0%, #d8e2f0 100%);
 }
 .desktop-wallpaper {
   position: fixed;
@@ -164,7 +174,6 @@ b {
 .hierarchy-group,
 .sharing-card,
 .user-card,
-.volume-card,
 .key-card,
 .empty-state {
   border: 0;
@@ -178,19 +187,10 @@ b {
 .network-card,
 .module-card,
 .sharing-card,
-.user-card,
-.volume-card {
+.user-card {
   padding: var(--space-5);
 }
 /* A surface inside another surface is a recessed tile, not a second panel. */
-:is(.surface, .settings-content, .section-content, .modal-body, .activity-list, .raid)
-  :is(.surface, .key-card, .user-card, .volume-card, .network-recipient) {
-  background: var(--inset);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
 .settings-content,
 .user-details,
 .container-detail-body {
@@ -237,8 +237,7 @@ b {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
-.disk-card.selected,
-.volume-row.selected {
+.disk-card.selected {
   border-color: var(--second);
   background: var(--selection);
   box-shadow: none;
@@ -450,7 +449,6 @@ input[type='radio']:disabled {
   color: var(--ink);
 }
 .badge,
-.module-state,
 .module-status {
   display: inline-flex;
   align-items: center;
@@ -1255,9 +1253,34 @@ tbody tr:hover {
   padding: 0;
   border-radius: 50%;
 }
+/* The places toggle exists for phones only: the tree stays folded until asked for. */
+.file-places-switch {
+  display: none;
+  margin-bottom: var(--space-3);
+}
 @media (max-width: 639px) {
+  .file-places-switch {
+    display: flex;
+  }
   .file-manager {
-    height: calc(100dvh - 236px);
+    grid-template-columns: minmax(0, 1fr);
+    height: calc(100dvh - 300px);
+  }
+  .file-manager[data-places='closed'] .file-sidebar {
+    display: none;
+  }
+  .file-manager[data-places='open'] .file-sidebar {
+    display: block;
+    max-height: none;
+    overflow: auto;
+    border: 0;
+    padding: var(--space-3);
+  }
+  .file-manager[data-places='open'] .file-main {
+    display: none;
+  }
+  .file-places-switch[aria-expanded='true'] .section-chevron {
+    transform: rotate(180deg);
   }
 }
 
@@ -1472,7 +1495,6 @@ tbody tr:hover {
   .module-card,
   .sharing-card,
   .user-card,
-  .volume-card,
   .settings-content,
   .raid {
     padding: var(--space-4);
@@ -1548,7 +1570,14 @@ tbody tr:hover {
 
 /* On a phone the actions of a card carry their words. */
 @media (max-width: 639px) {
-  :is(.module-card-actions, .network-card-actions, .containers-actions, .sharing-card .actions, .raid-actions)
+  :is(
+      .module-card-actions,
+      .network-card-actions,
+      .containers-actions,
+      .sharing-card .actions,
+      .raid-actions,
+      .disk-card-actions
+    )
     .button.icon-only[data-tooltip] {
     width: auto;
     min-width: var(--control);
@@ -1556,7 +1585,14 @@ tbody tr:hover {
     padding: 0 16px 0 12px;
     gap: var(--space-2);
   }
-  :is(.module-card-actions, .network-card-actions, .containers-actions, .sharing-card .actions, .raid-actions)
+  :is(
+      .module-card-actions,
+      .network-card-actions,
+      .containers-actions,
+      .sharing-card .actions,
+      .raid-actions,
+      .disk-card-actions
+    )
     .button.icon-only[data-tooltip]::after {
     content: attr(data-tooltip);
     font-size: 0.875rem;
@@ -1566,7 +1602,8 @@ tbody tr:hover {
     .network-card-actions,
     .containers-actions,
     .sharing-card .actions,
-    .raid-actions
+    .raid-actions,
+    .disk-card-actions
   ) {
     display: flex;
     flex-wrap: wrap;
@@ -1578,6 +1615,7 @@ tbody tr:hover {
     position: static;
   }
   .network-card header,
+  .disk-top,
   .module-card-footer,
   .raid-heading,
   .raid-heading-right,
@@ -1588,5 +1626,13 @@ tbody tr:hover {
   .page-heading,
   .desktop-heading {
     border-radius: var(--radius-lg);
+  }
+  .raid-heading > *,
+  .raid-heading-right > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .raid-heading-right {
+    width: 100%;
   }
 }
