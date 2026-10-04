@@ -4,7 +4,23 @@ import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { tr, locale } from '../i18n/index'
 import { registerModule } from './module-registry'
-import { mdiServerOutline, mdiCogOutline, mdiBellOutline, mdiLinkVariant, mdiChip, mdiClockOutline, mdiMemory, mdiFan, mdiPower, mdiDotsHorizontal, mdiTextBoxSearchOutline, mdiRefresh, mdiDownload, mdiTextBoxOutline, mdiUpdate } from '@mdi/js'
+import {
+  mdiServerOutline,
+  mdiCogOutline,
+  mdiBellOutline,
+  mdiLinkVariant,
+  mdiChip,
+  mdiClockOutline,
+  mdiMemory,
+  mdiFan,
+  mdiPower,
+  mdiDotsHorizontal,
+  mdiTextBoxSearchOutline,
+  mdiRefresh,
+  mdiDownload,
+  mdiTextBoxOutline,
+  mdiUpdate,
+} from '@mdi/js'
 import { SystemUpdates } from './system-updates'
 import { WebSettings } from './web-settings'
 import { CoolingSettings } from './cooling'
@@ -76,7 +92,13 @@ export function SystemPage() {
       <div className="page-heading">
         <h1>{tr('system_3ac98f27')}</h1>
       </div>
-      <Tabs.Root className="section-layout" orientation="vertical" activationMode="manual" value={tab} onValueChange={setTab}>
+      <Tabs.Root
+        className="section-layout"
+        orientation="vertical"
+        activationMode="manual"
+        value={tab}
+        onValueChange={setTab}
+      >
         <SectionNav
           label={tr('system_3ac98f27')}
           value={tab}
@@ -172,41 +194,43 @@ export function SystemPage() {
           </div>
         </Tabs.Content>
         <Tabs.Content value="journal">
-          <label className="field">
-            {tr('service_62ef4613')}
-            <select value={unit} onChange={(e) => setUnit(e.target.value)}>
-              <option value="">{tr('all_services_9ad124ff')}</option>
-              {services.data?.services.map((s) => (
-                <option key={s.unit}>{s.unit}</option>
-              ))}
-            </select>
-          </label>
-          <div className="actions">
+          <div className="filter-bar journal-filters">
             <label className="field">
-              {tr('period_b2822e2b')}
-              <select value={since} onChange={(e) => setSince(e.target.value)}>
-                <option value="1h">{tr('hour_9ce65a67')}</option>
-                <option value="24h">{tr('day_c91ce69e')}</option>
-                <option value="7d">{tr('week_9207563d')}</option>
-                <option value="all">{tr('all_available_e5dd9936')}</option>
+              {tr('service_62ef4613')}
+              <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+                <option value="">{tr('all_services_9ad124ff')}</option>
+                {services.data?.services.map((s) => (
+                  <option key={s.unit}>{s.unit}</option>
+                ))}
               </select>
             </label>
-            <label className="field">
-              {tr('severity_22a07704')}
-              <select value={priority} onChange={(e) => setPriority(Number(e.target.value))}>
-                <option value={7}>{tr('all_fd08da7a')}</option>
-                <option value={4}>{tr('warnings_and_errors_42b04b26')}</option>
-                <option value={3}>{tr('errors_681b5ae3')}</option>
-              </select>
-            </label>
-            <label className="field">
-              {tr('os_boot_599a6000')}
-              <select value={boot} onChange={(e) => setBoot(e.target.value)}>
-                <option value="all">{tr('all_fd08da7a')}</option>
-                <option value="current">{tr('current_71e8b656')}</option>
-                <option value="previous">{tr('previous_1bc0670e')}</option>
-              </select>
-            </label>
+            <div className="actions">
+              <label className="field">
+                {tr('period_b2822e2b')}
+                <select value={since} onChange={(e) => setSince(e.target.value)}>
+                  <option value="1h">{tr('hour_9ce65a67')}</option>
+                  <option value="24h">{tr('day_c91ce69e')}</option>
+                  <option value="7d">{tr('week_9207563d')}</option>
+                  <option value="all">{tr('all_available_e5dd9936')}</option>
+                </select>
+              </label>
+              <label className="field">
+                {tr('severity_22a07704')}
+                <select value={priority} onChange={(e) => setPriority(Number(e.target.value))}>
+                  <option value={7}>{tr('all_fd08da7a')}</option>
+                  <option value={4}>{tr('warnings_and_errors_42b04b26')}</option>
+                  <option value={3}>{tr('errors_681b5ae3')}</option>
+                </select>
+              </label>
+              <label className="field">
+                {tr('os_boot_599a6000')}
+                <select value={boot} onChange={(e) => setBoot(e.target.value)}>
+                  <option value="all">{tr('all_fd08da7a')}</option>
+                  <option value="current">{tr('current_71e8b656')}</option>
+                  <option value="previous">{tr('previous_1bc0670e')}</option>
+                </select>
+              </label>
+            </div>
           </div>
           {journal.error && <Notice error>{journal.error.message}</Notice>}
           <div className="journal">
@@ -220,7 +244,7 @@ export function SystemPage() {
           </div>
         </Tabs.Content>
         <Tabs.Content value="updates">
-          <div className="actions">
+          <div className="actions filter-bar">
             <OperationButton
               icon={mdiRefresh}
               label={tr('check_for_updates_fa7bfc55')}
@@ -283,8 +307,19 @@ registerModule({
   icon: mdiServerOutline,
   component: SystemPage,
   settings: [
-    { id: 'notifications', title: tr('delivery.title'), icon: mdiBellOutline, component: NotificationSettings },
-    { id: 'connections', routes: ['google', 'github', 'dropbox'], title: tr('external.title'), icon: mdiLinkVariant, component: ExternalSettings },
+    {
+      id: 'notifications',
+      title: tr('delivery.title'),
+      icon: mdiBellOutline,
+      component: NotificationSettings,
+    },
+    {
+      id: 'connections',
+      routes: ['google', 'github', 'dropbox'],
+      title: tr('external.title'),
+      icon: mdiLinkVariant,
+      component: ExternalSettings,
+    },
     { id: 'updates', title: tr('up.title'), icon: mdiDownload, component: SystemUpdates },
     {
       id: 'general',

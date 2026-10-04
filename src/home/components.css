@@ -147,6 +147,7 @@ b {
 .storage-tab-intro,
 .section-layout [role='tabpanel'] > .check,
 .section-layout [role='tabpanel'] > p,
+.section-layout [role='tabpanel'] > details,
 .workspace > p {
   display: flex;
   flex-wrap: wrap;
@@ -162,6 +163,20 @@ b {
 .section-layout [role='tabpanel'] > .check {
   display: inline-flex;
   border-radius: var(--radius-pill);
+}
+
+.journal-filters {
+  align-items: flex-end;
+}
+.journal-filters .field {
+  flex: 1 1 160px;
+  margin: 0;
+}
+.journal-filters > .actions {
+  display: contents;
+}
+.section-layout [role='tabpanel'] > details {
+  display: block;
 }
 
 /* ---------- Surfaces ---------- */
@@ -1129,8 +1144,15 @@ tbody tr:hover {
   .structured-dialog .modal-footer {
     padding: var(--space-3) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
   }
+  .modal-footer :is(.dialog-actions, .actions) {
+    flex-wrap: wrap;
+  }
+  /* Long verbs wrap inside the button or move to their own row; they never spill out. */
   .modal-footer :is(.dialog-actions, .actions) .button {
-    flex: 1;
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: 8px 16px;
+    white-space: normal;
   }
 }
 
@@ -1647,37 +1669,26 @@ tbody tr:hover {
 
 /* On a phone the actions of a card carry their words. */
 @media (max-width: 639px) {
-  :is(
-      .module-card-actions,
-      .network-card-actions,
-      .containers-actions,
-      .sharing-card .actions,
-      .raid-actions,
-      .disk-card-actions
-    )
+  :is(.module-card-actions, .network-card-actions, .sharing-card .actions, .raid-actions, .disk-card-actions)
     .button.icon-only[data-tooltip] {
     width: auto;
     min-width: var(--control);
     height: var(--control);
     padding: 0 16px 0 12px;
     gap: var(--space-2);
+    max-width: 100%;
   }
-  :is(
-      .module-card-actions,
-      .network-card-actions,
-      .containers-actions,
-      .sharing-card .actions,
-      .raid-actions,
-      .disk-card-actions
-    )
+  :is(.module-card-actions, .network-card-actions, .sharing-card .actions, .raid-actions, .disk-card-actions)
     .button.icon-only[data-tooltip]::after {
     content: attr(data-tooltip);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 0.875rem;
   }
   :is(
     .module-card-actions,
     .network-card-actions,
-    .containers-actions,
     .sharing-card .actions,
     .raid-actions,
     .disk-card-actions

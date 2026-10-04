@@ -1,8 +1,8 @@
 /**
  * Below 640px a table is shown as stacked rows without its header row. Each cell
  * therefore carries the text of its column header in `data-label`, which the
- * stylesheet prints before the value. Runs for every table in a `.table-wrap`,
- * so pages and modules need no change of their own.
+ * stylesheet prints before the value. Runs for every table in a `.table-wrap`
+ * (and the Containers module's own wrapper), so pages need no change of their own.
  */
 function label(table: HTMLTableElement) {
   const heads = Array.from(table.querySelectorAll('thead th')).map((th) => th.textContent?.trim() ?? '')
@@ -19,7 +19,8 @@ function label(table: HTMLTableElement) {
   }
 }
 export function watchTableLabels(root: HTMLElement) {
-  const run = () => root.querySelectorAll<HTMLTableElement>('.table-wrap table').forEach(label)
+  const run = () =>
+    root.querySelectorAll<HTMLTableElement>('.table-wrap table, .containers-table-wrap table').forEach(label)
   let scheduled = 0
   const observer = new MutationObserver(() => {
     if (scheduled) return
