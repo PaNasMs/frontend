@@ -1530,3 +1530,63 @@ tbody tr:hover {
     transition: none;
   }
 }
+
+/* ---------- Sign-in: the intro sits on a panel like everything else ---------- */
+.login-intro {
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  -webkit-backdrop-filter: var(--glass);
+  backdrop-filter: var(--glass);
+}
+.login-card {
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--panel-solid);
+  box-shadow: var(--shadow-dialog);
+}
+
+/* On a phone the actions of a card carry their words. */
+@media (max-width: 639px) {
+  :is(.module-card-actions, .network-card-actions, .containers-actions, .sharing-card .actions, .raid-actions)
+    .button.icon-only[data-tooltip] {
+    width: auto;
+    min-width: var(--control);
+    height: var(--control);
+    padding: 0 16px 0 12px;
+    gap: var(--space-2);
+  }
+  :is(.module-card-actions, .network-card-actions, .containers-actions, .sharing-card .actions, .raid-actions)
+    .button.icon-only[data-tooltip]::after {
+    content: attr(data-tooltip);
+    font-size: 0.875rem;
+  }
+  :is(
+    .module-card-actions,
+    .network-card-actions,
+    .containers-actions,
+    .sharing-card .actions,
+    .raid-actions
+  ) {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+    gap: var(--space-2);
+  }
+  .network-card-actions > .wifi-labeled-control {
+    position: static;
+  }
+  .network-card header,
+  .module-card-footer,
+  .raid-heading,
+  .raid-heading-right,
+  .sharing-card header {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .page-heading,
+  .desktop-heading {
+    border-radius: var(--radius-lg);
+  }
+}
