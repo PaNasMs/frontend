@@ -891,6 +891,52 @@ tbody tr:hover {
   min-height: 0;
 }
 
+/* Modules built before the redesign still use the old class names; they get the same look. */
+.settings-layout:not(.section-layout) {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  -webkit-backdrop-filter: var(--glass);
+  backdrop-filter: var(--glass);
+}
+.settings-nav :is(a, button) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--control-lg);
+  padding: 6px 14px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--mute);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: left;
+}
+.settings-nav :is(a, button):is([data-state='active'], [aria-current='page']) {
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 700;
+}
+@media (max-width: 1023px) {
+  .settings-layout:not(.section-layout) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* ---------- Disclosure and stacked settings ---------- */
 .settings-stack {
   display: flex;
@@ -1188,6 +1234,31 @@ tbody tr:hover {
 .settings-content .page-heading .button.icon-only[data-tooltip]::after,
 .surface .page-heading .button.icon-only[data-tooltip]::after {
   content: none;
+}
+
+/* ---------- File manager: one panel that fills the screen below the page header ---------- */
+.file-manager {
+  height: calc(100dvh - 248px);
+  min-height: 420px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  -webkit-backdrop-filter: var(--glass);
+  backdrop-filter: var(--glass);
+}
+.file-manager .button,
+.file-context-menu .button {
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 50%;
+}
+@media (max-width: 639px) {
+  .file-manager {
+    height: calc(100dvh - 236px);
+  }
 }
 
 /* ---------- Theme picker ---------- */
