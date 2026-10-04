@@ -1113,7 +1113,7 @@
   "server_7bb48c817298": "Operation on {{v0}} has not started. {{v1}}",
   "server_498050658189": "Device {{v0}} is used by: {{v1}}",
   "server_fdabc0a87a21": "Operation on {{v0}} has not started. ",
-  "server_4690f6c588d7": "RAID will be created{{v0}}",
+  "server_4690f6c588d7": "RAID{{v0}} will be created",
   "server_2c25dd5dab43": "Device {{v0}} is used by: ",
   "server_83550b99a4c3": "Mounted inside “{{v0}}”: {{v1}}. Unmount these nested mounts first.",
   "server_eb4062751008": "Folders shared via NFS: {{v0}}. Remove their shares in Shared folders first.",
@@ -2323,5 +2323,7 @@
   "server_f4eecec5136d": "Operation on {{v0}} has not started. Shared folders on this volume: {{v1}}. Remove their shares in Shared folders first.",
   "server_64ca8f2b153e": "Operation on {{v0}} has not started. Shared folders on this volume: {{v1}}. Select “Also stop sharing folders on this array” in the delete dialog, or remove their shares in Shared folders first.",
   "server_f419b0e0b2c1": "Sharing will be removed: {{v0}}",
-  "server_ad394570e4ff": "Choose whether to stop sharing folders on this array"
+  "server_ad394570e4ff": "Choose whether to stop sharing folders on this array",
+  "server_9f7de661fe61": "New file system: {{v0}}",
+  "server_2a2a4c51c77f": "Current file system: {{v0}}"
 }
