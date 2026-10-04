@@ -14,6 +14,7 @@ import {
 } from '@mdi/js'
 import { Button, Icon, bytes, DialogContent } from '../shared/ui'
 import { tr } from '../i18n'
+import { validFileName } from '../shared/file-name'
 
 // Session-local transfer contract published by the Files module, never persisted.
 const uploadKey = ['file-uploads'] as const
@@ -174,12 +175,7 @@ function ConflictDialog({ task, onClose }: { task: UploadTask; onClose: () => vo
   const conflict = task.conflict!
   const [name, setName] = useState(conflict.suggested)
   const [all, setAll] = useState(false)
-  const valid =
-    !!name &&
-    name === name.trim() &&
-    !/[\/\x00-\x1f\x7f]/.test(name) &&
-    !['.', '..'].includes(name) &&
-    new TextEncoder().encode(name).length <= 255
+  const valid = validFileName(name)
   function resolve(mode: 'replace' | 'rename' | 'skip') {
     conflict.resolve({ mode, name: mode === 'rename' ? name : undefined, all })
     onClose()

@@ -2,6 +2,7 @@ import { modules } from './module-registry'
 import { FileUploadTasks, useFileUploads } from './file-uploads'
 import { useUpdateTask } from './system-updates'
 import { FolderField } from '../shared/folder-picker'
+import { baseName, restoreDestination, siblingPath, stemLength, validFileName } from '../shared/file-name'
 import { MultiSelect } from '../shared/multi-select'
 import { notify } from './notifications'
 import { mdiCancel, mdiRestore, mdiCheck, mdiRefresh } from '@mdi/js'
@@ -117,7 +118,7 @@ export const operations: Record<string, Operation> = {
     label: tr('rename_715e8f0c'),
     fields: [
       { key: 'target', label: tr('source_8290a3db') },
-      { key: 'destination', label: tr('new_absolute_path_b4ecc12c') },
+      { key: 'name', label: tr('fileTasks.itemName') },
     ],
   },
   'file.copy': {
@@ -593,10 +594,18 @@ function OperationForm({
 }) {
   const q = useQueryClient()
   const [action, setAction] = useState(actions[0])
-  const defaults = (a: string) => ({
-    ...Object.fromEntries((fields ?? operations[a].fields).map((f) => [f.key, f.value ?? ''])),
-    ...initial,
-  })
+  const defaults = (a: string) => {
+    const values: Record<string, unknown> = {
+      ...Object.fromEntries((fields ?? operations[a].fields).map((f) => [f.key, f.value ?? ''])),
+      ...initial,
+    }
+    // The user edits only the name; the absolute destination is composed before planning.
+    if (a === 'file.rename' && !initial.name) values.name = baseName(String(values.target ?? ''))
+    // Callers pass the item itself as the destination; never suggest the internal trash path.
+    if (a === 'file.restore' && (!values.destination || values.destination === values.target))
+      values.destination = restoreDestination(String(values.target ?? ''))
+    return values
+  }
   const [params, setParams] = useState<Record<string, unknown>>(() => defaults(action))
   const [id] = useState(() => newID())
   const inv = useQuery({
@@ -623,18 +632,24 @@ function OperationForm({
   const invalidFolderName =
     action === 'file.mkdir' &&
     (!folderName.trim() || folderName === '.' || folderName === '..' || /[\/\x00]/.test(folderName))
-  const requestParams =
+  const newName = String(params.name ?? '')
+  const currentName = baseName(String(params.target ?? ''))
+  const invalidFileName = action === 'file.rename' && !validFileName(newName)
+  const requestParams: Record<string, unknown> =
     action === 'file.mkdir'
       ? { target: String(params.parent ?? '').replace(/\/$/, '') + '/' + folderName }
-      : action === 'partition.create' && 'sizeMiB' in params
-        ? { ...params, endMiB: Number(params.startMiB) + Number(params.sizeMiB) }
-        : params
+      : action === 'file.rename'
+        ? { target: params.target, destination: siblingPath(String(params.target ?? ''), newName) }
+        : action === 'partition.create' && 'sizeMiB' in params
+          ? { ...params, endMiB: Number(params.startMiB) + Number(params.sizeMiB) }
+          : params
   const plan = useMutation({
     mutationFn: () => {
       if (['user.create', 'user.password'].includes(action) && params.password !== params.passwordConfirm)
         throw new Error(tr('passwords_do_not_match_a73dc9b1'))
       if (invalidFolderName)
         throw new Error(tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286'))
+      if (invalidFileName) throw new Error(tr('fileTasks.nameInvalid'))
       return managed<{
         target: string
         details: string[]
@@ -643,11 +658,12 @@ function OperationForm({
       }>('plan', { action, params: requestParams })
     },
     onError: () => {
-      const field = invalidFolderName
-        ? 'name'
-        : params.password !== params.passwordConfirm
-          ? 'passwordConfirm'
-          : ''
+      const field =
+        invalidFolderName || invalidFileName
+          ? 'name'
+          : params.password !== params.passwordConfirm
+            ? 'passwordConfirm'
+            : ''
       if (field) document.getElementById(`${id}-${field}`)?.focus()
     },
   })
@@ -729,7 +745,8 @@ function OperationForm({
     'file.trash': (
       <>
         {tr('delete_6e408d3c')}
-        <strong>{fileName}</strong>»?
+        <strong>{fileName}</strong>
+        {tr('ui.quoteQuestionEnd')}
       </>
     ),
     'file.delete': (
@@ -742,7 +759,8 @@ function OperationForm({
     'file.mkdir': (
       <>
         {tr('create_folder_4996f13a')}
-        <strong>{fileName}</strong>»?
+        <strong>{fileName}</strong>
+        {tr('ui.quoteQuestionEnd')}
       </>
     ),
     'file.rename': (
@@ -750,12 +768,8 @@ function OperationForm({
         {tr('rename_1db9da0f')}
         <strong>{fileName}</strong>
         {tr('to_b1c1ad7f')}
-        <strong>
-          {String(params.destination ?? '')
-            .split('/')
-            .at(-1)}
-        </strong>
-        »?
+        <strong>{newName}</strong>
+        {tr('ui.quoteQuestionEnd')}
       </>
     ),
     'file.copy': (
@@ -763,7 +777,8 @@ function OperationForm({
         {tr('copy_e413cf88')}
         <strong>{fileName}</strong>
         {tr('to_b1c1ad7f')}
-        <strong>{String(params.destination ?? '')}</strong>»?
+        <strong>{String(params.destination ?? '')}</strong>
+        {tr('ui.quoteQuestionEnd')}
       </>
     ),
     'file.move': (
@@ -771,7 +786,8 @@ function OperationForm({
         {tr('move_aa28745a')}
         <strong>{fileName}</strong>
         {tr('to_b1c1ad7f')}
-        <strong>{String(params.destination ?? '')}</strong>»?
+        <strong>{String(params.destination ?? '')}</strong>
+        {tr('ui.quoteQuestionEnd')}
       </>
     ),
     'file.restore': (
@@ -779,7 +795,8 @@ function OperationForm({
         {tr('restore_8074d192')}
         <strong>{fileName}</strong>
         {tr('to_b1c1ad7f')}
-        <strong>{String(params.destination ?? '')}</strong>»?
+        <strong>{String(params.destination ?? '')}</strong>
+        {tr('ui.quoteQuestionEnd')}
       </>
     ),
   }
@@ -912,6 +929,7 @@ function OperationForm({
                       !(action === 'user.create' && field.key === 'home') &&
                       !params[field.key],
                   ) ||
+                  (action === 'file.rename' && newName === currentName) ||
                   (!!candidatesFor && (inv.isPending || !!inv.error || !params.replacement))
                 }
                 onClick={() => plan.mutate()}
@@ -968,7 +986,9 @@ function OperationForm({
                 ? tr('passwords_do_not_match_a73dc9b1')
                 : action === 'file.mkdir' && f.key === 'name' && val && invalidFolderName
                   ? tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286')
-                  : ''
+                  : action === 'file.rename' && f.key === 'name' && val && !validFileName(newName.trim())
+                    ? tr('fileTasks.nameInvalid')
+                    : ''
             const choices =
               providedChoices?.[f.key] ??
               (f.type === 'devices' || f.type === 'device'
@@ -1069,6 +1089,12 @@ function OperationForm({
                         type={f.type === 'number' ? 'number' : f.type === 'password' ? 'password' : 'text'}
                         value={String(val)}
                         autoComplete="off"
+                        maxLength={action === 'file.rename' && f.key === 'name' ? 255 : undefined}
+                        onFocus={(e) => {
+                          // Preselect the name without its extension until the user edits it.
+                          if (action === 'file.rename' && f.key === 'name' && val === currentName)
+                            e.target.setSelectionRange(0, stemLength(currentName))
+                        }}
                         onChange={(e) =>
                           change(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value)
                         }

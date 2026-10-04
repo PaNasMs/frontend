@@ -27,6 +27,7 @@ export function loadTypeScript(input) {
       setTimeout,
       clearTimeout,
       URLSearchParams,
+      TextEncoder,
       console,
       require: (name) => {
         if (!name.startsWith('.')) return require(name)

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { mdiCloseCircleOutline, mdiRefresh } from '@mdi/js'
 import { tr, locale } from '../i18n'
 import { request } from '../api/client'
+import { sessionTime } from '../shared/session-time'
 import { Button, DialogContent, Icon, Notice } from '../shared/ui'
 import { managed, OperationButton } from './operations'
 
@@ -69,9 +70,7 @@ export function UserSessions({ user }: { user: string }) {
               <p className="small muted">
                 {s.device || s.state}
                 {' · '}
-                {typeof s.created === 'number'
-                  ? new Date(s.created * 1000).toLocaleString(locale())
-                  : s.created}
+                {sessionTime(s.created, locale())}
               </p>
             </div>
             {s.kind === 'ssh' ? (
