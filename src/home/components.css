@@ -227,6 +227,20 @@ b {
 .settings-content .field {
   max-width: 640px;
 }
+.settings-content .general-settings > .surface,
+.profile-settings .settings-content .surface {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.settings-content .surface > :is(h2, h3) {
+  margin-bottom: var(--space-3);
+}
+.settings-content .surface > p {
+  margin-block: var(--space-2) var(--space-4);
+}
+.settings-content .surface > .field {
+  margin-block: var(--space-4);
+}
 .raid {
   border: 0;
   border-radius: var(--radius-lg);
