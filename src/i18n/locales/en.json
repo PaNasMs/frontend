@@ -1833,7 +1833,7 @@
   "up.autoDownload": "Download automatically",
   "up.autoInstall": "Install during maintenance window",
   "up.hour": "Daily window, NAS local time",
-  "up.policy": "Checks run daily. Conflicting tasks postpone installation. PaNasMs updates do not upgrade Linux, reboot the NAS or stop cooling.",
+  "up.policy": "Checks run daily. Conflicting tasks postpone installation. PaNasMs updates do not upgrade Linux, reboot the NAS or stop cooling. Installation closes terminal sessions and their running commands.",
   "up.history": "Update history",
   "up.date": "Date",
   "up.version": "Version",
