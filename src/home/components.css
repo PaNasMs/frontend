@@ -359,7 +359,7 @@ textarea:focus-visible {
 }
 .field {
   gap: 6px;
-  margin-bottom: var(--space-4);
+  margin: 0 0 var(--space-4);
   font-size: 0.9375rem;
   font-weight: 600;
 }
@@ -1105,6 +1105,89 @@ tbody tr:hover {
   background: none;
   border: 0;
   color: var(--second);
+}
+
+/* Array widget: state of each array and the temperature of every member disk. */
+.widget-arrays {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  justify-content: center;
+}
+.widget-array {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.widget-array-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.widget-array-head strong,
+.widget-array-head small {
+  display: block;
+}
+.widget-array-head small {
+  color: var(--mute);
+}
+.widget-array-members {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  gap: var(--space-2);
+}
+.widget-array-members > span {
+  padding: 6px 0;
+  border-radius: var(--radius-sm);
+  background: var(--inset);
+  text-align: center;
+}
+.widget-array-members small {
+  display: block;
+  color: var(--mute);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+.widget-array-members .tone-warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.widget-array-members .tone-crit {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.badge.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.badge.warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.badge.danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* Page-level actions carry their words: the tooltip text becomes the label. */
+:is(.page-heading, .desktop-heading) .button.icon-only[data-tooltip] {
+  width: auto;
+  padding: 0 18px 0 14px;
+  gap: var(--space-2);
+}
+:is(.page-heading, .desktop-heading) .button.icon-only[data-tooltip]::after {
+  content: attr(data-tooltip);
+}
+.settings-content .page-heading .button.icon-only[data-tooltip],
+.surface .page-heading .button.icon-only[data-tooltip] {
+  width: var(--control);
+  padding: 0;
+}
+.settings-content .page-heading .button.icon-only[data-tooltip]::after,
+.surface .page-heading .button.icon-only[data-tooltip]::after {
+  content: none;
 }
 
 /* ---------- Theme picker ---------- */

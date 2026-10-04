@@ -6,12 +6,7 @@ import { newID } from './dashboard'
 import { mdiPause, mdiTimerOutline, mdiClipboardSearchOutline, mdiFan, mdiPlay, mdiLinux, mdiUsb, mdiUsbFlashDrive, mdiMicroSd, mdiChip, mdiCheckCircleOutline, mdiLockOutline, mdiPulse, mdiWeatherNight, mdiSync, mdiHelpCircleOutline, mdiHarddiskRemove, mdiAlertOutline, mdiChartPie } from '@mdi/js'
 import { EjectButton } from './removable'
 import { registerModule, registerWidgetSource } from './module-registry'
-import {
-  HddCoolingWidget,
-  DiskLoadWidget,
-  SystemDiskWidget,
-  useDiskTemperatureWidgets,
-} from './storage-widgets'
+import { HddCoolingWidget, DiskLoadWidget, SystemDiskWidget, useDiskTemperatureWidgets, ArrayWidget } from './storage-widgets'
 import { DiskSettings } from './disk-settings'
 import { OperationButton, managed, type Job } from './operations'
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react'
@@ -1241,6 +1236,14 @@ registerModule({
       icon: mdiHarddisk,
       component: DiskLoadWidget,
       history: true,
+    },
+    arrays: {
+      title: tr('widget.arrays'),
+      width: 2,
+      height: 2,
+      module: tr('storage_5347bdf6'),
+      icon: mdiHarddisk,
+      component: ArrayWidget,
     },
     storage: {
       title: tr('storage_5347bdf6'),

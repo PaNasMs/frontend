@@ -208,16 +208,15 @@ export function ProfilePage() {
                 {preferences.error && <Notice error>{preferences.error.message}</Notice>}
                 {saveLanguage.error && <Notice error>{saveLanguage.error.message}</Notice>}
                 <Button
+                  className="primary"
                   type="submit"
-                  title={tr('profile.saveLanguage')}
-                  aria-label={tr('profile.saveLanguage')}
                   disabled={
                     !preferences.data ||
                     selectedLanguage === language(preferences.data.language) ||
                     saveLanguage.isPending
                   }
                 >
-                  <Icon path={mdiCheck} />
+                  {tr('profile.saveLanguage')}
                 </Button>
               </form>
             </section>
@@ -251,11 +250,10 @@ export function ProfilePage() {
                   />
                 </label>
                 <Button
-                  title={tr('save_name_b6c0cf28')}
-                  aria-label={tr('save_name_b6c0cf28')}
+                  className="primary"
                   disabled={!data.data || name === data.data.name || update.isPending}
                 >
-                  <Icon path={mdiCheck} />
+                  {tr('save_name_b6c0cf28')}
                 </Button>
               </form>
             </section>

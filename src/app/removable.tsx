@@ -411,11 +411,11 @@ export function EjectButton({
             <div className="actions">
               <Dialog.Close asChild>
                 <button ref={cancel} className="button" disabled={eject.isPending} data-dialog-cancel>
-                  {tr('no_f82a8219')}
+                  {tr('cancel_0ec753be')}
                 </button>
               </Dialog.Close>
               <Button className="primary" disabled={eject.isPending} onClick={() => eject.mutate()}>
-                {tr('yes_8d2fab2d')}
+                {tr('ui.eject')}
               </Button>
             </div>
           }

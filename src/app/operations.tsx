@@ -803,7 +803,7 @@ function OperationForm({
                 <Button disabled={run.isPending} autoFocus data-dialog-cancel>
                   {action === 'file.trash' || action === 'file.delete'
                     ? tr('cancel_0ec753be')
-                    : tr('no_f82a8219')}
+                    : tr('cancel_0ec753be')}
                 </Button>
               </Dialog.Close>
               {action === 'file.trash' || action === 'file.delete' ? (
@@ -815,7 +815,11 @@ function OperationForm({
                   >
                     {tr('move_to_trash_f8b39dea')}
                   </Button>
-                  <Button disabled={!plan.data || run.isPending} onClick={() => run.mutate('file.delete')}>
+                  <Button
+                    className="danger"
+                    disabled={!plan.data || run.isPending}
+                    onClick={() => run.mutate('file.delete')}
+                  >
                     {tr('delete_86ea33ae')}
                   </Button>
                 </>
@@ -825,7 +829,7 @@ function OperationForm({
                   disabled={!plan.data || run.isPending}
                   onClick={() => run.mutate()}
                 >
-                  {tr('yes_8d2fab2d')}
+                  {operations[action].label}
                 </Button>
               )}
             </div>

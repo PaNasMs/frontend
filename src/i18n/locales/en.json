@@ -2306,5 +2306,11 @@
   "ui.themeBackground": "Each theme has its own background. Your picture replaces it in every theme.",
   "ui.back": "Back",
   "ui.more": "More actions",
-  "ui.diskAdvancedHint": "Hardware cooling, disk polling interval, acknowledged CRC counts"
+  "ui.diskAdvancedHint": "Hardware cooling, disk polling interval, acknowledged CRC counts",
+  "widget.arrays": "Arrays",
+  "widget.noArrays": "No arrays",
+  "widget.healthy": "Healthy",
+  "widget.degraded": "Degraded",
+  "widget.syncing": "Synchronizing",
+  "ui.eject": "Eject"
 }

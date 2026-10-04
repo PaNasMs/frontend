@@ -574,15 +574,7 @@ tr:last-child td {
 }
 .field input,
 .field select {
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  background: var(--wall);
-  color: var(--ink);
   width: 100%;
-}
-.field input:focus {
-  border-color: var(--second);
 }
 details {
   font-size: 0.8125rem;

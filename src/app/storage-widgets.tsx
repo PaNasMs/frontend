@@ -221,3 +221,78 @@ export function HddCoolingWidget() {
     </>
   )
 }
+
+/** State of every array with the temperature of each member disk. */
+export function ArrayWidget() {
+  const storage = useStorage()
+  const telemetry = useTelemetry()
+  const arrays = storage.data?.arrays ?? []
+  if (!arrays.length)
+    return (
+      <WidgetFoot>
+        {storage.isPending
+          ? tr('loading_b6819e91')
+          : storage.error
+            ? tr('data_unavailable_9d99b9e6')
+            : tr('widget.noArrays')}
+      </WidgetFoot>
+    )
+  const disks = physicalDisks(storage.data)
+  return (
+    <div className="widget-arrays">
+      {arrays.slice(0, 2).map((array) => {
+        const missing = array.missing ?? 0
+        const syncing = ['recover', 'resync', 'reshape', 'check', 'repair'].includes(array.sync)
+        const healthy = array.degraded === '0' || array.level === 'raid0'
+        const state =
+          missing > 0
+            ? tr('unavailable_70053813', { v0: missing })
+            : syncing
+              ? `${tr('widget.syncing')} ${Math.round(array.syncPercent ?? 0)}%`
+              : healthy
+                ? tr('widget.healthy')
+                : tr('widget.degraded')
+        const members = array.members.map((kname) => {
+          const disk = disks.find((d) => flatten([d]).some((x) => x.kname === kname))
+          const sample = telemetry.data?.status.disks.find((item) => item.device === disk?.path)
+          const faulty = !!array.memberStates?.[kname]?.includes('faulty')
+          return { name: disk?.kname ?? kname, value: sample?.temperature ?? null, faulty }
+        })
+        return (
+          <div className="widget-array" key={array.uuid || array.device}>
+            <div className="widget-array-head">
+              <span>
+                <strong>{array.name || array.device}</strong>
+                <small>
+                  {array.level.toUpperCase()} · {bytes(array.size)}
+                </small>
+              </span>
+              <span
+                className={`badge ${missing > 0 || (!healthy && !syncing) ? 'warn' : syncing ? '' : 'ok'}`}
+              >
+                {state}
+              </span>
+            </div>
+            <div className="widget-array-members">
+              {members.map((member) => (
+                <span
+                  key={member.name}
+                  className={
+                    member.faulty
+                      ? 'tone-crit'
+                      : member.value == null
+                        ? 'tone-muted'
+                        : `tone-${diskTone(member.value)}`
+                  }
+                >
+                  <small>{member.name}</small>
+                  <b>{member.faulty ? '!' : member.value == null ? '—' : `${Math.round(member.value)}°`}</b>
+                </span>
+              ))}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}

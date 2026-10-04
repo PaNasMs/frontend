@@ -156,13 +156,8 @@ export function Dashboard() {
               >
                 <Icon path={mdiClose} />
               </Button>
-              <Button
-                title={tr('save_layout_ae62a41e')}
-                aria-label={tr('save_layout_ae62a41e')}
-                disabled={save.isPending}
-                onClick={apply}
-              >
-                <Icon path={mdiCheck} />
+              <Button className="primary" disabled={save.isPending} onClick={apply}>
+                {tr('save_layout_ae62a41e')}
               </Button>
             </>
           ) : (

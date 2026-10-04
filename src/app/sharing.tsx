@@ -4,7 +4,18 @@ import { useSearchParams } from 'react-router-dom'
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { mdiShareVariant, mdiPlus, mdiPencil, mdiDeleteOutline, mdiShieldKeyOutline, mdiRefresh, mdiCheck, mdiClose, mdiFolderNetworkOutline, mdiLanConnect } from '@mdi/js'
+import {
+  mdiShareVariant,
+  mdiPlus,
+  mdiPencil,
+  mdiDeleteOutline,
+  mdiShieldKeyOutline,
+  mdiRefresh,
+  mdiCheck,
+  mdiClose,
+  mdiFolderNetworkOutline,
+  mdiLanConnect,
+} from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
 import { managed, OperationButton, type Job } from './operations'

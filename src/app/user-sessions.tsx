@@ -119,9 +119,11 @@ export function UserSessions({ user }: { user: string }) {
             footer={
               <div className="actions">
                 <Button onClick={() => setSelected(null)} data-dialog-cancel>
-                  {tr('no_f82a8219')}
+                  {tr('cancel_0ec753be')}
                 </Button>
-                <Button onClick={() => end.mutate()}>{tr('yes_8d2fab2d')}</Button>
+                <Button className="danger" onClick={() => end.mutate()}>
+                  {tr('accounts.endSession')}
+                </Button>
               </div>
             }
             variant="compact"
