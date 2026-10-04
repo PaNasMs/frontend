@@ -158,23 +158,23 @@ export function useUnsavedForm(dirty: boolean, onDiscard?: () => void) {
 
 export function useDraft<T>(incoming: T, target = '') {
   const [draft, setDraft] = useState<T>(incoming)
-  const baseline = useRef(JSON.stringify(incoming))
+  const [baseline, setBaseline] = useState(JSON.stringify(incoming))
   const owner = useRef(target)
   const serialized = JSON.stringify(incoming)
-  const dirty = JSON.stringify(draft) !== baseline.current
+  const dirty = JSON.stringify(draft) !== baseline
   useEffect(() => {
     if (owner.current !== target || !dirty || JSON.stringify(draft) === serialized) {
       owner.current = target
-      baseline.current = serialized
+      setBaseline(serialized)
       setDraft(incoming)
     }
   }, [serialized, target, dirty])
   const reset = (value = incoming) => {
-    baseline.current = JSON.stringify(value)
+    setBaseline(JSON.stringify(value))
     setDraft(value)
   }
   useUnsavedForm(dirty, () => reset())
-  return { draft, setDraft, dirty, conflict: dirty && baseline.current !== serialized, reset }
+  return { draft, setDraft, dirty, conflict: dirty && baseline !== serialized, reset }
 }
 
 export function useExclusivePopover(ref: { current: HTMLDetailsElement | null }) {
