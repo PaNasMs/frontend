@@ -153,8 +153,8 @@ export function SystemUpdates() {
             value={settings.channel}
             onChange={(e) => setSettings({ ...settings, channel: e.target.value as Settings['channel'] })}
           >
-            <option value="stable">Stable</option>
-            <option value="testing">Testing</option>
+            <option value="stable">{tr('up.stable')}</option>
+            <option value="testing">{tr('up.testing')}</option>
           </select>
         </label>
         <label className="field">

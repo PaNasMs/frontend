@@ -400,7 +400,8 @@ export function EjectButton({
               {' '}
               <Dialog.Title>
                 {tr('eject_15625872')}
-                {label}»?
+                {label}
+                {tr('ui.quoteQuestionEnd')}
               </Dialog.Title>
               <Dialog.Description className="muted">
                 {tr('mounted_partitions_will_be_unmounted_e6ec4adc')}
