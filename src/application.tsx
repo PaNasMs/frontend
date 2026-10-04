@@ -1,3 +1,4 @@
+import { applyTheme } from './home/theme'
 import { PageError } from './shared/page-error'
 import { TooltipLayer } from './shared/tooltip'
 import { useExclusivePopover, DirtyFormsProvider } from './shared/interaction'
@@ -6,10 +7,20 @@ import { tr } from './i18n/index'
 import { useWallpaper, wallpaperURL } from './app/wallpaper'
 import { PowerMenu } from './app/power-menu'
 import { ApplicationBar } from './app/application-bar'
-import { registerShortcuts } from './app/desktop-layout'
+import { registerShortcuts, apps } from './app/desktop-layout'
+import { usePhone } from './home/screen'
+import { OngoingTasks } from './app/ongoing-tasks'
 import { StrictMode, Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider, Outlet, Link, Navigate, useLocation, matchPath } from 'react-router-dom'
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  Link,
+  Navigate,
+  useLocation,
+  matchPath,
+} from 'react-router-dom'
 import {
   QueryClient,
   QueryClientProvider,
@@ -37,6 +48,7 @@ import { Settings } from './app/settings'
 import { useEvents } from './app/events'
 import './style.css'
 import './design-system.css'
+import './home/components.css'
 const query = new QueryClient({
   defaultOptions: {
     queries: {
@@ -51,15 +63,18 @@ function PersistentModules() {
   const [visited, setVisited] = useState<string[]>([])
   const retained = modules().filter((module) => module.keepAlive)
   const active = retained.find((module) =>
-    [module.path, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)]
-      .some((path) => matchPath(path, pathname)),
+    [module.path, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)].some((path) =>
+      matchPath(path, pathname),
+    ),
   )
   if (active && !visited.includes(active.id)) setVisited([...visited, active.id])
-  return retained.filter((module) => visited.includes(module.id)).map((module) => (
-    <div key={module.id} hidden={module.id !== active?.id}>
-      <module.component active={module.id === active?.id} />
-    </div>
-  ))
+  return retained
+    .filter((module) => visited.includes(module.id))
+    .map((module) => (
+      <div key={module.id} hidden={module.id !== active?.id}>
+        <module.component active={module.id === active?.id} />
+      </div>
+    ))
 }
 function Shell() {
   const routeLocation = useLocation()
@@ -100,6 +115,15 @@ function Shell() {
     }
   }, [])
   const wallpaper = useWallpaper(!!session.data)
+  const phone = usePhone()
+  const sectionTitle =
+    routeLocation.pathname === '/'
+      ? tr('desktop_651d54bb')
+      : routeLocation.pathname.startsWith('/profile')
+        ? tr('my_profile_88060502')
+        : (apps().find(
+            (a) => routeLocation.pathname === a.path || routeLocation.pathname.startsWith(a.path + '/'),
+          )?.title ?? 'PaNasMs')
   const status = useEvents(!!session.data)
   const prefs = useQuery({
     queryKey: ['preferences'],
@@ -107,7 +131,7 @@ function Shell() {
     enabled: !!session.data,
   })
   useEffect(() => {
-    document.documentElement.dataset.theme = prefs.data?.theme ?? 'dark'
+    applyTheme(prefs.data?.theme)
   }, [prefs.data])
   const logout = useMutation({
     mutationFn: () => request('logout', 'POST'),
@@ -137,47 +161,93 @@ function Shell() {
         {tr('ui.skip')}
       </a>
       <TooltipLayer />
-      <header className="topbar">
-        <ApplicationBar />
-        <div className="topbar-right">
-          {session.data?.role === 'admin' && <RemovableMenu />}
-          <ActivityMenus />
-          <details className="profile-menu" ref={menu}>
-            <summary
-              className="user-avatar"
-              aria-label={tr('user_menu_fe38d8c6')}
-              title={session.data?.username}
-            >
-              {avatar.data?.version ? (
-                <img src={`/api/v1/avatar/image?v=${avatar.data.version}`} alt="" />
-              ) : (
-                session.data?.username.slice(0, 1).toUpperCase()
-              )}
-            </summary>
-            <div className="profile-dropdown">
-              <strong>{session.data?.name || session.data?.username}</strong>
-              <Link
-                to="/profile"
-                onClick={() => {
-                  if (menu.current) menu.current.open = false
-                }}
+      {phone ? (
+        <header className="phone-header">
+          <span className="phone-title" aria-hidden="true">
+            {sectionTitle}
+          </span>
+          <div className="topbar-right">
+            {session.data?.role === 'admin' && <RemovableMenu />}
+            <ActivityMenus only="notifications" />
+            <details className="profile-menu" ref={menu}>
+              <summary
+                className="user-avatar"
+                aria-label={tr('user_menu_fe38d8c6')}
+                title={session.data?.username}
               >
-                <Icon path={mdiAccountOutline} size={18} />
-                {tr('my_profile_88060502')}
-              </Link>
-              <button
-                aria-label={tr('sign_out_026abb1e')}
-                onClick={() => logout.mutate()}
-                disabled={logout.isPending}
+                {avatar.data?.version ? (
+                  <img src={`/api/v1/avatar/image?v=${avatar.data.version}`} alt="" />
+                ) : (
+                  session.data?.username.slice(0, 1).toUpperCase()
+                )}
+              </summary>
+              <div className="profile-dropdown">
+                <strong>{session.data?.name || session.data?.username}</strong>
+                <Link
+                  to="/profile"
+                  onClick={() => {
+                    if (menu.current) menu.current.open = false
+                  }}
+                >
+                  <Icon path={mdiAccountOutline} size={18} />
+                  {tr('my_profile_88060502')}
+                </Link>
+                <button
+                  aria-label={tr('sign_out_026abb1e')}
+                  onClick={() => logout.mutate()}
+                  disabled={logout.isPending}
+                >
+                  <Icon path={mdiLogout} size={18} />
+                  {tr('sign_out_026abb1e')}
+                </button>
+                {session.data?.role === 'admin' && <PowerMenu />}
+              </div>
+            </details>
+          </div>
+        </header>
+      ) : (
+        <header className="topbar">
+          <ApplicationBar />
+          <div className="topbar-right">
+            {session.data?.role === 'admin' && <RemovableMenu />}
+            <ActivityMenus />
+            <details className="profile-menu" ref={menu}>
+              <summary
+                className="user-avatar"
+                aria-label={tr('user_menu_fe38d8c6')}
+                title={session.data?.username}
               >
-                <Icon path={mdiLogout} size={18} />
-                {tr('sign_out_026abb1e')}
-              </button>
-              {session.data?.role === 'admin' && <PowerMenu />}
-            </div>
-          </details>
-        </div>
-      </header>
+                {avatar.data?.version ? (
+                  <img src={`/api/v1/avatar/image?v=${avatar.data.version}`} alt="" />
+                ) : (
+                  session.data?.username.slice(0, 1).toUpperCase()
+                )}
+              </summary>
+              <div className="profile-dropdown">
+                <strong>{session.data?.name || session.data?.username}</strong>
+                <Link
+                  to="/profile"
+                  onClick={() => {
+                    if (menu.current) menu.current.open = false
+                  }}
+                >
+                  <Icon path={mdiAccountOutline} size={18} />
+                  {tr('my_profile_88060502')}
+                </Link>
+                <button
+                  aria-label={tr('sign_out_026abb1e')}
+                  onClick={() => logout.mutate()}
+                  disabled={logout.isPending}
+                >
+                  <Icon path={mdiLogout} size={18} />
+                  {tr('sign_out_026abb1e')}
+                </button>
+                {session.data?.role === 'admin' && <PowerMenu />}
+              </div>
+            </details>
+          </div>
+        </header>
+      )}
       <NotificationToasts />
       <main
         id="main-content"
@@ -213,6 +283,15 @@ function Shell() {
         )}
       </main>
       <footer className="app-footer">PaNasMs · {packageInfo.version}</footer>
+      {phone && (
+        <div className="phone-dock">
+          <OngoingTasks row />
+          <nav className="topbar phone-taskbar" aria-label={tr('ui.sections')}>
+            <ApplicationBar phone />
+            <ActivityMenus only="jobs" />
+          </nav>
+        </div>
+      )}
     </>
   )
 }

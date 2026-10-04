@@ -6,7 +6,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { mdiGoogle, mdiGithub, mdiDropbox, mdiLinkVariantOff } from '@mdi/js'
 import { request, APIError } from '../api/client'
 import type { components } from '../api/schema'
-import { Button, Icon, Notice, DialogContent, WaitingSurface } from '../shared/ui'
+import { Button, Icon, Notice, DialogContent, WaitingSurface, Disclosure } from '../shared/ui'
 import { useDraft, useUnsavedForm } from '../shared/interaction'
 import { tr } from '../i18n'
 import { notify } from './notifications'
@@ -30,20 +30,18 @@ export function ExternalSettings() {
         </div>
         <p className="muted">{tr('external.settingsHelp')}</p>
       </div>
-      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
-        <Tabs.List className="tabs" aria-label={tr('external.title')}>
-          {providers.map((provider) => (
-            <Tabs.Trigger key={provider} value={provider}>
-              {providerNames[provider]}
-            </Tabs.Trigger>
-          ))}
-        </Tabs.List>
+      <div className="settings-stack">
         {providers.map((provider) => (
-          <Tabs.Content key={provider} value={provider}>
+          <Disclosure
+            key={provider}
+            title={providerNames[provider]}
+            open={tab === provider}
+            onOpenChange={(open) => open && setTab(provider)}
+          >
             <ProviderSettingsForm provider={provider} />
-          </Tabs.Content>
+          </Disclosure>
         ))}
-      </Tabs.Root>
+      </div>
     </div>
   )
 }

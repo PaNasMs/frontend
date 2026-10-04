@@ -1,3 +1,4 @@
+import { themes, type Theme } from '../home/theme'
 import { NotificationPreferences } from './notification-settings'
 import { LinkedAccounts } from './external-connections'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -6,7 +7,7 @@ import { WallpaperSettings } from './wallpaper'
 import { useDraft, useUnsavedForm, ConfirmDialog } from '../shared/interaction'
 import { UserSessions, UserHistory } from './user-sessions'
 import { AvatarSettings } from './user-avatar'
-import { WaitingSurface } from '../shared/ui'
+import { WaitingSurface, SectionNav } from '../shared/ui'
 import { notify } from './notifications'
 import { tr, language, languageNames, languages, type Language } from '../i18n/index'
 import { usePreferencesSave } from './preferences-save'
@@ -20,6 +21,7 @@ import {
   mdiShieldAccountOutline,
   mdiLinkVariant,
   mdiHistory,
+  mdiBellOutline,
 } from '@mdi/js'
 import { useState } from 'react'
 import { flushSync } from 'react-dom'
@@ -42,7 +44,7 @@ export function ProfilePage() {
   const saveLanguage = usePreferencesSave()
   const langDraft = useDraft(language(preferences.data?.language))
   const { draft: selectedLanguage, setDraft: setSelectedLanguage } = langDraft
-  const themeDraft = useDraft<'dark' | 'light'>(preferences.data?.theme ?? 'dark')
+  const themeDraft = useDraft<Theme>(preferences.data?.theme ?? 'dark')
   const saveTheme = usePreferencesSave()
 
   const q = useQueryClient()
@@ -101,50 +103,60 @@ export function ProfilePage() {
       {data.error && <Notice error>{data.error.message}</Notice>}
       {update.error && <Notice error>{update.error.message}</Notice>}
       <Tabs.Root
-        className="settings-layout settings-page profile-settings"
+        className="section-layout settings-page profile-settings"
         orientation="vertical"
         activationMode="manual"
         value={section}
         onValueChange={setSection}
       >
-        <Tabs.List className="settings-nav" aria-label={tr('my_profile_88060502')}>
-          {(['account', 'appearance', 'security', 'connections', 'notifications', 'activity'] as const).map((id) => (
-            <Tabs.Trigger value={id} key={id}>
-              <Icon
-                path={
-                  {
-                    account: mdiAccountOutline,
-                    appearance: mdiPaletteOutline,
-                    security: mdiShieldAccountOutline,
-                    connections: mdiLinkVariant,
- notifications: mdiShieldAccountOutline,
-                    activity: mdiHistory,
-                  }[id]
-                }
-              />
-              {tr('ui.' + id)}
-            </Tabs.Trigger>
-          ))}
-        </Tabs.List>
+        <SectionNav
+          label={tr('my_profile_88060502')}
+          value={section}
+          onChange={setSection}
+          items={[
+            { id: 'account', title: tr('ui.account'), icon: mdiAccountOutline },
+            { id: 'appearance', title: tr('ui.appearance'), icon: mdiPaletteOutline },
+            { id: 'security', title: tr('ui.security'), icon: mdiShieldAccountOutline },
+            { id: 'connections', title: tr('ui.connections'), icon: mdiLinkVariant },
+            { id: 'notifications', title: tr('ui.notifications'), icon: mdiBellOutline },
+            { id: 'activity', title: tr('ui.activity'), icon: mdiHistory },
+          ]}
+        />
         <div className="settings-content">
           <Tabs.Content value={section} className="general-settings">
             {section === 'connections' && <LinkedAccounts />}
- {section === 'notifications' && <NotificationPreferences />}
+            {section === 'notifications' && <NotificationPreferences />}
             <section className="surface" hidden={section !== 'appearance'}>
               <h2>{tr('ui.theme')}</h2>
-              <label className="field">
-                {tr('ui.theme')}
-                <select
-                  value={themeDraft.draft}
-                  onChange={(e) => themeDraft.setDraft(e.target.value as 'light' | 'dark')}
-                >
-                  <option value="light">{tr('ui.light')}</option>
-                  <option value="dark">{tr('ui.dark')}</option>
-                </select>
-              </label>
+              <div className="theme-picker" role="radiogroup" aria-label={tr('ui.theme')}>
+                {themes.map((theme) => (
+                  <button
+                    type="button"
+                    role="radio"
+                    key={theme}
+                    className="theme-tile"
+                    data-preview={theme}
+                    aria-checked={themeDraft.draft === theme}
+                    onClick={() => themeDraft.setDraft(theme)}
+                  >
+                    <span className="theme-preview" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                    {tr(
+                      {
+                        light: 'ui.light',
+                        dark: 'ui.dark',
+                        'light-glass': 'ui.lightGlass',
+                        'dark-glass': 'ui.darkGlass',
+                      }[theme],
+                    )}
+                  </button>
+                ))}
+              </div>
               <Button
-                aria-label={tr('save_4864057d')}
-                title={tr('save_4864057d')}
+                className="primary"
                 disabled={!themeDraft.dirty || saveTheme.isPending}
                 onClick={() =>
                   saveTheme.mutate((p) => ({ ...p, theme: themeDraft.draft }), {
@@ -155,10 +167,11 @@ export function ProfilePage() {
                   })
                 }
               >
-                <Icon path={mdiCheck} />
+                {tr('save_4864057d')}
               </Button>
               {saveTheme.error && <Notice error>{saveTheme.error.message}</Notice>}
               <h2>{tr('wallpaper_b59390bb')}</h2>
+              <p className="muted">{tr('ui.themeBackground')}</p>
               <WallpaperSettings />
             </section>
             <div className="surface" hidden={section !== 'account'}>

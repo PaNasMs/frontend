@@ -3,23 +3,9 @@ import { useDraft } from '../shared/interaction'
 import { useState } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery } from '@tanstack/react-query'
-import {
-  mdiAccountPlusOutline,
-  mdiAccountGroupOutline,
-  mdiArrowLeft,
-  mdiCheck,
-  mdiDeleteOutline,
-  mdiPencilOutline,
-  mdiKeyPlus,
-  mdiKeyChange,
-  mdiFolderMoveOutline,
-  mdiRefresh,
-  mdiShieldAccountOutline,
-  mdiToggleSwitch,
-  mdiToggleSwitchOffOutline,
-} from '@mdi/js'
+import { mdiAccountPlusOutline, mdiAccountGroupOutline, mdiArrowLeft, mdiCheck, mdiDeleteOutline, mdiPencilOutline, mdiKeyPlus, mdiKeyChange, mdiFolderMoveOutline, mdiRefresh, mdiShieldAccountOutline, mdiToggleSwitch, mdiToggleSwitchOffOutline, mdiAccountOutline, mdiKeyOutline, mdiMonitor, mdiHistory } from '@mdi/js'
 import { request, type Accounts } from '../api/client'
-import { Button, Icon, Notice } from '../shared/ui'
+import { Button, Icon, Notice, SectionNav } from '../shared/ui'
 import { tr } from '../i18n'
 import { managed, OperationButton } from './operations'
 import { useRouteTab, useQueryValue } from './navigation'
@@ -378,14 +364,24 @@ function AccountDetails({
             </dl>
           </section>
         ) : (
-          <Tabs.Root className="tabbed-page account-detail-panel" value={section} onValueChange={setSection}>
-            <Tabs.List className="tabs">
-              {['profile', 'security', 'keys', 'sessions', 'history'].map((s) => (
-                <Tabs.Trigger value={s} key={s}>
-                  {tr('accounts.' + s)}
-                </Tabs.Trigger>
-              ))}
-            </Tabs.List>
+          <Tabs.Root
+            className="section-layout account-detail-panel"
+            orientation="vertical"
+            value={section}
+            onValueChange={setSection}
+          >
+            <SectionNav
+              label={user.name || username}
+              value={section}
+              onChange={setSection}
+              items={[
+                { id: 'profile', title: tr('accounts.profile'), icon: mdiAccountOutline },
+                { id: 'security', title: tr('accounts.security'), icon: mdiShieldAccountOutline },
+                { id: 'keys', title: tr('accounts.keys'), icon: mdiKeyOutline },
+                { id: 'sessions', title: tr('accounts.sessions'), icon: mdiMonitor },
+                { id: 'history', title: tr('accounts.history'), icon: mdiHistory },
+              ]}
+            />
             <div className="tabbed-body user-details">
               <Tabs.Content value="profile">
                 <EditAccount account={user} inventory={inventory} />
@@ -444,11 +440,16 @@ export function Users() {
           </Button>
         </div>
       </div>
-      <Tabs.Root className="tabbed-page" value={tab} onValueChange={setTab}>
-        <Tabs.List className="tabs">
-          <Tabs.Trigger value="accounts">{tr('users_0f0b8f55')}</Tabs.Trigger>
-          <Tabs.Trigger value="groups">{tr('groups_1cb3d2d6')}</Tabs.Trigger>
-        </Tabs.List>
+      <Tabs.Root className="section-layout" orientation="vertical" value={tab} onValueChange={setTab}>
+        <SectionNav
+          label={tr('users_and_groups_37ba925b')}
+          value={tab}
+          onChange={setTab}
+          items={[
+            { id: 'accounts', title: tr('users_0f0b8f55'), icon: mdiAccountOutline },
+            { id: 'groups', title: tr('groups_1cb3d2d6'), icon: mdiAccountGroupOutline },
+          ]}
+        />
         <div className="tabbed-body">
           <div className="user-filters">
             <input

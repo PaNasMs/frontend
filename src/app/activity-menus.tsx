@@ -1,3 +1,4 @@
+import { useOngoingCount } from './ongoing-tasks'
 import { useFileUploads, uploadActive, type UploadTask } from './file-uploads'
 import { useExclusivePopover } from '../shared/interaction'
 import { tr } from '../i18n/index'
@@ -18,6 +19,7 @@ function ActivityMenu({
   canClear,
   clear,
   children,
+  badge = 0,
 }: {
   id: string
   title: string
@@ -26,6 +28,7 @@ function ActivityMenu({
   canClear: boolean
   clear: () => Promise<unknown>
   children: ReactNode
+  badge?: number
 }) {
   const menu = useRef<HTMLDetailsElement>(null)
   useExclusivePopover(menu)
@@ -64,6 +67,11 @@ function ActivityMenu({
     <details className="activity-menu" ref={menu}>
       <summary className="topbar-action" title={title} aria-label={title}>
         <Icon path={icon} />
+        {badge > 0 && (
+          <span className="topbar-badge" aria-hidden="true">
+            {badge}
+          </span>
+        )}
       </summary>
       <section className="activity-dropdown" aria-label={title}>
         <div className="activity-heading">
@@ -84,13 +92,16 @@ function ActivityMenu({
     </details>
   )
 }
-export function ActivityMenus() {
-  const histories = modules().filter(module => module.taskHistory)
-  const moduleHistory = useQueries({ queries: histories.map(module => ({
-    queryKey: ['module-task-history', module.id],
-    queryFn: module.taskHistory!.status,
-    refetchInterval: 2000,
-  })) })
+export function ActivityMenus({ only }: { only?: 'jobs' | 'notifications' }) {
+  const running = useOngoingCount()
+  const histories = modules().filter((module) => module.taskHistory)
+  const moduleHistory = useQueries({
+    queries: histories.map((module) => ({
+      queryKey: ['module-task-history', module.id],
+      queryFn: module.taskHistory!.status,
+      refetchInterval: 2000,
+    })),
+  })
   const uploads = useFileUploads()
   const q = useQueryClient()
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
@@ -103,14 +114,15 @@ export function ActivityMenus() {
   const alerts = useQuery({ queryKey: ['notifications'], queryFn: () => request<Alert[]>('notifications') })
   return (
     <>
-      {session.data && (
+      {session.data && only !== 'notifications' && (
         <ActivityMenu
           id="jobs"
+          badge={running}
           title={tr('tasks_2ff08344')}
           icon={mdiFormatListChecks}
           clearLabel={tr('clear_completed_task_history_be777d80')}
           canClear={
-            moduleHistory.some(history => history.data?.canClear) ||
+            moduleHistory.some((history) => history.data?.canClear) ||
             uploads.some((task) => !uploadActive(task)) ||
             !!jobs.data?.some(
               (j) => ['succeeded', 'failed', 'interrupted', 'cancelled'].includes(j.status) && !j.needsReview,
@@ -119,29 +131,33 @@ export function ActivityMenus() {
           clear={async () => {
             const results = await Promise.allSettled([
               managed('clear-history', {}),
-              ...histories.map(module => module.taskHistory!.clear()),
+              ...histories.map((module) => module.taskHistory!.clear()),
             ])
             q.setQueryData<UploadTask[]>(['file-uploads'], (old) => old?.filter(uploadActive))
-            await Promise.all(histories.map(module => q.invalidateQueries({ queryKey: module.taskHistory!.queryKey })))
+            await Promise.all(
+              histories.map((module) => q.invalidateQueries({ queryKey: module.taskHistory!.queryKey })),
+            )
             await q.invalidateQueries({ queryKey: ['module-task-history'] })
             await q.invalidateQueries({ queryKey: ['jobs'] })
-            const failed = results.find(result => result.status === 'rejected')
+            const failed = results.find((result) => result.status === 'rejected')
             if (failed?.status === 'rejected') throw failed.reason
           }}
         >
           <JobsList />
         </ActivityMenu>
       )}
-      <ActivityMenu
-        id="notifications"
-        title={tr('notifications_ee3c35f3')}
-        icon={mdiBellOutline}
-        clearLabel={tr('clear_history_active_warnings_will_remain_03fdf588')}
-        canClear={!!alerts.data?.some((a) => !a.active)}
-        clear={() => request('notifications', 'DELETE')}
-      >
-        <NotificationsList />
-      </ActivityMenu>
+      {only !== 'jobs' && (
+        <ActivityMenu
+          id="notifications"
+          title={tr('notifications_ee3c35f3')}
+          icon={mdiBellOutline}
+          clearLabel={tr('clear_history_active_warnings_will_remain_03fdf588')}
+          canClear={!!alerts.data?.some((a) => !a.active)}
+          clear={() => request('notifications', 'DELETE')}
+        >
+          <NotificationsList />
+        </ActivityMenu>
+      )}
     </>
   )
 }

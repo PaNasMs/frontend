@@ -10,7 +10,7 @@ import { request, type Preferences } from '../api/client'
 import { Icon } from '../shared/ui'
 import { apps, shortcutKind, defaults, columns, screen, toggleShortcut, reorder } from './desktop-layout'
 import { usePreferencesSave } from './preferences-save'
-export function ApplicationBar() {
+export function ApplicationBar({ phone = false }: { phone?: boolean }) {
   const prefs = useQuery({ queryKey: ['preferences'], queryFn: () => request<Preferences>('preferences') })
   const save = usePreferencesSave()
   const location = useLocation()
@@ -33,8 +33,15 @@ export function ApplicationBar() {
   const popup = useRef<HTMLDivElement>(null)
   const trigger = useRef<HTMLButtonElement>(null)
   const applications = apps()
-  const ids = (prefs.data?.taskbar ?? applications.filter((a) => a.id !== 'history').map((a) => a.id)).filter(
-    (id) => applications.some((a) => a.id === id),
+  // The phone keeps its own, shorter set of pinned sections.
+  const key = phone ? 'taskbarMobile' : 'taskbar'
+  const limit = phone ? 3 : 8
+  const everything = applications.filter((a) => a.id !== 'history').map((a) => a.id)
+  const ids = (prefs.data?.[key] ?? (phone ? everything.slice(0, limit) : everything)).filter((id) =>
+    applications.some((a) => a.id === id),
+  )
+  const current = applications.find(
+    (a) => location.pathname === a.path || location.pathname.startsWith(a.path + '/'),
   )
   const mode = screen()
   const desktop = prefs.data?.desktopLayouts?.[mode] ?? defaults(columns(mode))
@@ -82,7 +89,7 @@ export function ApplicationBar() {
   }, [open])
   function arrange(source: string, target: string) {
     if (source === target) return
-    save.mutate((p) => ({ ...p, taskbar: reorder(p.taskbar ?? ids, source, target) }))
+    save.mutate((p) => ({ ...p, [key]: reorder(p[key] ?? ids, source, target) }))
     setDragged('')
     setOver('')
   }
@@ -98,6 +105,7 @@ export function ApplicationBar() {
       <button
         ref={trigger}
         className="app-launcher"
+        aria-current={current && !ids.includes(current.id) ? 'page' : undefined}
         title={tr('applications_946ee087')}
         aria-label={tr('applications_946ee087')}
         aria-expanded={open}
@@ -182,9 +190,9 @@ export function ApplicationBar() {
                     next = at + (e.key === 'ArrowLeft' ? -1 : 1)
                   if (next < 0 || next >= ids.length) return
                   save.mutate((p) => {
-                    const order = [...(p.taskbar ?? ids)]
+                    const order = [...(p[key] ?? ids)]
                     ;[order[at], order[next]] = [order[next], order[at]]
-                    return { ...p, taskbar: order }
+                    return { ...p, [key]: order }
                   })
                 }
               }}
@@ -194,12 +202,18 @@ export function ApplicationBar() {
           )
         })}
       </nav>
-      <span className="application-separator" aria-hidden="true" />
-      <OngoingTasks />
-      {modules().filter(module => module.backgroundIndicator).map(module => {
-        const Indicator = module.backgroundIndicator!
-        return <Indicator key={module.id} />
-      })}
+      {!phone && (
+        <>
+          <span className="application-separator" aria-hidden="true" />
+          <OngoingTasks />
+          {modules()
+            .filter((module) => module.backgroundIndicator)
+            .map((module) => {
+              const Indicator = module.backgroundIndicator!
+              return <Indicator key={module.id} />
+            })}
+        </>
+      )}
       {open && (
         <section className="app-launcher-menu" aria-label={tr('nas_applications_5f56f294')}>
           <h2>{tr('applications_946ee087')}</h2>
@@ -224,12 +238,12 @@ export function ApplicationBar() {
                     showContext(a.id, rect.left, rect.bottom)
                   }}
                 >
-                  <Icon path={mdiDotsVertical} size={16} />
+                  <Icon path={mdiDotsVertical} size={20} />
                 </button>
               </div>
             ))}
           </div>
-          <p>{tr('right_click_to_choose_where_to_show_the_icon_f2e50e07')}</p>
+          <p>{tr(phone ? 'ui.pinHintPhone' : 'ui.pinHintComputer')}</p>
         </section>
       )}
       {save.error && (
@@ -258,13 +272,13 @@ export function ApplicationBar() {
             <button
               role="menuitemcheckbox"
               aria-checked={ids.includes(app.id)}
-              disabled={save.isPending}
+              disabled={save.isPending || (!ids.includes(app.id) && ids.length >= limit)}
               onClick={() => {
                 save.mutate((p) => ({
                   ...p,
-                  taskbar: ids.includes(app.id)
-                    ? (p.taskbar ?? ids).filter((id) => id !== app.id)
-                    : [...(p.taskbar ?? ids), app.id],
+                  [key]: ids.includes(app.id)
+                    ? (p[key] ?? ids).filter((id) => id !== app.id)
+                    : [...(p[key] ?? ids), app.id],
                 }))
                 setContext(null)
               }}

@@ -4,21 +4,7 @@ import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { tr, locale } from '../i18n/index'
 import { registerModule } from './module-registry'
-import {
-  mdiServer,
-  mdiCogOutline,
-  mdiBellOutline,
-  mdiLinkVariant,
-  mdiChip,
-  mdiClockOutline,
-  mdiMemory,
-  mdiFan,
-  mdiPower,
-  mdiDotsHorizontal,
-  mdiTextBoxSearchOutline,
-  mdiRefresh,
-  mdiDownload,
-} from '@mdi/js'
+import { mdiServer, mdiCogOutline, mdiBellOutline, mdiLinkVariant, mdiChip, mdiClockOutline, mdiMemory, mdiFan, mdiPower, mdiDotsHorizontal, mdiTextBoxSearchOutline, mdiRefresh, mdiDownload, mdiTextBoxOutline, mdiUpdate } from '@mdi/js'
 import { SystemUpdates } from './system-updates'
 import { WebSettings } from './web-settings'
 import { CoolingSettings } from './cooling'
@@ -26,7 +12,7 @@ import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } fro
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery } from '@tanstack/react-query'
 import { managed, OperationButton } from './operations'
-import { Notice, Icon } from '../shared/ui'
+import { Notice, Icon, SectionNav } from '../shared/ui'
 export function SystemPage() {
   const [tab, setTab] = useRouteTab('/system', ['services', 'journal', 'updates'], 'services')
   const [filter, setFilter] = useQueryValue('filter')
@@ -88,12 +74,17 @@ export function SystemPage() {
   return (
     <>
       <h1>{tr('system_3ac98f27')}</h1>
-      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
-        <Tabs.List className="tabs">
-          <Tabs.Trigger value="services">{tr('services_578702de')}</Tabs.Trigger>
-          <Tabs.Trigger value="journal">{tr('logs_67ade741')}</Tabs.Trigger>
-          <Tabs.Trigger value="updates">{tr('updates_13920906')}</Tabs.Trigger>
-        </Tabs.List>
+      <Tabs.Root className="section-layout" orientation="vertical" activationMode="manual" value={tab} onValueChange={setTab}>
+        <SectionNav
+          label={tr('system_3ac98f27')}
+          value={tab}
+          onChange={setTab}
+          items={[
+            { id: 'services', title: tr('services_578702de'), icon: mdiCogOutline },
+            { id: 'journal', title: tr('logs_67ade741'), icon: mdiTextBoxOutline },
+            { id: 'updates', title: tr('updates_13920906'), icon: mdiUpdate },
+          ]}
+        />
         <Tabs.Content value="services">
           <div className="filter-bar">
             <input

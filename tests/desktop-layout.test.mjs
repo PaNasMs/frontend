@@ -23,11 +23,17 @@ const code = ts.transpileModule(
 vm.runInNewContext(code, {
   exports,
   crypto: webcrypto,
+  innerWidth: 1280,
   require: (name) =>
     name === './module-registry' ? { widgets, modules, isAdministrator: () => true } : name.includes('i18n') ? translations : {},
 })
 exports.registerShortcuts()
 const layouts = exports.toggleShortcut(undefined, 'files', true)
+// A shortcut is toggled for the current device class only; the phone keeps its own desktop.
+assert.deepEqual(Object.keys(layouts), ['wide'])
+const phone = exports.toggleShortcut({ mobile: [] }, 'files', true)
+assert.deepEqual(Object.keys(phone).sort(), ['mobile', 'wide'])
+assert.equal(phone.mobile.length, 0)
 for (const [mode, tiles] of Object.entries(layouts)) {
   assert.equal(tiles.filter((t) => t.kind === 'files').length, 1)
   assert.ok(tiles.every((t) => exports.free(t, tiles, exports.columns(mode))))

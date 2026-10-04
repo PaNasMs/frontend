@@ -80,19 +80,17 @@ export function defaults(cols: number) {
   }
   return all
 }
+/** Shows or hides a shortcut on the desktop of the current device class only. */
 export function toggleShortcut(layouts: Record<string, Tile[]> | undefined, id: string, show: boolean) {
   const kind = shortcutKind(id)
-  const result = { ...layouts }
-  for (const mode of ['wide', 'medium', 'mobile']) {
-    const all = [...(layouts?.[mode] ?? defaults(columns(mode)))].filter((t) => show || t.kind !== kind)
-    if (show && !all.some((t) => t.kind === kind)) {
-      const tile = place(kind, all, columns(mode))
-      if (!tile) throw Error(tr('no_free_space_on_the_desktop_7b121d2c'))
-      all.push(tile)
-    }
-    result[mode] = all
+  const mode = screen()
+  const all = [...(layouts?.[mode] ?? defaults(columns(mode)))].filter((t) => show || t.kind !== kind)
+  if (show && !all.some((t) => t.kind === kind)) {
+    const tile = place(kind, all, columns(mode))
+    if (!tile) throw Error(tr('no_free_space_on_the_desktop_7b121d2c'))
+    all.push(tile)
   }
-  return result
+  return { ...layouts, [mode]: all }
 }
 export function reorder(ids: string[], source: string, target: string) {
   const result = ids.filter((id) => id !== source)

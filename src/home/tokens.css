@@ -1,0 +1,121 @@
+/* PaNasMs Home tokens. Source of the values: documentation/design/home/tokens.json in PaNasMs/panasms.
+   Theme = data-theme (light | dark) plus data-surface (solid | glass) on <html>. */
+@import '@fontsource-variable/manrope/wght.css';
+:root {
+  --wall: #1b212b;
+  --panel: #20262f;
+  --panel-solid: #20262f;
+  --inset: #2a313c;
+  --line: #39424f;
+  --line-strong: #7c899d;
+  --ink: #eef2f7;
+  --on-ink: #161a22;
+  --mute: #a4afc0;
+  --disabled: #6f7b8e;
+  --accent: #f6c453;
+  --on-accent: #2a1c00;
+  --second: #8ab4ff;
+  --on-second: #10203c;
+  --focus: #8ab4ff;
+  --selection: rgba(138, 180, 255, 0.16);
+  --ok: #7fd9b3;
+  --ok-bg: #1d3a31;
+  --warn: #f6c453;
+  --warn-bg: #3d3216;
+  --danger: #ff9a8f;
+  --on-danger: #3a0d08;
+  --danger-bg: #45211e;
+  --hover: rgba(255, 255, 255, 0.08);
+  --press: rgba(255, 255, 255, 0.14);
+  --scrim: rgba(0, 0, 0, 0.6);
+  --veil: rgba(32, 38, 47, 0.72);
+  --shadow-chip: 0 1px 2px rgba(20, 30, 50, 0.12);
+  --shadow-pop: 0 8px 24px rgba(20, 30, 50, 0.18);
+  --shadow-dialog: 0 16px 48px rgba(20, 30, 50, 0.28);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --control: 44px;
+  --control-lg: 48px;
+  --rail: 232px;
+  --font-sans: 'Manrope Variable', Manrope, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --glass: none;
+  /* Names used by module builds made before the Home redesign. New code uses the names above. */
+  --bg: var(--wall);
+  --panel-soft: var(--inset);
+  --text: var(--ink);
+  --muted: var(--mute);
+  --control-border: var(--line-strong);
+  --error: var(--danger);
+  --success: var(--ok);
+  --warning: var(--warn);
+  --info: var(--second);
+  --good: var(--ok);
+  --crit: var(--danger);
+  --card-border: transparent;
+  --radius-control: var(--radius-sm);
+  --radius-card: var(--radius-lg);
+  --radius-dialog: var(--radius-lg);
+  --shadow-card: none;
+  --shadow-card-hover: none;
+  --shadow-raised: var(--shadow-pop);
+  color-scheme: dark;
+}
+:root[data-theme='light'] {
+  --wall: #dfe7f2;
+  --panel: #ffffff;
+  --panel-solid: #ffffff;
+  --inset: #f1f5fa;
+  --line: #d5dde8;
+  --line-strong: #76839a;
+  --ink: #1b2433;
+  --on-ink: #ffffff;
+  --mute: #56627a;
+  --disabled: #8490a4;
+  --accent: #f2b632;
+  --on-accent: #2a1c00;
+  --second: #2f6fd6;
+  --on-second: #ffffff;
+  --focus: #2f6fd6;
+  --selection: rgba(47, 111, 214, 0.12);
+  --ok: #12775a;
+  --ok-bg: #dff3ea;
+  --warn: #8a4b00;
+  --warn-bg: #fdeccb;
+  --danger: #b3261e;
+  --on-danger: #ffffff;
+  --danger-bg: #fbe3e0;
+  --hover: rgba(27, 36, 51, 0.06);
+  --press: rgba(27, 36, 51, 0.12);
+  --scrim: rgba(27, 36, 51, 0.45);
+  --veil: rgba(255, 255, 255, 0.72);
+  color-scheme: light;
+}
+:root[data-surface='glass'] {
+  --panel: rgba(24, 29, 38, 0.72);
+  --inset: rgba(255, 255, 255, 0.09);
+  --line: rgba(255, 255, 255, 0.18);
+  --mute: #b8c2d1;
+  --selection: rgba(138, 180, 255, 0.18);
+  --glass: blur(18px) saturate(1.3);
+}
+:root[data-theme='light'][data-surface='glass'] {
+  --panel: rgba(255, 255, 255, 0.78);
+  --inset: rgba(27, 36, 51, 0.07);
+  --line: rgba(27, 36, 51, 0.16);
+  --mute: #465268;
+  --selection: rgba(47, 111, 214, 0.14);
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-surface='glass'] {
+    --panel: var(--panel-solid);
+    --glass: none;
+  }
+}

@@ -10,7 +10,7 @@ import { request } from '../api/client'
 import { Icon } from '../shared/ui'
 import { operations, type Job } from './operations'
 import { longJobs, taskPercent } from './active-tasks'
-export function OngoingTasks() {
+function useOngoing() {
   const { tasks: raids, error } = useRaidTasks(true)
   const jobs = useQuery({
     queryKey: ['jobs'],
@@ -28,13 +28,50 @@ export function OngoingTasks() {
   const jobsHref = `${location.pathname}?${params}`
   const updates = useUpdateTask()
   const fileTasks = useFileUploads()
-  const activeFileJobs = new Set(fileTasks.flatMap(task => task.jobIds ?? (task.jobId ? [task.jobId] : [])))
-  const uploads = fileTasks.filter(uploadActive).map(task => ({
-    id: task.id, title: fileTaskTitle(task), target: task.destination,
-    stage: task.status === 'waiting' ? tr('uploads.waiting') : task.stage || task.name, paused: task.status === 'waiting', percent: uploadPercent(task), href: undefined,
+  const activeFileJobs = new Set(fileTasks.flatMap((task) => task.jobIds ?? (task.jobId ? [task.jobId] : [])))
+  const uploads = fileTasks.filter(uploadActive).map((task) => ({
+    id: task.id,
+    title: fileTaskTitle(task),
+    target: task.destination,
+    stage: task.status === 'waiting' ? tr('uploads.waiting') : task.stage || task.name,
+    paused: task.status === 'waiting',
+    percent: uploadPercent(task),
+    href: undefined,
   }))
-  const tasks = [...uploads, ...updates, ...raids, ...longJobs((jobs.data ?? []).filter(job => !activeFileJobs.has(job.id)), now, operations)]
+  const tasks = [
+    ...uploads,
+    ...updates,
+    ...raids,
+    ...longJobs(
+      (jobs.data ?? []).filter((job) => !activeFileJobs.has(job.id)),
+      now,
+      operations,
+    ),
+  ]
+  return { tasks, jobsHref, stale: !!(error || jobs.error) }
+}
+/** Number of long-running tasks, for the counter on the Tasks button. */
+export function useOngoingCount() {
+  return useOngoing().tasks.length
+}
+export function OngoingTasks({ row = false }: { row?: boolean }) {
+  const { tasks, jobsHref, stale } = useOngoing()
   if (!tasks.length) return null
+  if (row) {
+    const task = tasks[0]
+    return (
+      <Link
+        className={`ongoing-row ${task.paused ? 'paused' : ''}`}
+        to={task.id === 'system-update' ? task.href! : jobsHref}
+        aria-label={`${task.title}: ${task.target}, ${task.paused ? tr('paused_de6ceb5b') : taskPercent(task) || tr('in_progress_169836f8')}`}
+      >
+        <span className="ongoing-row-title">{task.title}</span>
+        <progress max={100} value={task.percent} aria-hidden="true" />
+        <span className="ongoing-task-percent">{taskPercent(task)}</span>
+        {tasks.length > 1 && <span className="ongoing-row-more">+{tasks.length - 1}</span>}
+      </Link>
+    )
+  }
   return (
     <div className="ongoing-tasks" aria-label={tr('long_running_tasks_ef6b1f6c')}>
       {tasks.slice(0, 2).map((task) => (
@@ -42,7 +79,7 @@ export function OngoingTasks() {
           className={`ongoing-task ${task.paused ? 'paused' : ''}`}
           key={task.id}
           to={task.id === 'system-update' ? task.href! : jobsHref}
-          title={`${task.title} · ${task.target} · ${[taskPercent(task), task.stage].filter(Boolean).join(' · ')}${error || jobs.error ? ' ' + tr('data_may_be_out_of_date_f878d6a7') : ''}`}
+          title={`${task.title} · ${task.target} · ${[taskPercent(task), task.stage].filter(Boolean).join(' · ')}${stale ? ' ' + tr('data_may_be_out_of_date_f878d6a7') : ''}`}
           aria-label={`${task.title}: ${task.target}, ${task.paused ? tr('paused_de6ceb5b') : taskPercent(task) || tr('in_progress_169836f8')}`}
         >
           <Icon path={task.paused ? mdiPause : task.href ? mdiSync : mdiProgressClock} size={18} />

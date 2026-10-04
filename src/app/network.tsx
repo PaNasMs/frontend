@@ -1,19 +1,10 @@
 import { Link } from 'react-router-dom'
-import { DialogContent } from '../shared/ui'
+import { DialogContent, SectionNav } from '../shared/ui'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  mdiLan,
-  mdiWifiCog,
-  mdiPencilOutline,
-  mdiRefresh,
-  mdiPlus,
-  mdiDeleteOutline,
-  mdiClose,
-  mdiInformationOutline,
-} from '@mdi/js'
+import { mdiLan, mdiWifiCog, mdiPencilOutline, mdiRefresh, mdiPlus, mdiDeleteOutline, mdiClose, mdiInformationOutline, mdiRoutes } from '@mdi/js'
 import { registerModule } from './module-registry'
 import { useRouteTab } from './navigation'
 import { newID } from './dashboard'
@@ -434,11 +425,16 @@ function NetworkPage() {
           </Dialog.Portal>
         </Dialog.Root>
       )}
-      <Tabs.Root className="tabbed-page" value={tab} onValueChange={setTab}>
-        <Tabs.List className="tabs">
-          <Tabs.Trigger value="interfaces">{tr('network.interfaces')}</Tabs.Trigger>
-          <Tabs.Trigger value="routes">{tr('network.routes')}</Tabs.Trigger>
-        </Tabs.List>
+      <Tabs.Root className="section-layout" orientation="vertical" value={tab} onValueChange={setTab}>
+        <SectionNav
+          label={tr('network.title')}
+          value={tab}
+          onChange={setTab}
+          items={[
+            { id: 'interfaces', title: tr('network.interfaces'), icon: mdiLan },
+            { id: 'routes', title: tr('network.routes'), icon: mdiRoutes },
+          ]}
+        />
         <Tabs.Content value="interfaces">
           <label className="check">
             <input type="checkbox" checked={showSystem} onChange={(e) => setShowSystem(e.target.checked)} />

@@ -2,7 +2,7 @@ import { localizedModuleText, type ModuleText } from './module-text'
 import { language, i18n, tr } from '../i18n'
 import './module-sdk'
 import { managed } from './operations'
-import { modules } from './module-registry'
+import { modules, sealBuiltInModules } from './module-registry'
 export type InstalledModule = ModuleText & {
   id: string
   title: string
@@ -19,6 +19,7 @@ export type InstalledModule = ModuleText & {
 export type ModuleCatalog = { core: string; api: number; installed: InstalledModule[] }
 export const moduleErrors: string[] = []
 export async function loadInstalledModules() {
+  sealBuiltInModules()
   let catalog: ModuleCatalog
   try {
     catalog = await moduleCatalog()

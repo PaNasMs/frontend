@@ -2,7 +2,7 @@ import { useRouteTab } from './navigation'
 import { tr } from '../i18n'
 import { settingsSections } from './module-registry'
 import * as Tabs from '@radix-ui/react-tabs'
-import { Icon } from '../shared/ui'
+import { SectionNav } from '../shared/ui'
 export function Settings() {
   const sections = settingsSections()
   const [section, setSection] = useRouteTab(
@@ -19,17 +19,20 @@ export function Settings() {
         activationMode="manual"
         value={section}
         onValueChange={setSection}
-        className="settings-layout settings-page"
+        className="section-layout settings-page"
         orientation="vertical"
       >
-        <Tabs.List className="settings-nav" aria-label={tr('settings_sections_9a4919e1')}>
-          {sections.map((s) => (
-            <Tabs.Trigger key={s.id} value={s.id}>
-              <Icon path={s.icon} />
-              {s.title}
-            </Tabs.Trigger>
-          ))}
-        </Tabs.List>
+        <SectionNav
+          label={tr('settings_sections_9a4919e1')}
+          value={section}
+          onChange={setSection}
+          items={sections.map((s) => ({
+            id: s.id,
+            title: s.title,
+            icon: s.icon,
+            group: s.external ? tr('modules_09017097') : undefined,
+          }))}
+        />
         <div className="settings-content">
           {sections.map((s) => (
             <Tabs.Content key={s.id} value={s.id}>

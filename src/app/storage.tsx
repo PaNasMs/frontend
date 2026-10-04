@@ -1,28 +1,9 @@
-import { DialogContent } from '../shared/ui'
+import { DialogContent, SectionNav } from '../shared/ui'
 import { useRouteTab } from './navigation'
 import { tr, locale } from '../i18n/index'
 import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
-import {
-  mdiPause,
-  mdiTimerOutline,
-  mdiClipboardSearchOutline,
-  mdiFan,
-  mdiPlay,
-  mdiLinux,
-  mdiUsb,
-  mdiUsbFlashDrive,
-  mdiMicroSd,
-  mdiChip,
-  mdiCheckCircleOutline,
-  mdiLockOutline,
-  mdiPulse,
-  mdiWeatherNight,
-  mdiSync,
-  mdiHelpCircleOutline,
-  mdiHarddiskRemove,
-  mdiAlertOutline,
-} from '@mdi/js'
+import { mdiPause, mdiTimerOutline, mdiClipboardSearchOutline, mdiFan, mdiPlay, mdiLinux, mdiUsb, mdiUsbFlashDrive, mdiMicroSd, mdiChip, mdiCheckCircleOutline, mdiLockOutline, mdiPulse, mdiWeatherNight, mdiSync, mdiHelpCircleOutline, mdiHarddiskRemove, mdiAlertOutline, mdiChartPie } from '@mdi/js'
 import { EjectButton } from './removable'
 import { registerModule, registerWidgetSource } from './module-registry'
 import {
@@ -762,7 +743,8 @@ export function StoragePage() {
         </div>
       </div>
       <Tabs.Root
-        className="tabbed-page"
+        className="section-layout"
+        orientation="vertical"
         activationMode="manual"
         value={tab}
         onValueChange={(v) => {
@@ -771,10 +753,19 @@ export function StoragePage() {
           setSelectedMember(null)
         }}
       >
-        <Tabs.List className="tabs" aria-label={tr('storage_5347bdf6')}>
-          <Tabs.Trigger value="disks">{tr('disks_and_arrays_a0066b23')}</Tabs.Trigger>
-          <Tabs.Trigger value="mounts">{tr('partitions_and_mounts_c5a470d6')}</Tabs.Trigger>
-        </Tabs.List>
+        <SectionNav
+          label={tr('storage_5347bdf6')}
+          value={tab}
+          onChange={(v) => {
+            setTab(v)
+            setFreeSelection([])
+            setSelectedMember(null)
+          }}
+          items={[
+            { id: 'disks', title: tr('disks_and_arrays_a0066b23'), icon: mdiHarddisk },
+            { id: 'mounts', title: tr('partitions_and_mounts_c5a470d6'), icon: mdiChartPie },
+          ]}
+        />
         {data.isPending && <Notice>{tr('discovering_storage_2689e168')}</Notice>}
         {data.error && <Notice error>{data.error.message}</Notice>}
         <Tabs.Content value="disks">

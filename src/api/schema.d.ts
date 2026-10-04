@@ -1964,6 +1964,8 @@ export interface components {
              */
             language: "en" | "ru" | "uk";
             taskbar?: string[];
+            /** @description Sections pinned to the phone taskbar; kept separately from the computer set. */
+            taskbarMobile?: string[];
             desktopLayouts?: {
                 [key: string]: {
                     id: string;
@@ -1978,7 +1980,7 @@ export interface components {
                 [key: string]: number;
             };
             /** @enum {string} */
-            theme: "dark" | "light";
+            theme: "dark" | "light" | "dark-glass" | "light-glass";
             layouts: {
                 [key: string]: string[];
             };

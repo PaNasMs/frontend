@@ -4,20 +4,11 @@ import { useSearchParams } from 'react-router-dom'
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  mdiShareVariant,
-  mdiPlus,
-  mdiPencil,
-  mdiDeleteOutline,
-  mdiShieldKeyOutline,
-  mdiRefresh,
-  mdiCheck,
-  mdiClose,
-} from '@mdi/js'
+import { mdiShareVariant, mdiPlus, mdiPencil, mdiDeleteOutline, mdiShieldKeyOutline, mdiRefresh, mdiCheck, mdiClose, mdiFolderNetworkOutline, mdiLanConnect } from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
 import { managed, OperationButton, type Job } from './operations'
-import { Button, Icon, Notice, DialogContent } from '../shared/ui'
+import { Button, Icon, Notice, DialogContent, SectionNav } from '../shared/ui'
 import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
 import { notify } from './notifications'
@@ -114,11 +105,21 @@ export function SharingPage() {
           </Button>
         </div>
       </div>
-      <Tabs.Root className="tabbed-page sharing-page" value={tab} onValueChange={(tab) => setSearch({ tab })}>
-        <Tabs.List className="tabs">
-          <Tabs.Trigger value="folders">{tr('shares.folders')}</Tabs.Trigger>
-          <Tabs.Trigger value="connections">{tr('shares.connections')}</Tabs.Trigger>
-        </Tabs.List>
+      <Tabs.Root
+        className="section-layout sharing-page"
+        orientation="vertical"
+        value={tab}
+        onValueChange={(tab) => setSearch({ tab })}
+      >
+        <SectionNav
+          label={tr('shared_folders_5800977d')}
+          value={tab}
+          onChange={(tab) => setSearch({ tab })}
+          items={[
+            { id: 'folders', title: tr('shares.folders'), icon: mdiFolderNetworkOutline },
+            { id: 'connections', title: tr('shares.connections'), icon: mdiLanConnect },
+          ]}
+        />
         <Tabs.Content value={tab}>
           {data.error && <Notice error>{data.error.message}</Notice>}
           {(data.data?.drift || data.data?.recovery) && (

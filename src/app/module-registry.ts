@@ -50,9 +50,14 @@ export function setModuleAccess(admin: boolean) {
   administrator = admin
 }
 export const modules = () => registered.filter((m) => administrator || m.id === 'files')
+let builtIn = Infinity
+/** Everything registered before this call belongs to the core; later registrations are installed modules. */
+export function sealBuiltInModules() {
+  if (builtIn === Infinity) builtIn = registered.length
+}
 export const settingsSections = () =>
   modules()
-    .flatMap((m) => m.settings ?? [])
+    .flatMap((m) => (m.settings ?? []).map((s) => ({ ...s, external: registered.indexOf(m) >= builtIn })))
     .sort((a, b) => Number(b.id === 'general') - Number(a.id === 'general'))
 
 /**

@@ -45,3 +45,7 @@ export { DialogContent, CloseIcon, WaitingOverlay, WaitingSurface } from './wait
 export { ConfirmDialog, UnsavedChanges, useDraft, useExclusivePopover } from './interaction'
 
 export { FolderPicker } from './folder-picker'
+
+export { SectionNav, type SectionItem } from './section-nav'
+
+export { Disclosure } from './disclosure'

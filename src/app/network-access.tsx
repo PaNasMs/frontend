@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import * as Tabs from '@radix-ui/react-tabs'
 import { Button, DialogContent, Notice, WaitingSurface } from '../shared/ui'
 import { useDraft } from '../shared/interaction'
 import { managed, type Job } from './operations'
@@ -48,7 +47,7 @@ export function NetworkAccessSettings() {
   return <AccessForm incoming={data.data} />
 }
 function AccessForm({ incoming }: { incoming: Access }) {
-  const [tab, setTab] = useRouteTab('/settings/network', ['fallback', 'usb'], 'fallback')
+  useRouteTab('/settings/network', ['fallback', 'usb'], 'fallback')
   const { draft: value, setDraft: setValue, dirty, reset } = useDraft(incoming.config)
   const [reveal, setReveal] = useState(false)
   const [confirm, setConfirm] = useState<'save' | 'stop' | null>(null)
@@ -92,12 +91,7 @@ function AccessForm({ incoming }: { incoming: Access }) {
   const selected = adapters.find((d) => d.mac === value.adapter)
   return (
     <WaitingSurface busy={busy && !confirm}>
-      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
-        <Tabs.List className="tabs" aria-label={tr('access.title')}>
-          <Tabs.Trigger value="fallback">{tr('access.fallback')}</Tabs.Trigger>
-          <Tabs.Trigger value="usb">{tr('access.usb')}</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="fallback">
+      <div className="settings-stack">
           <section className="disk-settings-section">
             <h2>{tr('access.fallback')}</h2>
             <p>{tr('access.help')}</p>
@@ -193,8 +187,7 @@ function AccessForm({ incoming }: { incoming: Access }) {
             <p>{tr('access.returnHelp')}</p>
             {active && <Button onClick={() => setConfirm('stop')}>{tr('access.stop')}</Button>}
           </section>
-        </Tabs.Content>
-        <Tabs.Content value="usb">
+
           <section className="disk-settings-section">
             <h2>{tr('access.usb')}</h2>
             <p>{tr('access.usbHelp')}</p>
@@ -217,8 +210,7 @@ function AccessForm({ incoming }: { incoming: Access }) {
             </label>
             <p>{tr('access.power')}</p>
           </section>
-        </Tabs.Content>
-      </Tabs.Root>
+      </div>
       <div className="small muted">
         {addressRows.flatMap((d) =>
           (d.addresses ?? [])

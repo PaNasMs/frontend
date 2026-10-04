@@ -3,14 +3,13 @@ import { WaitingSurface } from '../shared/ui'
 import { useRouteTab } from './navigation'
 import { tr, locale } from '../i18n/index'
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js'
-import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { newID } from './dashboard'
 import { CoolingSettings, DiskTelemetrySettings } from './cooling'
 import { OperationButton, managed } from './operations'
 import { request, type Storage, type Device, type Preferences } from '../api/client'
 import type { StorageOptions } from './storage-volumes'
-import { Button, Notice } from '../shared/ui'
+import { Button, Notice, Disclosure } from '../shared/ui'
 const flatten = (nodes: Device[]): Device[] => nodes.flatMap((d) => [d, ...flatten(d.children ?? [])])
 const days = [
   tr('mon_3770c0ef'),
@@ -76,12 +75,7 @@ export function DiskSettings() {
   return (
     <WaitingSurface busy={sleepSave.isPending || reset.isPending}>
       <h2>{tr('disk_subsystem_e8f8c086')}</h2>
-      <Tabs.Root className="tabbed-page" activationMode="manual" value={tab} onValueChange={setTab}>
-        <Tabs.List className="tabs" aria-label={tr('disk_subsystem_settings_014926f4')}>
-          <Tabs.Trigger value="general">{tr('settings_7f17c7c6')}</Tabs.Trigger>
-          <Tabs.Trigger value="advanced">{tr('advanced_settings_3cc80085')}</Tabs.Trigger>
-        </Tabs.List>
-        <Tabs.Content value="general">
+      <div className="settings-stack">
           <CoolingSettings kind="disk" className="disk-settings-section" />
           <section className="disk-settings-section">
             <h2>{tr('disk_sleep_224ffae6')}</h2>
@@ -254,8 +248,12 @@ export function DiskSettings() {
               <p className="muted small">{tr('no_eligible_sata_disks_a08bc2f6')}</p>
             )}
           </section>
-        </Tabs.Content>
-        <Tabs.Content value="advanced">
+        <Disclosure
+          title={tr('advanced_settings_3cc80085')}
+          hint={tr('ui.diskAdvancedHint')}
+          open={tab === 'advanced'}
+          onOpenChange={(open) => setTab(open ? 'advanced' : 'general')}
+        >
           <CoolingSettings kind="disk" advanced className="disk-settings-section" />
           <DiskTelemetrySettings />
           <section className="disk-settings-section">
@@ -281,8 +279,8 @@ export function DiskSettings() {
               <p className="muted small">{tr('no_acknowledged_counts_0e5d535c')}</p>
             )}
           </section>
-        </Tabs.Content>
-      </Tabs.Root>
+        </Disclosure>
+      </div>
     </WaitingSurface>
   )
 }

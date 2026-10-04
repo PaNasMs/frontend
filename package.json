@@ -16,6 +16,7 @@
     "build:modules": "tsc -p tsconfig.modules.json && PANASMS_MODULE=files vite build --config module.vite.config.ts && PANASMS_MODULE=terminal vite build --config module.vite.config.ts && PANASMS_MODULE=cloud-sync vite build --config module.vite.config.ts"
   },
   "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
     "@hookform/resolvers": "^5.9.1",
     "@mdi/js": "^7.4.47",
     "@radix-ui/react-dialog": "^1.1.23",
