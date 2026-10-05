@@ -1,5 +1,5 @@
 import { GoogleConnect, ProviderConnect } from './external-connections'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { WaitingOverlay } from '../shared/ui'
 import { i18n, language, languageNames, languages, tr, type Language } from '../i18n/index'
 import { applyTheme, themes, type Theme } from '../home/theme'
@@ -36,6 +36,13 @@ export default function Login() {
   })
   const expired = (login.error instanceof APIError && login.error.status === 409) || !!next
   const [theme, setTheme] = useState<Theme>(guestTheme)
+  // The page background is the rich one in every theme while this page is shown.
+  useEffect(() => {
+    document.documentElement.dataset.page = 'sign-in'
+    return () => {
+      delete document.documentElement.dataset.page
+    }
+  }, [])
   const title = useId()
   const usernameError = useId()
   const passwordError = useId()
