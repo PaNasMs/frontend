@@ -4,7 +4,7 @@ import { tr } from '../i18n/index'
 import { mdiPlus, mdiFormatPaint, mdiLockOutline, mdiLockOpenOutline, mdiArrowExpand, mdiDeleteOutline, mdiEraser, mdiLink, mdiLinkOff, mdiCogOutline, mdiClose, mdiChevronRight, mdiHarddisk, mdiNas, mdiMicroSd, mdiUsbFlashDriveOutline, mdiFolderNetworkOutline, mdiCheckCircleOutline, mdiMinusCircleOutline, mdiShieldLockOutline, mdiSelectAll } from '@mdi/js'
 import { useState, type ReactNode } from 'react'
 import { MountVolumeButton } from './removable'
-import { OperationButton } from './operations'
+import { OperationButton, type Field } from './operations'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
 import type { Device, Mount } from '../api/client'
 export type MediaInfo = {
@@ -133,6 +133,22 @@ export function StorageVolumes({
     'mount.detach': mdiLinkOff,
     'mount.settings': mdiCogOutline,
   }
+  // The size field is tailored to the file system: XFS only grows to the whole device, so it
+  // has nothing to enter and goes straight to the review.
+  const resizeFields = (device: Device): Field[] =>
+    device.fstype === 'xfs'
+      ? []
+      : [
+          {
+            key: 'sizeMiB',
+            label: tr('new_size_mib_43cfeb96'),
+            type: 'number',
+            value: 0,
+            hint: tr(device.fstype === 'btrfs' ? 'storage.resize_hint_btrfs' : 'storage.resize_hint_ext', {
+              v0: Math.floor(device.size / 1048576),
+            }),
+          },
+        ]
   const choose = (next: Selection) =>
     setSelection((current) =>
       current?.root === next.root &&
@@ -179,13 +195,17 @@ export function StorageVolumes({
                       value: selection!.end! - selection!.start!,
                     },
                   ]
-                : undefined
+                : name === 'filesystem.resize'
+                  ? resizeFields(object)
+                  : undefined
             }
             context={context(object)}
             description={
               name === 'mount.settings'
                 ? tr('the_options_will_apply_the_next_time_the_volume_is_7e732f3d')
-                : undefined
+                : name === 'filesystem.resize' && object.fstype === 'xfs'
+                  ? tr('storage.resize_xfs')
+                  : undefined
             }
             autoReview
             disabled={protectedDevice || !!reason}

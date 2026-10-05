@@ -55,7 +55,12 @@ function Groups({
     />
   )
 }
+// Groups offered as a primary group: ordinary groups, plus system groups only while
+// "Show system accounts and groups" is on. The current choice always stays selectable.
+const primaryGroups = (groups: Group[], showSystem: boolean, ...current: string[]) =>
+  groups.filter((g) => showSystem || !g.system || current.includes(g.name))
 function EditAccount({ account, inventory }: { account: Account; inventory: Inventory }) {
+  const [services] = useQueryValue('service', '0', ['0', '1'])
   const edit = useDraft(
     { name: account.name, primaryGroup: account.primaryGroup, groups: account.groups },
     account.username,
@@ -76,9 +81,11 @@ function EditAccount({ account, inventory }: { account: Account; inventory: Inve
         <label className="field">
           {tr('primary_group_5cd09a30')}
           <select value={primaryGroup} onChange={(e) => setPrimary(e.target.value)}>
-            {inventory.groups.map((g) => (
-              <option key={g.name}>{g.name}</option>
-            ))}
+            {primaryGroups(inventory.groups, services === '1', account.primaryGroup, primaryGroup).map(
+              (g) => (
+                <option key={g.name}>{g.name}</option>
+              ),
+            )}
           </select>
         </label>
       </div>
@@ -427,7 +434,10 @@ export function Users() {
             choices={{
               primaryGroup: [
                 { id: '', label: tr('accounts.privateGroup') },
-                ...(data.data?.groups ?? []).map((g) => ({ id: g.name, label: g.name })),
+                ...primaryGroups(data.data?.groups ?? [], services === '1').map((g) => ({
+                  id: g.name,
+                  label: g.name,
+                })),
               ],
             }}
           />

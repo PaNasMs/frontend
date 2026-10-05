@@ -2,7 +2,14 @@ import { modules } from './module-registry'
 import { FileUploadTasks, useFileUploads } from './file-uploads'
 import { useUpdateTask } from './system-updates'
 import { FolderField } from '../shared/folder-picker'
-import { baseName, restoreDestination, siblingPath, stemLength, validFileName } from '../shared/file-name'
+import {
+  baseName,
+  luksName,
+  restoreDestination,
+  siblingPath,
+  stemLength,
+  validFileName,
+} from '../shared/file-name'
 import { MultiSelect } from '../shared/multi-select'
 import { notify } from './notifications'
 import { mdiCancel, mdiRestore, mdiCheck, mdiRefresh } from '@mdi/js'
@@ -34,6 +41,10 @@ export type Field = {
   value?: unknown
   // An optional field has a safe default: the dialog may review the operation before it is edited.
   optional?: boolean
+  // Explains the expected value below the input.
+  hint?: string
+  // Client-only repeat of the named secret field: it must match and is never sent to the server.
+  confirms?: string
 }
 type Operation = {
   label: string
@@ -241,10 +252,7 @@ export const operations: Record<string, Operation> = {
   },
   'filesystem.resize': {
     label: tr('resize_file_system_af722666'),
-    fields: [
-      target,
-      { ...size, label: tr('size_for_ext_btrfs_mib_0_uses_the_whole_device_for_6778acbc'), value: 0 },
-    ],
+    fields: [target, { ...size, value: 0, hint: tr('storage.resize_hint') }],
   },
   'disk.sleep': { label: tr('hdd_sleep_settings_d207e562'), fields: [] },
   'mount.open': { label: tr('check_and_mount_volume_c9a6f843'), fields: [target] },
@@ -258,6 +266,7 @@ export const operations: Record<string, Operation> = {
       target,
       { key: 'passphrase', label: tr('luks_password_c94fe95f'), type: 'password' },
       { key: 'password', label: tr('storage.new_key'), type: 'password' },
+      { key: 'newKeyConfirm', label: tr('storage.repeat_new_key'), type: 'password', confirms: 'password' },
     ],
   },
   'luks.key-remove': {
@@ -299,6 +308,12 @@ export const operations: Record<string, Operation> = {
     fields: [
       target,
       { key: 'passphrase', label: tr('luks_password_keep_a_separate_copy_43d8a4a0'), type: 'password' },
+      {
+        key: 'passphraseConfirm',
+        label: tr('storage.repeat_password'),
+        type: 'password',
+        confirms: 'passphrase',
+      },
     ],
   },
   'luks.open': {
@@ -604,6 +619,8 @@ function OperationForm({
     // Callers pass the item itself as the destination; never suggest the internal trash path.
     if (a === 'file.restore' && (!values.destination || values.destination === values.target))
       values.destination = restoreDestination(String(values.target ?? ''))
+    // Propose a valid mapper name; it stays editable.
+    if (a === 'luks.open' && !values.name) values.name = luksName(String(values.target ?? ''))
     return values
   }
   const [params, setParams] = useState<Record<string, unknown>>(() => defaults(action))
@@ -635,6 +652,12 @@ function OperationForm({
   const newName = String(params.name ?? '')
   const currentName = baseName(String(params.target ?? ''))
   const invalidFileName = action === 'file.rename' && !validFileName(newName)
+  // A repeated secret is compared here and never leaves the browser.
+  const repeats = (fields ?? operations[action].fields).filter((f) => f.confirms)
+  const unconfirmed = repeats.some((f) => !params[f.key] || params[f.key] !== params[f.confirms!])
+  const sent = repeats.length
+    ? Object.fromEntries(Object.entries(params).filter(([key]) => !repeats.some((f) => f.key === key)))
+    : params
   const requestParams: Record<string, unknown> =
     action === 'file.mkdir'
       ? { target: String(params.parent ?? '').replace(/\/$/, '') + '/' + folderName }
@@ -642,7 +665,7 @@ function OperationForm({
         ? { target: params.target, destination: siblingPath(String(params.target ?? ''), newName) }
         : action === 'partition.create' && 'sizeMiB' in params
           ? { ...params, endMiB: Number(params.startMiB) + Number(params.sizeMiB) }
-          : params
+          : sent
   const plan = useMutation({
     mutationFn: () => {
       if (['user.create', 'user.password'].includes(action) && params.password !== params.passwordConfirm)
@@ -650,6 +673,7 @@ function OperationForm({
       if (invalidFolderName)
         throw new Error(tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286'))
       if (invalidFileName) throw new Error(tr('fileTasks.nameInvalid'))
+      if (unconfirmed) throw new Error(tr('passwords_do_not_match_a73dc9b1'))
       return managed<{
         target: string
         details: string[]
@@ -923,6 +947,7 @@ function OperationForm({
                 className="primary"
                 disabled={
                   plan.isPending ||
+                  unconfirmed ||
                   editable.some(
                     (field) =>
                       field.type === 'folder' &&
@@ -982,7 +1007,8 @@ function OperationForm({
           editable.map((f) => {
             const val = params[f.key]
             const fieldError =
-              f.key === 'passwordConfirm' && val && val !== params.password
+              (f.key === 'passwordConfirm' && val && val !== params.password) ||
+              (f.confirms && val && val !== params[f.confirms])
                 ? tr('passwords_do_not_match_a73dc9b1')
                 : action === 'file.mkdir' && f.key === 'name' && val && invalidFolderName
                   ? tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286')
@@ -1085,7 +1111,9 @@ function OperationForm({
                         id={`${id}-${f.key}`}
                         aria-label={f.label}
                         aria-invalid={!!fieldError}
-                        aria-describedby={fieldError ? `${id}-${f.key}-error` : undefined}
+                        aria-describedby={
+                          fieldError ? `${id}-${f.key}-error` : f.hint ? `${id}-${f.key}-hint` : undefined
+                        }
                         type={f.type === 'number' ? 'number' : f.type === 'password' ? 'password' : 'text'}
                         value={String(val)}
                         autoComplete="off"
@@ -1099,6 +1127,11 @@ function OperationForm({
                           change(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value)
                         }
                       />
+                    )}
+                    {f.hint && (
+                      <span id={`${id}-${f.key}-hint`} className="small muted">
+                        {f.hint}
+                      </span>
                     )}
                     {fieldError && (
                       <span id={`${id}-${f.key}-error`} className="error-text" role="alert">
@@ -1116,6 +1149,9 @@ function OperationForm({
         {inv.error && <Notice error>{inv.error.message}</Notice>}
         {plan.error && <Notice error>{plan.error.message}</Notice>}
         {run.error && <Notice error>{run.error.message}</Notice>}
+        {(action === 'luks.open' || action === 'luks.auto-enable') && !plan.data && (
+          <p className="muted small">{tr('storage.luks_name_hint')}</p>
+        )}
         {action === 'raid.create' && !plan.data && (
           <p className="muted small">{tr('name_1_31_latin_letters_digits_or_the_first_charac_deab57fa')}</p>
         )}
