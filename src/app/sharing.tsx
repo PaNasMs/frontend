@@ -13,6 +13,7 @@ import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
 import { notify } from './notifications'
 import { registerModule } from './module-registry'
+import { smbNotReady } from './sharing-access'
 
 type Share = {
   name: string
@@ -209,6 +210,7 @@ export function SharingPage() {
                         {tr(s.readOnly ? 'read_only_c5eb2661' : 'read_and_write_823409cc')}
                       </p>
                     )}
+                    <SmbNotReady share={s} state={data.data} accounts={users.data} />
                   </article>
                 ))}
               </div>
@@ -260,6 +262,7 @@ export function SharingPage() {
           original={editing}
           existing={!!data.data?.shares.some((s) => s.name === editing.name && s.path === editing.path)}
           accounts={users.data}
+          state={data.data}
           close={() => setEditing(null)}
           done={() => {
             setEditing(null)
@@ -270,29 +273,47 @@ export function SharingPage() {
     </>
   )
 }
+// Granted people who cannot use the share over SMB yet. Informational: it never blocks saving.
+function SmbNotReady({
+  share,
+  state,
+  accounts,
+}: {
+  share: Pick<Share, 'smb' | 'readers' | 'writers'>
+  state?: State
+  accounts?: Accounts
+}) {
+  const names = smbNotReady(share, state?.accounts, accounts)
+  return names.length ? <Notice>{tr('shares.smbNotReady', { v0: names.join(', ') })}</Notice> : null
+}
 function ShareEditor({
   original,
   existing,
   accounts,
+  state,
   close,
   done,
 }: {
   original: Share
   existing: boolean
   accounts?: Accounts
+  state?: State
   close: () => void
   done: () => void
 }) {
   const [value, setValue] = useState({ ...original, clients: original.clients.join(',') })
   const [step, setStep] = useState(0)
   const update = (key: string, v: unknown) => setValue((s) => ({ ...s, [key]: v }))
+  const params = { ...value, target: existing ? original.name : '' }
+  // The server checks the settings before the review step; nothing is applied until Apply.
+  const review = useMutation({
+    mutationFn: () =>
+      managed<{ fingerprint: string; confirmation: string }>('plan', { action: 'share.save', params }),
+    onSuccess: () => setStep(2),
+  })
   const save = useMutation({
     mutationFn: async () => {
-      const params = { ...value, target: existing ? original.name : '' }
-      const p = await managed<{ fingerprint: string; confirmation: string }>('plan', {
-        action: 'share.save',
-        params,
-      })
+      const p = review.data!
       const job = await managed<{ id: string }>('run', {
         id: newID(),
         action: 'share.save',
@@ -334,8 +355,12 @@ function ShareEditor({
           dirty={
             JSON.stringify(value) !== JSON.stringify({ ...original, clients: original.clients.join(',') })
           }
-          busy={save.isPending}
-          message={tr('applying_changes_and_refreshing_data_2f929fed')}
+          busy={save.isPending || review.isPending}
+          message={tr(
+            save.isPending
+              ? 'applying_changes_and_refreshing_data_2f929fed'
+              : 'checking_whether_this_operation_is_available_75110126',
+          )}
           header={
             <>
               {' '}
@@ -347,13 +372,25 @@ function ShareEditor({
           }
           footer={
             <div className="dialog-actions">
-              {step > 0 && <Button onClick={() => setStep(0)}>{tr('shares.back')}</Button>}
+              {step > 0 && (
+                <Button
+                  disabled={save.isPending || review.isPending}
+                  onClick={() => {
+                    review.reset()
+                    save.reset()
+                    setStep(step - 1)
+                  }}
+                >
+                  {tr('shares.back')}
+                </Button>
+              )}
               <Button
-                onClick={() => (step === 0 ? setStep(1) : save.mutate())}
-                disabled={save.isPending || !value.name || !value.path}
+                className={step === 2 ? 'primary' : undefined}
+                onClick={() => (step === 0 ? setStep(1) : step === 1 ? review.mutate() : save.mutate())}
+                disabled={save.isPending || review.isPending || !value.name || !value.path}
               >
-                <Icon path={mdiCheck} />
-                {tr(step === 0 ? 'shares.next' : 'shares.save')}
+                {step === 2 && <Icon path={mdiCheck} />}
+                {tr(step === 2 ? 'shares.save' : 'shares.next')}
               </Button>
             </div>
           }
@@ -423,6 +460,7 @@ function ShareEditor({
                     ))}
                   </div>
                   <p className="small muted">{tr('shares.permissionsHint')}</p>
+                  <SmbNotReady share={value} state={state} accounts={accounts} />
                 </>
               )}
               {value.nfs && (
@@ -433,7 +471,11 @@ function ShareEditor({
                       value={value.clients}
                       onChange={(e) => update('clients', e.target.value)}
                       placeholder="192.168.1.0/24"
+                      aria-describedby="share-nfs-access-hint"
                     />
+                    <span id="share-nfs-access-hint" className="small muted">
+                      {tr('shares.nfsAccessHint')}
+                    </span>
                   </label>
                   <label className="check">
                     <input
@@ -448,6 +490,51 @@ function ShareEditor({
               )}
             </>
           )}
+          {step === 2 && (
+            <>
+              <p className="small muted">{tr('shares.reviewHint')}</p>
+              <dl className="operation-context">
+                {[
+                  [tr('shares.folder'), value.path],
+                  [tr('shares.name'), value.name],
+                  [
+                    tr('shares.protocols'),
+                    [value.smb && 'SMB', value.nfs && 'NFS'].filter(Boolean).join(' · ') ||
+                      tr('shares.unpublished'),
+                  ],
+                  ...(value.smb
+                    ? [
+                        [tr('shares.readers'), [...value.readers].sort().join(', ') || '—'],
+                        [tr('shares.writers'), [...value.writers].sort().join(', ') || '—'],
+                      ]
+                    : []),
+                  ...(value.nfs
+                    ? [
+                        [
+                          tr('shares.nfsClients'),
+                          value.clients
+                            .split(',')
+                            .map((client) => client.trim())
+                            .filter(Boolean)
+                            .join(', '),
+                        ],
+                        [
+                          tr('shares.nfsMode'),
+                          tr(value.readOnly ? 'read_only_c5eb2661' : 'read_and_write_823409cc'),
+                        ],
+                      ]
+                    : []),
+                ].map(([label, text]) => (
+                  <div key={label}>
+                    <dt>{label}</dt>
+                    <dd>{text}</dd>
+                  </div>
+                ))}
+              </dl>
+              <SmbNotReady share={value} state={state} accounts={accounts} />
+            </>
+          )}
+          {review.error && <Notice error>{review.error.message}</Notice>}
           {save.error && <Notice error>{save.error.message}</Notice>}
         </DialogContent>
       </Dialog.Portal>

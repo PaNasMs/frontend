@@ -105,3 +105,24 @@ test('delete-array share blocker and removal details are localized as whole mess
   await i18n.changeLanguage('en')
   assert.equal(serverText(blocked), blocked)
 })
+test('group review details and the former-array reason are localized', async () => {
+  registerServerMessages('core', json('../src/i18n/server-messages.json'))
+  const details = [
+    'Members to add: bob, carol',
+    'Members to remove: alice',
+    'Group membership will not change',
+    'A new group without members will be created',
+  ]
+  const reason =
+    'The disk holds the metadata of a former array. Wipe it in Partitions and mounts before reuse.'
+  for (const lang of ['ru', 'uk']) {
+    await i18n.changeLanguage(lang)
+    const translated = localizeResponse({ details, raidReason: reason })
+    for (const text of [...translated.details, translated.raidReason])
+      assert.doesNotMatch(text, /[A-Za-z]{4,} [a-z]{3,}/, lang + ': ' + text)
+    assert.ok(translated.details[0].endsWith(': bob, carol'), lang)
+    assert.ok(translated.details[1].endsWith(': alice'), lang)
+  }
+  await i18n.changeLanguage('en')
+  assert.deepEqual(localizeResponse({ details }).details, details)
+})

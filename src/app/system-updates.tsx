@@ -47,6 +47,9 @@ export function SystemUpdates() {
   const [operation, setOperation] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  // A confirmation refused by the server's checks (e.g. another operation is running):
+  // 'refused' while the refusal stands, 'cleared' once a re-check passes.
+  const [guard, setGuard] = useState<'' | 'refused' | 'cleared'>('')
   const installing = useRef(false)
   useEffect(() => {
     if (data) setSettings(data.settings)
@@ -61,12 +64,44 @@ export function SystemUpdates() {
     )
       window.location.reload()
   }, [data?.busy, data?.state.phase])
+  // While a refusal is shown in the open dialog, repeat the same read-only check so the
+  // message does not outlive its cause. The server guard itself is unchanged.
+  useEffect(() => {
+    if (!operation || guard !== 'refused' || busy) return
+    let current = true
+    const timer = setInterval(() => {
+      managed('plan', { action: 'system.update.' + operation, params: {} })
+        .then(() => {
+          if (!current) return
+          setError('')
+          setGuard('cleared')
+        })
+        .catch((e: Error) => {
+          if (current) setError(e.message)
+        })
+    }, 5000)
+    return () => {
+      current = false
+      clearInterval(timer)
+    }
+  }, [operation, guard, busy])
+  const open = (next: string | null) => {
+    setError('')
+    setGuard('')
+    setOperation(next)
+  }
+  // Cancelling a refused confirmation leaves nothing to report on the page.
+  const close = () => open(null)
   async function apply(action: string, params: Record<string, unknown> = {}) {
     setBusy(true)
     setError('')
-    if (action === 'system.update.install' || action === 'system.update.rollback') installing.current = true
+    setGuard('')
+    const restarts = action === 'system.update.install' || action === 'system.update.rollback'
+    let planned = false
     try {
       const plan = await managed<{ fingerprint: string; confirmation: string }>('plan', { action, params })
+      planned = true
+      if (restarts) installing.current = true
       const job = await managed<{ id: string }>('run', {
         id: newID(),
         action,
@@ -81,6 +116,7 @@ export function SystemUpdates() {
       if (action.endsWith('settings')) notify(tr('up.saved'))
     } catch (e) {
       setError((e as Error).message)
+      if (!planned && restarts) setGuard('refused')
     } finally {
       setBusy(false)
     }
@@ -104,20 +140,14 @@ export function SystemUpdates() {
           <Button
             title={tr('up.install')}
             disabled={working || !data?.available}
-            onClick={() => {
-              setError('')
-              setOperation('install')
-            }}
+            onClick={() => open('install')}
           >
             <Icon path={mdiUpdate} />
           </Button>
           <Button
             title={tr('up.rollback')}
             disabled={working || !data?.rollbackAvailable}
-            onClick={() => {
-              setError('')
-              setOperation('rollback')
-            }}
+            onClick={() => open('rollback')}
           >
             <Icon path={mdiRestore} />
           </Button>
@@ -224,7 +254,7 @@ export function SystemUpdates() {
       <Dialog.Root
         open={!!operation}
         onOpenChange={(open) => {
-          if (!open && !busy) setOperation(null)
+          if (!open && !busy) close()
         }}
       >
         <Dialog.Portal>
@@ -264,6 +294,7 @@ export function SystemUpdates() {
             }
           >
             {error && <Notice error>{error}</Notice>}
+            {guard === 'cleared' && !error && <Notice>{tr('up.unblocked')}</Notice>}
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>

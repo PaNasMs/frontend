@@ -16,3 +16,12 @@ export const restoreDestination = (path: string) => {
   const match = path.match(/^(.*?)\/\.panasms-trash-\d+\/(?:.*\/)?([^/]+)$/)
   return match ? match[1] + '/' + match[2] : path
 }
+// A default mapper name for an unlocked LUKS volume, valid for the backend's name rule
+// ([a-z_][a-z0-9_-]{0,30}): /dev/sde → luks-sde. The user may edit it.
+export function luksName(device: string): string {
+  const base = baseName(device)
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return base ? ('luks-' + base).slice(0, 31) : ''
+}
