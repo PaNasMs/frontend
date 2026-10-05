@@ -1708,9 +1708,6 @@ tbody tr:hover {
   letter-spacing: 0;
   overflow-wrap: anywhere;
 }
-.login-panel header p:last-child {
-  margin: 0;
-}
 .login-form {
   position: relative;
   display: grid;
@@ -1750,8 +1747,10 @@ tbody tr:hover {
     linear-gradient(var(--line), var(--line)) right center / calc(50% - 1.5rem) 1px no-repeat;
   justify-content: center;
 }
+/* One provider per row: their labels are too long to share a row in a 400px panel. */
 .login-providers .button {
-  flex: 1 1 150px;
+  flex: 1 1 100%;
+  min-width: 0;
   margin: 0;
   justify-content: center;
 }

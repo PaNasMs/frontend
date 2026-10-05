@@ -1616,7 +1616,6 @@
   "accounts.uploadAvatar": "Завантажити аватар (JPEG/PNG, до 2 МіБ)",
   "accounts.removeAvatar": "Видалити аватар",
   "accounts.expiredPasswordHelp": "Linux вимагає змінити пароль перед входом. Укажіть поточний пароль і новий нижче.",
-  "accounts.loginHelp": "Увійдіть з обліковим записом Linux, якому дозволено доступ до панелі.",
   "accounts.category.admin": "Адміністратор",
   "accounts.category.user": "Користувач",
   "accounts.category.service": "Службовий запис",
@@ -2341,7 +2340,7 @@
   "server_5002093468b9": "Буде додано: {{v0}}",
   "server_6dd44d254252": "Буде вилучено з групи: {{v0}}",
   "server_48210bdd8273": "Склад групи не зміниться",
-  "login.title": "Вхід на {{host}}",
+  "login.title": "Вхід",
   "login.or": "або",
   "login.language": "Мова інтерфейсу",
   "login.theme": "Тема"

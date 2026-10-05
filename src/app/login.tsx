@@ -45,8 +45,7 @@ export default function Login() {
       <section className="login-panel" aria-labelledby={title}>
         <header>
           <p className="login-product">PaNasMs</p>
-          <h1 id={title}>{tr('login.title', { host: location.hostname })}</h1>
-          <p className="muted small">{tr('accounts.loginHelp')}</p>
+          <h1 id={title}>{tr('login.title')}</h1>
         </header>
         <form className="login-form" onSubmit={form.handleSubmit((v) => login.mutate(v))}>
           <label className="field">
