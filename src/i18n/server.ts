@@ -25,6 +25,9 @@ export function registerServerMessages(namespace: string, messages: ServerMessag
   patterns.sort((a, b) => b.pattern.source.length - a.pattern.source.length)
   cache.clear()
 }
+// Only sentence-like parts are looked up again, so a short name that happens to equal a message is left alone.
+const nested = (part: string, whole: string) =>
+  part.length < whole.length && part.length > 20 && part.includes(' ')
 // API messages are English. Russian aliases also cover history saved before localization.
 // Only message fields use this adapter; filenames, paths, IDs and command output remain untouched.
 export function serverText(value: string): string {
@@ -37,9 +40,16 @@ export function serverText(value: string): string {
     for (const entry of patterns) {
       const match = value.match(entry.pattern)
       if (!match) continue
+      // A captured part can be a complete message of its own, e.g. the reason after
+      // "Operation on … has not started."; names, paths and numbers match nothing and stay as they are.
       translated = translator(entry.namespace)(
         entry.key,
-        Object.fromEntries(entry.variables.map((key, index) => [key, match[index + 1]])),
+        Object.fromEntries(
+          entry.variables.map((key, index) => [
+            key,
+            nested(match[index + 1], value) ? serverText(match[index + 1]) : match[index + 1],
+          ]),
+        ),
       )
       break
     }
