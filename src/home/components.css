@@ -1666,19 +1666,130 @@ tbody tr:hover {
   }
 }
 
-/* ---------- Sign-in: the intro sits on a panel like everything else ---------- */
-.login-intro {
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  background: var(--panel);
-  -webkit-backdrop-filter: var(--glass);
-  backdrop-filter: var(--glass);
+/* ---------- Sign-in: one panel in the middle of the room ---------- */
+.login-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-5) var(--space-4);
 }
-.login-card {
-  border: 0;
+.login-panel {
+  box-sizing: border-box;
+  width: min(100%, 400px);
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
   border-radius: var(--radius-lg);
   background: var(--panel-solid);
   box-shadow: var(--shadow-dialog);
+}
+.login-panel > *,
+.login-form > * {
+  min-width: 0;
+}
+.login-panel header {
+  display: grid;
+  gap: var(--space-1);
+}
+.login-product {
+  margin: 0;
+  color: var(--mute);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.login-panel h1 {
+  margin: 0;
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+.login-panel header p:last-child {
+  margin: 0;
+}
+.login-form {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+}
+.login-form .field,
+.login-form .error-text,
+.login-form p {
+  margin: 0;
+}
+.login-submit {
+  width: 100%;
+  min-height: 48px;
+  justify-content: center;
+  margin-top: var(--space-1);
+}
+/* Other ways to sign in appear only when the administrator enabled a provider. */
+.login-providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.login-providers:empty {
+  display: none;
+}
+.login-providers::before {
+  content: attr(data-divider);
+  flex: 0 0 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--mute);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  background:
+    linear-gradient(var(--line), var(--line)) left center / calc(50% - 1.5rem) 1px no-repeat,
+    linear-gradient(var(--line), var(--line)) right center / calc(50% - 1.5rem) 1px no-repeat;
+  justify-content: center;
+}
+.login-providers .button {
+  flex: 1 1 150px;
+  margin: 0;
+  justify-content: center;
+}
+.login-preferences {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-inline: calc(-1 * var(--space-2));
+}
+.login-preferences label {
+  min-width: 0;
+}
+.login-preferences select {
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--control);
+  padding-inline: var(--space-2) var(--space-6);
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--mute);
+  font-size: 0.8125rem;
+}
+.login-preferences select:hover,
+.login-preferences select:focus-visible {
+  color: var(--ink);
+  border-color: var(--line);
+}
+@media (max-width: 639px) {
+  .login-page {
+    align-items: end;
+    padding: 0;
+  }
+  .login-panel {
+    width: 100%;
+    padding: var(--space-5) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
 }
 
 /* On a phone the actions of a card carry their words. */
