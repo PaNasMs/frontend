@@ -585,77 +585,7 @@ summary {
   cursor: pointer;
   margin-bottom: 12px;
 }
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 130px;
-  padding: 70px 30px;
-}
-.login-intro {
-  max-width: 440px;
-}
-.login-intro .wordmark {
-  margin-bottom: 80px;
-  font-size: 2.25rem;
-}
-.login-intro h1 {
-  font-size: 2.25rem;
-  line-height: 1.2;
-  letter-spacing: -1.8px;
-}
-.login-intro p {
-  color: var(--mute);
-  font-size: 0.9375rem;
-}
-.login-orbit {
-  width: 160px;
-  height: 160px;
-  margin-top: 42px;
-  position: relative;
-  display: grid;
-  place-items: center;
-  color: var(--second);
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: none;
-}
-.login-orbit span {
-  position: absolute;
-  inset: 15px;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-}
-.login-orbit span + span {
-  inset: -15px;
-}
-.login-card {
-  width: 400px;
-  background: var(--panel);
-  padding: 34px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-dialog);
-}
-.login-card h2 {
-  margin: 25px 0 8px;
-  font-size: 1.75rem;
-}
-.login-card p {
-  font-size: 0.8125rem;
-}
-.login-submit {
-  width: 100%;
-  justify-content: space-between;
-  margin: 7px 0 20px;
-}
-.login-foot {
-  position: fixed;
-  bottom: 24px;
-  font-size: 0.8125rem;
-  color: var(--mute);
-}
+
 .loading {
   height: 100vh;
   display: flex;
@@ -683,21 +613,7 @@ summary {
   .workspace {
     padding: 36px 24px 70px;
   }
-  .login-page {
-    gap: 45px;
-  }
-  .login-intro h1 {
-    font-size: 2.25rem;
-  }
-  .login-intro {
-    max-width: 280px;
-  }
-  .login-orbit {
-    display: none;
-  }
-  .login-intro .wordmark {
-    margin-bottom: 45px;
-  }
+
 }
 @media (max-width: 640px) {
   h1 {
@@ -787,30 +703,7 @@ summary {
   .settings-dialog {
     padding: 20px;
   }
-  .login-page {
-    flex-direction: column;
-    gap: 20px;
-    padding: 28px 16px 65px;
-  }
-  .login-intro {
-    max-width: none;
-    width: min(400px, 100%);
-  }
-  .login-intro .wordmark {
-    margin-bottom: 15px;
-  }
-  .login-intro h1,
-  .login-intro p,
-  .login-intro .eyebrow {
-    display: none;
-  }
-  .login-card {
-    width: min(400px, 100%);
-    padding: 27px;
-  }
-  .login-foot {
-    position: static;
-  }
+
   .raid {
     padding: 16px;
   }
@@ -3857,7 +3750,6 @@ body:has(.has-wallpaper) {
 .network-ap-details { border-bottom: 1px solid var(--line); margin-bottom: 16px; }
 .network-ap-details h3 { font-size: 0.9375rem; margin-top: 16px; }
 
-
 .waiting-surface { position: relative; min-width: 0; }
 .waiting-overlay { position: absolute; left: 0; width: 100%; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px; box-sizing: border-box; border-radius: inherit; background: color-mix(in srgb, var(--panel) 78%, transparent); backdrop-filter: blur(2px); cursor: progress; outline: none; text-align: center; overflow: auto; overscroll-behavior: contain; }
 .waiting-message { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 440px; }
@@ -3987,7 +3879,6 @@ form th,
 .delivery-test > .button { width: 40px; height: 40px; align-self: end; }
 
 .telegram-link-code { display: block; overflow-wrap: anywhere; user-select: all; margin-block: 8px; }
-
 
 .delivery-route-select { min-width: 0; max-width: 560px; }
 .delivery-route-select .field-label { display: block; margin-bottom: 6px; }

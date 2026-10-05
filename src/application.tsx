@@ -1,10 +1,11 @@
 import { applyTheme } from './home/theme'
+import { guestTheme, rememberGuestLanguage, rememberGuestTheme } from './home/guest'
 import { watchTableLabels } from './home/table-labels'
 import { PageError } from './shared/page-error'
 import { TooltipLayer } from './shared/tooltip'
 import { useExclusivePopover, DirtyFormsProvider } from './shared/interaction'
 import packageInfo from '../package.json'
-import { tr } from './i18n/index'
+import { language, tr } from './i18n/index'
 import { useWallpaper, wallpaperURL } from './app/wallpaper'
 import { PowerMenu } from './app/power-menu'
 import { ApplicationBar } from './app/application-bar'
@@ -131,9 +132,15 @@ function Shell() {
     queryFn: () => request<Preferences>('preferences'),
     enabled: !!session.data,
   })
+  const signedOut = session.error instanceof APIError && session.error.status === 401
   useEffect(() => {
-    applyTheme(prefs.data?.theme)
-  }, [prefs.data])
+    if (prefs.data) {
+      applyTheme(prefs.data.theme)
+      // The sign-in page of this browser follows the account that used it last.
+      rememberGuestTheme(prefs.data.theme)
+      rememberGuestLanguage(language(prefs.data.language))
+    } else if (signedOut) applyTheme(guestTheme())
+  }, [prefs.data, signedOut])
   useEffect(() => watchTableLabels(document.body), [])
   const logout = useMutation({
     mutationFn: () => request('logout', 'POST'),
