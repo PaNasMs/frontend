@@ -24,8 +24,10 @@ body {
     radial-gradient(70% 60% at -6% 104%, rgba(120, 156, 226, 0.2) 0%, rgba(120, 156, 226, 0) 60%),
     linear-gradient(165deg, #eaf0f8 0%, #dde6f2 52%, #e8e4ea 100%);
 }
-/* Dark translucent: deeper colour so the panels have something to let through. */
-:root[data-surface='glass'] body {
+/* Dark translucent: deeper colour so the panels have something to let through.
+   The sign-in page uses the rich room in every theme. */
+:root[data-surface='glass'] body,
+:root[data-page='sign-in'] body {
   background-image:
     radial-gradient(55% 55% at 92% 2%, #a9761d 0%, rgba(169, 118, 29, 0) 62%),
     radial-gradient(60% 60% at 2% 98%, #2a57a3 0%, rgba(42, 87, 163, 0) 62%),
@@ -34,7 +36,8 @@ body {
     linear-gradient(165deg, #151a23 0%, #0f131a 100%);
 }
 /* Light translucent: the same room in daylight. */
-:root[data-theme='light'][data-surface='glass'] body {
+:root[data-theme='light'][data-surface='glass'] body,
+:root[data-theme='light'][data-page='sign-in'] body {
   background-image:
     radial-gradient(55% 55% at 92% 2%, #ffd27a 0%, rgba(255, 210, 122, 0) 62%),
     radial-gradient(60% 60% at 2% 98%, #8fb4f2 0%, rgba(143, 180, 242, 0) 62%),
@@ -1773,6 +1776,11 @@ tbody tr:hover {
   background-color: transparent;
   color: var(--mute);
   font-size: 0.8125rem;
+}
+/* The list of a native select does not inherit the transparent control: give it readable colours. */
+.login-preferences option {
+  color: var(--ink);
+  background-color: var(--panel-solid);
 }
 .login-preferences select:hover,
 .login-preferences select:focus-visible {
