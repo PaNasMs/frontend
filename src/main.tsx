@@ -2,6 +2,7 @@ import { registerServerMessages } from './i18n/server'
 import messages from './i18n/server-messages.json'
 import { initializeLanguage } from './i18n'
 import { guestLanguage } from './home/guest'
+import { watchInterfaceVersion } from './home/freshness'
 async function start() {
   // Before sign-in the page uses the language last used in this browser, else the browser's own.
   let selected: unknown = guestLanguage()
@@ -17,5 +18,7 @@ async function start() {
   await initializeLanguage(selected)
   registerServerMessages('core', messages)
   await import('./application')
+  // A development server has no hashed bundle, so this does nothing there.
+  watchInterfaceVersion()
 }
 void start()

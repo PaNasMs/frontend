@@ -1616,7 +1616,6 @@
   "accounts.uploadAvatar": "Загрузить аватар (JPEG/PNG, до 2 МиБ)",
   "accounts.removeAvatar": "Удалить аватар",
   "accounts.expiredPasswordHelp": "Linux требует сменить пароль перед входом. Укажите текущий пароль и новый ниже.",
-  "accounts.loginHelp": "Войдите с учётной записью Linux, которой разрешён доступ к панели.",
   "accounts.category.admin": "Администратор",
   "accounts.category.user": "Пользователь",
   "accounts.category.service": "Служебная запись",
@@ -2341,7 +2340,7 @@
   "server_5002093468b9": "Будут добавлены: {{v0}}",
   "server_6dd44d254252": "Будут удалены из группы: {{v0}}",
   "server_48210bdd8273": "Состав группы не изменится",
-  "login.title": "Вход на {{host}}",
+  "login.title": "Вход",
   "login.or": "или",
   "login.language": "Язык интерфейса",
   "login.theme": "Тема"

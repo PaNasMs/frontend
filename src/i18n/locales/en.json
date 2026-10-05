@@ -1616,7 +1616,6 @@
   "accounts.uploadAvatar": "Upload avatar (JPEG/PNG, up to 2 MiB)",
   "accounts.removeAvatar": "Remove avatar",
   "accounts.expiredPasswordHelp": "Linux requires a new password before you can sign in. Enter your current password and a new one below.",
-  "accounts.loginHelp": "Sign in with a Linux account that has panel access.",
   "accounts.category.admin": "Administrator",
   "accounts.category.user": "User",
   "accounts.category.service": "System account",
@@ -2341,7 +2340,7 @@
   "server_5002093468b9": "Members to add: {{v0}}",
   "server_6dd44d254252": "Members to remove: {{v0}}",
   "server_48210bdd8273": "Group membership will not change",
-  "login.title": "Sign in to {{host}}",
+  "login.title": "Sign in",
   "login.or": "or",
   "login.language": "Interface language",
   "login.theme": "Theme"
