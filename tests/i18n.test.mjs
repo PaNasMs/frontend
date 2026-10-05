@@ -126,3 +126,16 @@ test('group review details and the former-array reason are localized', async () 
   await i18n.changeLanguage('en')
   assert.deepEqual(localizeResponse({ details }).details, details)
 })
+
+test('a complete message nested in a prefixed message is translated, names are not', async () => {
+  registerServerMessages('core', json('../src/i18n/server-messages.json'))
+  await i18n.changeLanguage('ru')
+  const busy =
+    "Volume “/srv/md127” is busy: dockerd (PID 1, user root). Close the files or stop the relevant service; if this is a terminal, leave the volume's directory."
+  const text = serverText('Operation on /dev/md127 has not started. ' + busy)
+  assert.match(text, /^Операция с \/dev\/md127 не начата\. /)
+  assert.doesNotMatch(text, /is busy|Close the files/)
+  assert.match(text, /dockerd \(PID 1, user root\)/)
+  assert.match(text, /\/srv\/md127/)
+  await i18n.changeLanguage('en')
+})
