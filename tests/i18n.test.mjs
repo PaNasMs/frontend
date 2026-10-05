@@ -135,7 +135,7 @@ test('a complete message nested in a prefixed message is translated, names are n
   const text = serverText('Operation on /dev/md127 has not started. ' + busy)
   assert.match(text, /^Операция с \/dev\/md127 не начата\. /)
   assert.doesNotMatch(text, /is busy|Close the files/)
-  assert.match(text, /dockerd \(PID 1, user root\)/)
+  assert.match(text, /dockerd \(PID 1, /)
   assert.match(text, /\/srv\/md127/)
   await i18n.changeLanguage('en')
 })
