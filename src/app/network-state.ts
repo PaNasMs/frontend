@@ -20,6 +20,7 @@ type NetworkInterface = {
   carrier?: boolean
   managed?: boolean
   nmState?: number
+  providerState?: string
   sharingPort?: boolean
   addresses: string[]
   wifi?: WifiData
@@ -36,6 +37,8 @@ export function networkStatus(
     if (!(item.wifi?.enabled ?? radio.enabled)) return { state: 'off', key: 'wifi.state.off' }
   }
   const nm = item.nmState
+  if (item.providerState === 'failed') return status('error', 'error')
+  if (item.providerState === 'configuring') return status('connecting', 'address')
   if (nm === 120) return status('error', 'error')
   if (nm === 110) return status('connecting', 'disconnecting')
   if (nm != null && nm >= 40 && nm <= 90)

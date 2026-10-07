@@ -4179,5 +4179,89 @@
     "en": "Group membership will not change",
     "ru": "Состав группы не изменится",
     "uk": "Склад групи не зміниться"
+  },
+  {
+    "key": "network.native.ownership",
+    "en": "No supported network manager owns this interface",
+    "ru": "Для этого интерфейса не найден поддерживаемый менеджер сети",
+    "uk": "Для цього інтерфейсу не знайдено підтримуваного менеджера мережі"
+  },
+  {
+    "key": "network.native.expiredOwner",
+    "en": "This network change has expired or is owned by another user",
+    "ru": "Изменение сети уже завершено или принадлежит другому пользователю",
+    "uk": "Зміну мережі вже завершено або вона належить іншому користувачу"
+  },
+  {
+    "key": "network.native.expired",
+    "en": "This network change has expired",
+    "ru": "Время подтверждения изменения сети истекло",
+    "uk": "Час підтвердження зміни мережі минув"
+  },
+  {
+    "key": "network.native.applying",
+    "en": "Network settings have not been applied; wait or roll back",
+    "ru": "Настройки сети ещё не применены. Подождите или отмените изменение",
+    "uk": "Налаштування мережі ще не застосовано. Зачекайте або скасуйте зміну"
+  },
+  {
+    "key": "network.native.mtu",
+    "en": "The requested MTU has not been applied; roll back and review the interface",
+    "ru": "Не удалось применить MTU. Отмените изменение и проверьте интерфейс",
+    "uk": "Не вдалося застосувати MTU. Скасуйте зміну та перевірте інтерфейс"
+  },
+  {
+    "key": "network.native.restored",
+    "en": "Could not apply network settings; previous settings restored",
+    "ru": "Не удалось применить настройки сети; прежние настройки восстановлены",
+    "uk": "Не вдалося застосувати налаштування мережі; попередні налаштування відновлено"
+  },
+  {
+    "key": "network.native.rollbackRequested",
+    "en": "Could not apply network settings; rollback requested",
+    "ru": "Не удалось применить настройки сети. Запрошен возврат прежних настроек",
+    "uk": "Не вдалося застосувати налаштування мережі. Запитано відновлення попередніх налаштувань"
+  },
+  {
+    "key": "network.native.rollbackFailed",
+    "en": "Apply and rollback failed; check the local console",
+    "ru": "Не удалось применить или восстановить настройки. Проверьте сеть через локальную консоль",
+    "uk": "Не вдалося застосувати або відновити налаштування. Перевірте мережу через локальну консоль"
+  },
+  {
+    "key": "network.native.dhcpOverrides",
+    "en": "Netplan requires matching DHCPv4 and DHCPv6 overrides when both are enabled",
+    "ru": "Если DHCPv4 и DHCPv6 включены, Netplan требует одинаковых параметров DNS, маршрутов и метрики для обоих",
+    "uk": "Якщо DHCPv4 і DHCPv6 увімкнено, Netplan вимагає однакових параметрів DNS, маршрутів і метрики для обох"
+  },
+  {
+    "key": "network.native.validation",
+    "en": "Netplan rejected these settings: {{v0}}",
+    "ru": "Netplan отклонил настройки: {{v0}}",
+    "uk": "Netplan відхилив налаштування: {{v0}}"
+  },
+  {
+    "key": "network.native.ipMethod",
+    "en": "Unsupported IP method",
+    "ru": "Этот способ настройки IP не поддерживается",
+    "uk": "Цей спосіб налаштування IP не підтримується"
+  },
+  {
+    "key": "network.native.invalidMTU",
+    "en": "Invalid MTU",
+    "ru": "Недопустимый MTU",
+    "uk": "Неприпустимий MTU"
+  },
+  {
+    "key": "network.native.clearAddresses",
+    "en": "Clear addresses and routes for this IP method",
+    "ru": "Для этого способа настройки удалите адреса, DNS и маршруты",
+    "uk": "Для цього способу налаштування видаліть адреси, DNS і маршрути"
+  },
+  {
+    "key": "network.native.ipAddress",
+    "en": "Invalid IP address",
+    "ru": "Недопустимый IP-адрес",
+    "uk": "Неприпустима IP-адреса"
   }
 ]

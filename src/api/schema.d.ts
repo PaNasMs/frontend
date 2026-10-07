@@ -2436,6 +2436,11 @@ export interface components {
             hardwareEnabled: boolean;
         };
         NetworkInterface: {
+            manager?: string;
+            configurationSource?: string;
+            configurationFile?: string;
+            providerState?: string;
+            editReason?: string;
             name: string;
             kind: string;
             mac: string;

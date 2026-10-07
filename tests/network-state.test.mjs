@@ -56,3 +56,11 @@ test('another adapter hardware block does not mark this adapter blocked', () => 
   )
   assert.equal(result.state, 'connected')
 })
+
+test('networkd has the same status vocabulary without NetworkManager state', () => {
+  const native = { ...base, nmState: undefined, providerState: 'configured' }
+  assert.equal(networkStatus(native).state, 'connected')
+  assert.equal(networkStatus({ ...native, carrier: false }).key, 'network.state.noCable')
+  assert.equal(networkStatus({ ...native, providerState: 'configuring' }).key, 'network.state.address')
+  assert.equal(networkStatus({ ...native, providerState: 'failed' }).state, 'error')
+})
