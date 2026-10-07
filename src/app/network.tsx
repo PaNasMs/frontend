@@ -474,6 +474,7 @@ function NetworkPage() {
               error={error}
               run={run}
               renderCard={(item: Interface, group?: ShareGroup, actions?: ReactNode) => {
+                const ipv4Addresses = item.addresses.filter((address) => !address.includes(':'))
                 const appearance = networkAppearance(
                   { ...item, sharingPort: !!group?.enabled },
                   data.data?.wifi,
@@ -558,10 +559,10 @@ function NetworkPage() {
                             <dd>{item.configurationSource}</dd>
                           </>
                         )}
-                        <dt>IP</dt>
+                        <dt>IPv4</dt>
                         <dd>
-                          {item.addresses.length
-                            ? item.addresses.map((address) => <div key={address}>{address}</div>)
+                          {ipv4Addresses.length
+                            ? ipv4Addresses.map((address) => <div key={address}>{address}</div>)
                             : '—'}
                         </dd>
                         <dt>DNS</dt>
