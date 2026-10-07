@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router-dom'
 import { DialogContent } from '../src/shared/waiting'
+import { MultiSelect } from '../src/shared/multi-select'
 import { NotificationToasts, notify } from '../src/app/notifications'
 import { initializeLanguage } from '../src/i18n'
 import '../src/style.css'
@@ -16,6 +17,7 @@ function Fixture() {
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState('')
   const [theme, setTheme] = useState('light')
+  const [members, setMembers] = useState<string[]>([])
   return (
     <div data-theme={theme} style={{ minHeight: '160vh', padding: 24 }}>
       <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>Theme</button>
@@ -70,6 +72,12 @@ function Fixture() {
                 Name
                 <input defaultValue="Original" />
               </label>
+              <MultiSelect
+                label="Members"
+                values={members}
+                onChange={setMembers}
+                options={[{ id: 'member', label: 'Test member' }]}
+              />
               <Dialog.Root open={nested} onOpenChange={setNested}>
                 <Dialog.Trigger asChild>
                   <button type="button">Choose folder</button>

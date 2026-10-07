@@ -1801,7 +1801,15 @@ tbody tr:hover {
 
 /* On a phone the actions of a card carry their words. */
 @media (max-width: 639px) {
-  :is(.module-card-actions, .network-card-actions, .sharing-card .actions, .raid-actions, .disk-card-actions)
+  :is(
+      .module-card-actions,
+      .network-card-actions,
+      .sharing-card .actions,
+      .raid-actions,
+      .disk-card-actions,
+      .volume-selection,
+      .storage-tab-intro
+    )
     .button.icon-only[data-tooltip] {
     width: auto;
     min-width: var(--control);
@@ -1810,7 +1818,15 @@ tbody tr:hover {
     gap: var(--space-2);
     max-width: 100%;
   }
-  :is(.module-card-actions, .network-card-actions, .sharing-card .actions, .raid-actions, .disk-card-actions)
+  :is(
+      .module-card-actions,
+      .network-card-actions,
+      .sharing-card .actions,
+      .raid-actions,
+      .disk-card-actions,
+      .volume-selection,
+      .storage-tab-intro
+    )
     .button.icon-only[data-tooltip]::after {
     content: attr(data-tooltip);
     min-width: 0;

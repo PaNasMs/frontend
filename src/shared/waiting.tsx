@@ -302,6 +302,11 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
         }}
         onEscapeKeyDown={(event) => {
           onEscapeKeyDown?.(event)
+          const popup = (event.target as HTMLElement).closest?.('details[data-dialog-popup][open]')
+          if (popup && localRef.current?.contains(popup)) {
+            event.preventDefault()
+            return
+          }
           if (busy) event.preventDefault()
           else if (discard) {
             event.preventDefault()
