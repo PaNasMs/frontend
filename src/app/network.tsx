@@ -67,6 +67,7 @@ type Interface = ShareInterface & {
   wifi?: WifiData
 }
 type Change = {
+  error?: string
   id: string
   interface: string
   user: string
@@ -312,6 +313,7 @@ function NetworkPage() {
   const [seconds, setSeconds] = useState(0)
   const [dismissedChange, setDismissedChange] = useState<string | null>(null)
   const change = data.data?.change
+  const recoveryFailed = change?.status === 'rollback-failed'
   const pending = change && ['pending', 'applying'].includes(change.status) ? change : null
   useEffect(() => {
     if (!pending || !data.data) return
@@ -366,6 +368,11 @@ function NetworkPage() {
       </div>
       {data.error && <Notice error>{data.error.message}</Notice>}
       {error && !edit && !removePort && <Notice error>{error}</Notice>}
+      {recoveryFailed && (
+        <Notice error>
+          {tr('network.status.rollback-failed')} {change?.interface}: {change?.error}
+        </Notice>
+      )}
       {data.data?.backend === 'readonly' && <Notice>{tr('network.readonly')}</Notice>}
       {pending && dismissedChange === pending.id && (
         <Button onClick={() => setDismissedChange(null)}>
@@ -463,7 +470,7 @@ function NetworkPage() {
                 (item) => showSystem || (!item.system && item.kind !== 'loopback'),
               )}
               sharing={data.data.sharing ?? { groups: [], ready: false }}
-              busy={busy || !!pending}
+              busy={busy || !!pending || recoveryFailed}
               error={error}
               run={run}
               renderCard={(item: Interface, group?: ShareGroup, actions?: ReactNode) => {
@@ -520,7 +527,7 @@ function NetworkPage() {
                             wifi={item.wifi}
                             radio={data.data.wifi}
                             connected={item.nmState === 100}
-                            disabled={busy || !!pending}
+                            disabled={busy || !!pending || recoveryFailed}
                             run={run}
                             error={error}
                           />
@@ -529,7 +536,7 @@ function NetworkPage() {
                           <Button
                             title={tr('network.edit')}
                             aria-label={tr('network.edit') + ' ' + item.name}
-                            disabled={busy || !!pending}
+                            disabled={busy || !!pending || recoveryFailed}
                             onClick={() => {
                               setEdit(item)
                               setConfig(structuredClone(item.config))
@@ -622,7 +629,7 @@ function NetworkPage() {
                                   <Button
                                     title={tr('share.removePort')}
                                     aria-label={tr('share.removePort') + ' ' + name}
-                                    disabled={busy || !!pending}
+                                    disabled={busy || !!pending || recoveryFailed}
                                     onClick={() => {
                                       setError('')
                                       setRemovePort({ group, name })
@@ -817,7 +824,7 @@ function NetworkPage() {
           iface={wifiInterface}
           radio={data.data?.wifi ?? undefined}
           busy={busy}
-          disabled={!!pending}
+          disabled={!!pending || recoveryFailed}
           error={error}
           run={run}
           close={() => setWifiDetails(null)}
@@ -853,7 +860,7 @@ function NetworkPage() {
                     {tr('homes.cancel')}
                   </Button>
                 </Dialog.Close>
-                <Button form="modal-network" disabled={busy || !!pending}>
+                <Button form="modal-network" disabled={busy || !!pending || recoveryFailed}>
                   {tr('network.apply')}
                 </Button>
               </div>

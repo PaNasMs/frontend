@@ -2509,6 +2509,7 @@ export interface components {
                 interface: string;
                 user: string;
                 status: string;
+                error?: string;
                 deadline: number;
                 addresses: string[];
             } | null;
