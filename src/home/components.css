@@ -1890,3 +1890,7 @@ tbody tr:hover {
     width: 100%;
   }
 }
+
+.password-control { position: relative; min-width: 0; }
+.password-control > input { width: 100%; padding-inline-end: 3.25rem; }
+.password-control > .button { position: absolute; inset-inline-end: 0.25rem; top: 50%; transform: translateY(-50%); background: transparent; box-shadow: none; }

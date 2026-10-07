@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Button, DialogContent, Notice, WaitingSurface } from '../shared/ui'
+import { Button, DialogContent, Notice, PasswordInput, WaitingSurface } from '../shared/ui'
 import { useDraft } from '../shared/interaction'
 import { managed, type Job } from './operations'
 import { waitForJob } from '../shared/job-completion'
@@ -46,10 +46,14 @@ export function NetworkAccessSettings() {
   if (!data.data) return <p role="status">{tr('access.loading')}</p>
   return <AccessForm incoming={data.data} />
 }
-function AccessForm({ incoming }: { incoming: Access }) {
-  useRouteTab('/settings/network', ['fallback', 'usb'], 'fallback')
+export function AccessForm({ incoming }: { incoming: Access }) {
+  const wifiSupported = incoming.devices.some((d) => d.kind === 'wifi')
+  const usbSupported =
+    incoming.usb.available || ['controller-busy', 'multiple-controllers'].includes(incoming.usb.reason)
+  const routes = [...(wifiSupported ? ['fallback'] : []), ...(usbSupported ? ['usb'] : [])]
+  useRouteTab('/settings/network', routes.length ? routes : ['fallback'], routes[0] ?? 'fallback')
+  const passwordId = useId()
   const { draft: value, setDraft: setValue, dirty, reset } = useDraft(incoming.config)
-  const [reveal, setReveal] = useState(false)
   const [confirm, setConfirm] = useState<'save' | 'stop' | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -89,147 +93,160 @@ function AccessForm({ incoming }: { incoming: Access }) {
   const active = ['access-point', 'restored'].includes(incoming.state.phase)
   const adapters = incoming.devices.filter((d) => d.ap && !d.reserved)
   const selected = adapters.find((d) => d.mac === value.adapter)
+  if (!wifiSupported && !usbSupported) return <Notice>{tr('access.noFeatures')}</Notice>
   return (
     <WaitingSurface busy={busy && !confirm}>
-      <div className="settings-stack">
-          <section className="disk-settings-section">
-            <h2>{tr('access.fallback')}</h2>
-            <p>{tr('access.help')}</p>
-            <p role="status">
-              {tr('access.state.' + (incoming.state.phase || 'waiting'))}
-              {incoming.state.interface ? ' · ' + incoming.state.interface : ''}
-              {active
-                ? ' · ' +
-                  tr('access.clients') +
-                  ': ' +
-                  (incoming.state.clients < 0 ? '—' : incoming.state.clients)
-                : ''}
-            </p>
-            {incoming.state.error && <Notice>{incoming.state.error}</Notice>}
-            {!adapters.length && <Notice>{tr('access.noAdapter')}</Notice>}
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={value.enabled}
-                onChange={(e) => update('enabled', e.target.checked)}
-                disabled={!adapters.length && !value.enabled}
-              />
-              {tr('access.enabled')}
-            </label>
-            <div className="user-form-grid">
-              <label className="field">
-                {tr('access.adapter')}
-                <select value={value.adapter} onChange={(e) => update('adapter', e.target.value)}>
-                  <option value="">{tr('access.auto')}</option>
-                  {value.adapter && !selected && (
-                    <option value={value.adapter}>
-                      {value.adapter} · {tr('access.absent')}
-                    </option>
-                  )}
-                  {adapters.map((d) => (
-                    <option key={d.mac} value={d.mac}>
-                      {d.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field">
-                {tr('access.ssid')}
-                <input value={value.ssid} maxLength={32} onChange={(e) => update('ssid', e.target.value)} />
-              </label>
-              <label className="field">
-                {tr('access.password')}
-                <input
-                  type={reveal ? 'text' : 'password'}
-                  autoComplete="new-password"
-                  value={value.password}
-                  minLength={12}
-                  maxLength={63}
-                  onChange={(e) => update('password', e.target.value)}
-                />
-              </label>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          if (active) setConfirm('save')
+          else void apply('save')
+        }}
+      >
+        <div className="settings-stack">
+          {wifiSupported && (
+            <section className="disk-settings-section">
+              <h2>{tr('access.fallback')}</h2>
+              <p>{tr('access.help')}</p>
+              <p role="status">
+                {tr('access.state.' + (incoming.state.phase || 'waiting'))}
+                {incoming.state.interface ? ' · ' + incoming.state.interface : ''}
+                {active
+                  ? ' · ' +
+                    tr('access.clients') +
+                    ': ' +
+                    (incoming.state.clients < 0 ? '—' : incoming.state.clients)
+                  : ''}
+              </p>
+              {incoming.state.error && <Notice>{incoming.state.error}</Notice>}
+              {!adapters.length && <Notice>{tr('access.noAdapter')}</Notice>}
               <label className="check">
-                <input type="checkbox" checked={reveal} onChange={(e) => setReveal(e.target.checked)} />
-                {tr('access.reveal')}
+                <input
+                  type="checkbox"
+                  checked={value.enabled}
+                  onChange={(e) => update('enabled', e.target.checked)}
+                  disabled={!adapters.length && !value.enabled}
+                />
+                {tr('access.enabled')}
               </label>
-              <label className="field">
-                {tr('access.band')}
-                <select value={value.band} onChange={(e) => update('band', e.target.value)}>
-                  <option value="auto">{tr('access.auto')}</option>
-                  {(['bg', 'a'] as const)
-                    .filter((b) => !selected || selected.bands.includes(b))
-                    .map((b) => (
-                      <option value={b} key={b}>
-                        {b === 'bg' ? '2.4 GHz' : '5 GHz'}
+              <div className="user-form-grid">
+                <label className="field">
+                  {tr('access.adapter')}
+                  <select value={value.adapter} onChange={(e) => update('adapter', e.target.value)}>
+                    <option value="">{tr('access.auto')}</option>
+                    {value.adapter && !selected && (
+                      <option value={value.adapter}>
+                        {value.adapter} · {tr('access.absent')}
+                      </option>
+                    )}
+                    {adapters.map((d) => (
+                      <option key={d.mac} value={d.mac}>
+                        {d.name}
                       </option>
                     ))}
-                </select>
-              </label>
-              <label className="field">
-                {tr('access.delay')}
+                  </select>
+                </label>
+                <label className="field">
+                  {tr('access.ssid')}
+                  <input value={value.ssid} maxLength={32} onChange={(e) => update('ssid', e.target.value)} />
+                </label>
+                <div className="field">
+                  <label htmlFor={passwordId}>{tr('access.password')}</label>
+                  <PasswordInput
+                    id={passwordId}
+                    autoComplete="new-password"
+                    value={value.password}
+                    required
+                    minLength={8}
+                    maxLength={63}
+                    pattern="[ -~]{8,63}"
+                    aria-describedby={passwordId + '-help'}
+                    onChange={(e) => update('password', e.target.value)}
+                  />
+                  <small id={passwordId + '-help'}>{tr('access.error.3')}</small>
+                </div>
+                <label className="field">
+                  {tr('access.band')}
+                  <select value={value.band} onChange={(e) => update('band', e.target.value)}>
+                    <option value="auto">{tr('access.auto')}</option>
+                    {(['bg', 'a'] as const)
+                      .filter((b) => !selected || selected.bands.includes(b))
+                      .map((b) => (
+                        <option value={b} key={b}>
+                          {b === 'bg' ? '2.4 GHz' : '5 GHz'}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                <label className="field">
+                  {tr('access.delay')}
+                  <input
+                    type="number"
+                    min={30}
+                    max={900}
+                    value={value.delay}
+                    onChange={(e) => update('delay', Number(e.target.value))}
+                  />
+                </label>
+              </div>
+              <label className="check">
                 <input
-                  type="number"
-                  min={30}
-                  max={900}
-                  value={value.delay}
-                  onChange={(e) => update('delay', Number(e.target.value))}
+                  type="checkbox"
+                  checked={value.onLoss}
+                  onChange={(e) => update('onLoss', e.target.checked)}
                 />
+                {tr('access.onLoss')}
               </label>
-            </div>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={value.onLoss}
-                onChange={(e) => update('onLoss', e.target.checked)}
-              />
-              {tr('access.onLoss')}
-            </label>
-            <p>{tr('access.returnHelp')}</p>
-            {active && <Button onClick={() => setConfirm('stop')}>{tr('access.stop')}</Button>}
-          </section>
+              <p>{tr('access.returnHelp')}</p>
+              {active && (
+                <Button type="button" onClick={() => setConfirm('stop')}>
+                  {tr('access.stop')}
+                </Button>
+              )}
+            </section>
+          )}
 
-          <section className="disk-settings-section">
-            <h2>{tr('access.usb')}</h2>
-            <p>{tr('access.usbHelp')}</p>
-            <p role="status">{tr('access.usbState.' + (incoming.state.usbState || 'disabled'))}</p>
-            {incoming.usb.port && (
-              <p>
-                {tr('access.port')}: <strong>{incoming.usb.port}</strong>
-              </p>
-            )}
-            {!incoming.usb.available && <Notice>{tr('access.usbState.' + incoming.usb.reason)}</Notice>}
-            {value.usb && incoming.usb.reboot && <Notice>{tr('access.reboot')}</Notice>}
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={value.usb}
-                disabled={!incoming.usb.available && !value.usb}
-                onChange={(e) => update('usb', e.target.checked)}
-              />
-              {tr('access.usbEnabled')}
-            </label>
-            <p>{tr('access.power')}</p>
-          </section>
-      </div>
-      <div className="small muted">
-        {addressRows.flatMap((d) =>
-          (d.addresses ?? [])
-            .filter((a) => !a.includes(':'))
-            .map((a) => (
-              <p key={d.name + a}>
-                {tr('access.address')} · {d.name}: <strong>{a.split('/')[0]}</strong>
-              </p>
-            )),
-        )}
-      </div>
-      {!confirm && error && <Notice error>{error}</Notice>}
-      <Button
-        className="primary"
-        disabled={!dirty || busy}
-        onClick={() => (active ? setConfirm('save') : void apply('save'))}
-      >
-        {tr('access.apply')}
-      </Button>
+          {usbSupported && (
+            <section className="disk-settings-section">
+              <h2>{tr('access.usb')}</h2>
+              <p>{tr('access.usbHelp')}</p>
+              <p role="status">{tr('access.usbState.' + (incoming.state.usbState || 'disabled'))}</p>
+              {incoming.usb.port && (
+                <p>
+                  {tr('access.port')}: <strong>{incoming.usb.port}</strong>
+                </p>
+              )}
+              {!incoming.usb.available && <Notice>{tr('access.usbState.' + incoming.usb.reason)}</Notice>}
+              {value.usb && incoming.usb.reboot && <Notice>{tr('access.reboot')}</Notice>}
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={value.usb}
+                  disabled={!incoming.usb.available && !value.usb}
+                  onChange={(e) => update('usb', e.target.checked)}
+                />
+                {tr('access.usbEnabled')}
+              </label>
+              <p>{tr('access.power')}</p>
+            </section>
+          )}
+        </div>
+        <div className="small muted">
+          {addressRows.flatMap((d) =>
+            (d.addresses ?? [])
+              .filter((a) => !a.includes(':'))
+              .map((a) => (
+                <p key={d.name + a}>
+                  {tr('access.address')} · {d.name}: <strong>{a.split('/')[0]}</strong>
+                </p>
+              )),
+          )}
+        </div>
+        {!confirm && error && <Notice error>{error}</Notice>}
+        <Button className="primary" disabled={!dirty || busy} type="submit">
+          {tr('access.apply')}
+        </Button>
+      </form>
       <Dialog.Root
         open={confirm !== null}
         onOpenChange={(open) => {

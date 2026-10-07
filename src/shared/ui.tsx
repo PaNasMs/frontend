@@ -1,5 +1,12 @@
 import { tr, locale } from '../i18n/index'
-import { isValidElement, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import {
+  isValidElement,
+  useState,
+  type InputHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+} from 'react'
+import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 export function cn(...v: Parameters<typeof clsx>) {
@@ -27,6 +34,23 @@ export function Notice({ children, error = false }: { children: ReactNode; error
   return (
     <div className={cn('notice', error && 'error')} role={error ? 'alert' : 'status'}>
       {children}
+    </div>
+  )
+}
+export function PasswordInput(props: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {
+  const [visible, setVisible] = useState(false)
+  return (
+    <div className="password-control">
+      <input {...props} type={visible ? 'text' : 'password'} />
+      <Button
+        type="button"
+        title={tr(visible ? 'password.hide' : 'password.show')}
+        aria-controls={props.id}
+        disabled={props.disabled}
+        onClick={() => setVisible(!visible)}
+      >
+        <Icon path={visible ? mdiEyeOffOutline : mdiEyeOutline} size={20} />
+      </Button>
     </div>
   )
 }
