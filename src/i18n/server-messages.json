@@ -4038,9 +4038,9 @@
   },
   {
     "key": "access.error.3",
-    "en": "Use a Wi-Fi password with 12 to 63 printable characters",
-    "ru": "Пароль Wi-Fi должен содержать от 12 до 63 печатных символов ASCII",
-    "uk": "Пароль Wi-Fi має містити від 12 до 63 друкованих символів ASCII"
+    "en": "Use a Wi-Fi password with 8 to 63 printable characters",
+    "ru": "Пароль Wi-Fi должен содержать от 8 до 63 печатных символов ASCII",
+    "uk": "Пароль Wi-Fi має містити від 8 до 63 друкованих символів ASCII"
   },
   {
     "key": "access.error.4",

@@ -2282,7 +2282,7 @@
   "access.error.0": "Manage this connection in Network access settings",
   "access.error.1": "Choose a network wait between 30 and 900 seconds",
   "access.error.2": "Enter a Wi-Fi name between 1 and 32 bytes",
-  "access.error.3": "Use a Wi-Fi password with 12 to 63 printable characters",
+  "access.error.3": "Use a Wi-Fi password with 8 to 63 printable characters",
   "access.error.4": "Choose an available Wi-Fi band",
   "access.error.5": "Choose an available Wi-Fi adapter",
   "access.error.6": "No unused subnet is available for direct access",
@@ -2359,5 +2359,8 @@
   "network.native.ipMethod": "Unsupported IP method",
   "network.native.invalidMTU": "Invalid MTU",
   "network.native.clearAddresses": "Clear addresses and routes for this IP method",
-  "network.native.ipAddress": "Invalid IP address"
+  "network.native.ipAddress": "Invalid IP address",
+  "password.show": "Show password",
+  "password.hide": "Hide password",
+  "access.noFeatures": "USB network access and fallback Wi-Fi are not supported by the detected hardware."
 }
