@@ -142,6 +142,27 @@ function Fixture() {
         </Dialog.Portal>
       </Dialog.Root>
       <NotificationToasts />
+      <div className="selection-bar volume-selection" style={{ maxWidth: 320 }}>
+        <strong>Test volume</strong>
+        <div className="context-actions">
+          <span className="context-action">
+            <button
+              className="button icon-only"
+              data-tooltip="Format volume — Unmount the volume first."
+              aria-label="Format volume — Unmount the volume first."
+              disabled
+            />
+          </span>
+          <span className="context-action">
+            <button
+              className="button icon-only"
+              data-tooltip="Wipe device — Unmount all volumes on this device first."
+              aria-label="Wipe device — Unmount all volumes on this device first."
+              disabled
+            />
+          </span>
+        </div>
+      </div>
     </div>
   )
 }

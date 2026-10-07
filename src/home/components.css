@@ -1850,6 +1850,24 @@ tbody tr:hover {
   .network-card-actions > .wifi-labeled-control {
     position: static;
   }
+  .volume-selection .context-actions {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
+  .volume-selection .context-action {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .volume-selection .button.icon-only[data-tooltip] {
+    height: auto;
+    min-height: var(--control);
+    white-space: normal;
+    padding-block: var(--space-2);
+  }
+  .volume-selection .button.icon-only[data-tooltip]::after {
+    overflow-wrap: anywhere;
+  }
   .network-card header,
   .disk-top,
   .module-card-footer,
