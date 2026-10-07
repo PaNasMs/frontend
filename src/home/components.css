@@ -1190,7 +1190,7 @@ tbody tr:hover {
 }
 .notification-toast .close-icon {
   background: transparent;
-  color: inherit;
+  color: var(--ink);
 }
 
 /* ---------- Desktop ---------- */
