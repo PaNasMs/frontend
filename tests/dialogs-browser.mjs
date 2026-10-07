@@ -65,6 +65,7 @@ try {
   await expect(page.getByRole('button', { name: 'Open manually', exact: true })).toBeFocused()
   for (const width of [320, 390, 768, 1024]) {
     await page.setViewportSize({ width, height: 650 })
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
     await page.getByRole('button', { name: 'Open form', exact: true }).click()
     const d = await dialog.boundingBox(),
       x = await dialog.locator('.close-icon').boundingBox()
