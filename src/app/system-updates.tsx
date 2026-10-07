@@ -21,6 +21,8 @@ export function useSystemUpdates() {
     queryFn: () => managed<UpdateInfo>('system-updates'),
     enabled: isAdministrator(),
     refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
     retry: false,
   })
 }
