@@ -7,6 +7,7 @@ import { MountVolumeButton } from './removable'
 import { OperationButton, type Field } from './operations'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
 import type { Device, Mount } from '../api/client'
+import { volumeMount, volumeMountPoint } from './storage-mount-state'
 export type MediaInfo = {
   kind: string
   readOnly: boolean
@@ -64,7 +65,6 @@ export type StorageOptions = {
   formats: string[]
 }
 const flatten = (nodes: Device[]): Device[] => nodes.flatMap((d) => [d, ...flatten(d.children ?? [])])
-const mounted = (d: Device) => d.mountpoints?.some(Boolean) ?? false
 const context = (d: Device) => [
   {
     key: 'target',
@@ -91,6 +91,7 @@ export function StorageVolumes({
   arrayNames?: Record<string, string>
 }) {
   const [selection, setSelection] = useState<Selection | null>(null)
+  const mounted = (device: Device) => !!volumeMountPoint(device, mounts)
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const toggle = (key: string) => {
     setCollapsed((current) => {
@@ -110,7 +111,7 @@ export function StorageVolumes({
   const systemReason = policy?.protectedReason
   const protectedDevice = !options || !policy || !!systemReason
   const attached = selected && mounted(selected)
-  const point = selected?.mountpoints?.find(Boolean) ?? ''
+  const point = selected ? volumeMountPoint(selected, mounts) : ''
   const children = selected?.children?.length ?? 0
   const free = !!root && selection?.path === undefined
   const offlineReason = attached
@@ -237,7 +238,7 @@ export function StorageVolumes({
       </span>
     ) : null
   const volume = (device: Device, owner: Device): ReactNode => {
-    const mount = mounts.find((m) => m.source === device.path || device.mountpoints?.includes(m.target))
+    const mount = volumeMount(device, mounts)
     const connected = !!mount || mounted(device)
     return (
       <li key={device.path}>
