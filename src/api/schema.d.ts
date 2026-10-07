@@ -2561,6 +2561,7 @@ export interface components {
                 readOnly: boolean;
             } | null;
             protectedReason: string;
+            layoutReason: string;
             busyReason: string;
             raidReason: string;
             raidEligible: boolean;

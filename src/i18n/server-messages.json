@@ -326,6 +326,12 @@
     "ru": "Системный накопитель или его участник защищён"
   },
   {
+    "key": "server_b1bf3612d2dd",
+    "en": "The system partition is protected",
+    "ru": "Системный раздел защищён",
+    "uk": "Системний розділ захищений"
+  },
+  {
     "key": "server_89da019bac3d",
     "en": "The device is read-only",
     "ru": "Устройство доступно только для чтения"

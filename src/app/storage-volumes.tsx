@@ -57,6 +57,7 @@ export type StorageOptions = {
       readOnly: boolean
     }
     protectedReason: string
+    layoutReason: string
     busyReason: string
     raidReason: string
     raidEligible: boolean
@@ -108,12 +109,14 @@ export function StorageVolumes({
   const policy = options?.devices.find(
     (d) => d.path === (selected ?? root)?.path || d.kname === (selected ?? root)?.kname,
   )
-  const systemReason = policy?.protectedReason
+  const free = !!root && selection?.path === undefined
+  // Free space on a disk changes its partition layout, not the disk as a whole, so the system disk is
+  // allowed there; its system partitions and whole-device operations stay protected.
+  const systemReason = free ? policy?.layoutReason : policy?.protectedReason
   const protectedDevice = !options || !policy || !!systemReason
   const attached = selected && mounted(selected)
   const point = selected ? volumeMountPoint(selected, mounts) : ''
   const children = selected?.children?.length ?? 0
-  const free = !!root && selection?.path === undefined
   const offlineReason = attached
     ? tr('unmount_the_volume_first_413b34be')
     : children
@@ -453,7 +456,9 @@ export function StorageVolumes({
       >
         {devices.map((d) => {
           const parts = (d.children ?? []).filter((p) => p.type === 'part')
-          const locked = options?.devices.find((p) => p.path === d.path)?.protectedReason
+          const devicePolicy = options?.devices.find((p) => p.path === d.path)
+          const locked = devicePolicy?.protectedReason
+          const layoutLocked = devicePolicy?.layoutReason
           const segments: {
             path?: string
             label: string
@@ -555,7 +560,7 @@ export function StorageVolumes({
                           <span className="hierarchy-name">
                             <strong>{tr('unallocated_space_a9769454')}</strong>
                             <small>
-                              {locked
+                              {layoutLocked
                                 ? tr('system_partitions_read_only_87aa82fa')
                                 : tr('for_creating_a_partition_d3a2b110')}
                             </small>

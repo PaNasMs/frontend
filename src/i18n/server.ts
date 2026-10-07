@@ -64,6 +64,7 @@ const messageFields = new Set([
   'stage',
   'reason',
   'protectedReason',
+  'layoutReason',
   'busyReason',
   'raidReason',
   'warnings',
