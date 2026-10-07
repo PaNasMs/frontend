@@ -4,7 +4,17 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { mdiLan, mdiWifiCog, mdiPencilOutline, mdiRefresh, mdiPlus, mdiDeleteOutline, mdiClose, mdiInformationOutline, mdiRoutes } from '@mdi/js'
+import {
+  mdiLan,
+  mdiWifiCog,
+  mdiPencilOutline,
+  mdiRefresh,
+  mdiPlus,
+  mdiDeleteOutline,
+  mdiClose,
+  mdiInformationOutline,
+  mdiRoutes,
+} from '@mdi/js'
 import { registerModule } from './module-registry'
 import { useRouteTab } from './navigation'
 import { newID } from './dashboard'
@@ -45,6 +55,10 @@ type Interface = ShareInterface & {
   carrier?: boolean
   managed?: boolean
   nmState?: number
+  manager?: string
+  configurationSource?: string
+  providerState?: string
+  editReason?: string
   addresses: string[]
   dns: string[]
   editable: boolean
@@ -94,10 +108,12 @@ async function operation(action: string, params: Record<string, unknown>) {
 
 function IPFields({
   family,
+  allowIgnore = true,
   value,
   onChange,
 }: {
   family: number
+  allowIgnore?: boolean
   value: IPConfig
   onChange: (value: IPConfig) => void
 }) {
@@ -122,7 +138,7 @@ function IPFields({
         >
           {(family === 4
             ? ['auto', 'manual', 'link-local', 'disabled']
-            : ['auto', 'manual', 'link-local', 'ignore', 'disabled']
+            : ['auto', 'manual', 'link-local', ...(allowIgnore ? ['ignore'] : []), 'disabled']
           ).map((method) => (
             <option key={method} value={method}>
               {tr('network.method.' + method)}
@@ -529,6 +545,12 @@ function NetworkPage() {
                       <dl>
                         <dt>{tr('network.profile')}</dt>
                         <dd>{item.profile || '—'}</dd>
+                        {item.configurationSource && (
+                          <>
+                            <dt>{tr('network.configurationSource')}</dt>
+                            <dd>{item.configurationSource}</dd>
+                          </>
+                        )}
                         <dt>IP</dt>
                         <dd>
                           {item.addresses.length
@@ -875,6 +897,7 @@ function NetworkPage() {
                     />
                     <IPFields
                       family={6}
+                      allowIgnore={edit.manager !== 'systemd-networkd'}
                       value={config.ipv6}
                       onChange={(ipv6) => setConfig({ ...config, ipv6 })}
                     />
