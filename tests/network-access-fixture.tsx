@@ -55,7 +55,9 @@ function Fixture() {
     </main>
   )
 }
-await initializeLanguage()
+const options = new URLSearchParams(location.search)
+document.documentElement.dataset.theme = options.get('theme') ?? 'dark'
+await initializeLanguage(options.get('lang') ?? 'en')
 createRoot(document.getElementById('root')!).render(
   <QueryClientProvider client={query}>
     <RouterProvider router={createMemoryRouter([{ path: '*', element: <Fixture /> }])} />
