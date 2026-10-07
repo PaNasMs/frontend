@@ -49,7 +49,7 @@ export function MultiSelect({
   return (
     <div className="multi-select-field">
       <span className="field-label">{label}</span>
-      <details ref={root} className="multi-select">
+      <details ref={root} className="multi-select" data-dialog-popup>
         <summary aria-label={label}>
           <span className="multi-select-value">
             {selected.length
@@ -65,15 +65,17 @@ export function MultiSelect({
           <Icon path={mdiChevronDown} size={18} />
         </summary>
         <div className="multi-select-popover">
-          {searchable && <label className="multi-select-search">
-            <Icon path={mdiMagnify} size={18} />
-            <input
-              aria-label={tr('ui.searchOptions')}
-              placeholder={tr('ui.searchOptions')}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </label>}
+          {searchable && (
+            <label className="multi-select-search">
+              <Icon path={mdiMagnify} size={18} />
+              <input
+                aria-label={tr('ui.searchOptions')}
+                placeholder={tr('ui.searchOptions')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </label>
+          )}
           <div className="multi-select-options" role="group" aria-label={label}>
             {visible.map((option) => (
               <label className="multi-select-option" key={option.id}>

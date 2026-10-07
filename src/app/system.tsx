@@ -3,7 +3,7 @@ import { ExternalSettings } from './external-connections'
 import { useRouteTab, useQueryValue } from './navigation'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { tr, locale } from '../i18n/index'
-import { registerModule } from './module-registry'
+import { registerModule, registerWidgetSource } from './module-registry'
 import {
   mdiServerOutline,
   mdiCogOutline,
@@ -23,12 +23,13 @@ import {
 } from '@mdi/js'
 import { SystemUpdates } from './system-updates'
 import { WebSettings } from './web-settings'
-import { CoolingSettings } from './cooling'
+import { CoolingSettings, useCoolingWidgetAvailability } from './cooling'
 import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } from './system-widgets'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useQuery } from '@tanstack/react-query'
 import { managed, OperationButton } from './operations'
 import { Notice, Icon, SectionNav } from '../shared/ui'
+registerWidgetSource(useCoolingWidgetAvailability)
 export function SystemPage() {
   const [tab, setTab] = useRouteTab('/system', ['services', 'journal', 'updates'], 'services')
   const [filter, setFilter] = useQueryValue('filter')

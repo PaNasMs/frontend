@@ -7,7 +7,15 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request } from '../api/client'
 import type { components } from '../api/schema'
 import { Button, Notice } from '../shared/ui'
+import type { WidgetSource } from './module-registry'
 export type CoolingState = components['schemas']['CoolingState']
+export const useCoolingWidgetAvailability: WidgetSource = () => {
+  const data = useQuery({ queryKey: ['cooling'], queryFn: () => request<CoolingState>('cooling') })
+  return {
+    ...(data.data?.capabilities?.cpu === false ? { cooling: null } : {}),
+    ...(data.data?.capabilities?.disk === false ? { hddCooling: null } : {}),
+  }
+}
 type HardwareMode = 'none' | 'external-pwm' | 'internal-pwm'
 const headerPins: Record<number, number> = {
   2: 3,

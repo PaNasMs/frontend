@@ -30,7 +30,11 @@ export type ModuleDefinition = {
   routes?: string[]
   icon: string
   keepAlive?: boolean
-  taskHistory?: { queryKey: readonly string[]; status: () => Promise<{ canClear: boolean }>; clear: () => Promise<unknown> }
+  taskHistory?: {
+    queryKey: readonly string[]
+    status: () => Promise<{ canClear: boolean }>
+    clear: () => Promise<unknown>
+  }
   tasks?: ComponentType
   backgroundIndicator?: ComponentType
   component: ComponentType<{ active?: boolean }>
@@ -65,14 +69,18 @@ export const settingsSections = () =>
  * виджету температуры на каждый найденный диск. Это React-хук; список источников
  * фиксируется при импорте модулей, поэтому порядок вызова хуков стабилен.
  */
-export type WidgetSource = () => Record<string, WidgetDefinition>
+export type WidgetSource = () => Record<string, WidgetDefinition | null>
 const sources: WidgetSource[] = []
 export function registerWidgetSource(source: WidgetSource) {
   sources.push(source)
 }
 export function useModuleWidgets(): Record<string, WidgetDefinition> {
   const produced = sources.map((source) => source())
-  const result: Record<string, WidgetDefinition> = Object.assign({}, widgets, ...produced)
+  const result: Record<string, WidgetDefinition> = Object.fromEntries(
+    Object.entries(Object.assign({}, widgets, ...produced)).filter(
+      (entry): entry is [string, WidgetDefinition] => entry[1] !== null,
+    ),
+  )
   if (!administrator) {
     for (const [key, value] of Object.entries(result)) {
       if (value.href && !['/', '/files', '/history'].includes(value.href)) delete result[key]
