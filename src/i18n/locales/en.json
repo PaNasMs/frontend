@@ -1294,6 +1294,7 @@
   "network.pendingUser": "Awaiting confirmation from {{user}}.",
   "network.editHint": "Changes are temporary until confirmed within two minutes. The current connection may be interrupted. Addresses require a prefix, e.g. /24.",
   "network.routeHint": "Edit static routes in the corresponding interface connection. System routes are shown as reported by Linux.",
+  "network.status.rollback-failed": "Network rollback failed. Check the interface configuration from the local console before making further changes.",
   "network.status.confirmed": "Network settings saved.",
   "network.status.rolled-back": "Previous network settings restored.",
   "network.status.expired": "The confirmation window has closed. Check the current interface addresses; unconfirmed changes are rolled back by NetworkManager.",
