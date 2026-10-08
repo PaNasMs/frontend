@@ -1317,14 +1317,22 @@ tbody tr:hover {
   -webkit-backdrop-filter: var(--glass);
   backdrop-filter: var(--glass);
 }
-.file-manager .button,
-.file-context-menu .button {
+.file-manager .button {
   width: 40px;
   min-width: 40px;
   height: 40px;
   min-height: 40px;
   padding: 0;
   border-radius: 50%;
+}
+/* Context-menu entries are full-width rows with a label: no circular toolbar shape. */
+.file-context-menu .button {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: var(--control);
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
 }
 /* The places toggle exists for phones only: the tree stays folded until asked for. */
 .file-places-switch {
