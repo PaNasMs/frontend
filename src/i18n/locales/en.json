@@ -729,6 +729,7 @@
   "server_a21518e3ba96": "Select a block device",
   "server_3162a87fedd2": "The device no longer exists",
   "server_9945259e13a8": "The system drive or one of its members is protected",
+  "server_16bbabafcd13": "The LUKS password is incorrect",
   "server_b1bf3612d2dd": "The system partition is protected",
   "server_89da019bac3d": "The device is read-only",
   "server_75269f5df258": "Detach dependent devices or delete partitions first",

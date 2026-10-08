@@ -326,6 +326,12 @@
     "ru": "Системный накопитель или его участник защищён"
   },
   {
+    "key": "server_16bbabafcd13",
+    "en": "The LUKS password is incorrect",
+    "ru": "Неверный пароль LUKS",
+    "uk": "Неправильний пароль LUKS"
+  },
+  {
     "key": "server_b1bf3612d2dd",
     "en": "The system partition is protected",
     "ru": "Системный раздел защищён",
