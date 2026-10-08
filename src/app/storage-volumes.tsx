@@ -155,6 +155,7 @@ export function StorageVolumes({
     'partition.resize': mdiArrowExpand,
     'partition.delete': mdiDeleteOutline,
     'disk.prepare': mdiEraser,
+    'filesystem.remove': mdiEraser,
     'mount.attach': mdiLink,
     'mount.detach': mdiLinkOff,
     'mount.settings': mdiCogOutline,
@@ -429,6 +430,9 @@ export function StorageVolumes({
                           selected.fstype ? tr('format_volume_01553c8e') : tr('create_file_system_6dca1ae4'),
                           offlineReason,
                         )}
+                        {['ext2', 'ext3', 'ext4', 'xfs', 'btrfs', 'vfat', 'exfat', 'ntfs'].includes(
+                          selected.fstype || '',
+                        ) && action('filesystem.remove', tr('storage.remove_filesystem'), offlineReason)}
                         {!selected.fstype &&
                           action('luks.create', tr('create_encrypted_volume_a70fa700'), offlineReason)}
                       </>
