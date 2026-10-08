@@ -2368,5 +2368,9 @@
   "server_2e397f150105": "The partition table changed, but the kernel has not confirmed it. Restart the NAS before retrying.",
   "storage.remove_filesystem": "Remove file system",
   "storage.remove_warning": "Removing the file system makes all its data inaccessible. The RAID array and partition layout are preserved.",
-  "storage.remove_type": "Select a supported data file system, not a RAID member or encrypted container"
+  "storage.remove_type": "Select a supported data file system, not a RAID member or encrypted container",
+  "ui.mountFolderMode": "Folder selection",
+  "ui.existingFolder": "Use an existing folder",
+  "ui.createSubfolder": "Create a new subfolder",
+  "ui.mountFolderDestination": "Choose an existing empty folder, or choose a parent folder and enter a new subfolder name. The mount operation checks that the destination is empty before proceeding."
 }

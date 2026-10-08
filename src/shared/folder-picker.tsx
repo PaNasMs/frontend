@@ -94,6 +94,8 @@ export function FolderPicker({
 }) {
   const [path, setPath] = useState(initialPath)
   const [name, setName] = useState(defaultName)
+  const mountChoice = policy === 'mount' && newFolder
+  const [createFolder, setCreateFolder] = useState(newFolder && policy !== 'mount')
   const data = useQuery({
     queryKey: ['folder-picker', policy, path],
     queryFn: () => managed<Folders>(`${policy}-folders`, undefined, path),
@@ -110,10 +112,22 @@ export function FolderPicker({
     name === name.trim() &&
     !/[\/\x00-\x1f\x7f]/.test(name) &&
     !['.', '..', 'lost+found'].includes(name)
-  const collision = newFolder && rows.some((row) => row.name === name)
-  const destination = path ? path.replace(/\/$/, '') + (newFolder ? '/' + name : '') : ''
+  const collision = createFolder && rows.some((row) => row.name === name)
+  const destination = path ? path.replace(/\/$/, '') + (createFolder ? '/' + name : '') : ''
   return (
     <div className="folder-picker">
+      {mountChoice && (
+        <label className="field">
+          {tr('ui.mountFolderMode')}
+          <select
+            value={createFolder ? 'new' : 'existing'}
+            onChange={(event) => setCreateFolder(event.target.value === 'new')}
+          >
+            <option value="existing">{tr('ui.existingFolder')}</option>
+            <option value="new">{tr('ui.createSubfolder')}</option>
+          </select>
+        </label>
+      )}
       <div className="folder-picker-heading">
         <Button
           type="button"
@@ -137,7 +151,9 @@ export function FolderPicker({
           ))}
         </nav>
       </div>
-      {(policy === 'home' || hint) && <p className="folder-policy-hint">{hint ?? tr('ui.homeLocationPolicy')}</p>}
+      {(policy === 'home' || hint) && (
+        <p className="folder-policy-hint">{hint ?? tr('ui.homeLocationPolicy')}</p>
+      )}
       {data.isPending && <Notice>{tr('loading_interface_f69ec4bd')}</Notice>}
       {data.error && <Notice error>{data.error.message}</Notice>}
       <div className="folder-picker-columns">
@@ -174,7 +190,7 @@ export function FolderPicker({
           )}
         </ul>
       </div>
-      {newFolder && (
+      {createFolder && (
         <label className="field">
           {tr('folder_name_198ad630')}
           <input
@@ -196,7 +212,7 @@ export function FolderPicker({
         <Button
           type="button"
           className="primary"
-          disabled={!path || data.isPending || !!data.error || (newFolder && (!validName || collision))}
+          disabled={!path || data.isPending || !!data.error || (createFolder && (!validName || collision))}
           onClick={() => onChoose(destination)}
         >
           {tr('ui.selectFolder')}
@@ -264,7 +280,13 @@ export function FolderField({
                   <Dialog.Title>{label}</Dialog.Title>
                 </div>
                 <Dialog.Description>
-                  {tr(newFolder ? 'ui.newFolderDestination' : 'ui.chooseFolder')}
+                  {tr(
+                    policy === 'mount' && newFolder
+                      ? 'ui.mountFolderDestination'
+                      : newFolder
+                        ? 'ui.newFolderDestination'
+                        : 'ui.chooseFolder',
+                  )}
                 </Dialog.Description>{' '}
               </>
             }
