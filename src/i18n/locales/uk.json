@@ -88,7 +88,7 @@
   "after_4e3c6adc": "Через",
   "minutes_333ed110": "хвилин",
   "the_configuration_task_has_been_submitted_see_the__51d4096a": "Завдання застосування надіслано. Результат доступний у меню завдань.",
-  "for_disks_in_a_busy_raid_array_the_setting_will_be_88e4ecbe": "Для дисків зайнятого RAID налаштування буде застосовано після завершення фонової операції.",
+  "for_disks_in_a_busy_raid_array_the_setting_will_be_88e4ecbe": "Диски не засинають під час обслуговування RAID і перевірок SMART. Після завершення відлік простою починається заново.",
   "smart_schedule_07fafb80": "Розклад SMART",
   "times_use_the_nas_time_zone_checks_are_skipped_whi_45c1d87b": "Час — за часовим поясом NAS. Перевірки пропускаються, якщо RAID зайнятий або на диску вже триває тест.",
   "smart_schedules_for_all_disks_62f57755": "Розклади SMART усіх дисків",
@@ -2377,6 +2377,6 @@
   "storage.sleep.unknown": "Не вдалося підтвердити роботу таймера сну. Застосуйте налаштування повторно.",
   "storage.sleep.unavailable": "Немає відповідних несистемних SATA HDD.",
   "storage.sleep.error": "Не вдалося застосувати час до всіх дисків. Перевірте помилки нижче та натисніть «Застосувати» повторно.",
-  "storage.sleep.busy": "Очікування завершення роботи RAID. Застосовано до {{applied}} з {{total}} дисків.",
+  "storage.sleep.busy": "Очікування завершення обслуговування RAID або перевірки SMART. Готово {{applied}} із {{total}} дисків.",
   "storage.sleep.pending": "Очікування застосування: {{applied}} з {{total}} дисків."
 }

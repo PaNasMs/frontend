@@ -88,7 +88,7 @@
   "after_4e3c6adc": "After",
   "minutes_333ed110": "minutes",
   "the_configuration_task_has_been_submitted_see_the__51d4096a": "The configuration task has been submitted. See the Tasks menu for the result.",
-  "for_disks_in_a_busy_raid_array_the_setting_will_be_88e4ecbe": "For disks in a busy RAID array, the setting will be applied after the background operation finishes.",
+  "for_disks_in_a_busy_raid_array_the_setting_will_be_88e4ecbe": "Disks stay awake during RAID maintenance and SMART checks. The idle countdown restarts when they finish.",
   "smart_schedule_07fafb80": "SMART schedule",
   "times_use_the_nas_time_zone_checks_are_skipped_whi_45c1d87b": "Times use the NAS time zone. Checks are skipped while RAID is busy or a disk test is already running.",
   "smart_schedules_for_all_disks_62f57755": "SMART schedules for all disks",
@@ -2377,6 +2377,6 @@
   "storage.sleep.unknown": "Cannot confirm whether the sleep timer is running. Apply the setting again.",
   "storage.sleep.unavailable": "No eligible non-system SATA HDDs are connected.",
   "storage.sleep.error": "The timeout could not be applied to every disk. Review the errors below and try Apply again.",
-  "storage.sleep.busy": "Waiting for RAID work to finish. Applied to {{applied}} of {{total}} disks.",
+  "storage.sleep.busy": "Waiting for RAID maintenance or SMART checks to finish. Ready on {{applied}} of {{total}} disks.",
   "storage.sleep.pending": "Waiting for application: {{applied}} of {{total}} disks."
 }
