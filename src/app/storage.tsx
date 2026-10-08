@@ -660,7 +660,7 @@ export function StoragePage() {
   )
   const selectedDisk = devices.find((d) => d.path === selected)
   const volumes = devices.filter(
-    (d) => (d.type === 'disk' && !assigned.has(d.path)) || d.type.startsWith('raid') || d.type === 'md',
+    (d) => (d.type === 'disk' && !assigned.has(d.path)) || d.type?.startsWith('raid') || d.type === 'md',
   )
   const free = disks.filter(
     (d) =>
