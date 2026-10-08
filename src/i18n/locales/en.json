@@ -2366,5 +2366,7 @@
   "access.noFeatures": "USB network access and fallback Wi-Fi are not supported by the detected hardware.",
   "server_b47bda1ffdd4": "Could not confirm the new partition",
   "server_2e397f150105": "The partition table changed, but the kernel has not confirmed it. Restart the NAS before retrying.",
-  "storage.remove_filesystem": "Remove file system"
+  "storage.remove_filesystem": "Remove file system",
+  "storage.remove_warning": "Removing the file system makes all its data inaccessible. The RAID array and partition layout are preserved.",
+  "storage.remove_type": "Select a supported data file system, not a RAID member or encrypted container"
 }
