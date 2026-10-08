@@ -4269,5 +4269,15 @@
     "en": "Invalid IP address",
     "ru": "Недопустимый IP-адрес",
     "uk": "Неприпустима IP-адреса"
+  },
+  {
+    "key": "server_b47bda1ffdd4",
+    "en": "Could not confirm the new partition",
+    "ru": "Не удалось подтвердить создание раздела"
+  },
+  {
+    "key": "server_2e397f150105",
+    "en": "The partition table changed, but the kernel has not confirmed it. Restart the NAS before retrying.",
+    "ru": "Таблица разделов изменена, но ядро не подтвердило обновление. Перезагрузите NAS перед повторной попыткой."
   }
 ]

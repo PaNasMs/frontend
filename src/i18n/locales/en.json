@@ -2363,5 +2363,7 @@
   "network.native.ipAddress": "Invalid IP address",
   "password.show": "Show password",
   "password.hide": "Hide password",
-  "access.noFeatures": "USB network access and fallback Wi-Fi are not supported by the detected hardware."
+  "access.noFeatures": "USB network access and fallback Wi-Fi are not supported by the detected hardware.",
+  "server_b47bda1ffdd4": "Could not confirm the new partition",
+  "server_2e397f150105": "The partition table changed, but the kernel has not confirmed it. Restart the NAS before retrying."
 }

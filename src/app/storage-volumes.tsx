@@ -1,7 +1,29 @@
 import { LuksActions } from './storage-luks'
 import { SnapshotActions } from './storage-snapshots'
 import { tr } from '../i18n/index'
-import { mdiPlus, mdiFormatPaint, mdiLockOutline, mdiLockOpenOutline, mdiArrowExpand, mdiDeleteOutline, mdiEraser, mdiLink, mdiLinkOff, mdiCogOutline, mdiClose, mdiChevronRight, mdiHarddisk, mdiNas, mdiMicroSd, mdiUsbFlashDriveOutline, mdiFolderNetworkOutline, mdiCheckCircleOutline, mdiMinusCircleOutline, mdiShieldLockOutline, mdiSelectAll } from '@mdi/js'
+import {
+  mdiPlus,
+  mdiFormatPaint,
+  mdiLockOutline,
+  mdiLockOpenOutline,
+  mdiArrowExpand,
+  mdiDeleteOutline,
+  mdiEraser,
+  mdiLink,
+  mdiLinkOff,
+  mdiCogOutline,
+  mdiClose,
+  mdiChevronRight,
+  mdiHarddisk,
+  mdiNas,
+  mdiMicroSd,
+  mdiUsbFlashDriveOutline,
+  mdiFolderNetworkOutline,
+  mdiCheckCircleOutline,
+  mdiMinusCircleOutline,
+  mdiShieldLockOutline,
+  mdiSelectAll,
+} from '@mdi/js'
 import { useState, type ReactNode } from 'react'
 import { MountVolumeButton } from './removable'
 import { OperationButton, type Field } from './operations'
@@ -344,14 +366,10 @@ export function StorageVolumes({
               <div className="context-actions">
                 {free && (
                   <>
-                    {action(
-                      'partition.create',
-                      tr('create_partition_cc6989af'),
-                      flatten([root]).some(mounted)
-                        ? tr('unmount_the_volumes_on_this_device_first_b760465a')
-                        : '',
-                      { startMiB: selection!.start, endMiB: selection!.end },
-                    )}
+                    {action('partition.create', tr('create_partition_cc6989af'), '', {
+                      startMiB: selection!.start,
+                      endMiB: selection!.end,
+                    })}
                     {!root.children?.length && (
                       <>
                         {action('filesystem.format', tr('create_file_system_6dca1ae4'))}
