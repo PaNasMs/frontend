@@ -2571,6 +2571,14 @@ export interface components {
             } | null;
         };
         StorageOptions: {
+            sleepRuntime?: {
+                /** @enum {string} */
+                status: "unconfigured" | "unknown" | "inactive" | "unavailable" | "error" | "busy" | "pending" | "disabled" | "applied";
+                timerActive: boolean;
+                timerEnabled: boolean;
+                applied: number;
+                total: number;
+            };
             sleepSettings: {
                 minutes: number;
             };

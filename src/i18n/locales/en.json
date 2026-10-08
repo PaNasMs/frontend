@@ -2373,5 +2373,14 @@
   "ui.mountFolderMode": "Folder selection",
   "ui.existingFolder": "Use an existing folder",
   "ui.createSubfolder": "Create a new subfolder",
-  "ui.mountFolderDestination": "Choose an existing empty folder, or choose a parent folder and enter a new subfolder name. The mount operation checks that the destination is empty before proceeding."
+  "ui.mountFolderDestination": "Choose an existing empty folder, or choose a parent folder and enter a new subfolder name. The mount operation checks that the destination is empty before proceeding.",
+  "storage.sleep.unconfigured": "Sleep is not configured.",
+  "storage.sleep.unknown": "Cannot confirm whether the sleep timer is running. Apply the setting again.",
+  "storage.sleep.inactive": "The sleep timer is stopped or disabled at startup. The saved timeout is not guaranteed; click Apply to restore it.",
+  "storage.sleep.unavailable": "No eligible non-system SATA HDDs are connected.",
+  "storage.sleep.error": "The timeout could not be applied to every disk. Review the errors below and try Apply again.",
+  "storage.sleep.busy": "Waiting for RAID work to finish. Applied to {{applied}} of {{total}} disks.",
+  "storage.sleep.pending": "Waiting for application: {{applied}} of {{total}} disks.",
+  "storage.sleep.disabled": "Automatic disk sleep is disabled. Applied to {{total}} disks.",
+  "storage.sleep.applied": "Sleep after {{minutes}} minutes of inactivity: applied to {{applied}} of {{total}} disks. The timer is active."
 }

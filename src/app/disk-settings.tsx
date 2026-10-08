@@ -60,6 +60,9 @@ export function DiskSettings() {
     },
   })
   const sleepStates = Object.values(options.data?.sleepStatus ?? {})
+  const sleepRuntime = options.data?.sleepRuntime
+  const sleepStatus = options.error ? 'unknown' : (sleepRuntime?.status ?? 'unknown')
+  const sleepApplied = ['applied', 'disabled'].includes(sleepStatus)
   const reset = useMutation({
     mutationFn: async (key: string) => {
       const current = await request<Preferences>('preferences')
@@ -101,13 +104,19 @@ export function DiskSettings() {
                 ))}
               </select>
             </label>
-            {sleepSave.error && <Notice error>{sleepSave.error.message}</Notice>}
-            {sleepSave.isSuccess && (
-              <Notice>{tr('the_configuration_task_has_been_submitted_see_the__51d4096a')}</Notice>
+            {options.data && (
+              <p role="status" className="small">
+                {tr(`storage.sleep.${sleepStatus}`, {
+                  minutes: savedSleep,
+                  applied: sleepRuntime?.applied ?? 0,
+                  total: sleepRuntime?.total ?? 0,
+                })}
+              </p>
             )}
+            {sleepSave.error && <Notice error>{sleepSave.error.message}</Notice>}
             <Button
               className="primary"
-              disabled={sleep === null || sleep === savedSleep || sleepSave.isPending || !options.data}
+              disabled={sleep === null || (sleep === savedSleep && sleepApplied) || sleepSave.isPending || !options.data}
               onClick={() => sleepSave.mutate()}
             >
               {tr('apply_768af677')}
