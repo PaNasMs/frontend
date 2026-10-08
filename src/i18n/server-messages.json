@@ -4279,5 +4279,17 @@
     "key": "server_2e397f150105",
     "en": "The partition table changed, but the kernel has not confirmed it. Restart the NAS before retrying.",
     "ru": "Таблица разделов изменена, но ядро не подтвердило обновление. Перезагрузите NAS перед повторной попыткой."
+  },
+  {
+    "key": "storage.remove_warning",
+    "en": "Removing the file system makes all its data inaccessible. The RAID array and partition layout are preserved.",
+    "ru": "Удаление файловой системы сделает все её данные недоступными. RAID-массив и таблица разделов сохранятся.",
+    "uk": "Видалення файлової системи зробить усі її дані недоступними. RAID-масив і таблиця розділів збережуться."
+  },
+  {
+    "key": "storage.remove_type",
+    "en": "Select a supported data file system, not a RAID member or encrypted container",
+    "ru": "Выберите поддерживаемую файловую систему данных, а не участник RAID или зашифрованный контейнер",
+    "uk": "Виберіть підтримувану файлову систему даних, а не учасник RAID або зашифрований контейнер"
   }
 ]

@@ -161,6 +161,7 @@ export const operations: Record<string, Operation> = {
     label: tr('permanently_delete_1879f0ec'),
     fields: [{ key: 'target', label: tr('path_1b46c650') }],
   },
+  'filesystem.remove': { label: tr('storage.remove_filesystem'), fields: [target] },
   'disk.prepare': { label: tr('wipe_device_79e13b21'), fields: [target] },
   'raid.convert': {
     label: tr('storage.raid_convert'),
@@ -937,8 +938,12 @@ function OperationForm({
                   {tr('cancel_555ad1c0')}
                 </Button>
               </Dialog.Close>
-              <Button className="primary" disabled={run.isPending} onClick={() => run.mutate()}>
-                {tr('confirm_0467ae4b')}
+              <Button
+                className={action === 'filesystem.remove' ? 'danger' : 'primary'}
+                disabled={run.isPending}
+                onClick={() => run.mutate()}
+              >
+                {action === 'filesystem.remove' ? operations[action].label : tr('confirm_0467ae4b')}
               </Button>
             </div>
           ) : (
