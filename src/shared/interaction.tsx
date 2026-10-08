@@ -80,7 +80,16 @@ export function ConfirmDialog({
   )
 }
 
-export function UnsavedChanges({ dirty, onDiscard }: { dirty: boolean; onDiscard?: () => void }) {
+export function UnsavedChanges({
+  dirty,
+  live,
+  onDiscard,
+}: {
+  dirty: boolean
+  /** Synchronously maintained set of dirty forms: a form that was just reset must not block an unload. */
+  live?: { current: Set<string> }
+  onDiscard?: () => void
+}) {
   const contentSearch = (search: string) => {
     const params = new URLSearchParams(search)
     params.delete('panel')
@@ -93,7 +102,7 @@ export function UnsavedChanges({ dirty, onDiscard }: { dirty: boolean; onDiscard
         contentSearch(currentLocation.search) !== contentSearch(nextLocation.search)),
   )
   useBeforeUnload((event) => {
-    if (dirty) {
+    if (dirty && (!live || live.current.size > 0)) {
       event.preventDefault()
       event.returnValue = ''
     }
@@ -119,10 +128,15 @@ export function UnsavedChanges({ dirty, onDiscard }: { dirty: boolean; onDiscard
 const DirtyFormsContext = createContext<(id: string, dirty: boolean, discard?: () => void) => void>(() => {})
 export function DirtyFormsProvider({ children }: { children: ReactNode }) {
   const discards = useRef(new Map<string, () => void>())
+  // The state below drives rendering; the ref mirrors it synchronously so that a form reset
+  // immediately before a reload (such as applying the interface language) no longer blocks it.
+  const live = useRef(new Set<string>())
   const [forms, setForms] = useState<Set<string>>(() => new Set())
   const report = useCallback((id: string, dirty: boolean, discard?: () => void) => {
     if (dirty && discard) discards.current.set(id, discard)
     else discards.current.delete(id)
+    if (dirty) live.current.add(id)
+    else live.current.delete(id)
     setForms((previous) => {
       if (previous.has(id) === dirty) return previous
       const next = new Set(previous)
@@ -135,6 +149,7 @@ export function DirtyFormsProvider({ children }: { children: ReactNode }) {
     <DirtyFormsContext.Provider value={report}>
       <UnsavedChanges
         dirty={forms.size > 0}
+        live={live}
         onDiscard={() => {
           for (const discard of discards.current.values()) discard()
           discards.current.clear()
