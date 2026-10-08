@@ -84,7 +84,7 @@
   "put_disks_to_sleep_8df3950e": "Put disks to sleep",
   "idle_time_before_sleep_0b98862f": "Idle time before sleep",
   "not_configured_in_panasms_b81448a5": "Not configured in PaNasMs",
-  "never_sleep_c6b71a1a": "Never sleep",
+  "never_sleep_c6b71a1a": "Disabled",
   "after_4e3c6adc": "After",
   "minutes_333ed110": "minutes",
   "the_configuration_task_has_been_submitted_see_the__51d4096a": "The configuration task has been submitted. See the Tasks menu for the result.",
@@ -2373,5 +2373,10 @@
   "ui.mountFolderMode": "Folder selection",
   "ui.existingFolder": "Use an existing folder",
   "ui.createSubfolder": "Create a new subfolder",
-  "ui.mountFolderDestination": "Choose an existing empty folder, or choose a parent folder and enter a new subfolder name. The mount operation checks that the destination is empty before proceeding."
+  "ui.mountFolderDestination": "Choose an existing empty folder, or choose a parent folder and enter a new subfolder name. The mount operation checks that the destination is empty before proceeding.",
+  "storage.sleep.unknown": "Cannot confirm whether the sleep timer is running. Apply the setting again.",
+  "storage.sleep.unavailable": "No eligible non-system SATA HDDs are connected.",
+  "storage.sleep.error": "The timeout could not be applied to every disk. Review the errors below and try Apply again.",
+  "storage.sleep.busy": "Waiting for RAID work to finish. Applied to {{applied}} of {{total}} disks.",
+  "storage.sleep.pending": "Waiting for application: {{applied}} of {{total}} disks."
 }

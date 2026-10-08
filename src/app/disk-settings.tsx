@@ -34,7 +34,11 @@ export function DiskSettings() {
     (d) => d.type === 'disk' && d.tran === 'sata' && d.serial,
   )
   const savedSleep = options.data?.sleepSettings?.minutes
-  const sleepDraft = useDraft<number | null>(savedSleep ?? null)
+  const sleepRuntime = options.data?.sleepRuntime
+  const sleepStatus = options.error ? 'unknown' : (sleepRuntime?.status ?? 'unknown')
+  const sleepOff = ['unconfigured', 'inactive', 'disabled'].includes(sleepStatus)
+  const currentSleep = sleepOff ? 0 : (savedSleep ?? null)
+  const sleepDraft = useDraft<number | null>(currentSleep)
   const { draft: sleep, setDraft: setSleep } = sleepDraft
   const sleepSave = useMutation({
     mutationFn: async () => {
@@ -60,6 +64,7 @@ export function DiskSettings() {
     },
   })
   const sleepStates = Object.values(options.data?.sleepStatus ?? {})
+  const sleepApplied = sleepOff || sleepStatus === 'applied'
   const reset = useMutation({
     mutationFn: async (key: string) => {
       const current = await request<Preferences>('preferences')
@@ -89,7 +94,7 @@ export function DiskSettings() {
                 onChange={(e) => setSleep(Number(e.target.value))}
               >
                 <option value="" disabled>
-                  {tr('not_configured_in_panasms_b81448a5')}
+                  {tr(options.isPending ? 'loading_b6819e91' : 'no_data_d0dd940c')}
                 </option>
                 <option value={0}>{tr('never_sleep_c6b71a1a')}</option>
                 {[5, 10, 15, 20, 30, 60, 120, 180, 300].map((n) => (
@@ -101,13 +106,19 @@ export function DiskSettings() {
                 ))}
               </select>
             </label>
-            {sleepSave.error && <Notice error>{sleepSave.error.message}</Notice>}
-            {sleepSave.isSuccess && (
-              <Notice>{tr('the_configuration_task_has_been_submitted_see_the__51d4096a')}</Notice>
+            {options.data && !sleepApplied && (
+              <p role="status" className="small">
+                {tr(`storage.sleep.${sleepStatus}`, {
+                  minutes: savedSleep,
+                  applied: sleepRuntime?.applied ?? 0,
+                  total: sleepRuntime?.total ?? 0,
+                })}
+              </p>
             )}
+            {sleepSave.error && <Notice error>{sleepSave.error.message}</Notice>}
             <Button
               className="primary"
-              disabled={sleep === null || sleep === savedSleep || sleepSave.isPending || !options.data}
+              disabled={sleep === null || (sleep === currentSleep && sleepApplied) || sleepSave.isPending || !options.data}
               onClick={() => sleepSave.mutate()}
             >
               {tr('apply_768af677')}

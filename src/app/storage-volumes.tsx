@@ -43,6 +43,13 @@ export type MediaInfo = {
   manufacturer?: string
 }
 export type StorageOptions = {
+  sleepRuntime?: {
+    status: string
+    timerActive: boolean
+    timerEnabled: boolean
+    applied: number
+    total: number
+  }
   sleepSettings?: {
     minutes: number
   } | null
