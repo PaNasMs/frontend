@@ -2070,6 +2070,10 @@ export interface components {
                     /** @enum {string} */
                     health?: "passed" | "warning" | "failed" | "unknown";
                     stale?: boolean;
+                    /** @description Known after the first standby read; true when SMART can be read without waking the disk. */
+                    sleepReadable?: boolean;
+                    /** @description The temperature was read while the disk stayed in standby. */
+                    sleepTemperature?: boolean;
                     observedAt?: number | null;
                     warnings?: string[];
                     attributes?: {
