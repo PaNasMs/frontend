@@ -113,6 +113,8 @@ export function DiskTemperatureWidget({ kind }: { kind: string }) {
   const value = sample?.temperature ?? null
   const stale = !!sample?.stale || telemetry.data?.available === false
   const asleep = sample?.state === 'sleeping'
+  // Some disks report their temperature in standby; that reading is current, not a cached one.
+  const asleepCurrent = asleep && !!sample?.sleepTemperature
   return (
     <div className="widget-strip">
       <div className="widget-strip-head">
@@ -141,7 +143,7 @@ export function DiskTemperatureWidget({ kind }: { kind: string }) {
         {value == null
           ? tr('no_reading_fc98df5e')
           : asleep
-            ? tr('disk_asleep_last_reading_c6138350')
+            ? tr(asleepCurrent ? 'disk_asleep_current_reading_fb7f6db1' : 'disk_asleep_last_reading_c6138350')
             : stale
               ? tr('data_is_out_of_date_ea94b7bf')
               : disk.path}
@@ -263,9 +265,9 @@ export function ArrayWidget() {
             name: disk?.kname ?? kname,
             value: sample?.temperature ?? null,
             faulty,
-            old: asleep || stale,
+            old: (asleep && !sample?.sleepTemperature) || stale,
             note: asleep
-              ? tr('disk_asleep_last_reading_c6138350')
+              ? tr(sample?.sleepTemperature ? 'disk_asleep_current_reading_fb7f6db1' : 'disk_asleep_last_reading_c6138350')
               : stale
                 ? tr('data_is_out_of_date_ea94b7bf')
                 : '',
