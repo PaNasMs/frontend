@@ -40,6 +40,12 @@ const useTelemetry = () =>
 const useMetrics = () => useQuery({ queryKey: ['metrics'], queryFn: () => request<Metrics>('metrics') })
 const physicalDisks = (s?: Storage) =>
   flatten((s?.devices ?? []) as Device[]).filter((d) => d.type === 'disk')
+export const diskTemperatureCurrent = (disk?: CoolingState['status']['disks'][number]) =>
+  !!disk &&
+  disk.temperature != null &&
+  !disk.stale &&
+  (disk.state === 'active' || (disk.state === 'sleeping' && !!disk.sleepTemperature))
+
 export function SystemDiskWidget() {
   const metrics = useMetrics()
   const m = metrics.data
@@ -111,10 +117,10 @@ export function DiskTemperatureWidget({ kind }: { kind: string }) {
     )
   const sample = telemetry.data?.status.disks.find((s) => s.device === disk.path)
   const value = sample?.temperature ?? null
-  const stale = !!sample?.stale || telemetry.data?.available === false
+  const stale = !diskTemperatureCurrent(sample) || telemetry.isError || !telemetry.data?.available
   const asleep = sample?.state === 'sleeping'
   // Some disks report their temperature in standby; that reading is current, not a cached one.
-  const asleepCurrent = asleep && !!sample?.sleepTemperature
+  const asleepCurrent = asleep && !stale
   return (
     <div className="widget-strip">
       <div className="widget-strip-head">
@@ -185,9 +191,7 @@ export function HddCoolingWidget() {
   const disks = state?.status.disks ?? []
   const temperatures = disks.flatMap((disk) => (disk.temperature == null ? [] : [disk.temperature]))
   const temperature = temperatures.length ? Math.max(...temperatures) : null
-  const stale =
-    !state?.available ||
-    disks.some((disk) => disk.stale || disk.state !== 'active' || disk.temperature == null)
+  const stale = !state?.available || telemetry.isError || disks.some((disk) => !diskTemperatureCurrent(disk))
   const fan = state?.available && state.config.hardwareMode !== 'none' ? state.status.dutyPercent : null
   return (
     <>
@@ -260,14 +264,14 @@ export function ArrayWidget() {
           const faulty = !!array.memberStates?.[kname]?.includes('faulty')
           // A cached reading is not a current one: say so instead of colouring it as live.
           const asleep = sample?.state === 'sleeping'
-          const stale = !!sample?.stale || telemetry.isError || telemetry.data?.available === false
+          const stale = !diskTemperatureCurrent(sample) || telemetry.isError || !telemetry.data?.available
           return {
             name: disk?.kname ?? kname,
             value: sample?.temperature ?? null,
             faulty,
             old: (asleep && !sample?.sleepTemperature) || stale,
             note: asleep
-              ? tr(sample?.sleepTemperature ? 'disk_asleep_current_reading_fb7f6db1' : 'disk_asleep_last_reading_c6138350')
+              ? tr(!stale ? 'disk_asleep_current_reading_fb7f6db1' : 'disk_asleep_last_reading_c6138350')
               : stale
                 ? tr('data_is_out_of_date_ea94b7bf')
                 : '',
