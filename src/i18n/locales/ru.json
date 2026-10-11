@@ -2379,5 +2379,7 @@
   "storage.sleep.unavailable": "Нет подходящих несистемных SATA HDD.",
   "storage.sleep.error": "Не удалось применить время ко всем дискам. Проверьте ошибки ниже и нажмите «Применить» повторно.",
   "storage.sleep.busy": "Ожидание завершения обслуживания RAID или проверки SMART. Готово {{applied}} из {{total}} дисков.",
-  "storage.sleep.pending": "Ожидание применения: {{applied}} из {{total}} дисков."
+  "storage.sleep.pending": "Ожидание применения: {{applied}} из {{total}} дисков.",
+  "external.allowGitHubRepos": "Разрешить доступ к репозиториям GitHub",
+  "external.githubReposHelp": "Разрешение repo в GitHub включает чтение и запись репозиториев. {{consumer}} только скачивает репозитории и никогда не отправляет изменения. Для доступа к организации может потребоваться одобрение."
 }

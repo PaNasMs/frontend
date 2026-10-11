@@ -2379,5 +2379,7 @@
   "storage.sleep.unavailable": "No eligible non-system SATA HDDs are connected.",
   "storage.sleep.error": "The timeout could not be applied to every disk. Review the errors below and try Apply again.",
   "storage.sleep.busy": "Waiting for RAID maintenance or SMART checks to finish. Ready on {{applied}} of {{total}} disks.",
-  "storage.sleep.pending": "Waiting for application: {{applied}} of {{total}} disks."
+  "storage.sleep.pending": "Waiting for application: {{applied}} of {{total}} disks.",
+  "external.allowGitHubRepos": "Allow GitHub repository access",
+  "external.githubReposHelp": "GitHub grants read and write access to repositories through the repo permission. {{consumer}} only downloads repositories and never pushes changes. Organization access may require approval."
 }
