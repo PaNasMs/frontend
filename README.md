@@ -167,5 +167,5 @@ covers the architecture and the handoff to Cloud Sync.
 
 ## License
 
-Original code is licensed under [PaNasMs Source-Available License 1.0](LICENSE). See [NOTICE](NOTICE)
+Original code is licensed under [Sustainable Use License 1.0](LICENSE). See [NOTICE](NOTICE)
 for third-party components. Public documentation is in English.
