@@ -3,7 +3,8 @@
 This is the web panel of PaNasMs (Pavlo's NAS Management System), a React single-page
 application. The [backend](https://github.com/PaNasMs/backend) serves its static HTML, CSS and
 JavaScript, and both ship in the same core Debian package. You need Node.js only to build and
-develop it. The current release is 0.2.15. To install PaNasMs on a NAS, follow the
+develop it. Published stable versions are listed in the [project releases](https://github.com/PaNasMs/panasms/releases).
+To install PaNasMs on a NAS, follow the
 [main repository](https://github.com/PaNasMs/panasms) or the
 [installation guide](https://panasms.github.io/docs/setup/install/). The
 [project website](https://panasms.github.io/) has screenshots and setup guides in English,
