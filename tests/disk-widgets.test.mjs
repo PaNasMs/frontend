@@ -81,4 +81,5 @@ for (const [disk, expected] of [
   [{ state: 'unavailable', temperature: 35, stale: false }, false],
   [{ state: 'active', temperature: null, stale: false }, false],
   [undefined, false],
-]) assert.equal(diskTemperatureCurrent(disk), expected, JSON.stringify(disk))
+])
+  assert.equal(diskTemperatureCurrent(disk), expected, JSON.stringify(disk))
