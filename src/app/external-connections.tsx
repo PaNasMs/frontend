@@ -165,7 +165,7 @@ function ProviderSettingsForm({ provider }: { provider: Provider }) {
 export type GrantRequest = {
   connectionId: string
   consumer: string
-  capability: 'google-drive' | 'google-drive-readonly' | 'dropbox-files'
+  capability: 'google-drive' | 'google-drive-readonly' | 'dropbox-files' | 'github-repositories'
 }
 export function GoogleConnect(props: {
   link?: boolean
@@ -282,7 +282,7 @@ export function ProviderConnect({
         }}
       >
         <Icon path={providerIcons[providerId]} />
-        {tr(grant ? (providerId === 'dropbox' ? 'external.allowDropbox' : 'external.allowDrive') : link ? 'external.linkProvider' : 'external.signInProvider', {
+        {tr(grant ? (providerId === 'github' ? 'external.allowGitHubRepos' : providerId === 'dropbox' ? 'external.allowDropbox' : 'external.allowDrive') : link ? 'external.linkProvider' : 'external.signInProvider', {
           provider: providerNames[providerId],
         })}
       </Button>
@@ -304,7 +304,7 @@ export function ProviderConnect({
                   <Dialog.Title>
                     {tr(
                       grant
-                        ? (providerId === 'dropbox' ? 'external.allowDropbox' : 'external.allowDrive')
+                        ? (providerId === 'github' ? 'external.allowGitHubRepos' : providerId === 'dropbox' ? 'external.allowDropbox' : 'external.allowDrive')
                         : link
                           ? 'external.linkProvider'
                           : 'external.signInProvider',
@@ -315,7 +315,7 @@ export function ProviderConnect({
                 <Dialog.Description>
                   {tr(
                     grant
-                      ? providerId === 'dropbox' ? 'external.dropboxFilesHelp' : grant.capability === 'google-drive-readonly'
+                      ? providerId === 'github' ? 'external.githubReposHelp' : providerId === 'dropbox' ? 'external.dropboxFilesHelp' : grant.capability === 'google-drive-readonly'
                         ? 'external.driveReadHelp'
                         : 'external.driveHelp'
                       : link
