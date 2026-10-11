@@ -376,6 +376,8 @@ function SmartDialog({
     refetchInterval: 60000,
   })
   const crc = t?.attributes?.find((a) => a.id === 199)?.raw?.value
+  const smartObservedAt = t?.smartObservedAt !== undefined ? t.smartObservedAt : t?.observedAt
+  const smartStale = t?.smartStale ?? (t?.stale || t?.state !== 'active')
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="dialog-overlay" />
@@ -392,8 +394,8 @@ function SmartDialog({
               <div className="smart-meta-row">
                 <Dialog.Description className="muted small">
                   {d.serial || d.name} · {d.path}
-                  {t?.observedAt
-                    ? ` · ${t.stale || !live ? tr('last_reading_8cb720b8') : tr('measured_fe4f59b5')} ${new Date(t.observedAt * 1000).toLocaleString(locale())}`
+                  {smartObservedAt
+                    ? ` · ${smartStale || !live ? tr('last_reading_8cb720b8') : tr('measured_fe4f59b5')} ${new Date(smartObservedAt * 1000).toLocaleString(locale())}`
                     : ''}
                 </Dialog.Description>
                 <div className="smart-test-toolbar" aria-label={tr('disk_tests_7d387b78')}>

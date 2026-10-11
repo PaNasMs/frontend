@@ -69,3 +69,16 @@ assert.ok(kindKey(long).length <= 64)
 assert.notEqual(long, diskWidgetKind({ serial: 'x'.repeat(199), kname: 'sdz' }))
 
 console.log('Ключи виджетов дисков: устойчивость, обезвреживание и совпадение с серверным правилом проверены')
+
+const { diskTemperatureCurrent } = exports
+for (const [disk, expected] of [
+  [{ state: 'active', temperature: 35, stale: false }, true],
+  [{ state: 'sleeping', temperature: 35, sleepTemperature: true, stale: false }, true],
+  [{ state: 'sleeping', temperature: 35, stale: true }, false],
+  [{ state: 'sleeping', temperature: 35, sleepTemperature: true, stale: true }, false],
+  [{ state: 'sleeping', temperature: 35, stale: false }, false],
+  [{ state: 'unknown', temperature: 35, stale: false }, false],
+  [{ state: 'unavailable', temperature: 35, stale: false }, false],
+  [{ state: 'active', temperature: null, stale: false }, false],
+  [undefined, false],
+]) assert.equal(diskTemperatureCurrent(disk), expected, JSON.stringify(disk))

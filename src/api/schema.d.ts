@@ -2070,7 +2070,11 @@ export interface components {
                     /** @enum {string} */
                     health?: "passed" | "warning" | "failed" | "unknown";
                     stale?: boolean;
-                    /** @description Known after the first standby read; true when SMART can be read without waking the disk. */
+                    /** @description Time of the last full SMART reading, independent of standby temperature reads. */
+                    smartObservedAt?: number | null;
+                    /** @description Health and attributes are cached from a previous full SMART reading. */
+                    smartStale?: boolean;
+                    /** @description Confirmed standby read capability; omitted while inconclusive or awaiting a retry. */
                     sleepReadable?: boolean;
                     /** @description The temperature was read while the disk stayed in standby. */
                     sleepTemperature?: boolean;
