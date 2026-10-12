@@ -1151,6 +1151,18 @@ summary {
   gap: 12px;
   flex-wrap: wrap;
 }
+.desktop-add {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 340px;
+  min-width: 0;
+  max-width: 680px;
+}
+.desktop-add .field {
+  flex: 1;
+  min-width: 0;
+}
 .desktop-tools .field {
   margin: 0;
 }
@@ -2882,7 +2894,7 @@ summary {
 }
 .desktop-tools p {
   margin: 0;
-  max-width: 360px;
+  flex-basis: 100%;
 }
 .raid-progress-controls > [role='alert'] {
   white-space: normal;

@@ -178,27 +178,42 @@ export function Dashboard() {
       </div>
       {editing && (
         <div className="desktop-tools">
-          <label className="field">
-            {tr('add_widget_59aad89f')}
-            <select value={selected} onChange={(e) => setSelected(e.target.value)}>
-              {choices.map(([id, w]) => (
-                <option key={id} value={id}>
-                  {w.module} · {w.title}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Button
-            title={tr('add_widget_59aad89f')}
-            aria-label={tr('add_widget_59aad89f')}
-            disabled={save.isPending}
-            onClick={() => {
-              const t = place(selected, draft, cols)
-              if (t) setDraft([...draft, t])
-            }}
-          >
-            <Icon path={mdiPlus} />
-          </Button>
+          <div className="desktop-add">
+            <label className="field">
+              <span className="sr-only">{tr('desktop_item_picker_label')}</span>
+              <select value={selected} onChange={(e) => setSelected(e.target.value)}>
+                <optgroup label={tr('desktop_widgets_group')}>
+                  {choices
+                    .filter(([, w]) => !w.href)
+                    .map(([id, w]) => (
+                      <option key={id} value={id}>
+                        {tr('desktop_widget_type')} · {w.module} · {w.title}
+                      </option>
+                    ))}
+                </optgroup>
+                <optgroup label={tr('desktop_shortcuts_group')}>
+                  {choices
+                    .filter(([, w]) => w.href)
+                    .map(([id, w]) => (
+                      <option key={id} value={id}>
+                        {tr('desktop_shortcut_type')} · {w.title}
+                      </option>
+                    ))}
+                </optgroup>
+              </select>
+            </label>
+            <Button
+              title={tr('desktop_add_item')}
+              aria-label={tr('desktop_add_item')}
+              disabled={save.isPending}
+              onClick={() => {
+                const t = place(selected, draft, cols)
+                if (t) setDraft([...draft, t])
+              }}
+            >
+              <Icon path={mdiPlus} />
+            </Button>
+          </div>
           <Button
             title={tr('default_layout_917fca95')}
             aria-label={tr('default_layout_917fca95')}
