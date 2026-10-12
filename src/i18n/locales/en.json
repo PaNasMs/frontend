@@ -2390,5 +2390,11 @@
   "hostname.localOnly": "Available on the same local network via Ethernet, Wi-Fi or direct USB networking. Your device must support mDNS; isolated guest networks may block discovery.",
   "hostname.unavailable": "Local-name discovery is not ready. You can still connect using the IP address.",
   "hostname.tls": "With HTTPS, the certificate must also cover the new network name.",
-  "hostname.saved": "Hostname updated"
+  "hostname.saved": "Hostname updated",
+  "hostname.server.validation": "Use 1–63 lowercase letters, digits or hyphens; start and end with a letter or digit",
+  "hostname.server.busy": "A hostname change is already in progress",
+  "hostname.server.recovery": "An interrupted hostname change requires recovery",
+  "hostname.server.failed": "Hostname change failed; recovery is required",
+  "hostname.server.restored": "Hostname change failed; previous settings were restored",
+  "hostname.server.saved": "Hostname updated"
 }
