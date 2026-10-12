@@ -207,7 +207,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
         ? flatten(node.props.children)
         : [node],
     )
-  const nodes = flatten(children)
+  const nodes = explicitHeader !== undefined && explicitFooter !== undefined ? [children] : flatten(children)
   const header: ReactNode[] = []
   const body: ReactNode[] = []
   let footer: ReactNode = explicitFooter

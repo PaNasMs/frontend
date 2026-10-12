@@ -11,6 +11,8 @@ import '../src/style.css'
 import '../src/design-system.css'
 import '../src/home/components.css'
 function Fixture() {
+  const [listOpen, setListOpen] = useState(false)
+  const [listVersion, setListVersion] = useState(0)
   const [open, setOpen] = useState(false)
   const [nested, setNested] = useState(false)
   const [confirm, setConfirm] = useState(false)
@@ -29,6 +31,30 @@ function Fixture() {
         Notify
       </button>
       <button onClick={() => setOpen(true)}>Open manually</button>
+      <button onClick={() => setListOpen(true)}>Open changing list</button>
+      <Dialog.Root open={listOpen} onOpenChange={setListOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog-overlay" />
+          <DialogContent
+            className="settings-dialog"
+            header={<Dialog.Title>Changing list</Dialog.Title>}
+            footer={<button onClick={() => setListOpen(false)}>Close list</button>}
+          >
+            {''}
+            <>
+              <div className="actions">
+                <button onClick={() => setListVersion(listVersion + 1)}>Refresh list</button>
+              </div>
+              <>
+                <h3>Saved</h3>
+                <div>Saved network</div>
+              </>
+              <h3>Available</h3>
+              <div>Network {listVersion}</div>
+            </>
+          </DialogContent>
+        </Dialog.Portal>
+      </Dialog.Root>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Trigger asChild>
           <button>Open form</button>

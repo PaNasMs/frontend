@@ -11,6 +11,14 @@ try {
   page.on('pageerror', (e) => errors.push(e.message))
   await page.route('**/api/v1/notifications', (route) => route.fulfill({ json: [] }))
   await page.goto((process.env.DIALOG_TEST_URL ?? 'http://127.0.0.1:5173') + '/tests/dialogs.html')
+  await page.getByRole('button', { name: 'Open changing list' }).click()
+  const changingList = page.getByRole('dialog', { name: 'Changing list' })
+  for (let index = 1; index <= 6; index++) {
+    await changingList.getByRole('button', { name: 'Refresh list' }).click()
+    await expect(changingList.getByRole('button', { name: 'Refresh list' })).toHaveCount(1)
+    await expect(changingList.getByText(`Network ${index}`)).toBeVisible()
+  }
+  await changingList.getByRole('button', { name: 'Close list' }).click()
   await page.getByRole('button', { name: 'Open form', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'Example settings' })
   await dialog.waitFor()
