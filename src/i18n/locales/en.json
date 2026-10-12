@@ -2381,5 +2381,14 @@
   "storage.sleep.busy": "Waiting for RAID maintenance or SMART checks to finish. Ready on {{applied}} of {{total}} disks.",
   "storage.sleep.pending": "Waiting for application: {{applied}} of {{total}} disks.",
   "external.allowGitHubRepos": "Allow GitHub repository access",
-  "external.githubReposHelp": "GitHub grants read and write access to repositories through the repo permission. {{consumer}} only downloads repositories and never pushes changes. Organization access may require approval."
+  "external.githubReposHelp": "GitHub grants read and write access to repositories through the repo permission. {{consumer}} only downloads repositories and never pushes changes. Organization access may require approval.",
+  "hostname.title": "Network name",
+  "hostname.label": "Hostname",
+  "hostname.help": "Use 1–63 lowercase letters, digits or hyphens. Start and end with a letter or digit.",
+  "hostname.preview": "After saving:",
+  "hostname.address": "Local address:",
+  "hostname.localOnly": "Available on the same local network via Ethernet, Wi-Fi or direct USB networking. Your device must support mDNS; isolated guest networks may block discovery.",
+  "hostname.unavailable": "Local-name discovery is not ready. You can still connect using the IP address.",
+  "hostname.tls": "With HTTPS, the certificate must also cover the new network name.",
+  "hostname.saved": "Hostname updated"
 }
