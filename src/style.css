@@ -2782,7 +2782,6 @@ summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 994px;
   margin-bottom: 24px;
 }
 .desktop-heading h1 {
