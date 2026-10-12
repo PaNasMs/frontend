@@ -97,6 +97,7 @@ export const operations: Record<string, Operation> = {
   'network.configure': { label: tr('network.configure'), fields: [] },
   'network.confirm': { label: tr('network.confirm'), fields: [] },
   'network.rollback': { label: tr('network.rollback'), fields: [] },
+  'system.hostname': { label: tr('hostname.title'), fields: [] },
   'system.web-port': { label: tr('web.confirm'), fields: [] },
   'system.poweroff': { label: tr('power.poweroff'), fields: [] },
   'system.reboot': { label: tr('power.reboot'), fields: [] },

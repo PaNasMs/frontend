@@ -408,7 +408,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    /** @description Core views: job, jobs, accounts, account-details, account-sessions, homes, homes-check, sharing, share-folders, home-folders, data-folders, mount-folders, modules, module-sources, module-catalog, web-access, system-updates, network, storage-options, raid-candidates, smart, services, journal, updates, nfs, power. Additional module queries require an enabled module. */
+                    /** @description Core views: job, jobs, accounts, account-details, account-sessions, homes, homes-check, sharing, share-folders, home-folders, data-folders, mount-folders, modules, module-sources, module-catalog, hostname, web-access, system-updates, network, storage-options, raid-candidates, smart, services, journal, updates, nfs, power. Additional module queries require an enabled module. */
                     view: string;
                     target?: string;
                 };
@@ -2710,6 +2710,15 @@ export interface components {
             modules?: components["schemas"]["InstalledModules"];
             "module-sources"?: components["schemas"]["ModuleSources"];
             "module-catalog"?: components["schemas"]["ModuleCatalog"];
+            hostname?: {
+                hostname: string;
+                networkName: string;
+                /** @enum {string} */
+                state: "ready" | "unavailable";
+                port: number;
+                /** @enum {string} */
+                scheme: "http" | "https";
+            };
             "web-access"?: components["schemas"]["WebAccess"];
             "system-updates"?: components["schemas"]["SystemUpdates"];
             network?: components["schemas"]["NetworkView"];

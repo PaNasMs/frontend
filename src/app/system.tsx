@@ -22,6 +22,7 @@ import {
   mdiUpdate,
 } from '@mdi/js'
 import { SystemUpdates } from './system-updates'
+import { HostnameSettings } from './hostname-settings'
 import { WebSettings } from './web-settings'
 import { CoolingSettings, useCoolingWidgetAvailability } from './cooling'
 import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } from './system-widgets'
@@ -328,6 +329,7 @@ registerModule({
       icon: mdiCogOutline,
       component: () => (
         <div className="general-settings">
+          <HostnameSettings />
           <WebSettings />
           <CoolingSettings kind="cpu" className="surface" />
         </div>

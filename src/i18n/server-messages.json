@@ -4297,5 +4297,41 @@
     "en": "Select a supported data file system, not a RAID member or encrypted container",
     "ru": "Выберите поддерживаемую файловую систему данных, а не участник RAID или зашифрованный контейнер",
     "uk": "Виберіть підтримувану файлову систему даних, а не учасник RAID або зашифрований контейнер"
+  },
+  {
+    "key": "hostname.server.validation",
+    "en": "Use 1–63 lowercase letters, digits or hyphens; start and end with a letter or digit",
+    "ru": "Используй 1–63 строчные латинские буквы, цифры или дефисы; в начале и конце — буква или цифра",
+    "uk": "Використовуй 1–63 малі латинські літери, цифри або дефіси; на початку й наприкінці — літера або цифра"
+  },
+  {
+    "key": "hostname.server.busy",
+    "en": "A hostname change is already in progress",
+    "ru": "Имя устройства уже изменяется",
+    "uk": "Ім’я пристрою вже змінюється"
+  },
+  {
+    "key": "hostname.server.recovery",
+    "en": "An interrupted hostname change requires recovery",
+    "ru": "Прерванное изменение имени требует восстановления",
+    "uk": "Перерване змінення імені потребує відновлення"
+  },
+  {
+    "key": "hostname.server.failed",
+    "en": "Hostname change failed; recovery is required",
+    "ru": "Не удалось изменить имя устройства; требуется восстановление",
+    "uk": "Не вдалося змінити ім’я пристрою; потрібне відновлення"
+  },
+  {
+    "key": "hostname.server.restored",
+    "en": "Hostname change failed; previous settings were restored",
+    "ru": "Не удалось изменить имя устройства; прежние настройки восстановлены",
+    "uk": "Не вдалося змінити ім’я пристрою; попередні налаштування відновлено"
+  },
+  {
+    "key": "hostname.server.saved",
+    "en": "Hostname updated",
+    "ru": "Имя устройства изменено",
+    "uk": "Ім’я пристрою змінено"
   }
 ]
