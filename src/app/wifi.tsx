@@ -141,22 +141,24 @@ export function WifiControls({
             variant="form"
             intent="edit"
             footer={
-              <div className="actions">
-                <Button form="modal-wifi" disabled={disabled}>
-                  {tr('wifi.connect')}
-                </Button>
-                <Button
-                  form="modal-wifi"
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => {
-                    setChoice(null)
-                    setPassword('')
-                  }}
-                >
-                  {tr('homes.cancel')}
-                </Button>
-              </div>
+              choice ? (
+                <div className="actions">
+                  <Button form="modal-wifi" disabled={disabled}>
+                    {tr('wifi.connect')}
+                  </Button>
+                  <Button
+                    form="modal-wifi"
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => {
+                      setChoice(null)
+                      setPassword('')
+                    }}
+                  >
+                    {tr('homes.cancel')}
+                  </Button>
+                </div>
+              ) : null
             }
           >
             {error && <Notice error>{error}</Notice>}
