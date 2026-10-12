@@ -8,7 +8,7 @@ import { tr } from '../i18n'
 import { serverText } from '../i18n/server'
 import { Button, DialogContent, Icon, Notice } from './ui'
 
-type FolderPolicy = 'share' | 'home' | 'mount' | 'data'
+type FolderPolicy = 'share' | 'home' | 'mount' | 'data' | 'personal'
 type FolderRow = { name: string; path: string; reason?: string }
 type Folders = components['schemas']['FolderLocations']
 

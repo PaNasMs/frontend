@@ -29,6 +29,7 @@ export type ModuleDefinition = {
   path: string
   routes?: string[]
   icon: string
+  memberAccess?: boolean
   keepAlive?: boolean
   taskHistory?: {
     queryKey: readonly string[]
@@ -53,7 +54,7 @@ export const isAdministrator = () => administrator
 export function setModuleAccess(admin: boolean) {
   administrator = admin
 }
-export const modules = () => registered.filter((m) => administrator || m.id === 'files')
+export const modules = () => registered.filter((m) => administrator || m.id === 'files' || m.memberAccess)
 let builtIn = Infinity
 /** Everything registered before this call belongs to the core; later registrations are installed modules. */
 export function sealBuiltInModules() {
