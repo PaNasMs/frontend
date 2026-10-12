@@ -184,7 +184,7 @@ export function Dashboard() {
               <select value={selected} onChange={(e) => setSelected(e.target.value)}>
                 <optgroup label={tr('desktop_widgets_group')}>
                   {choices
-                    .filter(([, w]) => !w.href)
+                    .filter(([, w]) => !!w.component)
                     .map(([id, w]) => (
                       <option key={id} value={id}>
                         {tr('desktop_widget_type')} · {w.module} · {w.title}
@@ -193,7 +193,7 @@ export function Dashboard() {
                 </optgroup>
                 <optgroup label={tr('desktop_shortcuts_group')}>
                   {choices
-                    .filter(([, w]) => w.href)
+                    .filter(([, w]) => !w.component && !!w.href)
                     .map(([id, w]) => (
                       <option key={id} value={id}>
                         {tr('desktop_shortcut_type')} · {w.title}
@@ -263,12 +263,13 @@ export function Dashboard() {
           })}
         {tiles.map((t) => {
           const w = catalog[t.kind],
-            app = apps().find((a) => a.path === w.href),
-            Widget = w.component
+            Widget = w.component,
+            shortcutHref = Widget ? undefined : w.href,
+            app = shortcutHref ? apps().find((a) => a.path === shortcutHref) : undefined
           return (
             <article
               key={t.id}
-              className={`tile coordinate-tile ${w.href ? 'desktop-shortcut' : w.bare ? 'desktop-widget bare' : 'desktop-widget'} ${editing ? 'editing' : ''} ${moving === t.id ? 'moving' : ''} ${drag?.id === t.id ? 'dragging' : ''}`}
+              className={`tile coordinate-tile ${shortcutHref ? 'desktop-shortcut' : w.bare ? 'desktop-widget bare' : 'desktop-widget'} ${editing ? 'editing' : ''} ${moving === t.id ? 'moving' : ''} ${drag?.id === t.id ? 'dragging' : ''}`}
               draggable={false}
               onPointerDown={(e) => {
                 if (
@@ -340,10 +341,10 @@ export function Dashboard() {
                   </button>
                 </div>
               )}
-              {w.href ? (
+              {shortcutHref ? (
                 <Link
                   draggable={false}
-                  to={w.href}
+                  to={shortcutHref}
                   className="shortcut-link"
                   onClick={(e) => editing && e.preventDefault()}
                 >
