@@ -44,6 +44,7 @@ export function Dashboard() {
   const catalog = useModuleWidgets()
   const [mode, setMode] = useState(screen)
   const cols = columns(mode)
+  const gridMaxWidth = cols * 176
   const initial = useMemo(() => defaults(cols), [cols])
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState<Tile[]>([])
@@ -140,7 +141,7 @@ export function Dashboard() {
   }
   return (
     <section className="personal-desktop">
-      <div className="desktop-heading">
+      <div className="desktop-heading" style={{ maxWidth: gridMaxWidth }}>
         <h1>{tr('desktop_651d54bb')}</h1>
         <div className="actions">
           {editing ? (
@@ -233,7 +234,7 @@ export function Dashboard() {
         className="coordinate-grid"
         style={{
           gridTemplateColumns: `repeat(${cols},minmax(0,1fr))`,
-          maxWidth: cols * 176,
+          maxWidth: gridMaxWidth,
           gridTemplateRows: `repeat(${rows},100px)`,
         }}
       >
