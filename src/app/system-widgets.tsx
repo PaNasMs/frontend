@@ -64,7 +64,6 @@ export function MemoryWidget() {
     <>
       <div className="widget-ring-row with-spark">
         <Ring
-          size={90}
           fraction={percent == null ? null : percent / 100}
           center={percent == null ? '—' : `${Math.round(percent)}%`}
           sub={tr('used_fe26786c')}
@@ -90,37 +89,40 @@ export function CoolingWidget() {
   const history = useShortHistory()
   const m = metrics.data
   const t = m?.cpuTemperature ?? null
+  const fan = m?.cpuFanPercent ?? null
   const values = (history.data ?? []).map((row) => row.cpuTemperature)
+  const state =
+    t == null
+      ? null
+      : t >= 80
+        ? tr('overheating_17bd9f41')
+        : t >= 70
+          ? tr('hot_a52970c6')
+          : tr('widget.temperatureNormal')
   return (
     <>
-      <div className="widget-ring-row with-spark">
+      <div className="widget-ring-row widget-ring-pair with-spark">
         <Ring
-          size={80}
           fraction={t == null ? null : tempFraction(t, 90)}
-          tone={t == null ? 'accent' : cpuTone(t)}
+          tone={t == null ? 'muted' : cpuTone(t)}
           center={t == null ? '—' : `${Math.round(t)}°`}
-          sub="CPU"
-          label={tr('cpu_temperature_e8bc9b51', {
+          sub={tr('widget.temperature')}
+          label={`${tr('cpu_temperature_e8bc9b51', {
             v0: t == null ? ' ' + tr('unknown_8fe3b697') : tr('degrees_980ea19d', { v0: Math.round(t) }),
-          })}
+          })}${state ? ` · ${state}` : ''}`}
+        />
+        <Ring
+          fraction={fan == null ? null : fan / 100}
+          tone={fan == null ? 'muted' : 'accent'}
+          center={fan == null ? '—' : `${Math.round(fan)}%`}
+          sub={tr('widget.fan')}
+          label={
+            fan == null
+              ? tr('fan_speed_unavailable_0afbdb35')
+              : tr('widget.fanPercent', { value: Math.round(fan) })
+          }
         />
       </div>
-      <WidgetFoot withSpark={hasSparkline(values)}>
-        {t != null && (
-          <strong className="widget-state">
-            {t >= 80
-              ? tr('overheating_17bd9f41')
-              : t >= 70
-                ? tr('hot_a52970c6')
-                : tr('widget.temperatureNormal')}
-          </strong>
-        )}
-        <span>
-          {m?.cpuFanPercent == null
-            ? tr('fan_speed_unavailable_0afbdb35')
-            : tr('fan_6c98836d', { v0: m.cpuFanPercent })}
-        </span>
-      </WidgetFoot>
       <Sparkline
         values={values}
         max={90}

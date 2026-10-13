@@ -3071,6 +3071,9 @@ summary {
 .widget-ring-row.with-spark {
   margin-top: -6px;
 }
+.widget-ring-pair {
+  gap: clamp(8px, 4%, 24px);
+}
 .widget-ring {
   position: relative;
 }
@@ -3122,6 +3125,9 @@ summary {
 }
 .widget-foot.with-spark {
   bottom: 52px;
+}
+.widget-ring-row.with-spark:not(.widget-ring-pair) + .widget-foot.with-spark {
+  bottom: 40px;
 }
 .widget-foot.with-spark + .widget-spark {
   height: 24px;
