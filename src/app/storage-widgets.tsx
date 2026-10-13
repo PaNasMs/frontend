@@ -161,7 +161,7 @@ export function DiskTemperatureWidget({ kind }: { kind: string }) {
         max={70}
         height={24}
         tone={value == null || stale ? 'muted' : diskTone(value)}
-        label={tr('widget.diskTemperatureHistory', { v0: diskLabel(disk) })}
+        label={`${tr('widget.diskTemperatureHistory', { v0: diskLabel(disk) })} · ${disk.path}`}
       />
     </div>
   )
