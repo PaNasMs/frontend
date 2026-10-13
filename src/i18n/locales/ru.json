@@ -482,7 +482,7 @@
   "data_is_out_of_date_ea94b7bf": "данные устарели",
   "temperature_dd3a7636": "Температура · {{v0}} · {{v1}}",
   "disk_temperature_0cbaf9a7": "Температура диска",
-  "hottest_disk_60e1db4d": "макс. HDD",
+  "hottest_disk_60e1db4d": "макс.",
   "hdd_temperature_unknown_5736696c": "Температура HDD неизвестна",
   "hottest_hdd_temperature_degrees_41857569": "Температура самого горячего HDD: {{v0}} градусов",
   "no_temperature_data_d4c65083": "Нет данных температуры",

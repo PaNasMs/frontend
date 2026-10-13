@@ -209,8 +209,9 @@ export function HddCoolingWidget() {
   })
   return (
     <>
-      <div className="widget-ring-row">
+      <div className="widget-ring-row with-spark">
         <Ring
+          size={90}
           fraction={temperature == null ? null : tempFraction(temperature, 70)}
           tone={temperature == null || stale ? 'muted' : diskTone(temperature)}
           center={temperature == null ? '—' : `${Math.round(temperature)}°`}

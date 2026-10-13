@@ -3068,6 +3068,9 @@ summary {
   display: flex;
   justify-content: center;
 }
+.widget-ring-row.with-spark {
+  margin-top: -4px;
+}
 .widget-ring {
   position: relative;
 }

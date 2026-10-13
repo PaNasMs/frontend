@@ -62,8 +62,9 @@ export function MemoryWidget() {
   const values = (history.data ?? []).map((row) => percentOf(row.memoryUsed, row.memoryTotal))
   return (
     <>
-      <div className="widget-ring-row">
+      <div className="widget-ring-row with-spark">
         <Ring
+          size={90}
           fraction={percent == null ? null : percent / 100}
           center={percent == null ? '—' : `${Math.round(percent)}%`}
           sub={tr('used_fe26786c')}
@@ -92,8 +93,9 @@ export function CoolingWidget() {
   const values = (history.data ?? []).map((row) => row.cpuTemperature)
   return (
     <>
-      <div className="widget-ring-row">
+      <div className="widget-ring-row with-spark">
         <Ring
+          size={90}
           fraction={t == null ? null : tempFraction(t, 90)}
           tone={t == null ? 'accent' : cpuTone(t)}
           center={t == null ? '—' : `${Math.round(t)}°`}
