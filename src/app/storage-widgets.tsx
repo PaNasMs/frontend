@@ -4,7 +4,7 @@ import { mdiThermometer } from '@mdi/js'
 import { request, type Metrics, type Preferences, type Storage, type Device, type Mount } from '../api/client'
 import type { CoolingState } from './cooling'
 import { bytes } from '../shared/ui'
-import { Ring, Sparkline, WidgetFoot, ZoneBar, hasSparkline, useShortHistory } from '../shared/widget-ui'
+import { Ring, Sparkline, WidgetFoot, ZoneBar, useShortHistory } from '../shared/widget-ui'
 import { diskTone, tempFraction } from './system-widgets'
 import type { WidgetDefinition } from './module-registry'
 const flatten = <
@@ -328,48 +328,58 @@ export function HddCoolingWidget() {
   const temperature = temperatures.length ? Math.max(...temperatures) : null
   const stale = !state?.available || telemetry.isError || disks.some((disk) => !diskTemperatureCurrent(disk))
   const fan = state?.available && state.config.hardwareMode !== 'none' ? state.status.dutyPercent : null
+  const status =
+    state?.status.reason === 'initializing-sensors'
+      ? tr('cooling_initializing_sensors')
+      : temperature == null
+        ? tr('no_temperature_data_d4c65083')
+        : stale
+          ? tr('last_readings_de14326f')
+          : temperature >= 55
+            ? tr('overheating_17bd9f41')
+            : temperature >= 45
+              ? tr('hot_a52970c6')
+              : tr('widget.temperatureNormal')
   const values = (history.data ?? []).map((row) => {
     const readings = Object.values(row.diskTemperatures ?? {})
     return readings.length ? Math.max(...readings) : null
   })
   return (
     <>
-      <div className="widget-ring-row with-spark">
+      <div className="widget-ring-row widget-ring-pair with-spark">
         <Ring
-          size={80}
           fraction={temperature == null ? null : tempFraction(temperature, 70)}
           tone={temperature == null || stale ? 'muted' : diskTone(temperature)}
           center={temperature == null ? '—' : `${Math.round(temperature)}°`}
-          sub={tr('hottest_disk_60e1db4d')}
-          label={
+          sub={tr('widget.temperature')}
+          label={`${
             temperature == null
               ? tr('hdd_temperature_unknown_5736696c')
               : tr('hottest_hdd_temperature_degrees_41857569', { v0: Math.round(temperature) })
+          } · ${status}`}
+        />
+        <Ring
+          fraction={fan == null ? null : fan / 100}
+          tone={fan == null ? 'muted' : 'accent'}
+          center={fan == null ? '—' : `${Math.round(fan)}%`}
+          sub={tr('widget.fan')}
+          label={
+            fan == null
+              ? tr('fan_speed_unavailable_0afbdb35')
+              : tr('widget.fanPercent', { value: Math.round(fan) })
           }
         />
       </div>
-      <WidgetFoot withSpark={hasSparkline(values)}>
-        <strong className="widget-state">
-          {state?.status.reason === 'initializing-sensors'
-            ? tr('cooling_initializing_sensors')
-            : temperature == null
-              ? tr('no_temperature_data_d4c65083')
-              : stale
-                ? tr('last_readings_de14326f')
-                : temperature >= 55
-                  ? tr('overheating_17bd9f41')
-                  : temperature >= 45
-                    ? tr('hot_a52970c6')
-                    : tr('widget.temperatureNormal')}
-        </strong>
-        <span>{fan == null ? tr('fan_speed_unavailable_0afbdb35') : tr('fan_6c98836d', { v0: fan })}</span>
-      </WidgetFoot>
-      <Sparkline
-        values={values}
-        max={70}
-        tone={temperature == null || stale ? 'muted' : diskTone(temperature)}
-        label={tr('widget.hddTemperatureHistory')}
-      />
+      {temperature == null || stale ? (
+        <WidgetFoot>{status}</WidgetFoot>
+      ) : (
+        <Sparkline
+          values={values}
+          max={70}
+          tone={diskTone(temperature)}
+          label={tr('widget.hddTemperatureHistory')}
+        />
+      )}
     </>
   )
 }
