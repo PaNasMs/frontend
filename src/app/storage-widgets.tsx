@@ -1,7 +1,7 @@
-import { tr } from '../i18n/index'
+import { tr, locale } from '../i18n/index'
 import { useQuery } from '@tanstack/react-query'
 import { mdiThermometer } from '@mdi/js'
-import { request, type Metrics, type Preferences, type Storage, type Device } from '../api/client'
+import { request, type Metrics, type Preferences, type Storage, type Device, type Mount } from '../api/client'
 import type { CoolingState } from './cooling'
 import { bytes } from '../shared/ui'
 import { Ring, Sparkline, WidgetFoot, ZoneBar, hasSparkline, useShortHistory } from '../shared/widget-ui'
@@ -34,12 +34,38 @@ const safeKey = (value: string) => {
 }
 export const diskWidgetKind = (d: Device) => DISK_TEMP + safeKey(d.serial || d.kname)
 const diskLabel = (d: Device) => d.model?.trim() || d.kname
+export const smartKey = (disk: Device) =>
+  disk.serial ? `${disk.model?.trim() || ''}:${disk.serial}` : undefined
+export const smartBaseline = (disk: Device, preferences?: Preferences) => {
+  const key = smartKey(disk)
+  return key ? preferences?.smartCrcBaselines?.[key] : undefined
+}
+export const smartCrcAcknowledged = (sample?: CoolingState['status']['disks'][number], baseline?: number) => {
+  const crc = sample?.attributes?.find((attribute) => attribute.id === 199)?.raw?.value
+  return (
+    baseline !== undefined &&
+    crc === baseline &&
+    sample?.health === 'warning' &&
+    sample.warnings?.length === 1 &&
+    sample.warnings[0] === 'UDMA_CRC_Error_Count'
+  )
+}
 const useStorage = () => useQuery({ queryKey: ['storage'], queryFn: () => request<Storage>('storage') })
 const useTelemetry = () =>
   useQuery({ queryKey: ['cooling'], queryFn: () => request<CoolingState>('cooling') })
 const useMetrics = () => useQuery({ queryKey: ['metrics'], queryFn: () => request<Metrics>('metrics') })
 const physicalDisks = (s?: Storage) =>
   flatten((s?.devices ?? []) as Device[]).filter((d) => d.type === 'disk')
+export const mountedVolumes = (s?: Storage) =>
+  flatten((s?.mounts ?? []) as Mount[])
+    .filter(
+      (mount) =>
+        mount.source.startsWith('/dev/') &&
+        Number(mount.size) > 0 &&
+        mount.used != null &&
+        mount.avail != null,
+    )
+    .sort((a, b) => Number(b.size) - Number(a.size))
 export const diskTemperatureCurrent = (disk?: CoolingState['status']['disks'][number]) =>
   !!disk &&
   disk.temperature != null &&
@@ -70,6 +96,105 @@ export function SystemDiskWidget() {
         {m ? tr('of_ad242546', { v0: bytes(used), v1: bytes(m.systemTotal) }) : tr('loading_b6819e91')}
       </WidgetFoot>
     </>
+  )
+}
+
+export function VolumesWidget() {
+  const storage = useStorage()
+  const volumes = mountedVolumes(storage.data)
+  if (storage.isPending || storage.error || !volumes.length)
+    return (
+      <WidgetFoot>
+        {storage.isPending
+          ? tr('loading_b6819e91')
+          : storage.error
+            ? tr('data_unavailable_9d99b9e6')
+            : tr('widget.noMountedVolumes')}
+      </WidgetFoot>
+    )
+  return (
+    <div className="widget-summary-list">
+      {volumes.slice(0, 4).map((volume) => {
+        const size = Number(volume.size)
+        const used = Number(volume.used)
+        const available = Number(volume.avail)
+        return (
+          <div className="widget-volume" key={volume.target}>
+            <div className="widget-summary-row">
+              <strong title={volume.target}>{volume.target}</strong>
+              <span>{tr('widget.freeSpace', { value: bytes(available) })}</span>
+            </div>
+            <progress
+              max={size}
+              value={Math.min(size, Math.max(0, used))}
+              aria-label={tr('widget.volumeUsage', { name: volume.target })}
+              aria-valuetext={tr('of_ad242546', { v0: bytes(used), v1: bytes(size) })}
+            />
+          </div>
+        )
+      })}
+      {volumes.length > 4 && (
+        <small className="widget-summary-extra">
+          {tr('widget.moreItems', { count: volumes.length - 4 })}
+        </small>
+      )}
+    </div>
+  )
+}
+
+export function SmartWidget() {
+  const storage = useStorage()
+  const telemetry = useTelemetry()
+  const preferences = useQuery({
+    queryKey: ['preferences'],
+    queryFn: () => request<Preferences>('preferences'),
+  })
+  const disks = physicalDisks(storage.data).filter((disk) => disk.tran !== 'mmc')
+  if (storage.isPending || telemetry.isPending || storage.error || telemetry.error || !disks.length)
+    return (
+      <WidgetFoot>
+        {storage.isPending || telemetry.isPending
+          ? tr('loading_b6819e91')
+          : storage.error || telemetry.error
+            ? tr('data_unavailable_9d99b9e6')
+            : tr('widget.noSmartDisks')}
+      </WidgetFoot>
+    )
+  const labels = {
+    passed: tr('widget.smartPassed'),
+    warning: tr('widget.smartWarning'),
+    failed: tr('widget.smartFailed'),
+    unknown: tr('widget.smartUnknown'),
+  }
+  return (
+    <div className="widget-summary-list">
+      {disks.slice(0, 4).map((disk) => {
+        const sample = telemetry.data?.status.disks.find((item) => item.device === disk.path)
+        const health = sample?.health ?? 'unknown'
+        const acknowledged = smartCrcAcknowledged(sample, smartBaseline(disk, preferences.data))
+        const cached =
+          health !== 'unknown' &&
+          (!telemetry.data?.available || !!sample?.smartStale || !sample?.smartObservedAt)
+        const observedAt = sample?.smartObservedAt
+        const reading = observedAt
+          ? `${tr('last_reading_8cb720b8')}: ${new Date(observedAt * 1000).toLocaleString(locale())}`
+          : undefined
+        return (
+          <div className="widget-summary-row" key={disk.path} title={reading}>
+            <strong title={`${diskLabel(disk)} · ${disk.path}`}>{disk.kname}</strong>
+            <span
+              className={`tone-${health === 'failed' ? 'crit' : health === 'warning' && !acknowledged ? 'warn' : (health === 'passed' || acknowledged) && !cached ? 'good' : 'muted'}`}
+            >
+              {acknowledged ? tr('widget.smartAcknowledged') : labels[health]}
+              {cached ? ` · ${tr('widget.smartCached')}` : ''}
+            </span>
+          </div>
+        )
+      })}
+      {disks.length > 4 && (
+        <small className="widget-summary-extra">{tr('widget.moreItems', { count: disks.length - 4 })}</small>
+      )}
+    </div>
   )
 }
 export function DiskLoadWidget() {
@@ -211,7 +336,7 @@ export function HddCoolingWidget() {
     <>
       <div className="widget-ring-row with-spark">
         <Ring
-          size={90}
+          size={80}
           fraction={temperature == null ? null : tempFraction(temperature, 70)}
           tone={temperature == null || stale ? 'muted' : diskTone(temperature)}
           center={temperature == null ? '—' : `${Math.round(temperature)}°`}
@@ -235,7 +360,7 @@ export function HddCoolingWidget() {
                   ? tr('overheating_17bd9f41')
                   : temperature >= 45
                     ? tr('hot_a52970c6')
-                    : tr('temperature_normal_c0591d63')}
+                    : tr('widget.temperatureNormal')}
         </strong>
         <span>{fan == null ? tr('fan_speed_unavailable_0afbdb35') : tr('fan_6c98836d', { v0: fan })}</span>
       </WidgetFoot>

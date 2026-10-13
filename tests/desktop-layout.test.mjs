@@ -12,6 +12,9 @@ const widgets = {
   memory: { width: 2, height: 2 },
   cooling: { width: 2, height: 2 },
   systemDisk: { width: 2, height: 2 },
+  volumes: { width: 2, height: 2 },
+  smart: { width: 2, height: 2 },
+  sharingConnections: { width: 2, height: 2 },
   network: { width: 2, height: 2 },
   'disk-temp:WD-1': { width: 2, height: 1 },
 }
@@ -25,7 +28,11 @@ vm.runInNewContext(code, {
   crypto: webcrypto,
   innerWidth: 1280,
   require: (name) =>
-    name === './module-registry' ? { widgets, modules, isAdministrator: () => true } : name.includes('i18n') ? translations : {},
+    name === './module-registry'
+      ? { widgets, modules, isAdministrator: () => true }
+      : name.includes('i18n')
+        ? translations
+        : {},
 })
 exports.registerShortcuts()
 const layouts = exports.toggleShortcut(undefined, 'files', true)
@@ -37,7 +44,7 @@ assert.equal(phone.mobile.length, 0)
 for (const [mode, tiles] of Object.entries(layouts)) {
   assert.equal(tiles.filter((t) => t.kind === 'files').length, 1)
   assert.ok(tiles.every((t) => exports.free(t, tiles, exports.columns(mode))))
-  assert.equal(tiles.filter((t) => !widgets[t.kind].href).length, 5)
+  assert.equal(tiles.filter((t) => !widgets[t.kind].href).length, 8)
 }
 assert.equal(JSON.stringify(exports.toggleShortcut(layouts, 'files', true)), JSON.stringify(layouts))
 const removed = exports.toggleShortcut(layouts, 'files', false)
