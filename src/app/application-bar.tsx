@@ -131,7 +131,7 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
           return (
             <NavLink
               key={id}
-              to={a.path}
+              to={a.path!}
               title={a.title}
               aria-label={a.title}
               className={
@@ -221,7 +221,7 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
             {applications.map((a) => (
               <div key={a.id} className="launcher-entry">
                 <Link
-                  to={a.path}
+                  to={a.path!}
                   onContextMenu={(e) => {
                     e.preventDefault()
                     showContext(a.id, e.clientX, e.clientY)

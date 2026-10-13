@@ -9,7 +9,11 @@ export type WidgetDefinition = {
    * Отрисовку виджета даёт сам модуль. Оболочка рисует только рамку и заголовок,
    * поэтому новый виджет не требует правок рабочего стола.
    */
-  component?: ComponentType<{ kind: string }>
+  component?: ComponentType<{ kind: string; config?: Record<string, string>; editing?: boolean }>
+  configure?: ComponentType<{
+    value: Record<string, string>
+    onChange: (value: Record<string, string>) => void
+  }>
   icon?: string
   /** Показывать ссылку на страницу истории показателей в заголовке. */
   history?: boolean
@@ -22,11 +26,12 @@ export type SettingsSection = {
   icon: string
   component: ComponentType
   routes?: string[]
+  administratorOnly?: boolean
 }
 export type ModuleDefinition = {
   id: string
   title: string
-  path: string
+  path?: string
   routes?: string[]
   icon: string
   memberAccess?: boolean
@@ -38,7 +43,7 @@ export type ModuleDefinition = {
   }
   tasks?: ComponentType
   backgroundIndicator?: ComponentType
-  component: ComponentType<{ active?: boolean }>
+  component?: ComponentType<{ active?: boolean }>
   settings?: SettingsSection[]
   widgets?: Record<string, WidgetDefinition>
 }
@@ -62,7 +67,11 @@ export function sealBuiltInModules() {
 }
 export const settingsSections = () =>
   modules()
-    .flatMap((m) => (m.settings ?? []).map((s) => ({ ...s, external: registered.indexOf(m) >= builtIn })))
+    .flatMap((m) =>
+      (m.settings ?? [])
+        .filter((s) => administrator || !s.administratorOnly)
+        .map((s) => ({ ...s, external: registered.indexOf(m) >= builtIn })),
+    )
     .sort((a, b) => Number(b.id === 'general') - Number(a.id === 'general'))
 
 /**

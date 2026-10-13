@@ -63,9 +63,9 @@ const Login = lazy(() => import('./app/login'))
 function PersistentModules() {
   const { pathname } = useLocation()
   const [visited, setVisited] = useState<string[]>([])
-  const retained = modules().filter((module) => module.keepAlive)
+  const retained = modules().filter((module) => module.keepAlive && module.path && module.component)
   const active = retained.find((module) =>
-    [module.path, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)].some((path) =>
+    [module.path!, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)].some((path) =>
       matchPath(path, pathname),
     ),
   )
@@ -74,7 +74,7 @@ function PersistentModules() {
     .filter((module) => visited.includes(module.id))
     .map((module) => (
       <div key={module.id} hidden={module.id !== active?.id}>
-        <module.component active={module.id === active?.id} />
+        {module.component && <module.component active={module.id === active?.id} />}
       </div>
     ))
 }
@@ -328,13 +328,15 @@ async function boot() {
           element: <Outlet />,
           errorElement: <PageError />,
           children: [
-            ...modules().flatMap((m) =>
-              [m.path, ...(m.routes ?? []).map((route) => `${m.path}/${route}`)].map((path) => ({
-                path,
-                element: m.keepAlive ? null : <m.component />,
-                errorElement: <PageError />,
-              })),
-            ),
+            ...modules()
+              .filter((m) => m.path && m.component)
+              .flatMap((m) =>
+                [m.path!, ...(m.routes ?? []).map((route) => `${m.path}/${route}`)].map((path) => ({
+                  path,
+                  element: m.keepAlive ? null : m.component && <m.component />,
+                  errorElement: <PageError />,
+                })),
+              ),
             { path: '/settings/cpu', element: <Navigate to="/settings/general" replace /> },
             { path: '/modules/:moduleId', element: <ModuleManager /> },
             { path: '/', element: <Dashboard /> },

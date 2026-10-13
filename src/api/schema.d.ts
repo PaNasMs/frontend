@@ -1976,6 +1976,10 @@ export interface components {
                     kind: string;
                     x: number;
                     y: number;
+                    /** @description Personal display settings for this widget instance. Do not store credentials here. */
+                    config?: {
+                        [key: string]: string;
+                    };
                 }[];
             };
             /** @description Personal Files sidebar folder bookmarks. */

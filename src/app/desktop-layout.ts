@@ -6,6 +6,7 @@ export type Tile = {
   kind: string
   x: number
   y: number
+  config?: Record<string, string>
 }
 export const newID = () =>
   Array.from(crypto.getRandomValues(new Uint8Array(16)), (x) => x.toString(16).padStart(2, '0')).join('')
@@ -13,13 +14,14 @@ export const screen = () => (innerWidth < 640 ? 'mobile' : innerWidth < 1100 ? '
 export const columns = (mode: string) => (mode === 'mobile' ? 2 : mode === 'medium' ? 6 : 8)
 export const apps = () => [
   ...modules()
+    .filter((m) => m.path && m.component)
     .filter((m) => ['users', 'storage'].includes(m.id))
     .sort((a, b) => a.id.localeCompare(b.id))
     .reverse(),
   ...(isAdministrator()
     ? [{ id: 'settings', title: tr('settings_7f17c7c6'), path: '/settings', icon: mdiCogOutline }]
     : []),
-  ...modules().filter((m) => !['users', 'storage'].includes(m.id)),
+  ...modules().filter((m) => m.path && m.component && !['users', 'storage'].includes(m.id)),
   { id: 'history', title: tr('metrics_history_50331506'), path: '/history', icon: mdiChartLine },
 ]
 export const shortcutKind = (id: string) => (['users', 'storage', 'files'].includes(id) ? id : 'app-' + id)
