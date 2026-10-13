@@ -95,6 +95,7 @@ export function Sparkline({
     else segments.at(-1)!.push({ i, v })
   })
   const drawn = segments.filter((s) => s.length > 1)
+  if (!drawn.length) return null
   return (
     <svg
       className="widget-spark"
@@ -126,6 +127,9 @@ export function Sparkline({
     </svg>
   )
 }
+
+export const hasSparkline = (values: (number | null | undefined)[]) =>
+  values.some((value, index) => index > 0 && value != null && values[index - 1] != null)
 
 /** Приём сверху, передача снизу, шкала общая: это один масштаб, а не две оси. */
 export function MirrorSpark({
@@ -228,8 +232,8 @@ export function StatusChip({ tone, children }: { tone: Tone; children: ReactNode
   )
 }
 
-export function WidgetFoot({ children }: { children: ReactNode }) {
-  return <div className="widget-foot">{children}</div>
+export function WidgetFoot({ children, withSpark = false }: { children: ReactNode; withSpark?: boolean }) {
+  return <div className={`widget-foot${withSpark ? ' with-spark' : ''}`}>{children}</div>
 }
 
 /** Один запрос истории на все виджеты сразу: ключ общий, TanStack Query его разделит. */

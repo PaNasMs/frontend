@@ -1931,6 +1931,10 @@ export interface components {
             memoryUsed: number;
             uptime: number;
             cpuTemperature: number | null;
+            /** @description Current disk temperatures from the cooling controller, keyed by device path. Stale readings are omitted. */
+            diskTemperatures?: {
+                [key: string]: number;
+            };
             observedAt: string;
             /** @description Fan PWM duty as a percentage; null when unavailable. */
             cpuFanPercent?: number | null;
