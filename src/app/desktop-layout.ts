@@ -73,6 +73,7 @@ export function defaults(cols: number) {
     'memory',
     'cooling',
     'systemDisk',
+    ...(isAdministrator() ? ['volumes', 'smart', 'sharingConnections'] : []),
     ...(isAdministrator() ? ['users', 'storage'] : ['files']),
   ]) {
     const t = place(kind, all, cols)

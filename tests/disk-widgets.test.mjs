@@ -83,3 +83,34 @@ for (const [disk, expected] of [
   [undefined, false],
 ])
   assert.equal(diskTemperatureCurrent(disk), expected, JSON.stringify(disk))
+
+const volumes = exports.mountedVolumes({
+  mounts: [
+    { source: '/dev/mmcblk0p2', target: '/', size: 60, used: 20, avail: 40 },
+    { source: 'server:/media', target: '/mnt/media', size: 500, used: 200, avail: 300 },
+    { source: '/dev/md127', target: '/srv/storage', size: 1000, used: 600, avail: 400 },
+    { source: '/dev/sdb1', target: '/mnt/offline', size: 100, used: null, avail: null },
+  ],
+})
+assert.deepEqual(
+  Array.from(volumes, (volume) => volume.target),
+  ['/srv/storage', '/'],
+)
+
+const disk = { model: 'WDC disk', serial: 'ABC' }
+const preferences = { smartCrcBaselines: { 'WDC disk:ABC': 12 } }
+assert.equal(exports.smartBaseline(disk, preferences), 12)
+const warning = {
+  health: 'warning',
+  warnings: ['UDMA_CRC_Error_Count'],
+  attributes: [{ id: 199, raw: { value: 12 } }],
+}
+assert.equal(exports.smartCrcAcknowledged(warning, 12), true)
+assert.equal(exports.smartCrcAcknowledged(warning, 11), false)
+assert.equal(
+  exports.smartCrcAcknowledged(
+    { ...warning, warnings: ['UDMA_CRC_Error_Count', 'Current_Pending_Sector'] },
+    12,
+  ),
+  false,
+)

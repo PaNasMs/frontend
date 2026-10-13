@@ -4,7 +4,18 @@ import { useSearchParams } from 'react-router-dom'
 import * as Tabs from '@radix-ui/react-tabs'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { mdiShareVariantOutline, mdiPlus, mdiPencilOutline, mdiDeleteOutline, mdiShieldKeyOutline, mdiRefresh, mdiCheck, mdiClose, mdiFolderNetworkOutline, mdiLanConnect } from '@mdi/js'
+import {
+  mdiShareVariantOutline,
+  mdiPlus,
+  mdiPencilOutline,
+  mdiDeleteOutline,
+  mdiShieldKeyOutline,
+  mdiRefresh,
+  mdiCheck,
+  mdiClose,
+  mdiFolderNetworkOutline,
+  mdiLanConnect,
+} from '@mdi/js'
 import { tr } from '../i18n'
 import { request, type Accounts } from '../api/client'
 import { managed, OperationButton, type Job } from './operations'
@@ -541,10 +552,63 @@ function ShareEditor({
     </Dialog.Root>
   )
 }
+export function SharingConnectionsWidget() {
+  const data = useQuery({
+    queryKey: ['sharing'],
+    queryFn: () => managed<State>('sharing'),
+    refetchInterval: 10000,
+  })
+  const sessions = Object.values(data.data?.sessions.sessions ?? {}).sort((a, b) =>
+    a.username.localeCompare(b.username),
+  )
+  if (data.isPending || data.error || data.data?.sessions.error || data.data?.services.smbd !== 'active')
+    return (
+      <div className="widget-summary-empty">
+        {data.isPending
+          ? tr('loading_b6819e91')
+          : data.error || data.data?.sessions.error
+            ? tr('data_unavailable_9d99b9e6')
+            : tr('widget.smbUnavailable')}
+      </div>
+    )
+  if (!sessions.length) return <div className="widget-summary-empty">{tr('shares.noConnections')}</div>
+  return (
+    <div className="widget-summary-list">
+      <strong className="widget-summary-count">
+        {tr('widget.smbSessionCount', { count: sessions.length })}
+      </strong>
+      {sessions.slice(0, 3).map((session, index) => (
+        <div className="widget-summary-row" key={`${session.username}:${session.remote_machine}:${index}`}>
+          <strong title={session.username}>{session.username}</strong>
+          <span title={session.remote_machine || session.hostname}>
+            {session.remote_machine || session.hostname || '—'}
+          </span>
+        </div>
+      ))}
+      {sessions.length > 3 && (
+        <small className="widget-summary-extra">
+          {tr('widget.moreItems', { count: sessions.length - 3 })}
+        </small>
+      )}
+    </div>
+  )
+}
+
 registerModule({
   id: 'sharing',
   title: tr('shared_folders_5800977d'),
   path: '/sharing',
   icon: mdiShareVariantOutline,
   component: SharingPage,
+  widgets: {
+    sharingConnections: {
+      title: tr('widget.sharingConnections'),
+      width: 2,
+      height: 2,
+      module: tr('shared_folders_5800977d'),
+      icon: mdiLanConnect,
+      component: SharingConnectionsWidget,
+      href: '/sharing?tab=connections',
+    },
+  },
 })

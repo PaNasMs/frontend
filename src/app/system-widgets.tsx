@@ -95,11 +95,11 @@ export function CoolingWidget() {
     <>
       <div className="widget-ring-row with-spark">
         <Ring
-          size={90}
+          size={80}
           fraction={t == null ? null : tempFraction(t, 90)}
           tone={t == null ? 'accent' : cpuTone(t)}
           center={t == null ? '—' : `${Math.round(t)}°`}
-          sub={tr('processor_a5ae7ef5')}
+          sub="CPU"
           label={tr('cpu_temperature_e8bc9b51', {
             v0: t == null ? ' ' + tr('unknown_8fe3b697') : tr('degrees_980ea19d', { v0: Math.round(t) }),
           })}
@@ -112,7 +112,7 @@ export function CoolingWidget() {
               ? tr('overheating_17bd9f41')
               : t >= 70
                 ? tr('hot_a52970c6')
-                : tr('temperature_normal_c0591d63')}
+                : tr('widget.temperatureNormal')}
           </strong>
         )}
         <span>

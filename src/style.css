@@ -3121,10 +3121,10 @@ summary {
   text-align: center;
 }
 .widget-foot.with-spark {
-  bottom: 42px;
+  bottom: 52px;
 }
 .widget-foot.with-spark + .widget-spark {
-  height: 30px;
+  height: 24px;
 }
 .widget-foot .widget-state {
   font-size: 0.8125rem;
@@ -3234,6 +3234,65 @@ summary {
   display: block;
   color: var(--ink);
   font-size: 0.8125rem;
+}
+.widget-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  font-size: 0.8125rem;
+}
+.widget-summary-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.widget-summary-row strong,
+.widget-summary-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.widget-summary-row strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.widget-summary-row span {
+  color: var(--mute);
+  text-align: right;
+}
+.widget-summary-row .tone-good {
+  color: var(--ok);
+}
+.widget-summary-row .tone-warn {
+  color: var(--warn);
+}
+.widget-summary-row .tone-crit {
+  color: var(--danger);
+}
+.widget-volume progress {
+  display: block;
+  height: 5px;
+  margin-top: 4px;
+}
+.widget-summary-count {
+  color: var(--ink);
+  font-size: 1.125rem;
+  font-variant-numeric: tabular-nums;
+}
+.widget-summary-extra {
+  color: var(--mute);
+}
+.widget-summary-empty {
+  display: grid;
+  place-items: center;
+  min-height: 125px;
+  color: var(--mute);
+  font-size: 0.8125rem;
+  text-align: center;
 }
 .widget-strip {
   display: flex;

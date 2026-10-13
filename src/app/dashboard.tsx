@@ -15,6 +15,7 @@ import {
   mdiChartLine,
   mdiChip,
   mdiViewDashboardOutline,
+  mdiArrowTopRight,
 } from '@mdi/js'
 import { request, type Metrics, type Preferences } from '../api/client'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
@@ -368,6 +369,15 @@ export function Dashboard() {
                         aria-label={tr('history_0f6b6623', { v0: w.title })}
                       >
                         <Icon path={mdiChartLine} size={16} />
+                      </Link>
+                    )}
+                    {!editing && !w.history && w.href && (
+                      <Link
+                        to={w.href}
+                        title={tr('widget.openSection', { name: w.title })}
+                        aria-label={tr('widget.openSection', { name: w.title })}
+                      >
+                        <Icon path={mdiArrowTopRight} size={16} />
                       </Link>
                     )}
                   </div>

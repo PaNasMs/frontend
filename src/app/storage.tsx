@@ -3,10 +3,41 @@ import { useRouteTab } from './navigation'
 import { tr, locale } from '../i18n/index'
 import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
-import { mdiPause, mdiTimerOutline, mdiClipboardSearchOutline, mdiFan, mdiPlay, mdiLinux, mdiUsb, mdiUsbFlashDriveOutline, mdiMicroSd, mdiChip, mdiCheckCircleOutline, mdiLockOutline, mdiPulse, mdiWeatherNight, mdiSync, mdiHelpCircleOutline, mdiHarddiskRemove, mdiAlertOutline, mdiChartPieOutline } from '@mdi/js'
+import {
+  mdiPause,
+  mdiTimerOutline,
+  mdiClipboardSearchOutline,
+  mdiFan,
+  mdiPlay,
+  mdiLinux,
+  mdiUsb,
+  mdiUsbFlashDriveOutline,
+  mdiMicroSd,
+  mdiChip,
+  mdiCheckCircleOutline,
+  mdiLockOutline,
+  mdiPulse,
+  mdiWeatherNight,
+  mdiSync,
+  mdiHelpCircleOutline,
+  mdiHarddiskRemove,
+  mdiAlertOutline,
+  mdiChartPieOutline,
+} from '@mdi/js'
 import { EjectButton } from './removable'
 import { registerModule, registerWidgetSource } from './module-registry'
-import { HddCoolingWidget, DiskLoadWidget, SystemDiskWidget, useDiskTemperatureWidgets, ArrayWidget } from './storage-widgets'
+import {
+  HddCoolingWidget,
+  DiskLoadWidget,
+  SystemDiskWidget,
+  useDiskTemperatureWidgets,
+  ArrayWidget,
+  VolumesWidget,
+  SmartWidget,
+  smartBaseline,
+  smartCrcAcknowledged,
+  smartKey,
+} from './storage-widgets'
 import { DiskSettings } from './disk-settings'
 import { OperationButton, managed, type Job } from './operations'
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react'
@@ -14,7 +45,15 @@ import { StorageVolumes, type StorageOptions, type MediaInfo } from './storage-v
 import * as Dialog from '@radix-ui/react-dialog'
 import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { mdiHarddisk, mdiRefresh, mdiSwapHorizontal, mdiShieldCheckOutline, mdiStopCircleOutline, mdiTrashCanOutline, mdiCheckCircle } from '@mdi/js'
+import {
+  mdiHarddisk,
+  mdiRefresh,
+  mdiSwapHorizontal,
+  mdiShieldCheckOutline,
+  mdiStopCircleOutline,
+  mdiTrashCanOutline,
+  mdiCheckCircle,
+} from '@mdi/js'
 import { request, type Storage, type Device, type Mount, type Preferences, type Metrics } from '../api/client'
 import type { CoolingState } from './cooling'
 import { Button, Icon, Notice, bytes } from '../shared/ui'
@@ -105,13 +144,7 @@ function Disk({
   actions?: ReactNode
   system?: boolean
 }) {
-  const crc = t?.attributes?.find((a) => a.id === 199)?.raw?.value
-  const acknowledged =
-    baseline !== undefined &&
-    crc === baseline &&
-    t?.health === 'warning' &&
-    t.warnings?.length === 1 &&
-    t.warnings[0] === 'UDMA_CRC_Error_Count'
+  const acknowledged = smartCrcAcknowledged(t, baseline)
   const portable = media?.kind === 'sd' || media?.kind === 'emmc' || media?.kind === 'usb-flash'
   const hasSmart = !portable || !!t?.attributes?.length
   const mediaIcon =
@@ -624,11 +657,7 @@ export function StoragePage() {
   const mounts = flatten<Mount>(s?.mounts ?? [])
   const samples = telemetry.data?.status.disks ?? []
   const live = !!telemetry.data?.available
-  const keyFor = (d: Device) => (d.serial ? `${d.model?.trim() || ''}:${d.serial}` : undefined)
-  const baselineFor = (d: Device) => {
-    const key = keyFor(d)
-    return key ? prefs.data?.smartCrcBaselines?.[key] : undefined
-  }
+  const baselineFor = (d: Device) => smartBaseline(d, prefs.data)
   const disk = (
     d: Device,
     compact = false,
@@ -1174,10 +1203,10 @@ export function StoragePage() {
             t={samples.find((t) => t.device === selectedDisk.path)}
             live={live}
             baseline={baselineFor(selectedDisk)}
-            pending={save.isPending || !prefs.data || !keyFor(selectedDisk)}
+            pending={save.isPending || !prefs.data || !smartKey(selectedDisk)}
             error={save.error?.message}
             onBaseline={(value) => {
-              const key = keyFor(selectedDisk)
+              const key = smartKey(selectedDisk)
               if (key) save.mutate({ key, value })
             }}
           />
@@ -1238,6 +1267,24 @@ registerModule({
       module: tr('storage_5347bdf6'),
       icon: mdiHarddisk,
       component: ArrayWidget,
+    },
+    volumes: {
+      title: tr('widget.volumes'),
+      width: 2,
+      height: 2,
+      module: tr('storage_5347bdf6'),
+      icon: mdiChartPieOutline,
+      component: VolumesWidget,
+      href: '/storage/mounts',
+    },
+    smart: {
+      title: tr('widget.smart'),
+      width: 2,
+      height: 2,
+      module: tr('storage_5347bdf6'),
+      icon: mdiShieldCheckOutline,
+      component: SmartWidget,
+      href: '/storage/disks',
     },
     storage: {
       title: tr('storage_5347bdf6'),
