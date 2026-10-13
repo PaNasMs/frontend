@@ -3069,7 +3069,7 @@ summary {
   justify-content: center;
 }
 .widget-ring-row.with-spark {
-  margin-top: -4px;
+  margin-top: -6px;
 }
 .widget-ring {
   position: relative;
@@ -3121,7 +3121,10 @@ summary {
   text-align: center;
 }
 .widget-foot.with-spark {
-  bottom: 48px;
+  bottom: 42px;
+}
+.widget-foot.with-spark + .widget-spark {
+  height: 30px;
 }
 .widget-foot .widget-state {
   font-size: 0.8125rem;
