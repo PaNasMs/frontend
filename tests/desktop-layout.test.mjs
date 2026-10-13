@@ -18,7 +18,7 @@ const widgets = {
   network: { width: 2, height: 2 },
   'disk-temp:WD-1': { width: 2, height: 1 },
 }
-const modules = () => ['users', 'storage', 'files'].map((id) => ({ id, title: id, path: '/' + id, icon: id }))
+const modules = () => ['users', 'storage', 'files'].map((id) => ({ id, title: id, path: '/' + id, icon: id, component: () => null }))
 const code = ts.transpileModule(
   readFileSync(new URL('../src/app/desktop-layout.ts', import.meta.url), 'utf8'),
   { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } },

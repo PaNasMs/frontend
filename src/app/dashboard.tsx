@@ -4,6 +4,7 @@ import { WallpaperSettings } from './wallpaper'
 import { useModuleWidgets } from './module-registry'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import * as Dialog from '@radix-ui/react-dialog'
 import { useQuery } from '@tanstack/react-query'
 import {
   mdiPencilOutline,
@@ -16,9 +17,10 @@ import {
   mdiChip,
   mdiViewDashboardOutline,
   mdiArrowTopRight,
+  mdiCogOutline,
 } from '@mdi/js'
 import { request, type Metrics, type Preferences } from '../api/client'
-import { Button, Icon, Notice, bytes } from '../shared/ui'
+import { Button, DialogContent, Icon, Notice, bytes } from '../shared/ui'
 import { screen, columns, free, place, defaults, apps, type Tile } from './desktop-layout'
 import { usePreferencesSave } from './preferences-save'
 export { newID, type Tile } from './desktop-layout'
@@ -52,6 +54,9 @@ export function Dashboard() {
   const [base, setBase] = useState('')
   const [selected, setSelected] = useState('cpu')
   const [moving, setMoving] = useState<string | null>(null)
+  const [configuring, setConfiguring] = useState<string | null>(null)
+  const [adding, setAdding] = useState<string | null>(null)
+  const [configuration, setConfiguration] = useState<Record<string, string>>({})
   const prefs = useQuery({ queryKey: ['preferences'], queryFn: () => request<Preferences>('preferences') })
   const metrics = useQuery({ queryKey: ['metrics'], queryFn: () => request<Metrics>('metrics') })
   const save = usePreferencesSave()
@@ -79,6 +84,11 @@ export function Dashboard() {
   const choices = Object.entries(catalog).sort(
     (a, b) => a[1].module.localeCompare(b[1].module) || a[1].title.localeCompare(b[1].title),
   )
+  function closeConfiguration() {
+    if (adding) setDraft((old) => old.filter((tile) => tile.id !== adding))
+    setAdding(null)
+    setConfiguring(null)
+  }
   function move(id: string, x: number, y: number) {
     const old = draft.find((t) => t.id === id)
     if (!old) return
@@ -210,7 +220,14 @@ export function Dashboard() {
               disabled={save.isPending}
               onClick={() => {
                 const t = place(selected, draft, cols)
-                if (t) setDraft([...draft, t])
+                if (t) {
+                  setDraft([...draft, t])
+                  if (catalog[selected]?.configure) {
+                    setConfiguration({})
+                    setAdding(t.id)
+                    setConfiguring(t.id)
+                  }
+                }
               }}
             >
               <Icon path={mdiPlus} />
@@ -333,6 +350,20 @@ export function Dashboard() {
                   >
                     <Icon path={mdiDrag} size={16} />
                   </button>
+                  {w.configure && (
+                    <button
+                      title={tr('configure_8960ddc3')}
+                      aria-label={`${tr('configure_8960ddc3')}: ${w.title}`}
+                      disabled={save.isPending}
+                      onClick={() => {
+                        setConfiguration(t.config ?? {})
+                        setAdding(null)
+                        setConfiguring(t.id)
+                      }}
+                    >
+                      <Icon path={mdiCogOutline} size={16} />
+                    </button>
+                  )}
                   <button
                     title={tr('remove_from_desktop_16fc9723')}
                     aria-label={tr('remove_c5329f3a', { v0: w.title })}
@@ -356,7 +387,7 @@ export function Dashboard() {
                   <span>{w.title}</span>
                 </Link>
               ) : w.bare ? (
-                Widget && <Widget kind={t.kind} />
+                Widget && <Widget kind={t.kind} config={t.config} editing={editing} />
               ) : (
                 <>
                   <div className="tile-title">
@@ -381,13 +412,61 @@ export function Dashboard() {
                       </Link>
                     )}
                   </div>
-                  <div className="desktop-widget-content">{Widget && <Widget kind={t.kind} />}</div>
+                  <div className="desktop-widget-content">
+                    {Widget && <Widget kind={t.kind} config={t.config} editing={editing} />}
+                  </div>
                 </>
               )}
             </article>
           )
         })}
       </div>
+      <Dialog.Root open={!!configuring} onOpenChange={(open) => !open && closeConfiguration()}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="dialog-overlay" />
+          <DialogContent
+            className="settings-dialog"
+            dirty={
+              !!configuring &&
+              JSON.stringify(configuration) !==
+                JSON.stringify(draft.find((t) => t.id === configuring)?.config ?? {})
+            }
+            header={
+              <>
+                <Dialog.Title>{tr('configure_8960ddc3')}</Dialog.Title>
+                <Dialog.Description>
+                  {catalog[draft.find((t) => t.id === configuring)?.kind ?? '']?.title}
+                </Dialog.Description>
+              </>
+            }
+            footer={
+              <div className="actions">
+                <Button onClick={closeConfiguration}>{tr('cancel_0ec753be')}</Button>
+                <Button
+                  className="primary"
+                  onClick={() => {
+                    setDraft((old) =>
+                      old.map((tile) =>
+                        tile.id === configuring ? { ...tile, config: configuration } : tile,
+                      ),
+                    )
+                    setAdding(null)
+                    setConfiguring(null)
+                  }}
+                >
+                  {tr('apply_768af677')}
+                </Button>
+              </div>
+            }
+          >
+            {(() => {
+              const tile = draft.find((t) => t.id === configuring)
+              const Configure = tile && catalog[tile.kind]?.configure
+              return Configure ? <Configure value={configuration} onChange={setConfiguration} /> : null
+            })()}
+          </DialogContent>
+        </Dialog.Portal>
+      </Dialog.Root>
     </section>
   )
 }
