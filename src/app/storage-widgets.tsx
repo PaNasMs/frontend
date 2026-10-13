@@ -4,7 +4,7 @@ import { mdiThermometer } from '@mdi/js'
 import { request, type Metrics, type Preferences, type Storage, type Device } from '../api/client'
 import type { CoolingState } from './cooling'
 import { bytes } from '../shared/ui'
-import { Ring, WidgetFoot, ZoneBar } from '../shared/widget-ui'
+import { Ring, Sparkline, WidgetFoot, ZoneBar, hasSparkline, useShortHistory } from '../shared/widget-ui'
 import { diskTone, tempFraction } from './system-widgets'
 import type { WidgetDefinition } from './module-registry'
 const flatten = <
@@ -97,6 +97,7 @@ export function DiskLoadWidget() {
 export function DiskTemperatureWidget({ kind }: { kind: string }) {
   const storage = useStorage()
   const telemetry = useTelemetry()
+  const history = useShortHistory()
   const disk = physicalDisks(storage.data).find((d) => diskWidgetKind(d) === kind)
   if (!disk)
     return (
@@ -119,6 +120,7 @@ export function DiskTemperatureWidget({ kind }: { kind: string }) {
   const value = sample?.temperature ?? null
   const stale = !diskTemperatureCurrent(sample) || telemetry.isError || !telemetry.data?.available
   const asleep = sample?.state === 'sleeping'
+  const values = (history.data ?? []).map((row) => row.diskTemperatures?.[disk.path])
   // Some disks report their temperature in standby; that reading is current, not a cached one.
   const asleepCurrent = asleep && !stale
   return (
@@ -154,6 +156,13 @@ export function DiskTemperatureWidget({ kind }: { kind: string }) {
               ? tr('data_is_out_of_date_ea94b7bf')
               : disk.path}
       </span>
+      <Sparkline
+        values={values}
+        max={70}
+        height={24}
+        tone={value == null || stale ? 'muted' : diskTone(value)}
+        label={tr('widget.diskTemperatureHistory', { v0: diskLabel(disk) })}
+      />
     </div>
   )
 }
@@ -187,12 +196,17 @@ export function useDiskTemperatureWidgets(): Record<string, WidgetDefinition> {
 }
 export function HddCoolingWidget() {
   const telemetry = useTelemetry()
+  const history = useShortHistory()
   const state = telemetry.data
   const disks = state?.status.disks ?? []
   const temperatures = disks.flatMap((disk) => (disk.temperature == null ? [] : [disk.temperature]))
   const temperature = temperatures.length ? Math.max(...temperatures) : null
   const stale = !state?.available || telemetry.isError || disks.some((disk) => !diskTemperatureCurrent(disk))
   const fan = state?.available && state.config.hardwareMode !== 'none' ? state.status.dutyPercent : null
+  const values = (history.data ?? []).map((row) => {
+    const readings = Object.values(row.diskTemperatures ?? {})
+    return readings.length ? Math.max(...readings) : null
+  })
   return (
     <>
       <div className="widget-ring-row">
@@ -208,7 +222,7 @@ export function HddCoolingWidget() {
           }
         />
       </div>
-      <WidgetFoot>
+      <WidgetFoot withSpark={hasSparkline(values)}>
         <strong className="widget-state">
           {state?.status.reason === 'initializing-sensors'
             ? tr('cooling_initializing_sensors')
@@ -224,6 +238,12 @@ export function HddCoolingWidget() {
         </strong>
         <span>{fan == null ? tr('fan_speed_unavailable_0afbdb35') : tr('fan_6c98836d', { v0: fan })}</span>
       </WidgetFoot>
+      <Sparkline
+        values={values}
+        max={70}
+        tone={temperature == null || stale ? 'muted' : diskTone(temperature)}
+        label={tr('widget.hddTemperatureHistory')}
+      />
     </>
   )
 }

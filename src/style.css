@@ -3094,6 +3094,7 @@ summary {
 .widget-ring-face span {
   font-size: 0.8125rem;
   color: var(--mute);
+  white-space: nowrap;
 }
 .widget-spark {
   position: absolute;
@@ -3115,6 +3116,9 @@ summary {
   font-size: 0.8125rem;
   color: var(--mute);
   text-align: center;
+}
+.widget-foot.with-spark {
+  bottom: 48px;
 }
 .widget-foot .widget-state {
   font-size: 0.8125rem;
@@ -3273,6 +3277,12 @@ summary {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.widget-strip .widget-spark {
+  position: static;
+  width: 100%;
+  height: 24px;
+  flex: none;
 }
 .widget-zones {
   display: flex;

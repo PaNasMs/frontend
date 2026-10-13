@@ -8,6 +8,7 @@ import {
   Sparkline,
   StatusChip,
   WidgetFoot,
+  hasSparkline,
   useClock,
   useShortHistory,
   uptimeWords,
@@ -55,8 +56,10 @@ export function CpuWidget() {
 }
 export function MemoryWidget() {
   const metrics = useMetrics()
+  const history = useShortHistory()
   const m = metrics.data
   const percent = m ? percentOf(m.memoryUsed, m.memoryTotal) : null
+  const values = (history.data ?? []).map((row) => percentOf(row.memoryUsed, row.memoryTotal))
   return (
     <>
       <div className="widget-ring-row">
@@ -72,18 +75,21 @@ export function MemoryWidget() {
           })}
         />
       </div>
-      <WidgetFoot>
+      <WidgetFoot withSpark={hasSparkline(values)}>
         {m
           ? tr('of_ad242546', { v0: bytes(m.memoryUsed), v1: bytes(m.memoryTotal) })
           : tr('loading_b6819e91')}
       </WidgetFoot>
+      <Sparkline values={values} max={100} label={tr('widget.memoryHistory')} />
     </>
   )
 }
 export function CoolingWidget() {
   const metrics = useMetrics()
+  const history = useShortHistory()
   const m = metrics.data
   const t = m?.cpuTemperature ?? null
+  const values = (history.data ?? []).map((row) => row.cpuTemperature)
   return (
     <>
       <div className="widget-ring-row">
@@ -97,7 +103,7 @@ export function CoolingWidget() {
           })}
         />
       </div>
-      <WidgetFoot>
+      <WidgetFoot withSpark={hasSparkline(values)}>
         {t != null && (
           <strong className="widget-state">
             {t >= 80
@@ -113,6 +119,12 @@ export function CoolingWidget() {
             : tr('fan_6c98836d', { v0: m.cpuFanPercent })}
         </span>
       </WidgetFoot>
+      <Sparkline
+        values={values}
+        max={90}
+        tone={t == null ? 'muted' : cpuTone(t)}
+        label={tr('widget.cpuTemperatureHistory')}
+      />
     </>
   )
 }
