@@ -56,6 +56,43 @@ const useTelemetry = () =>
 const useMetrics = () => useQuery({ queryKey: ['metrics'], queryFn: () => request<Metrics>('metrics') })
 const physicalDisks = (s?: Storage) =>
   flatten((s?.devices ?? []) as Device[]).filter((d) => d.type === 'disk')
+const diskLoadName = (name: string) => /^(sd[a-z]+|md\d+|nvme\d+n\d+|mmcblk\d+)$/.test(name)
+type DiskLoadDevice = { name: string; key: string; label: string }
+export const diskLoadDevices = (storage?: Storage, metrics?: Metrics): DiskLoadDevice[] => {
+  const devices = new Map<string, DiskLoadDevice>()
+  const disks = physicalDisks(storage)
+  const serialCounts = new Map<string, number>()
+  for (const disk of disks) {
+    if (disk.serial) serialCounts.set(disk.serial, (serialCounts.get(disk.serial) ?? 0) + 1)
+  }
+  for (const disk of disks) {
+    if (!diskLoadName(disk.kname)) continue
+    devices.set(disk.kname, {
+      name: disk.kname,
+      key:
+        disk.serial && serialCounts.get(disk.serial) === 1
+          ? `disk:${safeKey(disk.serial)}`
+          : `name:${disk.kname}`,
+      label: disk.model?.trim() ? `${disk.model.trim()} · ${disk.kname}` : disk.kname,
+    })
+  }
+  for (const array of storage?.arrays ?? []) {
+    const name = array.device.replace(/^\/dev\//, '')
+    if (!diskLoadName(name)) continue
+    devices.set(name, {
+      name,
+      key: array.uuid ? `array:${safeKey(array.uuid)}` : `name:${name}`,
+      label: array.name && array.name !== name ? `${array.name} · ${name}` : name,
+    })
+  }
+  for (const name of Object.keys(metrics?.disks ?? {})) {
+    if (diskLoadName(name) && !devices.has(name))
+      devices.set(name, { name, key: `name:${name}`, label: name })
+  }
+  return [...devices.values()].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+}
+export const selectedDiskLoadDevices = (config?: Record<string, string>) =>
+  config?.devices === undefined ? null : new Set(config.devices.split(',').filter(Boolean))
 export const mountedVolumes = (s?: Storage) =>
   flatten((s?.mounts ?? []) as Mount[])
     .filter(
@@ -197,11 +234,21 @@ export function SmartWidget() {
     </div>
   )
 }
-export function DiskLoadWidget() {
+export function DiskLoadWidget({ config }: { config?: Record<string, string> }) {
   const metrics = useMetrics()
-  const rows = Object.entries(metrics.data?.disks ?? {}).filter(([n]) =>
-    /^(sd[a-z]+|md\d+|nvme\d+n\d+|mmcblk\d+)$/.test(n),
+  const storage = useStorage()
+  const selected = selectedDiskLoadDevices(config)
+  const names = new Map(
+    diskLoadDevices(storage.data, metrics.data).map((device) => [device.name, device.key]),
   )
+  const rows = Object.entries(metrics.data?.disks ?? {}).filter(
+    ([name]) => diskLoadName(name) && (selected === null || selected.has(names.get(name) ?? `name:${name}`)),
+  )
+  if (metrics.isPending || (selected !== null && storage.isPending))
+    return <WidgetFoot>{tr('loading_b6819e91')}</WidgetFoot>
+  if (metrics.error || (selected !== null && storage.error))
+    return <WidgetFoot>{tr('data_unavailable_9d99b9e6')}</WidgetFoot>
+  if (selected?.size === 0) return <WidgetFoot>{tr('widget.diskLoadNoSelection')}</WidgetFoot>
   if (!rows.length) return <WidgetFoot>{tr('no_activity_data_0dad95e5')}</WidgetFoot>
   return (
     <div className="widget-rates">
@@ -215,6 +262,69 @@ export function DiskLoadWidget() {
             {tr('s_a9208f04')}
           </span>
         </div>
+      ))}
+    </div>
+  )
+}
+
+export function DiskLoadConfigure({
+  value,
+  onChange,
+}: {
+  value: Record<string, string>
+  onChange: (value: Record<string, string>) => void
+}) {
+  const storage = useStorage()
+  const metrics = useMetrics()
+  const devices = diskLoadDevices(storage.data, metrics.data)
+  const selected = selectedDiskLoadDevices(value)
+  const available = new Set(devices.map((device) => device.key))
+  const missing = [...(selected ?? [])].filter((key) => !available.has(key))
+  const choose = (key: string, checked: boolean) => {
+    const next = new Set(selected ?? devices.map((device) => device.key))
+    if (checked) next.add(key)
+    else next.delete(key)
+    onChange({ ...value, devices: [...next].join(',') })
+  }
+  return (
+    <div className="disk-load-options">
+      <p className="muted">{tr('widget.diskLoadChooseDevices')}</p>
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={selected === null}
+          onChange={(event) => {
+            if (event.target.checked) {
+              const { devices: _, ...rest } = value
+              onChange(rest)
+            } else onChange({ ...value, devices: devices.map((device) => device.key).join(',') })
+          }}
+        />
+        {tr('widget.diskLoadAllDevices')}
+      </label>
+      {storage.isPending ? (
+        <p className="muted">{tr('loading_b6819e91')}</p>
+      ) : storage.error ? (
+        <p className="muted">{tr('data_unavailable_9d99b9e6')}</p>
+      ) : devices.length === 0 ? (
+        <p className="muted">{tr('widget.diskLoadNoDevices')}</p>
+      ) : (
+        devices.map((device) => (
+          <label className="check" key={device.key}>
+            <input
+              type="checkbox"
+              checked={selected === null || selected.has(device.key)}
+              onChange={(event) => choose(device.key, event.target.checked)}
+            />
+            {device.label}
+          </label>
+        ))
+      )}
+      {missing.map((key) => (
+        <label className="check" key={key}>
+          <input type="checkbox" checked onChange={() => choose(key, false)} />
+          {tr('widget.diskLoadMissingDevice', { name: key })}
+        </label>
       ))}
     </div>
   )

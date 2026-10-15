@@ -29,6 +29,7 @@ import { registerModule, registerWidgetSource } from './module-registry'
 import {
   HddCoolingWidget,
   DiskLoadWidget,
+  DiskLoadConfigure,
   SystemDiskWidget,
   useDiskTemperatureWidgets,
   ArrayWidget,
@@ -1258,6 +1259,7 @@ registerModule({
       module: tr('storage_5347bdf6'),
       icon: mdiHarddisk,
       component: DiskLoadWidget,
+      configure: DiskLoadConfigure,
       history: true,
     },
     arrays: {
