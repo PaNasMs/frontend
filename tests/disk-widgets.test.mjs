@@ -114,3 +114,18 @@ assert.equal(
   ),
   false,
 )
+
+const diskLoadStorage = (kname) => ({
+  devices: [{ type: 'disk', kname, serial: 'WD-123', model: 'WDC', children: [] }],
+  arrays: [{ device: '/dev/md127', uuid: 'array-uuid', name: 'Data' }],
+})
+const firstDevices = exports.diskLoadDevices(diskLoadStorage('sdb'))
+const renamedDevices = exports.diskLoadDevices(diskLoadStorage('sdd'))
+assert.equal(
+  firstDevices.find((device) => device.name === 'sdb').key,
+  renamedDevices.find((device) => device.name === 'sdd').key,
+)
+assert.equal(firstDevices.find((device) => device.name === 'md127').key, 'array:array-uuid')
+assert.equal(exports.selectedDiskLoadDevices(), null)
+assert.equal(exports.selectedDiskLoadDevices({ devices: '' }).size, 0)
+assert.ok(exports.selectedDiskLoadDevices({ devices: 'disk:WD-123' }).has('disk:WD-123'))
