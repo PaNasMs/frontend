@@ -4333,5 +4333,41 @@
     "en": "Hostname updated",
     "ru": "Имя устройства изменено",
     "uk": "Ім’я пристрою змінено"
+  },
+  {
+    "key": "oled.error.invalid",
+    "en": "Invalid OLED settings"
+  },
+  {
+    "key": "oled.error.noReadings",
+    "en": "Select at least one OLED reading"
+  },
+  {
+    "key": "oled.error.unsupported",
+    "en": "I2C display is not supported on this system"
+  },
+  {
+    "key": "oled.error.busy",
+    "en": "OLED settings are already being applied"
+  },
+  {
+    "key": "oled.error.coolingPins",
+    "en": "Selected GPIO pins are assigned to cooling"
+  },
+  {
+    "key": "oled.error.displayPins",
+    "en": "Selected GPIO pins are assigned to the OLED display"
+  },
+  {
+    "key": "oled.error.read",
+    "en": "Could not read OLED settings"
+  },
+  {
+    "key": "oled.error.unavailable",
+    "en": "Display settings unavailable"
+  },
+  {
+    "key": "oled.error.reboot",
+    "en": "I2C bus is already using other pins. Restart the NAS to apply the saved pins; if this persists, check I2C boot configuration"
   }
 ]

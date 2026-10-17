@@ -362,6 +362,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/oled": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getOLED"];
+        put: operations["setOLED"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/cooling": {
         parameters: {
             query?: never;
@@ -2040,6 +2056,61 @@ export interface components {
             arrays: components["schemas"]["Array"][];
             observedAt: string;
         };
+        OLEDSettings: {
+            /** @default false */
+            enabled: boolean;
+            /** @default 25 */
+            brightness: number;
+            /**
+             * @default 0
+             * @enum {integer}
+             */
+            rotation: 0 | 180;
+            /**
+             * @default 1
+             * @enum {integer}
+             */
+            bus: 0 | 1 | 2 | 3;
+            /**
+             * @default 2
+             * @enum {integer}
+             */
+            sda: 2 | 4 | 6 | 8 | 10 | 12 | 14 | 22;
+            /**
+             * @default 3
+             * @enum {integer}
+             */
+            scl: 3 | 5 | 7 | 9 | 11 | 13 | 15 | 23;
+            /**
+             * @default 60
+             * @enum {integer}
+             */
+            address: 60 | 61;
+            /**
+             * @default ssd1306
+             * @enum {string}
+             */
+            controller: "ssd1306" | "sh1106";
+            /** @default true */
+            showIP: boolean;
+            /** @default true */
+            showCPU: boolean;
+            /** @default true */
+            showDisks: boolean;
+        };
+        OLEDState: {
+            config: components["schemas"]["OLEDSettings"];
+            supported: boolean;
+            /** @enum {string} */
+            state: "disabled" | "unavailable" | "starting" | "error" | "active";
+            status: {
+                /** Format: date-time */
+                observedAt: string;
+                applied: components["schemas"]["OLEDSettings"];
+                error: string;
+                lines: string[];
+            };
+        };
         CoolingSettings: {
             /** @enum {string} */
             hardwareMode: "none" | "external-pwm" | "internal-pwm";
@@ -3676,6 +3747,68 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Failure */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getOLED: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Administrator-only display configuration and observed hardware state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OLEDState"];
+                };
+            };
+            /** @description Failure */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    setOLED: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OLEDSettings"];
+            };
+        };
+        responses: {
+            /** @description Administrator-only display configuration and observed hardware state */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OLEDState"];
+                };
             };
             /** @description Failure */
             default: {
