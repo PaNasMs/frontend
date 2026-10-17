@@ -4369,5 +4369,13 @@
   {
     "key": "oled.error.reboot",
     "en": "I2C bus is already using other pins. Restart the NAS to apply the saved pins; if this persists, check I2C boot configuration"
+  },
+  {
+    "key": "oled.error.layout",
+    "en": "Invalid OLED layout"
+  },
+  {
+    "key": "oled.error.interval",
+    "en": "OLED page interval must be 4..60 seconds"
   }
 ]

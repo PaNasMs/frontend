@@ -6,6 +6,8 @@ const browser = await chromium.launch({
   args: ['--no-sandbox'],
 })
 const config = {
+  layout: 'compact',
+  pageSeconds: 6,
   enabled: false,
   brightness: 25,
   rotation: 0,
@@ -60,18 +62,37 @@ try {
   await expect(page.getByRole('checkbox', { name: 'Enable display support' })).toBeChecked()
   await page.getByRole('button', { name: 'Advanced settings', exact: true }).click()
   await page.getByLabel('SDA / SCL pins').selectOption('12')
+  for (const layout of ['large', 'disks', 'pages']) {
+    await page.getByLabel('Layout', { exact: true }).selectOption(layout)
+    await expect(page.locator('figure img')).toHaveAttribute('src', `/oled/${layout}.png`)
+    assert.equal(saves.length, 0, 'preview must not apply settings')
+  }
+  const layoutSelect = page.getByLabel('Layout', { exact: true })
+  await layoutSelect.focus()
+  await layoutSelect.press('Home')
+  await layoutSelect.press('ArrowDown')
+  await expect(layoutSelect).toHaveValue('large')
+  await layoutSelect.selectOption('pages')
+  await page.getByLabel('Page interval (seconds)').fill('3')
+  await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
+  await expect(page.getByLabel('Page interval (seconds)')).toHaveAttribute('aria-invalid', 'true')
+  await page.getByLabel('Page interval (seconds)').fill('8')
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
   await expect(page.getByText('Display is receiving updates', { exact: true })).toBeVisible()
   assert.equal(saves.at(-1).sda, 12)
   assert.equal(saves.at(-1).scl, 13)
   assert.equal(saves.at(-1).bus, 2)
-  for (const label of ['IP address', 'CPU temperature', 'Highest disk temperature'])
+  assert.equal(saves.at(-1).layout, 'pages')
+  assert.equal(saves.at(-1).pageSeconds, 8)
+  for (const label of ['IP address', 'CPU temperature', 'Disk temperatures'])
     await page.getByRole('checkbox', { name: label, exact: true }).uncheck()
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await page.getByRole('checkbox', { name: 'IP address', exact: true }).check()
+  await page.getByLabel('Layout', { exact: true }).selectOption('large')
   failSave = true
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
   await expect(page.getByText('Display test failure')).toBeVisible()
+  await expect(page.getByLabel('Layout', { exact: true })).toHaveValue('large')
   await expect(page.getByRole('checkbox', { name: 'CPU temperature' })).not.toBeChecked()
   failSave = false
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
@@ -91,11 +112,21 @@ try {
           `${lang}/${theme}/${width} overflow`,
         )
         assert.ok(!(await page.locator('body').innerText()).includes('oled.'), 'missing translation')
-        if (width === 1280) await page.screenshot({ path: `/tmp/oled-${lang}-${theme}.png`, fullPage: true })
+        for (const layout of ['compact', 'large', 'disks', 'pages']) {
+          await page.locator('select').first().selectOption(layout)
+          await expect(page.locator('figure img')).toHaveJSProperty('naturalWidth', 128)
+          assert.ok(
+            await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+            `${layout}/${lang}/${theme}/${width} overflow`,
+          )
+          assert.ok(!(await page.locator('body').innerText()).includes('oled.'), 'missing translation')
+          if (width === 1280 && lang === 'ru')
+            await page.screenshot({ path: `/tmp/oled-layout-${layout}-${theme}.png`, fullPage: true })
+        }
       }
   assert.deepEqual(errors, [])
   console.log(
-    'OLED: unsupported platform, disabled default, dirty guard, pin pairing, enable/disable, validation, save failure, 18 locale/theme/width combinations passed',
+    'OLED: unsupported platform, disabled default, dirty guard, pin pairing, enable/disable, validation, save failure, all 4 layouts in 18 locale/theme/width combinations passed',
   )
 } finally {
   await browser.close()
