@@ -24,6 +24,7 @@ import {
 import { SystemUpdates } from './system-updates'
 import { HostnameSettings } from './hostname-settings'
 import { WebSettings } from './web-settings'
+import { OLEDSettings } from './oled'
 import { CoolingSettings, useCoolingWidgetAvailability } from './cooling'
 import { ClockWidget, CoolingWidget, CpuWidget, MemoryWidget, UptimeWidget } from './system-widgets'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -332,6 +333,7 @@ registerModule({
           <HostnameSettings />
           <WebSettings />
           <CoolingSettings kind="cpu" className="surface" />
+          <OLEDSettings />
         </div>
       ),
     },
