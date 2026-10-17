@@ -10,6 +10,8 @@ import { notify } from './notifications'
 export type OLEDState = components['schemas']['OLEDState']
 type Settings = components['schemas']['OLEDSettings']
 export const defaultOLED: Settings = {
+  layout: 'compact',
+  pageSeconds: 6,
   enabled: false,
   brightness: 25,
   rotation: 0,
@@ -58,6 +60,9 @@ export function OLEDSettings() {
   })
   if (!data.data?.supported) return null
   const invalid =
+    !Number.isInteger(cfg.pageSeconds) ||
+    cfg.pageSeconds < 4 ||
+    cfg.pageSeconds > 60 ||
     !Number.isInteger(cfg.brightness) ||
     cfg.brightness < 1 ||
     cfg.brightness > 100 ||
@@ -78,6 +83,34 @@ export function OLEDSettings() {
         <input type="checkbox" checked={cfg.enabled} onChange={(e) => set('enabled', e.target.checked)} />
         {tr('oled.enabled')}
       </label>
+      <label className="field">
+        <span id="oled-layout-label">{tr('oled.layout')}</span>
+        <select
+          aria-labelledby="oled-layout-label"
+          value={cfg.layout}
+          aria-describedby="oled-layout-hint"
+          onChange={(e) => set('layout', e.target.value as Settings['layout'])}
+        >
+          {(['compact', 'large', 'disks', 'pages'] as const).map((layout) => (
+            <option key={layout} value={layout}>
+              {tr(`oled.layout.${layout}`)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p id="oled-layout-hint" className="small muted">
+        {tr(`oled.layout.${cfg.layout}.hint`)}
+      </p>
+      <figure style={{ margin: '16px 0' }}>
+        <img
+          src={`/oled/${cfg.layout}.png`}
+          alt={tr(`oled.layout.${cfg.layout}.hint`)}
+          width={256}
+          height={128}
+          style={{ imageRendering: 'pixelated', maxWidth: '100%', height: 'auto' }}
+        />
+        <figcaption className="small muted">{tr('oled.preview')}</figcaption>
+      </figure>
       <div className="form-grid">
         <label className="field">
           {tr('oled.brightness')}
@@ -111,6 +144,21 @@ export function OLEDSettings() {
         <Notice error>{tr('oled.selectReading')}</Notice>
       )}
       <Disclosure title={tr('advanced_settings_3cc80085')} open={advanced} onOpenChange={setAdvanced}>
+        <label className="field">
+          {tr('oled.pageSeconds')}
+          <input
+            type="number"
+            min={4}
+            max={60}
+            value={cfg.pageSeconds}
+            aria-invalid={!Number.isInteger(cfg.pageSeconds) || cfg.pageSeconds < 4 || cfg.pageSeconds > 60}
+            aria-describedby="oled-interval-hint"
+            onChange={(e) => set('pageSeconds', Number(e.target.value))}
+          />
+          <span id="oled-interval-hint" className="small muted">
+            {tr('oled.intervalHint')}
+          </span>
+        </label>
         <label className="field">
           {tr('oled.pins')}
           <select

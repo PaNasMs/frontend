@@ -2057,6 +2057,13 @@ export interface components {
             observedAt: string;
         };
         OLEDSettings: {
+            /**
+             * @default compact
+             * @enum {string}
+             */
+            layout: "compact" | "large" | "disks" | "pages";
+            /** @default 6 */
+            pageSeconds: number;
             /** @default false */
             enabled: boolean;
             /** @default 25 */
