@@ -2484,7 +2484,7 @@
   "power.hint": "Cut power through the external power board after the system has finished shutting down. Restarting the NAS keeps power on.",
   "power.enabled": "Enable automatic power cut-off",
   "power.gpio": "Power board GPIO",
-  "power.pinHint": "BCM numbering; the physical header pin is shown alongside. Connect through the agreed resistor circuit to the board’s OFF input. Changes take effect after a restart. Pins used by cooling, the display or other hardware are rejected.",
+  "power.pinHint": "BCM numbering; the physical header pin is shown alongside. Select the GPIO wired to the power board’s active-high OFF input. Changes take effect after a restart. Pins used by cooling, the display or other hardware are rejected.",
   "power.active": "Active: GPIO{{gpio}} · physical pin {{pin}}",
   "power.inactive": "Automatic power cut-off is not active in this boot.",
   "power.unsupported": "Requires Raspberry Pi 5 with the gpio-poweroff firmware overlay.",
