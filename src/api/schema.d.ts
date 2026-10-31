@@ -362,6 +362,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/power-control": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getPowerControl"];
+        put: operations["setPowerControl"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/oled": {
         parameters: {
             query?: never;
@@ -2105,6 +2121,23 @@ export interface components {
             /** @default true */
             showDisks: boolean;
         };
+        PowerControlSettings: {
+            /** @default false */
+            enabled: boolean;
+            /** @default 25 */
+            gpio: number;
+        };
+        PowerControlUpdate: {
+            enabled: boolean;
+            gpio: number;
+            expected: components["schemas"]["PowerControlSettings"];
+        };
+        PowerControlState: {
+            config: components["schemas"]["PowerControlSettings"];
+            supported: boolean;
+            activeGPIO: number | null;
+            rebootRequired: boolean;
+        };
         OLEDState: {
             config: components["schemas"]["OLEDSettings"];
             supported: boolean;
@@ -3754,6 +3787,70 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Failure */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getPowerControl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Administrator-only power control configuration and active shutdown GPIO */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PowerControlState"];
+                };
+            };
+            /** @description Failure */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    setPowerControl: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PowerControlUpdate"];
+            };
+        };
+        responses: {
+            /** @description Administrator-only power control configuration and active shutdown GPIO */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PowerControlState"];
+                };
             };
             /** @description Failure */
             default: {
