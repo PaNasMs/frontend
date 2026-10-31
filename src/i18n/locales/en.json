@@ -1257,7 +1257,7 @@
   "homes.app.ssh": "SSH session",
   "homes.app.session": "Background user session",
   "power.poweroff": "Shut down",
-  "power.reboot": "Restart the NAS to apply the saved settings. Until then, the current shutdown GPIO remains in use. Move wiring only with the power supply disconnected.",
+  "power.reboot": "Restart",
   "power.confirm.poweroff": "Shut down the NAS? Connections and file transfers will be closed.",
   "power.confirm.reboot": "Restart the NAS? Connections and file transfers will be closed.",
   "power.scheduled.poweroff": "Shutdown will start in a few seconds. Wait for the device to finish shutting down before disconnecting power.",
@@ -2500,5 +2500,10 @@
   "power.error.peripheral": "GPIO{{v0}} is assigned to a peripheral",
   "power.error.unavailable": "Power control settings unavailable",
   "power.error.read": "Could not read power control settings",
-  "power.error.unmanaged": "An unmanaged gpio-poweroff overlay already exists in boot configuration"
+  "power.error.unmanaged": "An unmanaged gpio-poweroff overlay already exists in boot configuration",
+  "power.stale": "Current power state is unavailable. The displayed settings are the last successfully loaded values. Last read: {{time}}.",
+  "power.activeUnknown": "Active: GPIO{{gpio}} · physical pin is outside the supported selection",
+  "power.error.changed": "Power control settings changed; reload before saving",
+  "power.error.bootBusy": "Boot configuration is already being updated",
+  "power.rebootNotice": "Restart the NAS to apply the saved settings. Until then, shutdown behavior remains unchanged. Move wiring only with the power supply disconnected."
 }

@@ -2127,6 +2127,11 @@ export interface components {
             /** @default 25 */
             gpio: number;
         };
+        PowerControlUpdate: {
+            enabled: boolean;
+            gpio: number;
+            expected: components["schemas"]["PowerControlSettings"];
+        };
         PowerControlState: {
             config: components["schemas"]["PowerControlSettings"];
             supported: boolean;
@@ -3826,13 +3831,15 @@ export interface operations {
     setPowerControl: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                "X-PaNasMs-Request": "1";
+            };
             path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PowerControlSettings"];
+                "application/json": components["schemas"]["PowerControlUpdate"];
             };
         };
         responses: {

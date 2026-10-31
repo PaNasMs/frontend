@@ -189,7 +189,14 @@ export function useDraft<T>(incoming: T, target = '') {
     setDraft(value)
   }
   useUnsavedForm(dirty, () => reset())
-  return { draft, setDraft, dirty, conflict: dirty && baseline !== serialized, reset }
+  return {
+    draft,
+    original: JSON.parse(baseline) as T,
+    setDraft,
+    dirty,
+    conflict: dirty && baseline !== serialized,
+    reset,
+  }
 }
 
 export function useExclusivePopover(ref: { current: HTMLDetailsElement | null }) {

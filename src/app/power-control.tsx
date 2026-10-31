@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { request, type Identity } from '../api/client'
 import type { components } from '../api/schema'
-import { tr } from '../i18n'
+import { tr, locale } from '../i18n'
 import { Button, Notice, WaitingSurface } from '../shared/ui'
 import { useDraft } from '../shared/interaction'
 import { notify } from './notifications'
@@ -24,8 +24,12 @@ export function PowerControlSettings() {
   })
   const draft = useDraft(data.data?.config ?? defaults, 'power-control')
   const save = useMutation({
-    mutationFn: () => request<State>('power-control', 'PUT', draft.draft),
-    onSuccess: (state) => {
+    mutationFn: () => request<State>('power-control', 'PUT', { ...draft.draft, expected: draft.original }),
+    onMutate: async () => {
+      await client.cancelQueries({ queryKey: ['power-control'] })
+    },
+    onSuccess: async (state) => {
+      await client.cancelQueries({ queryKey: ['power-control'] })
       client.setQueryData(['power-control'], state)
       draft.reset(state.config)
       notify(tr('settings_saved_0c39426c'))
@@ -57,14 +61,21 @@ export function PowerControlSettings() {
           {data.data?.supported && (
             <>
               <p role="status">
-                {data.data.activeGPIO === null
-                  ? tr('power.inactive')
-                  : tr('power.active', {
-                      gpio: data.data.activeGPIO,
-                      pin: physicalPins[data.data.activeGPIO - 2],
-                    })}
+                {data.error
+                  ? tr('power.stale', { time: new Date(data.dataUpdatedAt).toLocaleTimeString(locale()) })
+                  : data.data.activeGPIO === null
+                    ? tr('power.inactive')
+                    : tr(
+                        physicalPins[data.data.activeGPIO - 2] === undefined
+                          ? 'power.activeUnknown'
+                          : 'power.active',
+                        {
+                          gpio: data.data.activeGPIO,
+                          pin: physicalPins[data.data.activeGPIO - 2],
+                        },
+                      )}
               </p>
-              {data.data.rebootRequired && <Notice>{tr('power.reboot')}</Notice>}
+              {!data.error && data.data.rebootRequired && <Notice>{tr('power.rebootNotice')}</Notice>}
               {draft.conflict && (
                 <Notice>
                   {tr('oled.conflict')} <Button onClick={() => draft.reset()}>{tr('oled.reload')}</Button>

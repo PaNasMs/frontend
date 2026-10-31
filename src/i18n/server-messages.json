@@ -4443,5 +4443,17 @@
     "en": "An unmanaged gpio-poweroff overlay already exists in boot configuration",
     "ru": "В загрузочной конфигурации уже есть gpio-poweroff, настроенный вне PaNasMs",
     "uk": "У завантажувальній конфігурації вже є gpio-poweroff, налаштований поза PaNasMs"
+  },
+  {
+    "key": "power.error.changed",
+    "en": "Power control settings changed; reload before saving",
+    "ru": "Настройки питания изменились; загрузите их заново перед сохранением",
+    "uk": "Налаштування живлення змінилися; завантажте їх знову перед збереженням"
+  },
+  {
+    "key": "power.error.bootBusy",
+    "en": "Boot configuration is already being updated",
+    "ru": "Загрузочная конфигурация уже обновляется",
+    "uk": "Завантажувальна конфігурація вже оновлюється"
   }
 ]
