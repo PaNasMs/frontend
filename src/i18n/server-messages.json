@@ -4377,5 +4377,71 @@
   {
     "key": "oled.error.interval",
     "en": "OLED page interval must be 4..60 seconds"
+  },
+  {
+    "key": "power.error.invalid",
+    "en": "Invalid power control settings",
+    "ru": "Недопустимые настройки питания",
+    "uk": "Неприпустимі налаштування живлення"
+  },
+  {
+    "key": "power.error.range",
+    "en": "Power control GPIO must be between 2 and 27",
+    "ru": "GPIO питания должен быть от 2 до 27",
+    "uk": "GPIO живлення має бути від 2 до 27"
+  },
+  {
+    "key": "power.error.busy",
+    "en": "GPIO settings are already being applied",
+    "ru": "Настройки GPIO уже применяются",
+    "uk": "Налаштування GPIO вже застосовуються"
+  },
+  {
+    "key": "power.error.reserved",
+    "en": "GPIO{{v0}} is reserved for power control",
+    "ru": "GPIO{{v0}} зарезервирован для управления питанием",
+    "uk": "GPIO{{v0}} зарезервовано для керування живленням"
+  },
+  {
+    "key": "power.error.cooling",
+    "en": "GPIO{{v0}} is assigned to cooling",
+    "ru": "GPIO{{v0}} используется охлаждением",
+    "uk": "GPIO{{v0}} використовується охолодженням"
+  },
+  {
+    "key": "power.error.display",
+    "en": "GPIO{{v0}} is assigned to the OLED display",
+    "ru": "GPIO{{v0}} используется экраном OLED",
+    "uk": "GPIO{{v0}} використовується екраном OLED"
+  },
+  {
+    "key": "power.error.used",
+    "en": "GPIO{{v0}} is already in use by {{v1}}",
+    "ru": "GPIO{{v0}} уже используется: {{v1}}",
+    "uk": "GPIO{{v0}} вже використовується: {{v1}}"
+  },
+  {
+    "key": "power.error.peripheral",
+    "en": "GPIO{{v0}} is assigned to a peripheral",
+    "ru": "GPIO{{v0}} используется периферийным устройством",
+    "uk": "GPIO{{v0}} використовується периферійним пристроєм"
+  },
+  {
+    "key": "power.error.unavailable",
+    "en": "Power control settings unavailable",
+    "ru": "Настройки питания недоступны",
+    "uk": "Налаштування живлення недоступні"
+  },
+  {
+    "key": "power.error.read",
+    "en": "Could not read power control settings",
+    "ru": "Не удалось прочитать настройки питания",
+    "uk": "Не вдалося прочитати налаштування живлення"
+  },
+  {
+    "key": "power.error.unmanaged",
+    "en": "An unmanaged gpio-poweroff overlay already exists in boot configuration",
+    "ru": "В загрузочной конфигурации уже есть gpio-poweroff, настроенный вне PaNasMs",
+    "uk": "У завантажувальній конфігурації вже є gpio-poweroff, налаштований поза PaNasMs"
   }
 ]
