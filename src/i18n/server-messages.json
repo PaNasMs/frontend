@@ -4455,5 +4455,13 @@
     "en": "Boot configuration is already being updated",
     "ru": "Загрузочная конфигурация уже обновляется",
     "uk": "Завантажувальна конфігурація вже оновлюється"
+  },
+  {
+    "key": "oled.error.language",
+    "en": "Invalid OLED language"
+  },
+  {
+    "key": "oled.error.eventDuration",
+    "en": "OLED event duration must be 15..60 seconds"
   }
 ]

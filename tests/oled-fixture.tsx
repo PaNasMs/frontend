@@ -11,6 +11,7 @@ const query = new QueryClient({ defaultOptions: { queries: { retry: false } } })
 const params = new URLSearchParams(location.search)
 await initializeLanguage(params.get('lang') ?? 'en')
 document.documentElement.dataset.theme = params.get('theme') ?? 'dark'
+document.documentElement.dataset.surface = params.get('surface') ?? 'solid'
 function Layout() {
   return (
     <DirtyFormsProvider>

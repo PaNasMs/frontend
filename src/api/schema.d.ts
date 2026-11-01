@@ -2077,9 +2077,20 @@ export interface components {
              * @default compact
              * @enum {string}
              */
-            layout: "compact" | "large" | "disks" | "pages";
+            layout: "compact" | "large" | "disks" | "pages" | "storage";
             /** @default 6 */
             pageSeconds: number;
+            /**
+             * @default en
+             * @enum {string}
+             */
+            language: "en" | "ru" | "uk";
+            /** @default true */
+            showTasks: boolean;
+            /** @default true */
+            showEvents: boolean;
+            /** @default 20 */
+            eventSeconds: number;
             /** @default false */
             enabled: boolean;
             /** @default 25 */

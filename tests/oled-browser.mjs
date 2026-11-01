@@ -7,6 +7,10 @@ const browser = await chromium.launch({
 })
 const config = {
   layout: 'compact',
+  language: 'en',
+  showTasks: true,
+  showEvents: true,
+  eventSeconds: 20,
   pageSeconds: 6,
   enabled: false,
   brightness: 25,
@@ -62,7 +66,7 @@ try {
   await expect(page.getByRole('checkbox', { name: 'Enable display support' })).toBeChecked()
   await page.getByRole('button', { name: 'Advanced settings', exact: true }).click()
   await page.getByLabel('SDA / SCL pins').selectOption('12')
-  for (const layout of ['large', 'disks', 'pages']) {
+  for (const layout of ['large', 'disks', 'pages', 'storage']) {
     await page.getByLabel('Layout', { exact: true }).selectOption(layout)
     await expect(page.locator('figure img')).toHaveAttribute('src', `/oled/${layout}.png`)
     assert.equal(saves.length, 0, 'preview must not apply settings')
@@ -76,6 +80,12 @@ try {
   await page.getByLabel('Page interval (seconds)').fill('3')
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await expect(page.getByLabel('Page interval (seconds)')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByLabel('Event duration (seconds)')).toHaveValue('20')
+  await page.getByLabel('Event duration (seconds)').fill('14')
+  await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
+  await page.getByLabel('Event duration (seconds)').fill('20')
+  await page.getByLabel('Display language').selectOption('uk')
+  await page.getByRole('checkbox', { name: 'Show event messages', exact: true }).uncheck()
   await page.getByLabel('Page interval (seconds)').fill('8')
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
   await expect(page.getByText('Display is receiving updates', { exact: true })).toBeVisible()
@@ -84,6 +94,9 @@ try {
   assert.equal(saves.at(-1).bus, 2)
   assert.equal(saves.at(-1).layout, 'pages')
   assert.equal(saves.at(-1).pageSeconds, 8)
+  assert.equal(saves.at(-1).eventSeconds, 20)
+  assert.equal(saves.at(-1).language, 'uk')
+  assert.equal(saves.at(-1).showEvents, false)
   for (const label of ['IP address', 'CPU temperature', 'Disk temperatures'])
     await page.getByRole('checkbox', { name: label, exact: true }).uncheck()
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
@@ -100,11 +113,14 @@ try {
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
   await expect(page.getByText('Display support is off', { exact: true })).toBeVisible()
   for (const lang of ['en', 'ru', 'uk'])
-    for (const theme of ['light', 'dark'])
+    for (const theme of ['light', 'dark', 'light-glass', 'dark-glass'])
       for (const width of [320, 768, 1280]) {
         state = makeState()
         await page.setViewportSize({ width, height: 900 })
-        await page.goto(url + `?lang=${lang}&theme=${theme}`)
+        await page.goto(
+          url +
+            `?lang=${lang}&theme=${theme.split('-')[0]}&surface=${theme.endsWith('-glass') ? 'glass' : 'solid'}`,
+        )
         await expect(page.locator('h2')).toBeVisible()
         await page.locator('.disclosure').click()
         assert.ok(
@@ -112,7 +128,7 @@ try {
           `${lang}/${theme}/${width} overflow`,
         )
         assert.ok(!(await page.locator('body').innerText()).includes('oled.'), 'missing translation')
-        for (const layout of ['compact', 'large', 'disks', 'pages']) {
+        for (const layout of ['compact', 'large', 'disks', 'pages', 'storage']) {
           await page.locator('select').first().selectOption(layout)
           await expect(page.locator('figure img')).toHaveJSProperty('naturalWidth', 128)
           assert.ok(
@@ -126,7 +142,7 @@ try {
       }
   assert.deepEqual(errors, [])
   console.log(
-    'OLED: unsupported platform, disabled default, dirty guard, pin pairing, enable/disable, validation, save failure, all 4 layouts in 18 locale/theme/width combinations passed',
+    'OLED: unsupported platform, disabled default, dirty guard, pin pairing, enable/disable, validation, save failure, all 5 layouts in 36 locale/theme/width combinations passed',
   )
 } finally {
   await browser.close()
