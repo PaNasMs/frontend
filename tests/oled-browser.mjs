@@ -90,6 +90,7 @@ try {
   await page.getByLabel('Page interval (seconds)').fill('3')
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await expect(page.getByLabel('Page interval (seconds)')).toHaveAttribute('aria-invalid', 'true')
+  await page.getByLabel('Page interval (seconds)').fill('8')
   await expect(page.getByLabel('Event duration (seconds)')).toHaveValue('20')
   await page.getByLabel('Event duration (seconds)').fill('15.5')
   await expect(
@@ -102,6 +103,7 @@ try {
   await page.getByLabel('Event duration (seconds)').fill('14')
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await page.getByLabel('Event duration (seconds)').fill('20')
+  await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeEnabled()
   await page.getByLabel('Display language').selectOption('uk')
   await page.getByRole('checkbox', { name: 'Show event messages', exact: true }).uncheck()
   await page.getByLabel('Page interval (seconds)').fill('8')
