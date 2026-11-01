@@ -139,3 +139,22 @@ test('a complete message nested in a prefixed message is translated, names are n
   assert.match(text, /\/srv\/md127/)
   await i18n.changeLanguage('en')
 })
+
+test('native home recovery diagnostics translate without changing recovery evidence paths', async () => {
+  const messages = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', messages)
+  const keys = ['homes.accountChanged', 'homes.bothCopiesPresent', 'homes.maintenanceChanged']
+  for (const lang of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(lang)
+    const dictionary = json('../src/i18n/locales/' + lang + '.json')
+    for (const key of keys) {
+      const source = messages.find((message) => message.key === key)
+      assert.ok(source)
+      const result = localizeResponse({ error: source.en, path: '/srv/data/Домівки/previous' })
+      assert.equal(result.error, dictionary[key])
+      assert.equal(result.path, '/srv/data/Домівки/previous')
+      if (lang !== 'en') assert.notEqual(result.error, source.en)
+    }
+  }
+  await i18n.changeLanguage('en')
+})
