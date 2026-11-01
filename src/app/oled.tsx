@@ -61,6 +61,7 @@ export function OLEDSettings() {
       await q.cancelQueries({ queryKey: ['oled'] })
       q.setQueryData(['oled'], state)
       draft.reset(state.config)
+      setEventTouched(false)
       notify(tr('settings_saved_0c39426c'))
     },
     onError: () => {
@@ -88,7 +89,15 @@ export function OLEDSettings() {
       {data.data.state === 'error' && <Notice error>{tr('oled.hardwareError')}</Notice>}
       {draft.conflict && (
         <Notice>
-          {tr('oled.conflict')} <Button onClick={() => draft.reset()}>{tr('oled.reload')}</Button>
+          {tr('oled.conflict')}{' '}
+          <Button
+            onClick={() => {
+              draft.reset()
+              setEventTouched(false)
+            }}
+          >
+            {tr('oled.reload')}
+          </Button>
         </Notice>
       )}
       <label className="check">
@@ -152,10 +161,13 @@ export function OLEDSettings() {
           max={60}
           value={cfg.eventSeconds}
           aria-invalid={showEventError}
-          onFocus={() => setEventTouched(false)}
           onBlur={() => setEventTouched(true)}
           aria-describedby={showEventError ? 'oled-event-hint oled-event-error' : 'oled-event-hint'}
-          onChange={(e) => set('eventSeconds', Number(e.target.value))}
+          onChange={(e) => {
+            const value = Number(e.target.value)
+            set('eventSeconds', value)
+            if (Number.isInteger(value) && value >= 15 && value <= 60) setEventTouched(false)
+          }}
         />
         <span id="oled-event-hint" className="small muted">
           {tr('oled.eventHint')}

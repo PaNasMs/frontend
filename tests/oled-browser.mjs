@@ -105,6 +105,11 @@ try {
     'aria-describedby',
     'oled-event-hint oled-event-error',
   )
+  await page.getByLabel('Event duration (seconds)').focus()
+  await expect(page.getByLabel('Event duration (seconds)')).toHaveAttribute('aria-invalid', 'true')
+  await expect(
+    page.getByText('Enter a whole number of seconds from 15 to 60.', { exact: true }),
+  ).toBeVisible()
   await page.getByLabel('Event duration (seconds)').fill('14')
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await page.getByLabel('Event duration (seconds)').fill('20')
