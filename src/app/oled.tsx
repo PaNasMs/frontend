@@ -11,6 +11,10 @@ export type OLEDState = components['schemas']['OLEDState']
 type Settings = components['schemas']['OLEDSettings']
 export const defaultOLED: Settings = {
   layout: 'compact',
+  language: 'en',
+  showTasks: true,
+  showEvents: true,
+  eventSeconds: 20,
   pageSeconds: 6,
   enabled: false,
   brightness: 25,
@@ -45,13 +49,19 @@ export function OLEDSettings() {
   const draft = useDraft(data.data?.config ?? defaultOLED, 'oled')
   const cfg = draft.draft
   const [advanced, setAdvanced] = useState(false)
+  const [eventTouched, setEventTouched] = useState(false)
   const set = <K extends keyof Settings>(key: K, value: Settings[K]) =>
     draft.setDraft((p) => ({ ...p, [key]: value }))
   const save = useMutation({
     mutationFn: () => request<OLEDState>('oled', 'PUT', cfg),
-    onSuccess: (state) => {
+    onMutate: async () => {
+      await q.cancelQueries({ queryKey: ['oled'] })
+    },
+    onSuccess: async (state) => {
+      await q.cancelQueries({ queryKey: ['oled'] })
       q.setQueryData(['oled'], state)
       draft.reset(state.config)
+      setEventTouched(false)
       notify(tr('settings_saved_0c39426c'))
     },
     onError: () => {
@@ -59,14 +69,17 @@ export function OLEDSettings() {
     },
   })
   if (!data.data?.supported) return null
+  const invalidEvent = !Number.isInteger(cfg.eventSeconds) || cfg.eventSeconds < 15 || cfg.eventSeconds > 60
+  const showEventError = invalidEvent && eventTouched
   const invalid =
+    invalidEvent ||
     !Number.isInteger(cfg.pageSeconds) ||
     cfg.pageSeconds < 4 ||
     cfg.pageSeconds > 60 ||
     !Number.isInteger(cfg.brightness) ||
     cfg.brightness < 1 ||
     cfg.brightness > 100 ||
-    (cfg.enabled && !cfg.showIP && !cfg.showCPU && !cfg.showDisks)
+    (cfg.enabled && cfg.layout !== 'storage' && !cfg.showIP && !cfg.showCPU && !cfg.showDisks)
   return (
     <WaitingSurface className="surface" busy={save.isPending}>
       <h2>{tr('oled.title')}</h2>
@@ -76,7 +89,15 @@ export function OLEDSettings() {
       {data.data.state === 'error' && <Notice error>{tr('oled.hardwareError')}</Notice>}
       {draft.conflict && (
         <Notice>
-          {tr('oled.conflict')} <Button onClick={() => draft.reset()}>{tr('oled.reload')}</Button>
+          {tr('oled.conflict')}{' '}
+          <Button
+            onClick={() => {
+              draft.reset()
+              setEventTouched(false)
+            }}
+          >
+            {tr('oled.reload')}
+          </Button>
         </Notice>
       )}
       <label className="check">
@@ -91,7 +112,7 @@ export function OLEDSettings() {
           aria-describedby="oled-layout-hint"
           onChange={(e) => set('layout', e.target.value as Settings['layout'])}
         >
-          {(['compact', 'large', 'disks', 'pages'] as const).map((layout) => (
+          {(['compact', 'large', 'disks', 'pages', 'storage'] as const).map((layout) => (
             <option key={layout} value={layout}>
               {tr(`oled.layout.${layout}`)}
             </option>
@@ -111,6 +132,52 @@ export function OLEDSettings() {
         />
         <figcaption className="small muted">{tr('oled.preview')}</figcaption>
       </figure>
+      <label className="field">
+        {tr('oled.language')}
+        <select
+          value={cfg.language}
+          onChange={(e) => set('language', e.target.value as Settings['language'])}
+        >
+          <option value="en">English</option>
+          <option value="ru">Русский</option>
+          <option value="uk">Українська</option>
+        </select>
+      </label>
+      <fieldset>
+        <legend>{tr('oled.activity')}</legend>
+        {(['showTasks', 'showEvents'] as const).map((key) => (
+          <label key={key} className="check">
+            <input type="checkbox" checked={cfg[key]} onChange={(e) => set(key, e.target.checked)} />
+            {tr(`oled.${key}`)}
+          </label>
+        ))}
+      </fieldset>
+      <p className="small muted">{tr('oled.activityHint')}</p>
+      <label className="field">
+        {tr('oled.eventSeconds')}
+        <input
+          type="number"
+          min={15}
+          max={60}
+          value={cfg.eventSeconds}
+          aria-invalid={showEventError}
+          onBlur={() => setEventTouched(invalidEvent)}
+          aria-describedby={showEventError ? 'oled-event-hint oled-event-error' : 'oled-event-hint'}
+          onChange={(e) => {
+            const value = Number(e.target.value)
+            set('eventSeconds', value)
+            if (Number.isInteger(value) && value >= 15 && value <= 60) setEventTouched(false)
+          }}
+        />
+        <span id="oled-event-hint" className="small muted">
+          {tr('oled.eventHint')}
+        </span>
+        {showEventError && (
+          <span id="oled-event-error" role="alert">
+            {tr('oled.eventInvalid')}
+          </span>
+        )}
+      </label>
       <div className="form-grid">
         <label className="field">
           {tr('oled.brightness')}
@@ -140,7 +207,7 @@ export function OLEDSettings() {
         ))}
       </fieldset>
       <p className="small muted">{tr('oled.telemetry')}</p>
-      {cfg.enabled && !cfg.showIP && !cfg.showCPU && !cfg.showDisks && (
+      {cfg.enabled && cfg.layout !== 'storage' && !cfg.showIP && !cfg.showCPU && !cfg.showDisks && (
         <Notice error>{tr('oled.selectReading')}</Notice>
       )}
       <Disclosure title={tr('advanced_settings_3cc80085')} open={advanced} onOpenChange={setAdvanced}>
