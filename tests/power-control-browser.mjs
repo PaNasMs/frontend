@@ -169,6 +169,8 @@ try {
   assert.equal(saves.length, before)
   await apply.click()
   await expect(apply).toBeDisabled()
+  await expect.poll(() => saves.length).toBe(before + 1)
+  await expect(page.getByText(/Both options are selected for initial setup/)).toHaveCount(0)
   assert.deepEqual(saves.at(-1).button, { enabled: true, gpio: 22 })
   assert.deepEqual(saves.at(-1).expectedButton, { enabled: false, gpio: 22 })
   assert.deepEqual(errors, [])
