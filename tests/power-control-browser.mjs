@@ -31,7 +31,10 @@ try {
       const body = r.request().postDataJSON()
       saves.push(body)
       if (failSave) return r.fulfill({ status: 503, json: { error: 'GPIO25 is assigned to cooling' } })
-      if (JSON.stringify(body.expected) !== JSON.stringify(state.config))
+      if (
+        JSON.stringify(body.expected) !== JSON.stringify(state.config) ||
+        JSON.stringify(body.expectedButton) !== JSON.stringify(state.button)
+      )
         return r.fulfill({
           status: 409,
           json: { error: 'Power control settings changed; reload before saving' },
@@ -173,6 +176,19 @@ try {
   await expect(page.getByText(/Both options are selected for initial setup/)).toHaveCount(0)
   assert.deepEqual(saves.at(-1).button, { enabled: true, gpio: 22 })
   assert.deepEqual(saves.at(-1).expectedButton, { enabled: false, gpio: 22 })
+  await page.getByLabel('Button input GPIO').selectOption('23')
+  state = { ...state, button: { enabled: true, gpio: 24 } }
+  await apply.click()
+  await expect(page.getByText('Power control settings changed; reload before saving')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Reload settings' })).toBeVisible({ timeout: 10000 })
+  await page.getByRole('button', { name: 'Reload settings' }).click()
+  await expect(page.getByLabel('Button input GPIO')).toHaveValue('24')
+  await page.getByLabel('Button input GPIO').selectOption('23')
+  const beforeRetry = saves.length
+  await apply.click()
+  await expect.poll(() => saves.length).toBe(beforeRetry + 1)
+  await expect.poll(() => state.button.gpio).toBe(23)
+  assert.deepEqual(saves.at(-1).expectedButton, { enabled: true, gpio: 24 })
   assert.deepEqual(errors, [])
   console.log(
     'Power settings: apply, pending/active states, dirty guard, keyboard, conflict, failure/retry, unsupported/member, EN/RU/UK and 24 theme/material/width combinations passed',
