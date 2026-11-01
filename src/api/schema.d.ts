@@ -2127,16 +2127,28 @@ export interface components {
             /** @default 25 */
             gpio: number;
         };
+        PowerButtonSettings: {
+            /** @default false */
+            enabled: boolean;
+            /** @default 22 */
+            gpio: number;
+        };
         PowerControlUpdate: {
             enabled: boolean;
             gpio: number;
             expected: components["schemas"]["PowerControlSettings"];
+            button?: components["schemas"]["PowerButtonSettings"];
+            expectedButton?: components["schemas"]["PowerButtonSettings"];
         };
         PowerControlState: {
             config: components["schemas"]["PowerControlSettings"];
             supported: boolean;
             activeGPIO: number | null;
             rebootRequired: boolean;
+            configured: boolean;
+            button: components["schemas"]["PowerButtonSettings"];
+            /** @enum {string} */
+            buttonState: "disabled" | "waitingForPowerControl" | "waitingForRelease" | "armed" | "shutdownRequested" | "error";
         };
         OLEDState: {
             config: components["schemas"]["OLEDSettings"];

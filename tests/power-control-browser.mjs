@@ -8,12 +8,16 @@ const browser = await chromium.launch({
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
   let holdNextRead = false,
-    releaseRead = null
+    releaseRead = null,
+    frozenReadState = null
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
   let state = {
       config: { enabled: false, gpio: 25 },
       supported: true,
+      configured: true,
+      button: { enabled: false, gpio: 22 },
+      buttonState: 'disabled',
       activeGPIO: null,
       rebootRequired: false,
     },
@@ -25,15 +29,25 @@ try {
   await page.route('**/api/v1/notifications', (r) => r.fulfill({ json: [] }))
   await page.route('**/api/v1/power-control', async (r) => {
     if (r.request().method() === 'PUT') {
+      frozenReadState = null
       const body = r.request().postDataJSON()
       saves.push(body)
       if (failSave) return r.fulfill({ status: 503, json: { error: 'GPIO25 is assigned to cooling' } })
-      if (JSON.stringify(body.expected) !== JSON.stringify(state.config))
+      if (
+        JSON.stringify(body.expected) !== JSON.stringify(state.config) ||
+        JSON.stringify(body.expectedButton) !== JSON.stringify(state.button)
+      )
         return r.fulfill({
           status: 409,
           json: { error: 'Power control settings changed; reload before saving' },
         })
-      state = { ...state, config: { enabled: body.enabled, gpio: body.gpio }, rebootRequired: true }
+      state = {
+        ...state,
+        configured: true,
+        button: body.button,
+        config: { enabled: body.enabled, gpio: body.gpio },
+        rebootRequired: true,
+      }
     } else if (failRead) return r.fulfill({ status: 503, json: { error: 'Connection unavailable' } })
     if (r.request().method() === 'GET' && holdNextRead) {
       holdNextRead = false
@@ -43,13 +57,13 @@ try {
       })
       return r.fulfill({ json: snapshot })
     }
-    return r.fulfill({ json: state })
+    return r.fulfill({ json: frozenReadState ?? state })
   })
   const url = (process.env.POWER_TEST_URL ?? 'http://127.0.0.1:5173') + '/tests/power-control.html'
   await page.goto(url)
   await expect(page.getByRole('heading', { name: 'Power control' })).toBeVisible()
   const apply = page.getByRole('button', { name: 'Apply', exact: true })
-  const enabled = page.getByRole('checkbox')
+  const enabled = page.getByRole('checkbox', { name: 'Enable automatic power cut-off', exact: true })
   const select = page.getByLabel('Power board GPIO')
   await expect(select).toHaveValue('25')
   await expect(apply).toBeDisabled()
@@ -66,7 +80,13 @@ try {
   failSave = false
   await apply.click()
   await expect(apply).toBeDisabled()
-  assert.deepEqual(saves.at(-1), { enabled: true, gpio: 25, expected: { enabled: false, gpio: 25 } })
+  assert.deepEqual(saves.at(-1), {
+    enabled: true,
+    gpio: 25,
+    expected: { enabled: false, gpio: 25 },
+    button: { enabled: false, gpio: 22 },
+    expectedButton: { enabled: false, gpio: 22 },
+  })
   await expect(page.getByText(/Restart the NAS to apply/)).toBeVisible()
   await select.selectOption('26')
   holdNextRead = true
@@ -82,6 +102,7 @@ try {
   await select.focus()
   await select.press('ArrowDown')
   await expect(select).toHaveValue('26')
+  frozenReadState = structuredClone(state)
   state = { ...state, config: { enabled: true, gpio: 24 } }
   await apply.click()
   await expect(page.getByText('Power control settings changed; reload before saving')).toBeVisible()
@@ -119,7 +140,7 @@ try {
         for (const width of [320, 1280]) {
           await page.setViewportSize({ width, height: 900 })
           await page.goto(url + `?lang=${lang}&theme=${theme}&material=${material}`)
-          await expect(page.locator('select')).toBeVisible()
+          await expect(page.locator('select').first()).toBeVisible()
           await expect(
             page.getByRole('heading', {
               name: { en: 'Power control', ru: 'Управление питанием', uk: 'Керування живленням' }[lang],
@@ -134,6 +155,44 @@ try {
           if (lang === 'ru' && width === 1280)
             await page.screenshot({ path: `/tmp/power-control-${theme}-${material}.png`, fullPage: true })
         }
+  state = {
+    ...state,
+    configured: false,
+    config: { enabled: false, gpio: 25 },
+    button: { enabled: false, gpio: 22 },
+    activeGPIO: null,
+    rebootRequired: false,
+  }
+  await page.goto(url)
+  const button = page.getByRole('checkbox', { name: 'Shut down using a physical button' })
+  await expect(enabled).toBeChecked()
+  await expect(button).toBeChecked()
+  await expect(apply).toBeEnabled()
+  const before = saves.length
+  await page.getByLabel('Button input GPIO').selectOption('25')
+  await expect(apply).toBeDisabled()
+  await page.getByLabel('Button input GPIO').selectOption('22')
+  assert.equal(saves.length, before)
+  await apply.click()
+  await expect(apply).toBeDisabled()
+  await expect.poll(() => saves.length).toBe(before + 1)
+  await expect(page.getByText(/Both options are selected for initial setup/)).toHaveCount(0)
+  assert.deepEqual(saves.at(-1).button, { enabled: true, gpio: 22 })
+  assert.deepEqual(saves.at(-1).expectedButton, { enabled: false, gpio: 22 })
+  await page.getByLabel('Button input GPIO').selectOption('23')
+  frozenReadState = structuredClone(state)
+  state = { ...state, button: { enabled: true, gpio: 24 } }
+  await apply.click()
+  await expect(page.getByText('Power control settings changed; reload before saving')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Reload settings' })).toBeVisible({ timeout: 10000 })
+  await page.getByRole('button', { name: 'Reload settings' }).click()
+  await expect(page.getByLabel('Button input GPIO')).toHaveValue('24')
+  await page.getByLabel('Button input GPIO').selectOption('23')
+  const beforeRetry = saves.length
+  await apply.click()
+  await expect.poll(() => saves.length).toBe(beforeRetry + 1)
+  await expect.poll(() => state.button.gpio).toBe(23)
+  assert.deepEqual(saves.at(-1).expectedButton, { enabled: true, gpio: 24 })
   assert.deepEqual(errors, [])
   console.log(
     'Power settings: apply, pending/active states, dirty guard, keyboard, conflict, failure/retry, unsupported/member, EN/RU/UK and 24 theme/material/width combinations passed',
