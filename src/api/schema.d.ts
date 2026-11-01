@@ -2074,10 +2074,11 @@ export interface components {
         };
         OLEDSettings: {
             /**
+             * @description Legacy layout values are accepted on input and normalized to large.
              * @default large
              * @enum {string}
              */
-            layout: "large";
+            layout: "large" | "compact" | "disks" | "pages" | "storage";
             /** @default 6 */
             pageSeconds: number;
             /**
