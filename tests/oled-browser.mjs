@@ -95,6 +95,11 @@ try {
   await page.getByLabel('Event duration (seconds)').fill('15.5')
   await expect(
     page.getByText('Enter a whole number of seconds from 15 to 60.', { exact: true }),
+  ).not.toBeVisible()
+  await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
+  await page.getByLabel('Event duration (seconds)').press('Tab')
+  await expect(
+    page.getByText('Enter a whole number of seconds from 15 to 60.', { exact: true }),
   ).toBeVisible()
   await expect(page.getByLabel('Event duration (seconds)')).toHaveAttribute(
     'aria-describedby',

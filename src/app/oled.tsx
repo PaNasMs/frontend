@@ -49,6 +49,7 @@ export function OLEDSettings() {
   const draft = useDraft(data.data?.config ?? defaultOLED, 'oled')
   const cfg = draft.draft
   const [advanced, setAdvanced] = useState(false)
+  const [eventTouched, setEventTouched] = useState(false)
   const set = <K extends keyof Settings>(key: K, value: Settings[K]) =>
     draft.setDraft((p) => ({ ...p, [key]: value }))
   const save = useMutation({
@@ -68,6 +69,7 @@ export function OLEDSettings() {
   })
   if (!data.data?.supported) return null
   const invalidEvent = !Number.isInteger(cfg.eventSeconds) || cfg.eventSeconds < 15 || cfg.eventSeconds > 60
+  const showEventError = invalidEvent && eventTouched
   const invalid =
     invalidEvent ||
     !Number.isInteger(cfg.pageSeconds) ||
@@ -149,14 +151,16 @@ export function OLEDSettings() {
           min={15}
           max={60}
           value={cfg.eventSeconds}
-          aria-invalid={invalidEvent}
-          aria-describedby={invalidEvent ? 'oled-event-hint oled-event-error' : 'oled-event-hint'}
+          aria-invalid={showEventError}
+          onFocus={() => setEventTouched(false)}
+          onBlur={() => setEventTouched(true)}
+          aria-describedby={showEventError ? 'oled-event-hint oled-event-error' : 'oled-event-hint'}
           onChange={(e) => set('eventSeconds', Number(e.target.value))}
         />
         <span id="oled-event-hint" className="small muted">
           {tr('oled.eventHint')}
         </span>
-        {invalidEvent && (
+        {showEventError && (
           <span id="oled-event-error" role="alert">
             {tr('oled.eventInvalid')}
           </span>
