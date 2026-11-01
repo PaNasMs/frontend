@@ -76,17 +76,8 @@ try {
   await expect(page.getByRole('checkbox', { name: 'Enable display support' })).toBeChecked()
   await page.getByRole('button', { name: 'Advanced settings', exact: true }).click()
   await page.getByLabel('SDA / SCL pins').selectOption('12')
-  for (const layout of ['large', 'disks', 'pages', 'storage']) {
-    await page.getByLabel('Layout', { exact: true }).selectOption(layout)
-    await expect(page.locator('figure img')).toHaveAttribute('src', `/oled/${layout}.png`)
-    assert.equal(saves.length, 0, 'preview must not apply settings')
-  }
-  const layoutSelect = page.getByLabel('Layout', { exact: true })
-  await layoutSelect.focus()
-  await layoutSelect.press('Home')
-  await layoutSelect.press('ArrowDown')
-  await expect(layoutSelect).toHaveValue('large')
-  await layoutSelect.selectOption('pages')
+  await expect(page.getByLabel('Layout', { exact: true })).toHaveCount(0)
+  await expect(page.locator('figure img')).toHaveAttribute('src', '/oled/large.png')
   await page.getByLabel('Page interval (seconds)').fill('3')
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await expect(page.getByLabel('Page interval (seconds)')).toHaveAttribute('aria-invalid', 'true')
@@ -124,7 +115,7 @@ try {
   assert.equal(saves.at(-1).sda, 12)
   assert.equal(saves.at(-1).scl, 13)
   assert.equal(saves.at(-1).bus, 2)
-  assert.equal(saves.at(-1).layout, 'pages')
+  assert.equal(saves.at(-1).layout, 'large')
   assert.equal(saves.at(-1).pageSeconds, 8)
   assert.equal(saves.at(-1).eventSeconds, 20)
   assert.equal(saves.at(-1).language, 'uk')
@@ -146,11 +137,10 @@ try {
     await page.getByRole('checkbox', { name: label, exact: true }).uncheck()
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
   await page.getByRole('checkbox', { name: 'IP address', exact: true }).check()
-  await page.getByLabel('Layout', { exact: true }).selectOption('large')
   failSave = true
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
   await expect(page.getByText('Display test failure')).toBeVisible()
-  await expect(page.getByLabel('Layout', { exact: true })).toHaveValue('large')
+  await expect(page.locator('figure img')).toHaveAttribute('src', '/oled/large.png')
   await expect(page.getByRole('checkbox', { name: 'CPU temperature' })).not.toBeChecked()
   failSave = false
   await page.getByRole('button', { name: 'Apply', exact: true }).click()
@@ -173,8 +163,7 @@ try {
           `${lang}/${theme}/${width} overflow`,
         )
         assert.ok(!(await page.locator('body').innerText()).includes('oled.'), 'missing translation')
-        for (const layout of ['compact', 'large', 'disks', 'pages', 'storage']) {
-          await page.locator('select').first().selectOption(layout)
+        for (const layout of ['large']) {
           await expect(page.locator('figure img')).toHaveJSProperty('naturalWidth', 128)
           assert.ok(
             await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
@@ -187,7 +176,7 @@ try {
       }
   assert.deepEqual(errors, [])
   console.log(
-    'OLED: unsupported platform, disabled default, dirty guard, pin pairing, enable/disable, validation, save failure, all 5 layouts in 36 locale/theme/width combinations passed',
+    'OLED: unsupported platform, disabled default, dirty guard, pin pairing, enable/disable, validation, save failure, fixed large layout in 36 locale/theme/width combinations passed',
   )
 } finally {
   await browser.close()
