@@ -161,7 +161,7 @@ export function OLEDSettings() {
           max={60}
           value={cfg.eventSeconds}
           aria-invalid={showEventError}
-          onBlur={() => setEventTouched(true)}
+          onBlur={() => setEventTouched(invalidEvent)}
           aria-describedby={showEventError ? 'oled-event-hint oled-event-error' : 'oled-event-hint'}
           onChange={(e) => {
             const value = Number(e.target.value)

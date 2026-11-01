@@ -92,6 +92,8 @@ try {
   await expect(page.getByLabel('Page interval (seconds)')).toHaveAttribute('aria-invalid', 'true')
   await page.getByLabel('Page interval (seconds)').fill('8')
   await expect(page.getByLabel('Event duration (seconds)')).toHaveValue('20')
+  await page.getByLabel('Event duration (seconds)').focus()
+  await page.getByLabel('Event duration (seconds)').press('Tab')
   await page.getByLabel('Event duration (seconds)').fill('15.5')
   await expect(
     page.getByText('Enter a whole number of seconds from 15 to 60.', { exact: true }),
