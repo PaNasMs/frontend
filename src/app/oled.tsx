@@ -53,7 +53,11 @@ export function OLEDSettings() {
     draft.setDraft((p) => ({ ...p, [key]: value }))
   const save = useMutation({
     mutationFn: () => request<OLEDState>('oled', 'PUT', cfg),
-    onSuccess: (state) => {
+    onMutate: async () => {
+      await q.cancelQueries({ queryKey: ['oled'] })
+    },
+    onSuccess: async (state) => {
+      await q.cancelQueries({ queryKey: ['oled'] })
       q.setQueryData(['oled'], state)
       draft.reset(state.config)
       notify(tr('settings_saved_0c39426c'))

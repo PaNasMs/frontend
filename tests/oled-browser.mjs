@@ -37,6 +37,8 @@ try {
   let state = makeState(false),
     failSave = false,
     saves = []
+  let holdNextRead = false,
+    releaseRead = null
   await page.route('**/api/v1/oled', async (route) => {
     if (route.request().method() === 'PUT') {
       const body = route.request().postDataJSON()
@@ -48,6 +50,14 @@ try {
         state: body.enabled ? 'active' : 'disabled',
         status: { ...state.status, applied: body },
       }
+    }
+    if (route.request().method() === 'GET' && holdNextRead) {
+      holdNextRead = false
+      const old = structuredClone(state)
+      await new Promise((resolve) => {
+        releaseRead = resolve
+      })
+      return route.fulfill({ json: old })
     }
     return route.fulfill({ json: state })
   })
@@ -97,6 +107,19 @@ try {
   assert.equal(saves.at(-1).eventSeconds, 20)
   assert.equal(saves.at(-1).language, 'uk')
   assert.equal(saves.at(-1).showEvents, false)
+  holdNextRead = true
+  await expect.poll(() => releaseRead !== null, { timeout: 10000 }).toBe(true)
+  await page.getByLabel('Event duration (seconds)').fill('21')
+  await page.getByRole('button', { name: 'Apply', exact: true }).click()
+  await expect.poll(() => state.config.eventSeconds).toBe(21)
+  const delayed = page.waitForResponse(
+    (r) => r.url().endsWith('/api/v1/oled') && r.request().method() === 'GET',
+  )
+  releaseRead()
+  await delayed
+  await expect(page.getByLabel('Event duration (seconds)')).toHaveValue('21')
+  await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
+
   for (const label of ['IP address', 'CPU temperature', 'Disk temperatures'])
     await page.getByRole('checkbox', { name: label, exact: true }).uncheck()
   await expect(page.getByRole('button', { name: 'Apply', exact: true })).toBeDisabled()
