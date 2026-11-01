@@ -143,7 +143,14 @@ test('a complete message nested in a prefixed message is translated, names are n
 test('native home recovery diagnostics translate without changing recovery evidence paths', async () => {
   const messages = json('../src/i18n/server-messages.json')
   registerServerMessages('core', messages)
-  const keys = ['homes.accountChanged', 'homes.bothCopiesPresent', 'homes.maintenanceChanged']
+  const keys = [
+    'homes.accountChanged',
+    'homes.bothCopiesPresent',
+    'homes.maintenanceChanged',
+    'homes.invalidRecoveryIdentity',
+    'homes.mountAtBoot',
+    'ui.homeVolumeError0',
+  ]
   for (const lang of ['en', 'ru', 'uk']) {
     await i18n.changeLanguage(lang)
     const dictionary = json('../src/i18n/locales/' + lang + '.json')

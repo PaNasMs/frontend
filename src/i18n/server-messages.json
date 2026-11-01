@@ -2745,7 +2745,7 @@
   {
     "key": "homes.invalidRecoveryIdentity",
     "en": "Invalid home-move recovery identity; data was preserved",
-    "ru": "Не удалось проверить домашние папки для восстановления переноса. Данные сохранены"
+    "ru": "Некорректные идентификаторы домашних папок для восстановления переноса. Данные сохранены"
   },
   {
     "key": "homes.invalidRecoveryPath",
