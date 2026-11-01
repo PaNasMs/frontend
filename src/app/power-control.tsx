@@ -7,7 +7,12 @@ import { useDraft } from '../shared/interaction'
 import { notify } from './notifications'
 
 type State = components['schemas']['PowerControlState']
-const defaults = { enabled: true, gpio: 25, button: { enabled: true, gpio: 22 } }
+const defaults = {
+  enabled: true,
+  gpio: 25,
+  button: { enabled: true, gpio: 22 },
+  baseline: { config: { enabled: false, gpio: 25 }, button: { enabled: false, gpio: 22 } },
+}
 const physicalPins = [
   3, 5, 7, 29, 31, 26, 24, 21, 19, 23, 32, 33, 8, 10, 36, 11, 12, 35, 38, 40, 15, 16, 18, 22, 37, 13,
 ]
@@ -27,15 +32,18 @@ export function PowerControlSettings() {
         ...data.data.config,
         enabled: data.data.configured ? data.data.config.enabled : true,
         button: data.data.configured ? data.data.button : defaults.button,
+        baseline: { config: data.data.config, button: data.data.button },
       }
     : defaults
   const draft = useDraft(source, 'power-control')
   const save = useMutation({
     mutationFn: () =>
       request<State>('power-control', 'PUT', {
-        ...draft.draft,
-        expected: { enabled: data.data!.config.enabled, gpio: data.data!.config.gpio },
-        expectedButton: data.data!.button,
+        enabled: draft.draft.enabled,
+        gpio: draft.draft.gpio,
+        button: draft.draft.button,
+        expected: draft.original.baseline.config,
+        expectedButton: draft.original.baseline.button,
       }),
     onMutate: async () => {
       await client.cancelQueries({ queryKey: ['power-control'] })
@@ -43,7 +51,11 @@ export function PowerControlSettings() {
     onSuccess: async (state) => {
       await client.cancelQueries({ queryKey: ['power-control'] })
       client.setQueryData(['power-control'], state)
-      draft.reset({ ...state.config, button: state.button })
+      draft.reset({
+        ...state.config,
+        button: state.button,
+        baseline: { config: state.config, button: state.button },
+      })
       notify(tr('settings_saved_0c39426c'))
     },
     onError: () => {
