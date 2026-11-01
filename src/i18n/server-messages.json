@@ -4463,5 +4463,59 @@
   {
     "key": "oled.error.eventDuration",
     "en": "OLED event duration must be 15..60 seconds"
+  },
+  {
+    "key": "network.nativeServer1",
+    "en": "Existing sharing groups require migration before switching network providers",
+    "ru": "Перед сменой службы управления сетью перенесите существующие группы раздачи",
+    "uk": "Перед зміною служби керування мережею перенесіть наявні групи спільного доступу"
+  },
+  {
+    "key": "network.nativeServer2",
+    "en": "Wi-Fi operation interrupted; recovery is required",
+    "ru": "Операция Wi-Fi прервана; требуется восстановление",
+    "uk": "Операцію Wi-Fi перервано; потрібне відновлення"
+  },
+  {
+    "key": "network.nativeServer3",
+    "en": "Sharing operation interrupted; recovery is required",
+    "ru": "Операция раздачи подключения прервана; требуется восстановление",
+    "uk": "Операцію спільного доступу до з’єднання перервано; потрібне відновлення"
+  },
+  {
+    "key": "network.nativeServer4",
+    "en": "Sharing changes were confirmed; cleanup requires recovery",
+    "ru": "Изменения раздачи подключения подтверждены; для завершения очистки требуется восстановление",
+    "uk": "Зміни спільного доступу до з’єднання підтверджено; для завершення очищення потрібне відновлення"
+  },
+  {
+    "key": "network.nativeServer5",
+    "en": "NetworkManager operation failed; check the connection state",
+    "ru": "Не удалось выполнить операцию NetworkManager; проверьте состояние подключения",
+    "uk": "Не вдалося виконати операцію NetworkManager; перевірте стан з’єднання"
+  },
+  {
+    "key": "network.nativeServer6",
+    "en": "Source has no valid hardware address",
+    "ru": "Не удалось определить корректный аппаратный адрес источника подключения",
+    "uk": "Не вдалося визначити коректну апаратну адресу джерела з’єднання"
+  },
+  {
+    "key": "network.nativeServer7",
+    "en": "Saved access point password is unavailable",
+    "ru": "Сохранённый пароль точки доступа недоступен",
+    "uk": "Збережений пароль точки доступу недоступний"
+  },
+  {
+    "key": "network.nativeServer8",
+    "en": "A network adapter was replaced; check its settings",
+    "ru": "Сетевой адаптер заменён; проверьте его настройки",
+    "uk": "Мережевий адаптер замінено; перевірте його налаштування"
+  },
+  {
+    "key": "network.nativeServer9",
+    "en": "Sharing configuration changed externally; review it again",
+    "ru": "Настройки раздачи подключения изменены извне; проверьте их ещё раз",
+    "uk": "Налаштування спільного доступу до з’єднання змінено ззовні; перевірте їх ще раз"
   }
 ]
