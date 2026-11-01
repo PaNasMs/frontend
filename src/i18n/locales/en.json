@@ -2517,5 +2517,16 @@
   "oled.activityHint": "Shows RAID work, long server tasks and file transfers through the NAS. Events temporarily replace the current page. File names and personal paths are not displayed.",
   "oled.error.language": "Invalid OLED language",
   "oled.error.eventDuration": "OLED event duration must be 15..60 seconds",
-  "oled.eventInvalid": "Enter a whole number of seconds from 15 to 60."
+  "oled.eventInvalid": "Enter a whole number of seconds from 15 to 60.",
+  "power.setupHint": "Both options are selected for initial setup. No GPIO is activated until you save. Connect a compatible power board and verify both pins before applying. Final power cut-off changes require a reboot.",
+  "power.buttonEnabled": "Shut down using a physical button",
+  "power.buttonGPIO": "Button input GPIO",
+  "power.buttonHint": "Active-low 3.3 V input with a pull-up. The initial held button is ignored; a later press and release requests normal shutdown. Running jobs may be interrupted. Never connect 12 V to this input.",
+  "power.buttonConflict": "Enable final power cut-off and choose a different GPIO for the button.",
+  "power.buttonState.disabled": "Button input disabled",
+  "power.buttonState.waitingForPowerControl": "Button input waiting for power-control activation/reboot",
+  "power.buttonState.waitingForRelease": "Release the button to arm the input",
+  "power.buttonState.armed": "Button input armed",
+  "power.buttonState.shutdownRequested": "Shutdown requested by the button",
+  "power.buttonState.error": "Button input unavailable; inspect the agent journal"
 }

@@ -7,7 +7,12 @@ import { useDraft } from '../shared/interaction'
 import { notify } from './notifications'
 
 type State = components['schemas']['PowerControlState']
-const defaults = { enabled: false, gpio: 25 }
+const defaults = {
+  enabled: true,
+  gpio: 25,
+  button: { enabled: true, gpio: 22 },
+  baseline: { config: { enabled: false, gpio: 25 }, button: { enabled: false, gpio: 22 } },
+}
 const physicalPins = [
   3, 5, 7, 29, 31, 26, 24, 21, 19, 23, 32, 33, 8, 10, 36, 11, 12, 35, 38, 40, 15, 16, 18, 22, 37, 13,
 ]
@@ -22,16 +27,35 @@ export function PowerControlSettings() {
     enabled: admin,
     refetchInterval: 5000,
   })
-  const draft = useDraft(data.data?.config ?? defaults, 'power-control')
+  const source = data.data
+    ? {
+        ...data.data.config,
+        enabled: data.data.configured ? data.data.config.enabled : true,
+        button: data.data.configured ? data.data.button : defaults.button,
+        baseline: { config: data.data.config, button: data.data.button },
+      }
+    : defaults
+  const draft = useDraft(source, 'power-control')
   const save = useMutation({
-    mutationFn: () => request<State>('power-control', 'PUT', { ...draft.draft, expected: draft.original }),
+    mutationFn: () =>
+      request<State>('power-control', 'PUT', {
+        enabled: draft.draft.enabled,
+        gpio: draft.draft.gpio,
+        button: draft.draft.button,
+        expected: draft.original.baseline.config,
+        expectedButton: draft.original.baseline.button,
+      }),
     onMutate: async () => {
       await client.cancelQueries({ queryKey: ['power-control'] })
     },
     onSuccess: async (state) => {
       await client.cancelQueries({ queryKey: ['power-control'] })
       client.setQueryData(['power-control'], state)
-      draft.reset(state.config)
+      draft.reset({
+        ...state.config,
+        button: state.button,
+        baseline: { config: state.config, button: state.button },
+      })
       notify(tr('settings_saved_0c39426c'))
     },
     onError: () => {
@@ -108,10 +132,52 @@ export function PowerControlSettings() {
               <p className="small muted" id="power-pin-hint">
                 {tr('power.pinHint')}
               </p>
+              {!data.data.configured && <Notice>{tr('power.setupHint')}</Notice>}
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={cfg.button.enabled}
+                  disabled={save.isPending}
+                  onChange={(e) =>
+                    draft.setDraft((p) => ({ ...p, button: { ...p.button, enabled: e.target.checked } }))
+                  }
+                />
+                {tr('power.buttonEnabled')}
+              </label>
+              <label className="field">
+                {tr('power.buttonGPIO')}
+                <select
+                  value={cfg.button.gpio}
+                  disabled={save.isPending}
+                  aria-describedby="power-button-hint"
+                  onChange={(e) =>
+                    draft.setDraft((p) => ({ ...p, button: { ...p.button, gpio: Number(e.target.value) } }))
+                  }
+                >
+                  {physicalPins.map((pin, index) => (
+                    <option key={pin} value={index + 2}>
+                      GPIO{index + 2} · {tr('cooling.header_pin')} {pin}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <p id="power-button-hint" className="small muted">
+                {tr('power.buttonHint')}
+              </p>
+              {!data.error && <p role="status">{tr(`power.buttonState.${data.data.buttonState}`)}</p>}
+              {cfg.button.enabled && (!cfg.enabled || cfg.button.gpio === cfg.gpio) && (
+                <Notice error>{tr('power.buttonConflict')}</Notice>
+              )}
               {save.error && <Notice error>{save.error.message}</Notice>}
               <Button
                 className="primary"
-                disabled={!draft.dirty || draft.conflict || save.isPending || !!data.error}
+                disabled={
+                  (!draft.dirty && data.data.configured) ||
+                  draft.conflict ||
+                  save.isPending ||
+                  !!data.error ||
+                  (cfg.button.enabled && (!cfg.enabled || cfg.button.gpio === cfg.gpio))
+                }
                 onClick={() => save.mutate()}
               >
                 {tr('apply_768af677')}
