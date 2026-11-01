@@ -6,7 +6,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox'],
 })
 const config = {
-  layout: 'large',
+  layout: 'compact',
   language: 'en',
   showTasks: true,
   showEvents: true,
