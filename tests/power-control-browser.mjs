@@ -8,7 +8,8 @@ const browser = await chromium.launch({
 try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
   let holdNextRead = false,
-    releaseRead = null
+    releaseRead = null,
+    frozenReadState = null
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
   let state = {
@@ -28,6 +29,7 @@ try {
   await page.route('**/api/v1/notifications', (r) => r.fulfill({ json: [] }))
   await page.route('**/api/v1/power-control', async (r) => {
     if (r.request().method() === 'PUT') {
+      frozenReadState = null
       const body = r.request().postDataJSON()
       saves.push(body)
       if (failSave) return r.fulfill({ status: 503, json: { error: 'GPIO25 is assigned to cooling' } })
@@ -55,7 +57,7 @@ try {
       })
       return r.fulfill({ json: snapshot })
     }
-    return r.fulfill({ json: state })
+    return r.fulfill({ json: frozenReadState ?? state })
   })
   const url = (process.env.POWER_TEST_URL ?? 'http://127.0.0.1:5173') + '/tests/power-control.html'
   await page.goto(url)
@@ -100,6 +102,7 @@ try {
   await select.focus()
   await select.press('ArrowDown')
   await expect(select).toHaveValue('26')
+  frozenReadState = structuredClone(state)
   state = { ...state, config: { enabled: true, gpio: 24 } }
   await apply.click()
   await expect(page.getByText('Power control settings changed; reload before saving')).toBeVisible()
@@ -177,6 +180,7 @@ try {
   assert.deepEqual(saves.at(-1).button, { enabled: true, gpio: 22 })
   assert.deepEqual(saves.at(-1).expectedButton, { enabled: false, gpio: 22 })
   await page.getByLabel('Button input GPIO').selectOption('23')
+  frozenReadState = structuredClone(state)
   state = { ...state, button: { enabled: true, gpio: 24 } }
   await apply.click()
   await expect(page.getByText('Power control settings changed; reload before saving')).toBeVisible()
