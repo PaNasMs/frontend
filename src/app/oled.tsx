@@ -10,7 +10,7 @@ import { notify } from './notifications'
 export type OLEDState = components['schemas']['OLEDState']
 type Settings = components['schemas']['OLEDSettings']
 export const defaultOLED: Settings = {
-  layout: 'compact',
+  layout: 'large',
   language: 'en',
   showTasks: true,
   showEvents: true,
@@ -53,7 +53,7 @@ export function OLEDSettings() {
   const set = <K extends keyof Settings>(key: K, value: Settings[K]) =>
     draft.setDraft((p) => ({ ...p, [key]: value }))
   const save = useMutation({
-    mutationFn: () => request<OLEDState>('oled', 'PUT', cfg),
+    mutationFn: () => request<OLEDState>('oled', 'PUT', { ...cfg, layout: 'large' }),
     onMutate: async () => {
       await q.cancelQueries({ queryKey: ['oled'] })
     },
@@ -79,7 +79,7 @@ export function OLEDSettings() {
     !Number.isInteger(cfg.brightness) ||
     cfg.brightness < 1 ||
     cfg.brightness > 100 ||
-    (cfg.enabled && cfg.layout !== 'storage' && !cfg.showIP && !cfg.showCPU && !cfg.showDisks)
+    (cfg.enabled && !cfg.showIP && !cfg.showCPU && !cfg.showDisks)
   return (
     <WaitingSurface className="surface" busy={save.isPending}>
       <h2>{tr('oled.title')}</h2>
@@ -104,28 +104,10 @@ export function OLEDSettings() {
         <input type="checkbox" checked={cfg.enabled} onChange={(e) => set('enabled', e.target.checked)} />
         {tr('oled.enabled')}
       </label>
-      <label className="field">
-        <span id="oled-layout-label">{tr('oled.layout')}</span>
-        <select
-          aria-labelledby="oled-layout-label"
-          value={cfg.layout}
-          aria-describedby="oled-layout-hint"
-          onChange={(e) => set('layout', e.target.value as Settings['layout'])}
-        >
-          {(['compact', 'large', 'disks', 'pages', 'storage'] as const).map((layout) => (
-            <option key={layout} value={layout}>
-              {tr(`oled.layout.${layout}`)}
-            </option>
-          ))}
-        </select>
-      </label>
-      <p id="oled-layout-hint" className="small muted">
-        {tr(`oled.layout.${cfg.layout}.hint`)}
-      </p>
       <figure style={{ margin: '16px 0' }}>
         <img
-          src={`/oled/${cfg.layout}.png`}
-          alt={tr(`oled.layout.${cfg.layout}.hint`)}
+          src="/oled/large.png"
+          alt={tr('oled.layout.large.hint')}
           width={256}
           height={128}
           style={{ imageRendering: 'pixelated', maxWidth: '100%', height: 'auto' }}
@@ -207,7 +189,7 @@ export function OLEDSettings() {
         ))}
       </fieldset>
       <p className="small muted">{tr('oled.telemetry')}</p>
-      {cfg.enabled && cfg.layout !== 'storage' && !cfg.showIP && !cfg.showCPU && !cfg.showDisks && (
+      {cfg.enabled && !cfg.showIP && !cfg.showCPU && !cfg.showDisks && (
         <Notice error>{tr('oled.selectReading')}</Notice>
       )}
       <Disclosure title={tr('advanced_settings_3cc80085')} open={advanced} onOpenChange={setAdvanced}>

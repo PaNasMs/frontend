@@ -2074,10 +2074,10 @@ export interface components {
         };
         OLEDSettings: {
             /**
-             * @default compact
+             * @default large
              * @enum {string}
              */
-            layout: "compact" | "large" | "disks" | "pages" | "storage";
+            layout: "large";
             /** @default 6 */
             pageSeconds: number;
             /**
