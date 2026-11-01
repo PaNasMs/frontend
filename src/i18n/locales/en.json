@@ -2516,5 +2516,6 @@
   "oled.eventHint": "15–60 seconds; default 20. Active problems remain visible after the message.",
   "oled.activityHint": "Shows RAID work, long server tasks and file transfers through the NAS. Events temporarily replace the current page. File names and personal paths are not displayed.",
   "oled.error.language": "Invalid OLED language",
-  "oled.error.eventDuration": "OLED event duration must be 15..60 seconds"
+  "oled.error.eventDuration": "OLED event duration must be 15..60 seconds",
+  "oled.eventInvalid": "Enter a whole number of seconds from 15 to 60."
 }

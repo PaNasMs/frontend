@@ -67,10 +67,9 @@ export function OLEDSettings() {
     },
   })
   if (!data.data?.supported) return null
+  const invalidEvent = !Number.isInteger(cfg.eventSeconds) || cfg.eventSeconds < 15 || cfg.eventSeconds > 60
   const invalid =
-    !Number.isInteger(cfg.eventSeconds) ||
-    cfg.eventSeconds < 15 ||
-    cfg.eventSeconds > 60 ||
+    invalidEvent ||
     !Number.isInteger(cfg.pageSeconds) ||
     cfg.pageSeconds < 4 ||
     cfg.pageSeconds > 60 ||
@@ -150,13 +149,18 @@ export function OLEDSettings() {
           min={15}
           max={60}
           value={cfg.eventSeconds}
-          aria-invalid={!Number.isInteger(cfg.eventSeconds) || cfg.eventSeconds < 15 || cfg.eventSeconds > 60}
-          aria-describedby="oled-event-hint"
+          aria-invalid={invalidEvent}
+          aria-describedby={invalidEvent ? 'oled-event-hint oled-event-error' : 'oled-event-hint'}
           onChange={(e) => set('eventSeconds', Number(e.target.value))}
         />
         <span id="oled-event-hint" className="small muted">
           {tr('oled.eventHint')}
         </span>
+        {invalidEvent && (
+          <span id="oled-event-error" role="alert">
+            {tr('oled.eventInvalid')}
+          </span>
+        )}
       </label>
       <div className="form-grid">
         <label className="field">
