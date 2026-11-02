@@ -2738,6 +2738,21 @@
     "ru": "Некорректное состояние обслуживания домашних папок. Данные сохранены"
   },
   {
+    "key": "operations.copyFailed",
+    "en": "Copy command failed",
+    "ru": "Копирование завершилось с ошибкой"
+  },
+  {
+    "key": "operations.copyOutputTooLarge",
+    "en": "Copy output too large",
+    "ru": "Объём вывода копирования превышает лимит"
+  },
+  {
+    "key": "operations.copyTimedOut",
+    "en": "Copy command timed out",
+    "ru": "Превышено время ожидания копирования"
+  },
+  {
     "key": "homes.invalidRecoveryAccounts",
     "en": "Invalid home-move account state; data was preserved",
     "ru": "Некорректные данные учётных записей для восстановления переноса. Данные сохранены"
