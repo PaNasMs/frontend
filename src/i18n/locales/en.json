@@ -2528,5 +2528,15 @@
   "power.buttonState.waitingForRelease": "Release the button to arm the input",
   "power.buttonState.armed": "Button input armed",
   "power.buttonState.shutdownRequested": "Shutdown requested by the button",
-  "power.buttonState.error": "Button input unavailable; inspect the agent journal"
+  "power.buttonState.error": "Button input unavailable; inspect the agent journal",
+  "network.nativeServer1": "Existing sharing groups require migration before switching network providers",
+  "network.nativeServer2": "Wi-Fi operation interrupted; recovery is required",
+  "network.nativeServer3": "Sharing operation interrupted; recovery is required",
+  "network.nativeServer4": "Sharing changes were confirmed; cleanup requires recovery",
+  "network.nativeServer5": "NetworkManager operation failed; check the connection state",
+  "network.nativeServer6": "Source has no valid hardware address",
+  "network.nativeServer7": "Saved access point password is unavailable",
+  "network.nativeServer8": "A network adapter was replaced; check its settings",
+  "network.nativeServer9": "Sharing configuration changed externally; review it again",
+  "network.nativeServer10": "Start NetworkManager to recover the pending network change"
 }
