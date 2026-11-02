@@ -2599,5 +2599,8 @@
   "network.nativeServer7": "Saved access point password is unavailable",
   "network.nativeServer8": "A network adapter was replaced; check its settings",
   "network.nativeServer9": "Sharing configuration changed externally; review it again",
-  "network.nativeServer10": "Start NetworkManager to recover the pending network change"
+  "network.nativeServer10": "Start NetworkManager to recover the pending network change",
+  "sharing.loginSyncFailed": "SMB password synchronization failed for {{v0}}. Sign in again to retry or ask an administrator to check Users / Security.",
+  "sharing.nfsMissing": "NFS publication no longer exists",
+  "sharing.managedNFS": "This folder is already managed by Shared folders"
 }

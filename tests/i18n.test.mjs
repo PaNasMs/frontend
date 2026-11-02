@@ -198,6 +198,10 @@ test('native sharing diagnostics and recovery guidance translate without changin
       assert.equal(result.error, dictionary[source.key])
       assert.equal(result.path, '/srv/data/Документи')
       assert.equal(result.client, '2001:db8::7/64')
+      if (source.en.includes('{{v0}}')) {
+        const named = localizeResponse({ error: source.en.replace('{{v0}}', 'alice.test') })
+        assert.equal(named.error, dictionary[source.key].replace('{{v0}}', 'alice.test'))
+      }
       if (lang !== 'en') assert.notEqual(result.error, source.en)
     }
   }

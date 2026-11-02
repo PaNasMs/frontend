@@ -4870,5 +4870,29 @@
     "en": "Invalid access entry",
     "ru": "Некорректная запись в списке доступа",
     "uk": "Некоректний запис у списку доступу"
+  },
+  {
+    "key": "sharing.passwordSyncFailed",
+    "en": "Linux password accepted, but SMB synchronization failed. See Users / Security; sign in again to retry.",
+    "ru": "Пароль Linux принят, но синхронизировать пароль SMB не удалось. Откройте «Пользователи → Безопасность» и войдите ещё раз для повторной попытки.",
+    "uk": "Пароль Linux прийнято, але синхронізувати пароль SMB не вдалося. Відкрийте «Користувачі → Безпека» та увійдіть знову для повторної спроби."
+  },
+  {
+    "key": "sharing.loginSyncFailed",
+    "en": "SMB password synchronization failed for {{v0}}. Sign in again to retry or ask an administrator to check Users / Security.",
+    "ru": "Не удалось синхронизировать пароль SMB для {{v0}}. Войдите снова для повторной попытки или попросите администратора проверить раздел «Пользователи / Безопасность».",
+    "uk": "Не вдалося синхронізувати пароль SMB для {{v0}}. Увійдіть знову для повторної спроби або попросіть адміністратора перевірити розділ «Користувачі / Безпека»."
+  },
+  {
+    "key": "sharing.nfsMissing",
+    "en": "NFS publication no longer exists",
+    "ru": "Публикация NFS больше не существует",
+    "uk": "Публікації NFS більше не існує"
+  },
+  {
+    "key": "sharing.managedNFS",
+    "en": "This folder is already managed by Shared folders",
+    "ru": "Эта папка уже управляется в разделе «Общие папки»",
+    "uk": "Ця тека вже керується в розділі «Спільні теки»"
   }
 ]
