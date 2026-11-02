@@ -144,6 +144,18 @@ test('native home recovery diagnostics translate without changing recovery evide
   const messages = json('../src/i18n/server-messages.json')
   registerServerMessages('core', messages)
   const keys = [
+    'homes.operationInProgress',
+    'homes.sizeUnavailable',
+    'homes.defaultChanged',
+    'homes.backupChanged',
+    'homes.backupUnavailable',
+    'homes.invalidMaintenance',
+    'homes.invalidRecoveryAccounts',
+    'homes.invalidRecoveryPath',
+    'homes.backupMounted',
+    'homes.sourceMountedRecovery',
+    'homes.unknownOperation',
+    'homes.unknownRecoveryState',
     'operations.copyFailed',
     'operations.copyOutputTooLarge',
     'operations.copyTimedOut',
