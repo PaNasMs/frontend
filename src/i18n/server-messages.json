@@ -5290,5 +5290,11 @@
     "en": "Unknown",
     "ru": "Неизвестно",
     "uk": "Невідомо"
+  },
+  {
+    "key": "sharing.previousSetupRecords",
+    "en": "Previous setup records remain after package removal. Preserve them and ask an administrator to complete recovery before a fresh installation.",
+    "ru": "После удаления пакета остались записи предыдущей установки. Сохраните их и попросите администратора завершить восстановление перед новой установкой.",
+    "uk": "Після видалення пакета залишилися записи попереднього встановлення. Збережіть їх і попросіть адміністратора завершити відновлення перед новим встановленням."
   }
 ]

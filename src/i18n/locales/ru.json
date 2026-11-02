@@ -2669,5 +2669,6 @@
   "sharing.preparation.activationRollbackVerification": "Проверка отката активации общего доступа завершилась ошибкой.",
   "jobs.check.SMB access": "Доступ по SMB",
   "sharing.accountRecoveryInterrupted": "Доступ учётной записи по SMB мог измениться до прерывания операции. Проверьте и повторно задайте нужный доступ в разделе «Общие папки».",
-  "sharing.effectiveAccessUnknown": "Неизвестно"
+  "sharing.effectiveAccessUnknown": "Неизвестно",
+  "sharing.previousSetupRecords": "После удаления пакета остались записи предыдущей установки. Сохраните их и попросите администратора завершить восстановление перед новой установкой."
 }
