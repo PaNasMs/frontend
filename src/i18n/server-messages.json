@@ -2693,6 +2693,101 @@
     "ru": "Домашний том изменился или недоступен. Данные сохранены"
   },
   {
+    "key": "homes.operationInProgress",
+    "en": "A home-folder operation is already in progress",
+    "ru": "Операция с домашними папками уже выполняется"
+  },
+  {
+    "key": "homes.bothCopiesPresent",
+    "en": "Both original and backup home folders exist; data was preserved",
+    "ru": "Найдены исходная и резервная домашние папки. Данные сохранены"
+  },
+  {
+    "key": "homes.sizeUnavailable",
+    "en": "Could not determine home-folder size",
+    "ru": "Не удалось определить размер домашних папок"
+  },
+  {
+    "key": "homes.defaultChanged",
+    "en": "Default home location changed; recovery stopped and data was preserved",
+    "ru": "Расположение домашних папок по умолчанию изменилось. Восстановление остановлено, данные сохранены"
+  },
+  {
+    "key": "homes.accountChanged",
+    "en": "Home account changed; recovery stopped and data was preserved",
+    "ru": "Учётная запись изменилась. Восстановление домашних папок остановлено, данные сохранены"
+  },
+  {
+    "key": "homes.backupChanged",
+    "en": "Home backup changed; data was preserved",
+    "ru": "Резервная копия домашних папок изменилась. Данные сохранены"
+  },
+  {
+    "key": "homes.backupUnavailable",
+    "en": "Home backup folder is unavailable; data was preserved",
+    "ru": "Папка резервной копии домашних папок недоступна. Данные сохранены"
+  },
+  {
+    "key": "homes.maintenanceChanged",
+    "en": "Home maintenance marker changed; data was preserved",
+    "ru": "Состояние обслуживания домашних папок изменилось. Данные сохранены"
+  },
+  {
+    "key": "homes.invalidMaintenance",
+    "en": "Invalid home maintenance marker; data was preserved",
+    "ru": "Некорректное состояние обслуживания домашних папок. Данные сохранены"
+  },
+  {
+    "key": "operations.copyFailed",
+    "en": "Copy command failed",
+    "ru": "Копирование завершилось с ошибкой"
+  },
+  {
+    "key": "operations.copyOutputTooLarge",
+    "en": "Copy output too large",
+    "ru": "Объём вывода копирования превышает лимит"
+  },
+  {
+    "key": "operations.copyTimedOut",
+    "en": "Copy command timed out",
+    "ru": "Превышено время ожидания копирования"
+  },
+  {
+    "key": "homes.invalidRecoveryAccounts",
+    "en": "Invalid home-move account state; data was preserved",
+    "ru": "Некорректные данные учётных записей для восстановления переноса. Данные сохранены"
+  },
+  {
+    "key": "homes.invalidRecoveryIdentity",
+    "en": "Invalid home-move recovery identity; data was preserved",
+    "ru": "Некорректные идентификаторы домашних папок для восстановления переноса. Данные сохранены"
+  },
+  {
+    "key": "homes.invalidRecoveryPath",
+    "en": "Invalid home-move recovery path; data was preserved",
+    "ru": "Некорректный путь для восстановления переноса домашних папок. Данные сохранены"
+  },
+  {
+    "key": "homes.backupMounted",
+    "en": "The backup home folder contains mounts; data was preserved",
+    "ru": "В резервной копии домашних папок есть подключённые тома. Данные сохранены"
+  },
+  {
+    "key": "homes.sourceMountedRecovery",
+    "en": "The home folder contains mounts; data was preserved",
+    "ru": "В домашней папке есть подключённые тома. Данные сохранены"
+  },
+  {
+    "key": "homes.unknownOperation",
+    "en": "Unknown home operation",
+    "ru": "Неизвестная операция с домашними папками"
+  },
+  {
+    "key": "homes.unknownRecoveryState",
+    "en": "Unknown home-move recovery state; data was preserved",
+    "ru": "Неизвестное состояние восстановления переноса домашних папок. Данные сохранены"
+  },
+  {
     "key": "power.scheduled",
     "en": "Power operation scheduled",
     "ru": "Операция питания запланирована"
