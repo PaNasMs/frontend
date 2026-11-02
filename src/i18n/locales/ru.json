@@ -2661,5 +2661,10 @@
   "sharing.preparation.changedDuringTransition": "Общий доступ изменился при подготовке перехода.",
   "sharing.preparation.rollbackSymbolicLink": "Файл отката общего доступа не должен быть символической ссылкой.",
   "sharing.preparation.legacyBackup": "Эта резервная копия создана до поддержки согласованного отката общего доступа. Требуется ручное восстановление.",
-  "sharing.accountRollbackRequired": "Перед продолжением отката восстановите доступ SMB-аккаунтов."
+  "sharing.accountRollbackRequired": "Перед продолжением отката восстановите доступ SMB-аккаунтов.",
+  "sharing.preparation.missingActivationEvidence": "Не найдены согласованные данные отката активации общего доступа.",
+  "sharing.preparation.activationChangedAfterPreparation": "Данные активации общего доступа изменились после подготовки отката. Текущие файлы сохранены.",
+  "sharing.preparation.activationChangedDuringRollback": "Данные активации общего доступа изменились во время отката. Текущий файл сохранён.",
+  "sharing.preparation.activationChangedDuringBackup": "Данные активации общего доступа изменились при создании архива отката.",
+  "sharing.preparation.activationRollbackVerification": "Проверка отката активации общего доступа завершилась ошибкой."
 }

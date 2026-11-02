@@ -2661,5 +2661,10 @@
   "sharing.preparation.changedDuringTransition": "Sharing changed during native transition preparation",
   "sharing.preparation.rollbackSymbolicLink": "Refusing sharing rollback symbolic link",
   "sharing.preparation.legacyBackup": "This backup predates paired sharing rollback; manual recovery is required",
-  "sharing.accountRollbackRequired": "SMB account access needs recovery before rollback can continue."
+  "sharing.accountRollbackRequired": "SMB account access needs recovery before rollback can continue.",
+  "sharing.preparation.missingActivationEvidence": "Missing paired activation rollback evidence",
+  "sharing.preparation.activationChangedAfterPreparation": "Sharing activation changed after rollback preparation; current files were preserved",
+  "sharing.preparation.activationChangedDuringRollback": "Sharing activation changed during rollback; current file was preserved",
+  "sharing.preparation.activationChangedDuringBackup": "Sharing activation changed while the rollback archive was created",
+  "sharing.preparation.activationRollbackVerification": "Sharing activation rollback verification failed"
 }

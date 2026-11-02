@@ -5248,5 +5248,35 @@
     "en": "SMB account access needs recovery before rollback can continue.",
     "ru": "Перед продолжением отката восстановите доступ SMB-аккаунтов.",
     "uk": "Перед продовженням відкоту відновіть доступ SMB-акаунтів."
+  },
+  {
+    "key": "sharing.preparation.missingActivationEvidence",
+    "en": "Missing paired activation rollback evidence",
+    "ru": "Не найдены согласованные данные отката активации общего доступа.",
+    "uk": "Не знайдено узгоджені дані відкоту активації спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.activationChangedAfterPreparation",
+    "en": "Sharing activation changed after rollback preparation; current files were preserved",
+    "ru": "Данные активации общего доступа изменились после подготовки отката. Текущие файлы сохранены.",
+    "uk": "Дані активації спільного доступу змінилися після підготовки відкоту. Поточні файли збережено."
+  },
+  {
+    "key": "sharing.preparation.activationChangedDuringRollback",
+    "en": "Sharing activation changed during rollback; current file was preserved",
+    "ru": "Данные активации общего доступа изменились во время отката. Текущий файл сохранён.",
+    "uk": "Дані активації спільного доступу змінилися під час відкоту. Поточний файл збережено."
+  },
+  {
+    "key": "sharing.preparation.activationChangedDuringBackup",
+    "en": "Sharing activation changed while the rollback archive was created",
+    "ru": "Данные активации общего доступа изменились при создании архива отката.",
+    "uk": "Дані активації спільного доступу змінилися під час створення архіву відкоту."
+  },
+  {
+    "key": "sharing.preparation.activationRollbackVerification",
+    "en": "Sharing activation rollback verification failed",
+    "ru": "Проверка отката активации общего доступа завершилась ошибкой.",
+    "uk": "Перевірка відкоту активації спільного доступу завершилася помилкою."
   }
 ]
