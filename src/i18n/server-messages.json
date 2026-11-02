@@ -5242,5 +5242,11 @@
     "en": "This backup predates paired sharing rollback; manual recovery is required",
     "ru": "Эта резервная копия создана до поддержки согласованного отката общего доступа. Требуется ручное восстановление.",
     "uk": "Цю резервну копію створено до підтримки узгодженого відкоту спільного доступу. Потрібне ручне відновлення."
+  },
+  {
+    "key": "sharing.accountRollbackRequired",
+    "en": "SMB account access needs recovery before rollback can continue.",
+    "ru": "Перед продолжением отката восстановите доступ SMB-аккаунтов.",
+    "uk": "Перед продовженням відкоту відновіть доступ SMB-акаунтів."
   }
 ]

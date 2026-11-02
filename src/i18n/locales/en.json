@@ -2660,5 +2660,6 @@
   "sharing.preparation.sourceActivationPending": "Native source activation is incomplete",
   "sharing.preparation.changedDuringTransition": "Sharing changed during native transition preparation",
   "sharing.preparation.rollbackSymbolicLink": "Refusing sharing rollback symbolic link",
-  "sharing.preparation.legacyBackup": "This backup predates paired sharing rollback; manual recovery is required"
+  "sharing.preparation.legacyBackup": "This backup predates paired sharing rollback; manual recovery is required",
+  "sharing.accountRollbackRequired": "SMB account access needs recovery before rollback can continue."
 }

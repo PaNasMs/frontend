@@ -2660,5 +2660,6 @@
   "sharing.preparation.sourceActivationPending": "Перехід установленої версії спільного доступу не завершено.",
   "sharing.preparation.changedDuringTransition": "Спільний доступ змінився під час підготовки переходу.",
   "sharing.preparation.rollbackSymbolicLink": "Файл відкоту спільного доступу не має бути символічним посиланням.",
-  "sharing.preparation.legacyBackup": "Цю резервну копію створено до підтримки узгодженого відкоту спільного доступу. Потрібне ручне відновлення."
+  "sharing.preparation.legacyBackup": "Цю резервну копію створено до підтримки узгодженого відкоту спільного доступу. Потрібне ручне відновлення.",
+  "sharing.accountRollbackRequired": "Перед продовженням відкоту відновіть доступ SMB-акаунтів."
 }

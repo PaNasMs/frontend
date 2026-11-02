@@ -2660,5 +2660,6 @@
   "sharing.preparation.sourceActivationPending": "Переход установленной версии общего доступа не завершён.",
   "sharing.preparation.changedDuringTransition": "Общий доступ изменился при подготовке перехода.",
   "sharing.preparation.rollbackSymbolicLink": "Файл отката общего доступа не должен быть символической ссылкой.",
-  "sharing.preparation.legacyBackup": "Эта резервная копия создана до поддержки согласованного отката общего доступа. Требуется ручное восстановление."
+  "sharing.preparation.legacyBackup": "Эта резервная копия создана до поддержки согласованного отката общего доступа. Требуется ручное восстановление.",
+  "sharing.accountRollbackRequired": "Перед продолжением отката восстановите доступ SMB-аккаунтов."
 }
