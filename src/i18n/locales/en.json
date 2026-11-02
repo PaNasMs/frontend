@@ -2666,5 +2666,9 @@
   "sharing.preparation.activationChangedAfterPreparation": "Sharing activation changed after rollback preparation; current files were preserved",
   "sharing.preparation.activationChangedDuringRollback": "Sharing activation changed during rollback; current file was preserved",
   "sharing.preparation.activationChangedDuringBackup": "Sharing activation changed while the rollback archive was created",
-  "sharing.preparation.activationRollbackVerification": "Sharing activation rollback verification failed"
+  "sharing.preparation.activationRollbackVerification": "Sharing activation rollback verification failed",
+  "jobs.check.SMB access": "SMB access",
+  "sharing.accountRecoveryInterrupted": "SMB account access may have changed before the operation was interrupted. Review and reapply the intended access in Shared folders.",
+  "sharing.effectiveAccessUnknown": "Unknown",
+  "sharing.previousSetupRecords": "Previous setup records remain after package removal. Preserve them and ask an administrator to complete recovery before a fresh installation."
 }

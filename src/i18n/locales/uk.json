@@ -2666,5 +2666,9 @@
   "sharing.preparation.activationChangedAfterPreparation": "Дані активації спільного доступу змінилися після підготовки відкоту. Поточні файли збережено.",
   "sharing.preparation.activationChangedDuringRollback": "Дані активації спільного доступу змінилися під час відкоту. Поточний файл збережено.",
   "sharing.preparation.activationChangedDuringBackup": "Дані активації спільного доступу змінилися під час створення архіву відкоту.",
-  "sharing.preparation.activationRollbackVerification": "Перевірка відкоту активації спільного доступу завершилася помилкою."
+  "sharing.preparation.activationRollbackVerification": "Перевірка відкоту активації спільного доступу завершилася помилкою.",
+  "jobs.check.SMB access": "Доступ через SMB",
+  "sharing.accountRecoveryInterrupted": "Доступ облікового запису через SMB міг змінитися до переривання операції. Перевірте й повторно задайте потрібний доступ у розділі «Спільні папки».",
+  "sharing.effectiveAccessUnknown": "Невідомо",
+  "sharing.previousSetupRecords": "Після видалення пакета залишилися записи попереднього встановлення. Збережіть їх і попросіть адміністратора завершити відновлення перед новим встановленням."
 }

@@ -2666,5 +2666,9 @@
   "sharing.preparation.activationChangedAfterPreparation": "Данные активации общего доступа изменились после подготовки отката. Текущие файлы сохранены.",
   "sharing.preparation.activationChangedDuringRollback": "Данные активации общего доступа изменились во время отката. Текущий файл сохранён.",
   "sharing.preparation.activationChangedDuringBackup": "Данные активации общего доступа изменились при создании архива отката.",
-  "sharing.preparation.activationRollbackVerification": "Проверка отката активации общего доступа завершилась ошибкой."
+  "sharing.preparation.activationRollbackVerification": "Проверка отката активации общего доступа завершилась ошибкой.",
+  "jobs.check.SMB access": "Доступ по SMB",
+  "sharing.accountRecoveryInterrupted": "Доступ учётной записи по SMB мог измениться до прерывания операции. Проверьте и повторно задайте нужный доступ в разделе «Общие папки».",
+  "sharing.effectiveAccessUnknown": "Неизвестно",
+  "sharing.previousSetupRecords": "После удаления пакета остались записи предыдущей установки. Сохраните их и попросите администратора завершить восстановление перед новой установкой."
 }
