@@ -5296,5 +5296,113 @@
     "en": "Previous setup records remain after package removal. Preserve them and ask an administrator to complete recovery before a fresh installation.",
     "ru": "После удаления пакета остались записи предыдущей установки. Сохраните их и попросите администратора завершить восстановление перед новой установкой.",
     "uk": "Після видалення пакета залишилися записи попереднього встановлення. Збережіть їх і попросіть адміністратора завершити відновлення перед новим встановленням."
+  },
+  {
+    "key": "storage.networkOperationExists",
+    "en": "A network mount operation already exists; unmount the share before trying again",
+    "ru": "Операция с сетевой папкой уже существует. Отключите папку перед повторной попыткой.",
+    "uk": "Операція з мережевою папкою вже існує. Відмонтуйте папку перед повторною спробою."
+  },
+  {
+    "key": "storage.networkOperationBusy",
+    "en": "Another network mount operation is in progress",
+    "ru": "Выполняется другая операция с сетевой папкой",
+    "uk": "Виконується інша операція з мережевою папкою"
+  },
+  {
+    "key": "storage.folderOperationBusy",
+    "en": "Another operation is using this folder",
+    "ru": "Папка используется другой операцией",
+    "uk": "Папка використовується іншою операцією"
+  },
+  {
+    "key": "storage.personalFolderBoundary",
+    "en": "Choose a folder inside your home without symbolic links",
+    "ru": "Выберите папку внутри домашнего каталога без символических ссылок",
+    "uk": "Виберіть папку в домашньому каталозі без символічних посилань"
+  },
+  {
+    "key": "storage.mountFolderBoundary",
+    "en": "Choose a mount location under /srv or /mnt",
+    "ru": "Выберите место подключения внутри /srv или /mnt",
+    "uk": "Виберіть місце монтування всередині /srv або /mnt"
+  },
+  {
+    "key": "storage.personalHomeUnavailable",
+    "en": "Home folder is unavailable",
+    "ru": "Домашняя папка недоступна",
+    "uk": "Домашня папка недоступна"
+  },
+  {
+    "key": "storage.invalidMountPoint",
+    "en": "Invalid mount point",
+    "ru": "Недопустимая точка подключения",
+    "uk": "Неприпустима точка монтування"
+  },
+  {
+    "key": "storage.networkCredentialsChanged",
+    "en": "Network credentials changed; preserve them and review recovery",
+    "ru": "Учётные данные сетевой папки изменились. Сохраните их и проверьте состояние восстановления.",
+    "uk": "Облікові дані мережевої папки змінилися. Збережіть їх і перевірте стан відновлення."
+  },
+  {
+    "key": "storage.networkBootIdentity",
+    "en": "Network mount boot identity is unavailable",
+    "ru": "Не удалось определить сеанс загрузки для сетевого подключения",
+    "uk": "Не вдалося визначити сеанс завантаження для мережевого монтування"
+  },
+  {
+    "key": "storage.networkConfigurationChanged",
+    "en": "Network mount configuration changed; review recovery before continuing",
+    "ru": "Настройки сетевого подключения изменились. Проверьте состояние восстановления перед продолжением.",
+    "uk": "Налаштування мережевого монтування змінилися. Перевірте стан відновлення перед продовженням."
+  },
+  {
+    "key": "storage.networkRecoveryRequired",
+    "en": "Network mount recovery is required; preserve its configuration and credentials",
+    "ru": "Требуется восстановление сетевого подключения. Сохраните его настройки и учётные данные.",
+    "uk": "Потрібне відновлення мережевого монтування. Збережіть його налаштування й облікові дані."
+  },
+  {
+    "key": "storage.networkRecoveryInvalid",
+    "en": "Network mount recovery state is invalid",
+    "ru": "Данные восстановления сетевого подключения некорректны",
+    "uk": "Дані відновлення мережевого монтування некоректні"
+  },
+  {
+    "key": "storage.networkStateTooLarge",
+    "en": "Network mount state is too large",
+    "ru": "Размер данных сетевого подключения превышает допустимый",
+    "uk": "Розмір даних мережевого монтування перевищує допустимий"
+  },
+  {
+    "key": "storage.networkStatePermissions",
+    "en": "Network mount state permissions are unsafe",
+    "ru": "Права доступа к данным сетевого подключения небезопасны",
+    "uk": "Права доступу до даних мережевого монтування небезпечні"
+  },
+  {
+    "key": "storage.nestedMounts",
+    "en": "The folder contains mounted volumes; unmount them first",
+    "ru": "Внутри папки есть подключённые тома. Сначала отключите их.",
+    "uk": "Усередині папки є змонтовані томи. Спочатку відмонтуйте їх."
+  },
+  {
+    "key": "storage.mountChanged",
+    "en": "The mount changed; review a new operation plan",
+    "ru": "Подключение изменилось. Проверьте новый план операции.",
+    "uk": "Монтування змінилося. Перевірте новий план операції."
+  },
+  {
+    "key": "storage.mountIdentityUnavailable",
+    "en": "The mount identity is unavailable",
+    "ru": "Не удалось определить подключённый том",
+    "uk": "Не вдалося визначити змонтований том"
+  },
+  {
+    "key": "storage.mountPointChanged",
+    "en": "The mount point changed; review a new operation plan",
+    "ru": "Точка подключения изменилась. Проверьте новый план операции.",
+    "uk": "Точка монтування змінилася. Перевірте новий план операції."
   }
 ]

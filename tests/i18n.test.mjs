@@ -207,3 +207,22 @@ test('sharing preparation and native recovery diagnostics translate without chan
   }
   await i18n.changeLanguage('en')
 })
+
+test('native folder and mount diagnostics preserve busy process labels in all languages', async () => {
+  const catalog = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', catalog)
+  const busy = catalog.find((message) => message.key === 'server_9dfacbddbd2d')
+  const names = '42 (smbd.service), 87 (file-worker)'
+  for (const language of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(language)
+    const dictionary = json('../src/i18n/locales/' + language + '.json')
+    assert.equal(serverText(busy.en.replace('{{v0}}', names)), dictionary[busy.key].replace('{{v0}}', names))
+    for (const key of ['storage.networkRecoveryRequired', 'storage.networkConfigurationChanged', 'storage.personalFolderBoundary']) {
+      const message = catalog.find((entry) => entry.key === key)
+      assert.ok(message, key)
+      assert.equal(serverText(message.en), dictionary[key])
+    }
+    assert.ok(dictionary['jobs.check.Folder'])
+    assert.ok(dictionary['jobs.check.Network mount'])
+  }
+})
