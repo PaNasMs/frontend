@@ -4558,5 +4558,257 @@
   {
     "key": "oled.error.eventDuration",
     "en": "OLED event duration must be 15..60 seconds"
+  },
+  {
+    "key": "sharing.operationInProgress",
+    "en": "A sharing operation is already in progress",
+    "ru": "Настройки общего доступа уже изменяются",
+    "uk": "Налаштування спільного доступу вже змінюються"
+  },
+  {
+    "key": "sharing.accountDisabled",
+    "en": "Account is disabled",
+    "ru": "Учётная запись отключена",
+    "uk": "Обліковий запис вимкнено"
+  },
+  {
+    "key": "sharing.chooseSMBState",
+    "en": "Choose SMB access state",
+    "ru": "Выберите состояние доступа по SMB",
+    "uk": "Виберіть стан доступу через SMB"
+  },
+  {
+    "key": "sharing.chooseMountedFolder",
+    "en": "Choose a folder on a mounted local volume",
+    "ru": "Выберите папку на подключённом локальном томе",
+    "uk": "Виберіть теку на змонтованому локальному томі"
+  },
+  {
+    "key": "sharing.chooseName",
+    "en": "Choose a unique share name using letters, numbers, dots, dashes or underscores",
+    "ru": "Выберите уникальное имя общего ресурса из букв, цифр, точек, дефисов и подчёркиваний",
+    "uk": "Виберіть унікальне ім’я спільного ресурсу з літер, цифр, крапок, дефісів і підкреслень"
+  },
+  {
+    "key": "sharing.enterClients",
+    "en": "Enter NFS clients",
+    "ru": "Укажите клиентов NFS",
+    "uk": "Укажіть клієнтів NFS"
+  },
+  {
+    "key": "sharing.recoveryRequired",
+    "en": "Interrupted sharing update requires recovery",
+    "ru": "Прерванное изменение общего доступа требует восстановления",
+    "uk": "Перерване оновлення спільного доступу потребує відновлення"
+  },
+  {
+    "key": "sharing.invalidSyncRequest",
+    "en": "Invalid SMB synchronization request",
+    "ru": "Некорректный запрос синхронизации SMB",
+    "uk": "Некоректний запит синхронізації SMB"
+  },
+  {
+    "key": "sharing.invalidAccessList",
+    "en": "Invalid access list",
+    "ru": "Некорректный список доступа",
+    "uk": "Некоректний список доступу"
+  },
+  {
+    "key": "sharing.invalidPassword",
+    "en": "Invalid password",
+    "ru": "Некорректный пароль",
+    "uk": "Некоректний пароль"
+  },
+  {
+    "key": "sharing.invalidAccountState",
+    "en": "Invalid sharing account state; files were preserved",
+    "ru": "Некорректное состояние учётных записей общего доступа; файлы сохранены",
+    "uk": "Некоректний стан облікових записів спільного доступу; файли збережено"
+  },
+  {
+    "key": "sharing.invalidConfiguration",
+    "en": "Invalid sharing configuration; files were preserved",
+    "ru": "Некорректная конфигурация общего доступа; файлы сохранены",
+    "uk": "Некоректна конфігурація спільного доступу; файли збережено"
+  },
+  {
+    "key": "sharing.invalidJournal",
+    "en": "Invalid sharing recovery journal; configuration was preserved",
+    "ru": "Некорректный журнал восстановления общего доступа; конфигурация сохранена",
+    "uk": "Некоректний журнал відновлення спільного доступу; конфігурацію збережено"
+  },
+  {
+    "key": "sharing.invalidRequest",
+    "en": "Invalid sharing request",
+    "ru": "Некорректный запрос общего доступа",
+    "uk": "Некоректний запит спільного доступу"
+  },
+  {
+    "key": "sharing.passwordSyncFailed",
+    "en": "Linux password accepted, but SMB password synchronization failed. See Users → Security and retry by signing in again.",
+    "ru": "Пароль Linux принят, но синхронизировать пароль SMB не удалось. Откройте «Пользователи → Безопасность» и войдите ещё раз для повторной попытки.",
+    "uk": "Пароль Linux прийнято, але синхронізувати пароль SMB не вдалося. Відкрийте «Користувачі → Безпека» та увійдіть знову для повторної спроби."
+  },
+  {
+    "key": "sharing.invalidProtocols",
+    "en": "Protocol settings must be true or false",
+    "ru": "Параметры протоколов должны иметь значение true или false",
+    "uk": "Параметри протоколів мають бути true або false"
+  },
+  {
+    "key": "sharing.syncFailed",
+    "en": "SMB password synchronization failed; see Users → Security",
+    "ru": "Не удалось синхронизировать пароль SMB; откройте «Пользователи → Безопасность»",
+    "uk": "Не вдалося синхронізувати пароль SMB; відкрийте «Користувачі → Безпека»"
+  },
+  {
+    "key": "sharing.sambaMissing",
+    "en": "Samba server integration is not installed",
+    "ru": "Интеграция сервера Samba не установлена",
+    "uk": "Інтеграцію сервера Samba не встановлено"
+  },
+  {
+    "key": "sharing.chooseMembers",
+    "en": "Select users or groups allowed to access SMB",
+    "ru": "Выберите пользователей или группы с доступом по SMB",
+    "uk": "Виберіть користувачів або групи з доступом через SMB"
+  },
+  {
+    "key": "sharing.memberMissing",
+    "en": "Selected user or group no longer exists",
+    "ru": "Выбранный пользователь или группа больше не существует",
+    "uk": "Вибраного користувача або групи більше не існує"
+  },
+  {
+    "key": "sharing.unsupportedPath",
+    "en": "Share path contains unsupported configuration characters",
+    "ru": "Путь общего ресурса содержит недопустимые для конфигурации символы",
+    "uk": "Шлях спільного ресурсу містить неприпустимі для конфігурації символи"
+  },
+  {
+    "key": "sharing.folderMissing",
+    "en": "Shared folder no longer exists",
+    "ru": "Общая папка больше не существует",
+    "uk": "Спільної теки більше не існує"
+  },
+  {
+    "key": "sharing.volumeNotMounted",
+    "en": "Shared volume is not mounted",
+    "ru": "Том общего ресурса не подключён",
+    "uk": "Том спільного ресурсу не змонтовано"
+  },
+  {
+    "key": "sharing.volumeUnavailable",
+    "en": "Shared volume unavailable",
+    "ru": "Том общего ресурса недоступен",
+    "uk": "Том спільного ресурсу недоступний"
+  },
+  {
+    "key": "sharing.configurationEdited",
+    "en": "Sharing configuration was edited outside the panel. Restore the managed configuration before continuing.",
+    "ru": "Конфигурация общего доступа изменена вне панели. Восстановите управляемую конфигурацию перед продолжением.",
+    "uk": "Конфігурацію спільного доступу змінено поза панеллю. Відновіть керовану конфігурацію, перш ніж продовжити."
+  },
+  {
+    "key": "sharing.rollbackRequired",
+    "en": "Sharing update failed and rollback needs recovery. No data files were changed.",
+    "ru": "Не удалось изменить общий доступ, откат требует восстановления. Файлы данных не изменены.",
+    "uk": "Не вдалося оновити спільний доступ, відкат потребує відновлення. Файли даних не змінено."
+  },
+  {
+    "key": "sharing.rolledBack",
+    "en": "Sharing update failed; previous configuration restored. Check service logs.",
+    "ru": "Не удалось изменить общий доступ; прежняя конфигурация восстановлена. Проверьте журналы служб.",
+    "uk": "Не вдалося оновити спільний доступ; попередню конфігурацію відновлено. Перевірте журнали служб."
+  },
+  {
+    "key": "sharing.invalidClients",
+    "en": "Specify NFS clients as IP addresses or subnets",
+    "ru": "Укажите клиентов NFS как IP-адреса или подсети",
+    "uk": "Укажіть клієнтів NFS як IP-адреси або підмережі"
+  },
+  {
+    "key": "sharing.clientsRequired",
+    "en": "Specify at least one NFS client or subnet",
+    "ru": "Укажите хотя бы одного клиента NFS или подсеть",
+    "uk": "Укажіть хоча б одного клієнта NFS або підмережу"
+  },
+  {
+    "key": "sharing.legacyPublication",
+    "en": "This folder has a legacy NFS publication. Remove that publication first; files are preserved.",
+    "ru": "Эта папка опубликована через прежние настройки NFS. Сначала удалите ту публикацию; файлы сохранятся.",
+    "uk": "Цю теку опубліковано через попередні налаштування NFS. Спочатку видаліть ту публікацію; файли буде збережено."
+  },
+  {
+    "key": "sharing.duplicate",
+    "en": "This name or folder is already shared",
+    "ru": "Это имя или папка уже используются общим ресурсом",
+    "uk": "Це ім’я або тека вже використовуються спільним ресурсом"
+  },
+  {
+    "key": "sharing.unknownDependency",
+    "en": "Unknown account dependency operation",
+    "ru": "Неизвестная операция зависимостей учётной записи",
+    "uk": "Невідома операція залежностей облікового запису"
+  },
+  {
+    "key": "sharing.unknownOperation",
+    "en": "Unknown sharing operation",
+    "ru": "Неизвестная операция общего доступа",
+    "uk": "Невідома операція спільного доступу"
+  },
+  {
+    "key": "sharing.updated",
+    "en": "Shared folder settings updated",
+    "ru": "Настройки общей папки обновлены",
+    "uk": "Налаштування спільної теки оновлено"
+  },
+  {
+    "key": "sharing.enableNextLogin",
+    "en": "Enable SMB access on the next successful panel password login or password change",
+    "ru": "Включить доступ по SMB при следующем успешном входе в панель по паролю или изменении пароля",
+    "uk": "Увімкнути доступ через SMB під час наступного успішного входу до панелі за паролем або зміни пароля"
+  },
+  {
+    "key": "sharing.disableAndDisconnect",
+    "en": "Disable SMB access and disconnect existing SMB sessions",
+    "ru": "Отключить доступ по SMB и завершить текущие SMB-сеансы",
+    "uk": "Вимкнути доступ через SMB і завершити поточні SMB-сеанси"
+  },
+  {
+    "key": "sharing.disconnectSessions",
+    "en": "Disconnect all SMB sessions for this user. Active transfers may be interrupted.",
+    "ru": "Завершить все SMB-сеансы этого пользователя. Активные передачи могут прерваться.",
+    "uk": "Завершити всі SMB-сеанси цього користувача. Активні передавання можуть перерватися."
+  },
+  {
+    "key": "sharing.stopPublication",
+    "en": "Stop publishing this folder. Files and permissions are preserved. Connected clients may be disconnected.",
+    "ru": "Отключить общий доступ к этой папке. Файлы и права сохранятся. Подключённые клиенты могут быть отключены.",
+    "uk": "Вимкнути спільний доступ до цієї теки. Файли та права буде збережено. Підключених клієнтів може бути від’єднано."
+  },
+  {
+    "key": "sharing.restoreConfiguration",
+    "en": "Restore the last saved managed configuration. External edits to managed files will be replaced; data files are preserved.",
+    "ru": "Восстановить последнюю сохранённую управляемую конфигурацию. Внешние изменения управляемых файлов будут заменены; файлы данных сохранятся.",
+    "uk": "Відновити останню збережену керовану конфігурацію. Зовнішні зміни керованих файлів буде замінено; файли даних буде збережено."
+  },
+  {
+    "key": "sharing.unixPermissions",
+    "en": "Existing files and Unix permissions are preserved. Protocol permissions cannot grant more access than Linux permissions.",
+    "ru": "Существующие файлы и права Unix сохранятся. Права протокола не могут предоставить больше доступа, чем права Linux.",
+    "uk": "Наявні файли та права Unix буде збережено. Права протоколу не можуть надати більше доступу, ніж права Linux."
+  },
+  {
+    "key": "sharing.sessionsUnavailable",
+    "en": "SMB session information unavailable",
+    "ru": "Информация о SMB-сеансах недоступна",
+    "uk": "Інформація про SMB-сеанси недоступна"
+  },
+  {
+    "key": "sharing.invalidAccessEntry",
+    "en": "Invalid access entry",
+    "ru": "Некорректная запись в списке доступа",
+    "uk": "Некоректний запис у списку доступу"
   }
 ]

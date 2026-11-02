@@ -180,3 +180,26 @@ test('native home recovery diagnostics translate without changing recovery evide
   }
   await i18n.changeLanguage('en')
 })
+
+test('native sharing diagnostics and recovery guidance translate without changing evidence', async () => {
+  const messages = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', messages)
+  const entries = messages.filter((message) => message.key.startsWith('sharing.'))
+  assert.ok(entries.length >= 42)
+  for (const lang of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(lang)
+    const dictionary = json('../src/i18n/locales/' + lang + '.json')
+    for (const source of entries) {
+      const result = localizeResponse({
+        error: source.en,
+        path: '/srv/data/Документи',
+        client: '2001:db8::7/64',
+      })
+      assert.equal(result.error, dictionary[source.key])
+      assert.equal(result.path, '/srv/data/Документи')
+      assert.equal(result.client, '2001:db8::7/64')
+      if (lang !== 'en') assert.notEqual(result.error, source.en)
+    }
+  }
+  await i18n.changeLanguage('en')
+})
