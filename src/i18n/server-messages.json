@@ -4894,5 +4894,353 @@
     "en": "This folder is already managed by Shared folders",
     "ru": "Эта папка уже управляется в разделе «Общие папки»",
     "uk": "Ця тека вже керується в розділі «Спільні теки»"
+  },
+  {
+    "key": "sharing.legacyConfigurationChanged",
+    "en": "Legacy NFS configuration was edited outside the panel. Review and restore the saved file before continuing.",
+    "ru": "Конфигурация legacy NFS изменена вне панели. Проверьте изменения и восстановите сохранённый файл перед продолжением.",
+    "uk": "Конфігурацію legacy NFS змінено поза панеллю. Перевірте зміни та відновіть збережений файл перед продовженням."
+  },
+  {
+    "key": "sharing.compatibilityUpdateRequired",
+    "en": "Install the compatibility update in System updates before continuing.",
+    "ru": "Перед продолжением установите обновление совместимости в разделе «Обновления системы».",
+    "uk": "Перед продовженням установіть оновлення сумісності в розділі «Оновлення системи»."
+  },
+  {
+    "key": "sharing.activationIncomplete",
+    "en": "Sharing setup is incomplete. Finish the system update before continuing.",
+    "ru": "Настройка общего доступа не завершена. Перед продолжением завершите обновление системы.",
+    "uk": "Налаштування спільного доступу не завершено. Перед продовженням завершіть оновлення системи."
+  },
+  {
+    "key": "sharing.rollbackIncomplete",
+    "en": "Sharing rollback is incomplete. Recover the system update before continuing.",
+    "ru": "Откат общего доступа не завершён. Перед продолжением восстановите обновление системы.",
+    "uk": "Відкіт спільного доступу не завершено. Перед продовженням відновіть оновлення системи."
+  },
+  {
+    "key": "sharing.changedDuringUpdate",
+    "en": "Sharing changed during the system update. Current files were preserved; review the update before retrying.",
+    "ru": "Параметры общего доступа изменились во время обновления системы. Текущие файлы сохранены; проверьте обновление перед повторной попыткой.",
+    "uk": "Параметри спільного доступу змінилися під час оновлення системи. Поточні файли збережено; перевірте оновлення перед повторною спробою."
+  },
+  {
+    "key": "sharing.configurationUntrusted",
+    "en": "Sharing configuration cannot be trusted. Ask an administrator to check its ownership and permissions.",
+    "ru": "Не удалось подтвердить безопасность конфигурации общего доступа. Попросите администратора проверить её владельца и права доступа.",
+    "uk": "Не вдалося підтвердити безпеку конфігурації спільного доступу. Попросіть адміністратора перевірити її власника та права доступу."
+  },
+  {
+    "key": "sharing.preparation.symbolicLink",
+    "en": "Refusing sharing compatibility symbolic link",
+    "ru": "Проверка совместимости общего доступа остановлена: обнаружена символическая ссылка.",
+    "uk": "Перевірку сумісності спільного доступу зупинено: виявлено символічне посилання."
+  },
+  {
+    "key": "sharing.preparation.notConfigured",
+    "en": "The sharing compatibility preparation package is not configured",
+    "ru": "Подготовительное обновление общего доступа не настроено.",
+    "uk": "Підготовче оновлення спільного доступу не налаштовано."
+  },
+  {
+    "key": "sharing.preparation.notVerified",
+    "en": "Sharing compatibility preparation is not verified",
+    "ru": "Не удалось подтвердить подготовку совместимости общего доступа.",
+    "uk": "Не вдалося підтвердити підготовку сумісності спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.rollbackPending",
+    "en": "Sharing rollback is incomplete; recover the system update before resuming services",
+    "ru": "Откат общего доступа не завершён. Восстановите обновление системы перед запуском служб.",
+    "uk": "Відкіт спільного доступу не завершено. Відновіть оновлення системи перед запуском служб."
+  },
+  {
+    "key": "sharing.preparation.snapshotPaths",
+    "en": "Invalid paired sharing snapshot paths",
+    "ru": "Недопустимые пути в согласованном снимке общего доступа.",
+    "uk": "Неприпустимі шляхи в узгодженому знімку спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.backupChanged",
+    "en": "Sharing changed while the rollback archive was created",
+    "ru": "Общий доступ изменился во время создания архива отката.",
+    "uk": "Спільний доступ змінився під час створення архіву відкоту."
+  },
+  {
+    "key": "sharing.preparation.snapshotChanged",
+    "en": "Sharing rollback snapshot changed",
+    "ru": "Снимок отката общего доступа изменился.",
+    "uk": "Знімок відкоту спільного доступу змінився."
+  },
+  {
+    "key": "sharing.preparation.archiveMismatch",
+    "en": "Sharing snapshot and rollback archive do not match",
+    "ru": "Снимок общего доступа не соответствует архиву отката.",
+    "uk": "Знімок спільного доступу не відповідає архіву відкоту."
+  },
+  {
+    "key": "sharing.preparation.missingTransaction",
+    "en": "Missing sharing rollback transaction",
+    "ru": "Не найдена операция отката общего доступа.",
+    "uk": "Не знайдено операцію відкоту спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.reverseNotBound",
+    "en": "The reverse package transition is not bound to the active rollback",
+    "ru": "Обратная замена пакета не связана с текущим откатом.",
+    "uk": "Зворотна заміна пакета не пов’язана з поточним відкочуванням."
+  },
+  {
+    "key": "sharing.preparation.reverseMismatch",
+    "en": "The reverse package transition has mismatched sharing evidence",
+    "ru": "Данные общего доступа не соответствуют обратной замене пакета.",
+    "uk": "Дані спільного доступу не відповідають зворотній заміні пакета."
+  },
+  {
+    "key": "sharing.preparation.rollbackServices",
+    "en": "Invalid rollback service state",
+    "ru": "Недопустимое состояние служб для отката.",
+    "uk": "Неприпустимий стан служб для відкоту."
+  },
+  {
+    "key": "sharing.preparation.packageServices",
+    "en": "Invalid sharing package service state",
+    "ru": "Недопустимое состояние служб пакета общего доступа.",
+    "uk": "Неприпустимий стан служб пакета спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.maintenance",
+    "en": "Native preparation requires exclusive maintenance",
+    "ru": "Для подготовки перехода требуется монопольный режим обслуживания.",
+    "uk": "Для підготовки переходу потрібен монопольний режим обслуговування."
+  },
+  {
+    "key": "sharing.preparation.targetVersion",
+    "en": "Invalid native target package version",
+    "ru": "Недопустимая версия целевого пакета.",
+    "uk": "Неприпустима версія цільового пакета."
+  },
+  {
+    "key": "sharing.preparation.otherRollback",
+    "en": "Another sharing rollback requires recovery",
+    "ru": "Сначала восстановите другую незавершённую операцию отката общего доступа.",
+    "uk": "Спочатку відновіть іншу незавершену операцію відкоту спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.rollbackLink",
+    "en": "Refusing rollback through a symbolic link",
+    "ru": "Откат через символическую ссылку запрещён.",
+    "uk": "Відкіт через символічне посилання заборонено."
+  },
+  {
+    "key": "sharing.preparation.changedDuringRestore",
+    "en": "Sharing changed while restoring the archive; current files were preserved",
+    "ru": "Общий доступ изменился при восстановлении архива. Текущие файлы сохранены.",
+    "uk": "Спільний доступ змінився під час відновлення архіву. Поточні файли збережено."
+  },
+  {
+    "key": "sharing.preparation.verification",
+    "en": "Sharing rollback verification failed",
+    "ru": "Проверка отката общего доступа завершилась ошибкой.",
+    "uk": "Перевірка відкоту спільного доступу завершилася помилкою."
+  },
+  {
+    "key": "sharing.preparation.rootRequired",
+    "en": "Sharing compatibility requires root",
+    "ru": "Для проверки совместимости общего доступа требуются права администратора системы.",
+    "uk": "Для перевірки сумісності спільного доступу потрібні права адміністратора системи."
+  },
+  {
+    "key": "sharing.preparation.stateLink",
+    "en": "Refusing sharing compatibility state through a symbolic link",
+    "ru": "Файл состояния совместимости общего доступа не должен быть символической ссылкой.",
+    "uk": "Файл стану сумісності спільного доступу не має бути символічним посиланням."
+  },
+  {
+    "key": "sharing.preparation.untrustedFile",
+    "en": "Untrusted sharing compatibility file: {{v0}}",
+    "ru": "Не удалось подтвердить безопасность файла совместимости общего доступа: {{v0}}",
+    "uk": "Не вдалося підтвердити безпеку файлу сумісності спільного доступу: {{v0}}"
+  },
+  {
+    "key": "sharing.preparation.pendingTransaction",
+    "en": "Recover the pending sharing transaction with the installed version before package changes",
+    "ru": "Перед заменой пакета восстановите незавершённую операцию общего доступа средствами установленной версии.",
+    "uk": "Перед заміною пакета відновіть незавершену операцію спільного доступу засобами встановленої версії."
+  },
+  {
+    "key": "sharing.preparation.installMarker",
+    "en": "Invalid sharing install marker",
+    "ru": "Недопустимая отметка установки общего доступа.",
+    "uk": "Неприпустима позначка встановлення спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.snapshot",
+    "en": "Invalid sharing snapshot",
+    "ru": "Недопустимый снимок общего доступа.",
+    "uk": "Неприпустимий знімок спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.snapshotOwnership",
+    "en": "Invalid sharing snapshot ownership or mode",
+    "ru": "Недопустимые владелец или права снимка общего доступа.",
+    "uk": "Неприпустимі власник або права знімка спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.untrustedArchive",
+    "en": "Untrusted rollback archive",
+    "ru": "Не удалось подтвердить безопасность архива отката.",
+    "uk": "Не вдалося підтвердити безпеку архіву відкоту."
+  },
+  {
+    "key": "sharing.preparation.jsonArchiveMismatch",
+    "en": "Sharing JSON does not match the rollback archive",
+    "ru": "Состояние общего доступа не соответствует архиву отката.",
+    "uk": "Стан спільного доступу не відповідає архіву відкоту."
+  },
+  {
+    "key": "sharing.preparation.sharingRollbackServices",
+    "en": "Invalid sharing rollback service state",
+    "ru": "Недопустимое состояние служб для отката общего доступа.",
+    "uk": "Неприпустимий стан служб для відкоту спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.rollbackPhase",
+    "en": "Invalid sharing rollback phase",
+    "ru": "Недопустимый этап отката общего доступа.",
+    "uk": "Неприпустимий етап відкоту спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.changedAfterBackup",
+    "en": "Sharing changed after the backup; verified native rollback is required",
+    "ru": "Общий доступ изменился после резервного копирования. Требуется проверенный откат средствами установленной версии.",
+    "uk": "Спільний доступ змінився після резервного копіювання. Потрібен перевірений відкіт засобами встановленої версії."
+  },
+  {
+    "key": "sharing.preparation.unsupportedWitness",
+    "en": "Unsupported sharing rollback witness",
+    "ru": "Формат данных проверки отката общего доступа не поддерживается.",
+    "uk": "Формат даних перевірки відкоту спільного доступу не підтримується."
+  },
+  {
+    "key": "sharing.preparation.changedDuringValidation",
+    "en": "Sharing changed during rollback validation",
+    "ru": "Общий доступ изменился во время проверки отката.",
+    "uk": "Спільний доступ змінився під час перевірки відкоту."
+  },
+  {
+    "key": "sharing.preparation.changedBeforePreparation",
+    "en": "Sharing changed before rollback preparation",
+    "ru": "Общий доступ изменился до подготовки отката.",
+    "uk": "Спільний доступ змінився до підготовки відкоту."
+  },
+  {
+    "key": "sharing.preparation.changedBeforeReverse",
+    "en": "Sharing changed before reverse package transition",
+    "ru": "Общий доступ изменился перед обратной заменой пакета.",
+    "uk": "Спільний доступ змінився перед зворотною заміною пакета."
+  },
+  {
+    "key": "sharing.preparation.otherPackageTransition",
+    "en": "Another sharing package transition requires recovery",
+    "ru": "Сначала восстановите другую незавершённую замену пакета общего доступа.",
+    "uk": "Спочатку відновіть іншу незавершену заміну пакета спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.timerState",
+    "en": "Cannot determine the sharing timer state before replacement",
+    "ru": "Не удалось определить состояние таймера общего доступа перед заменой пакета.",
+    "uk": "Не вдалося визначити стан таймера спільного доступу перед заміною пакета."
+  },
+  {
+    "key": "sharing.preparation.nativeReceipt",
+    "en": "Invalid native sharing receipt",
+    "ru": "Недопустимая запись о завершении перехода общего доступа.",
+    "uk": "Неприпустимий запис про завершення переходу спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.nativeRecovery",
+    "en": "Native sharing requires recovery before another package transition",
+    "ru": "Перед следующей заменой пакета восстановите общий доступ.",
+    "uk": "Перед наступною заміною пакета відновіть спільний доступ."
+  },
+  {
+    "key": "sharing.preparation.nativeWitness",
+    "en": "Unsupported native sharing witness",
+    "ru": "Формат данных проверки установленного общего доступа не поддерживается.",
+    "uk": "Формат даних перевірки встановленого спільного доступу не підтримується."
+  },
+  {
+    "key": "sharing.preparation.changedDuringPackageRollback",
+    "en": "Sharing changed during package rollback; current files were preserved",
+    "ru": "Общий доступ изменился во время отката пакета. Текущие файлы сохранены.",
+    "uk": "Спільний доступ змінився під час відкоту пакета. Поточні файли збережено."
+  },
+  {
+    "key": "sharing.preparation.changedAfterInterruptedRollback",
+    "en": "Sharing changed after interrupted rollback; current files were preserved",
+    "ru": "Общий доступ изменился после прерванного отката. Текущие файлы сохранены.",
+    "uk": "Спільний доступ змінився після перерваного відкоту. Поточні файли збережено."
+  },
+  {
+    "key": "sharing.preparation.changedBeforePublicationRestore",
+    "en": "Sharing changed before restoring a publication; current file was preserved",
+    "ru": "Общий доступ изменился перед восстановлением публикации. Текущий файл сохранён.",
+    "uk": "Спільний доступ змінився перед відновленням публікації. Поточний файл збережено."
+  },
+  {
+    "key": "sharing.preparation.untrustedLock",
+    "en": "Untrusted sharing lock",
+    "ru": "Не удалось подтвердить безопасность блокировки общего доступа.",
+    "uk": "Не вдалося підтвердити безпеку блокування спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.danglingLink",
+    "en": "Refusing dangling sharing symbolic link",
+    "ru": "В общем доступе обнаружена символическая ссылка без целевого файла.",
+    "uk": "У спільному доступі виявлено символічне посилання без цільового файлу."
+  },
+  {
+    "key": "sharing.preparation.absentSnapshot",
+    "en": "Invalid absent sharing snapshot",
+    "ru": "Недопустимая запись об отсутствующем файле в снимке общего доступа.",
+    "uk": "Неприпустимий запис про відсутній файл у знімку спільного доступу."
+  },
+  {
+    "key": "sharing.preparation.archivedJsonType",
+    "en": "Archived sharing JSON is not a regular file",
+    "ru": "Архивное состояние общего доступа не является обычным файлом.",
+    "uk": "Архівний стан спільного доступу не є звичайним файлом."
+  },
+  {
+    "key": "sharing.preparation.jsonChangedDuringBackup",
+    "en": "Sharing JSON changed while the rollback archive was created",
+    "ru": "Состояние общего доступа изменилось при создании архива отката.",
+    "uk": "Стан спільного доступу змінився під час створення архіву відкоту."
+  },
+  {
+    "key": "sharing.preparation.sourceActivationPending",
+    "en": "Native source activation is incomplete",
+    "ru": "Переход установленной версии общего доступа не завершён.",
+    "uk": "Перехід установленої версії спільного доступу не завершено."
+  },
+  {
+    "key": "sharing.preparation.changedDuringTransition",
+    "en": "Sharing changed during native transition preparation",
+    "ru": "Общий доступ изменился при подготовке перехода.",
+    "uk": "Спільний доступ змінився під час підготовки переходу."
+  },
+  {
+    "key": "sharing.preparation.rollbackSymbolicLink",
+    "en": "Refusing sharing rollback symbolic link",
+    "ru": "Файл отката общего доступа не должен быть символической ссылкой.",
+    "uk": "Файл відкоту спільного доступу не має бути символічним посиланням."
+  },
+  {
+    "key": "sharing.preparation.legacyBackup",
+    "en": "This backup predates paired sharing rollback; manual recovery is required",
+    "ru": "Эта резервная копия создана до поддержки согласованного отката общего доступа. Требуется ручное восстановление.",
+    "uk": "Цю резервну копію створено до підтримки узгодженого відкоту спільного доступу. Потрібне ручне відновлення."
   }
 ]
