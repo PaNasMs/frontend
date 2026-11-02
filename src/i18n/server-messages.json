@@ -4517,5 +4517,11 @@
     "en": "Sharing configuration changed externally; review it again",
     "ru": "Настройки раздачи подключения изменены извне; проверьте их ещё раз",
     "uk": "Налаштування спільного доступу до з’єднання змінено ззовні; перевірте їх ще раз"
+  },
+  {
+    "key": "network.nativeServer10",
+    "en": "Start NetworkManager to recover the pending network change",
+    "ru": "Запустите NetworkManager, чтобы восстановить незавершённое изменение сети",
+    "uk": "Запустіть NetworkManager, щоб відновити незавершену зміну мережі"
   }
 ]

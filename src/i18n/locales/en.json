@@ -2537,5 +2537,6 @@
   "network.nativeServer6": "Source has no valid hardware address",
   "network.nativeServer7": "Saved access point password is unavailable",
   "network.nativeServer8": "A network adapter was replaced; check its settings",
-  "network.nativeServer9": "Sharing configuration changed externally; review it again"
+  "network.nativeServer9": "Sharing configuration changed externally; review it again",
+  "network.nativeServer10": "Start NetworkManager to recover the pending network change"
 }
