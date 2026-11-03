@@ -5411,6 +5411,76 @@
     "ru": "Раздел пересекается с существующим разделом. Откройте отчёт о восстановлении прерванной операции."
   },
   {
+    "key": "storage.recovery.archive_absent",
+    "en": "No interrupted partition or file system journal is available to archive",
+    "ru": "Нет журнала прерванной операции с разделом или файловой системой для архивирования"
+  },
+  {
+    "key": "storage.recovery.archive_config",
+    "en": "Recover the mount configuration before archiving this journal",
+    "ru": "Восстановите конфигурацию монтирования перед архивированием журнала"
+  },
+  {
+    "key": "storage.recovery.archive_done",
+    "en": "Interrupted operation journal archived",
+    "ru": "Журнал прерванной операции архивирован"
+  },
+  {
+    "key": "storage.recovery.archive_absent_device",
+    "en": "The recorded device is absent",
+    "ru": "Устройство из журнала отсутствует"
+  },
+  {
+    "key": "storage.recovery.archive_present_device",
+    "en": "The recorded device path is present",
+    "ru": "Путь к устройству из журнала существует"
+  },
+  {
+    "key": "storage.recovery.archive_boot",
+    "en": "The system has restarted since this operation",
+    "ru": "После операции система перезагружалась"
+  },
+  {
+    "key": "storage.recovery.archive_changed",
+    "en": "The mount configuration has changed since this operation",
+    "ru": "После операции конфигурация монтирования изменилась"
+  },
+  {
+    "key": "storage.recovery.archive_warning",
+    "en": "Archiving preserves the interrupted journal and allows new plans. Inspect the disk and mount configuration before confirming.",
+    "ru": "Журнал сохранится в архиве, после чего можно будет составлять новые планы. Перед подтверждением проверьте диск и конфигурацию монтирования."
+  },
+  {
+    "key": "storage.recovery.archive_type",
+    "en": "Current device type: {{v0}}",
+    "ru": "Тип устройства сейчас: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_fs",
+    "en": "Current file system: {{v0}}",
+    "ru": "Текущая файловая система: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_uuid",
+    "en": "Current file system UUID: {{v0}}",
+    "ru": "UUID текущей файловой системы: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_mount",
+    "en": "Current mount point: {{v0}}",
+    "ru": "Текущая точка монтирования: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_step_ok",
+    "en": "Recorded completed step: {{v0}}",
+    "ru": "Журнал подтверждает завершение шага: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_step_unknown",
+    "en": "Recorded unconfirmed step: {{v0}}",
+    "ru": "Завершение шага не подтверждено: {{v0}}"
+  },
+  {
     "key": "storage.recovery.interrupted_action",
     "en": "Interrupted operation: {{v0}}",
     "ru": "Прерванная операция: {{v0}}"

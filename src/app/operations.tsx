@@ -213,6 +213,10 @@ export const operations: Record<string, Operation> = {
   },
   'raid.check': { label: tr('check_array_80a1807f'), fields: [target] },
   'raid.check-stop': { label: tr('stop_array_check_befc81d8'), fields: [target] },
+  'storage.archive-journal': {
+    label: tr('storage.recovery.archive_action'),
+    fields: [{ key: 'target', label: tr('device_bc791dbe'), hint: tr('storage.recovery_target_hint') }],
+  },
   'storage.recover': {
     label: tr('storage.recover_configuration'),
     fields: [{ key: 'target', label: tr('device_bc791dbe'), hint: tr('storage.recovery_target_hint') }],
@@ -657,7 +661,8 @@ function OperationForm({
     (!folderName.trim() || folderName === '.' || folderName === '..' || /[\/\x00]/.test(folderName))
   const newName = String(params.name ?? '')
   const currentName = baseName(String(params.target ?? ''))
-  const missingRecoveryTarget = action === 'storage.recover' && !String(params.target ?? '').trim()
+  const journalAction = action === 'storage.recover' || action === 'storage.archive-journal'
+  const missingRecoveryTarget = journalAction && !String(params.target ?? '').trim()
   const invalidFileName = action === 'file.rename' && !validFileName(newName)
   // A repeated secret is compared here and never leaves the browser.
   const repeats = (fields ?? operations[action].fields).filter((f) => f.confirms)
@@ -947,11 +952,17 @@ function OperationForm({
                 </Button>
               </Dialog.Close>
               <Button
-                className={action === 'filesystem.remove' ? 'danger' : 'primary'}
+                className={
+                  action === 'filesystem.remove' || action === 'storage.archive-journal'
+                    ? 'danger'
+                    : 'primary'
+                }
                 disabled={run.isPending}
                 onClick={() => run.mutate()}
               >
-                {action === 'filesystem.remove' ? operations[action].label : tr('confirm_0467ae4b')}
+                {action === 'filesystem.remove' || action === 'storage.archive-journal'
+                  ? operations[action].label
+                  : tr('confirm_0467ae4b')}
               </Button>
             </div>
           ) : (
@@ -1125,7 +1136,7 @@ function OperationForm({
                       <input
                         id={`${id}-${f.key}`}
                         aria-label={f.label}
-                        required={action === 'storage.recover' && f.key === 'target'}
+                        required={journalAction && f.key === 'target'}
                         aria-invalid={!!fieldError}
                         aria-describedby={
                           fieldError ? `${id}-${f.key}-error` : f.hint ? `${id}-${f.key}-hint` : undefined
@@ -1204,7 +1215,7 @@ function OperationForm({
           <>
             <h3>{tr('confirmation_846aff70')}</h3>
             <Notice>
-              {action === 'storage.recover' && (
+              {journalAction && (
                 <div>
                   {tr('device_bc791dbe')}: <strong>{plan.data.target}</strong>
                 </div>
@@ -1391,6 +1402,9 @@ export function JobRecovery({ job, onClose }: { job: Job; onClose: () => void })
               {report?.recoveryAction && operations[report.recoveryAction] && (
                 <OperationButton
                   actions={[report.recoveryAction]}
+                  initial={
+                    report.recoveryAction === 'storage.archive-journal' ? { target: job.target } : undefined
+                  }
                   label={operations[report.recoveryAction].label}
                   icon={mdiRestore}
                   autoReview
