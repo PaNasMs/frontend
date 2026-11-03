@@ -2710,5 +2710,6 @@
   "storage.local.operationCompleted": "Операция с хранилищем завершена",
   "storage.local.inspectionOnly": "Проверьте текущее устройство и выполненные шаги. Операции, изменяющие данные, не повторяются автоматически: для новой операции нужны новый план и подтверждение.",
   "jobs.check.Local storage": "Локальное хранилище",
-  "storage.local.configuredPathInspectionFailed": "Не удалось проверить настроенные пути хранения"
+  "storage.local.configuredPathInspectionFailed": "Не удалось проверить настроенные пути хранения",
+  "storage.local.uuidAlsoPresent": "У другого устройства такой же UUID файловой системы. Проверьте настройки монтирования."
 }

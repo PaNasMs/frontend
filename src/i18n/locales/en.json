@@ -2710,5 +2710,6 @@
   "storage.local.operationCompleted": "Storage operation completed",
   "storage.local.inspectionOnly": "Inspect the current device and completed steps. Destructive operations are never replayed automatically; a new operation requires a fresh plan and confirmation.",
   "jobs.check.Local storage": "Local storage",
-  "storage.local.configuredPathInspectionFailed": "Could not inspect configured storage paths"
+  "storage.local.configuredPathInspectionFailed": "Could not inspect configured storage paths",
+  "storage.local.uuidAlsoPresent": "This file system UUID is present on another device. Review the mount configuration."
 }

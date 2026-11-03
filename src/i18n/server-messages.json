@@ -5518,5 +5518,11 @@
     "en": "Could not inspect configured storage paths",
     "ru": "Не удалось проверить настроенные пути хранения",
     "uk": "Не вдалося перевірити налаштовані шляхи зберігання"
+  },
+  {
+    "key": "storage.local.uuidAlsoPresent",
+    "en": "This file system UUID is present on another device. Review the mount configuration.",
+    "ru": "У другого устройства такой же UUID файловой системы. Проверьте настройки монтирования.",
+    "uk": "Інший пристрій має такий самий UUID файлової системи. Перевірте налаштування монтування."
   }
 ]

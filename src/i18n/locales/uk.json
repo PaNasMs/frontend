@@ -2710,5 +2710,6 @@
   "storage.local.operationCompleted": "Операцію зі сховищем завершено",
   "storage.local.inspectionOnly": "Перевірте поточний пристрій і виконані кроки. Операції, що змінюють дані, не повторюються автоматично: для нової операції потрібні новий план і підтвердження.",
   "jobs.check.Local storage": "Локальне сховище",
-  "storage.local.configuredPathInspectionFailed": "Не вдалося перевірити налаштовані шляхи зберігання"
+  "storage.local.configuredPathInspectionFailed": "Не вдалося перевірити налаштовані шляхи зберігання",
+  "storage.local.uuidAlsoPresent": "Інший пристрій має такий самий UUID файлової системи. Перевірте налаштування монтування."
 }
