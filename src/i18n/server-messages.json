@@ -5896,5 +5896,17 @@
     "en": "Recover the recorded module transaction before using installed modules",
     "ru": "Перед использованием установленных модулей восстановите операцию из журнала",
     "uk": "Перед використанням установлених модулів відновіть операцію з журналу"
+  },
+  {
+    "key": "modules.lifecycle.962c8ba14724",
+    "en": "Modules were activated, but transaction cleanup is incomplete. Recover the recorded transaction before changing modules.",
+    "ru": "Модули запущены, но очистка операции не завершена. Перед изменением модулей восстановите операцию из журнала.",
+    "uk": "Модулі запущено, але очищення операції не завершено. Перед зміною модулів відновіть операцію з журналу."
+  },
+  {
+    "key": "modules.lifecycle.4c17407de4c2",
+    "en": "Module publisher trust changed. Review a new operation plan.",
+    "ru": "Доверие к издателю модуля изменилось. Проверьте новый план операции.",
+    "uk": "Довіра до видавця модуля змінилася. Перевірте новий план операції."
   }
 ]

@@ -2773,5 +2773,7 @@
   "jobs.check.Module transaction": "Module transaction",
   "modules.lifecycle.812cde8f391d": "Missing recovery dependency: {{v0}}",
   "modules.lifecycle.658d408f99fb": "Update module {{v0}} to a maintenance-aware version before updating the module",
-  "modules.lifecycle.7892927fa6f0": "Recover the recorded module transaction before using installed modules"
+  "modules.lifecycle.7892927fa6f0": "Recover the recorded module transaction before using installed modules",
+  "modules.lifecycle.962c8ba14724": "Modules were activated, but transaction cleanup is incomplete. Recover the recorded transaction before changing modules.",
+  "modules.lifecycle.4c17407de4c2": "Module publisher trust changed. Review a new operation plan."
 }
