@@ -1198,6 +1198,9 @@ function OperationForm({
           <>
             <h3>{tr('confirmation_846aff70')}</h3>
             <Notice>
+              {action === 'storage.recover' && (
+                <div>{tr('device_bc791dbe')}: <strong>{plan.data.target}</strong></div>
+              )}
               {plan.data.details.map((d, i) => (
                 <div key={i}>{d}</div>
               ))}
