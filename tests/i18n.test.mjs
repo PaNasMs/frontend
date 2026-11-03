@@ -247,6 +247,7 @@ test('storage configuration recovery messages preserve device identity and do no
     }
     assert.ok(dictionary['storage.recover_configuration'])
     assert.ok(dictionary['storage.recovery_target_hint'])
+    assert.ok(dictionary['jobs.check.Storage operation'])
   }
   await i18n.changeLanguage('en')
 })
