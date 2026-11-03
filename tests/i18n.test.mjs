@@ -318,3 +318,19 @@ test('native local mount recovery diagnostics preserve paths in every language',
   }
   await i18n.changeLanguage('en')
 })
+
+test('SMB password history recognizes both messages sharing one translation key', async () => {
+  registerServerMessages('core', json('../src/i18n/server-messages.json'))
+  const messages = [
+    'Linux password accepted, but SMB password synchronization failed. See Users → Security and retry by signing in again.',
+    'Linux password accepted, but SMB synchronization failed. See Users / Security; sign in again to retry.',
+  ]
+  for (const language of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(language)
+    const dictionary = json('../src/i18n/locales/' + language + '.json')
+    for (const message of messages) {
+      assert.equal(serverText(message), dictionary['sharing.passwordSyncFailed'])
+    }
+  }
+  await i18n.changeLanguage('en')
+})
