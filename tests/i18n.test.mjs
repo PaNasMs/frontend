@@ -8,6 +8,21 @@ const { registerServerMessages, serverText, localizeResponse } = loadTypeScript(
 )
 const json = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'))
 const dictionaries = ['../src/i18n/', '../../modules/files/frontend/', '../../modules/terminal/frontend/']
+test('module recovery diagnostics retain object names and recovery limits in every language', async () => {
+  registerServerMessages('core', json('../src/i18n/server-messages.json'))
+  for (const lang of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(lang)
+    const dictionary = json(`../src/i18n/locales/${lang}.json`)
+    const message = json('../src/i18n/server-messages.json').find(
+      (entry) => entry.en === 'Module recovery is incomplete. Recover the recorded transaction before changing modules.',
+    )
+    assert.equal(serverText(message.en), dictionary[message.key])
+    const pending = 'Modules not started: files, terminal. Open Modules to update or reinstall them.'
+    assert.ok(serverText(pending).includes('files, terminal'))
+    if (lang !== 'en') assert.notEqual(serverText(pending), pending)
+    assert.ok(dictionary['jobs.check.Module transaction'])
+  }
+})
 test('default, unsupported language, English fallback and independent namespaces', async () => {
   await initializeLanguage('de')
   assert.equal(i18n.language, 'en')
@@ -250,6 +265,31 @@ test('storage configuration recovery messages preserve device identity and do no
     assert.ok(dictionary['storage.recover_configuration'])
     assert.ok(dictionary['storage.recovery_target_hint'])
     assert.ok(dictionary['jobs.check.Storage operation'])
+  }
+  await i18n.changeLanguage('en')
+})
+
+test('module maintenance guidance offers the existing service-stop path without changing identity', async () => {
+  const catalog = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', catalog)
+  const messages = [
+    'Module {{v0}} does not support coordinated maintenance. Finish its tasks and stop its service in System services before retrying.',
+    'Update module {{v0}} to a maintenance-aware version before updating the module',
+    'Update (remains disabled): {{v0}}',
+    'Recover the recorded module transaction; installed OS dependencies are retained',
+    'Account identity or access has changed; request a new operation plan',
+  ]
+  const maintenance = catalog.find((entry) => entry.en === messages[0])
+  assert.ok(maintenance)
+  for (const language of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(language)
+    const dictionary = json('../src/i18n/locales/' + language + '.json')
+    for (const raw of messages) {
+      const source = catalog.find((entry) => entry.en === raw)
+      assert.ok(source, raw)
+      assert.equal(serverText(raw.replace('{{v0}}', 'legacy-example')), dictionary[source.key].replace('{{v0}}', 'legacy-example'))
+    }
+    assert.equal(serverText(messages[1].replace('{{v0}}', 'legacy-example')), dictionary[maintenance.key].replace('{{v0}}', 'legacy-example'))
   }
   await i18n.changeLanguage('en')
 })
