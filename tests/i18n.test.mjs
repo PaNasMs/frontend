@@ -231,6 +231,29 @@ test('native folder and mount diagnostics preserve busy process labels in all la
   }
 })
 
+test('storage configuration recovery messages preserve device identity and do not promise disk replay', async () => {
+  const catalog = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', catalog)
+  const entries = catalog.filter((entry) => entry.key.startsWith('storage.recovery.'))
+  assert.ok(entries.length >= 37)
+  const slots = (template) => [...template.matchAll(/\{\{(v\d+)\}\}/g)].map((match) => match[1]).sort()
+  for (const language of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(language)
+    const dictionary = json('../src/i18n/locales/' + language + '.json')
+    for (const entry of entries) {
+      assert.deepEqual(slots(dictionary[entry.key]), slots(entry.en), entry.key)
+      const expand = (value) => value.replace('{{v0}}', 'partitionfs').replace('{{v1}}', '/dev/nvme0n1p2')
+      const result = localizeResponse({ error: expand(entry.en), target: '/dev/nvme0n1p2' })
+      assert.equal(result.error, expand(dictionary[entry.key]))
+      assert.equal(result.target, '/dev/nvme0n1p2')
+    }
+    assert.ok(dictionary['storage.recover_configuration'])
+    assert.ok(dictionary['storage.recovery_target_hint'])
+    assert.ok(dictionary['jobs.check.Storage operation'])
+  }
+  await i18n.changeLanguage('en')
+})
+
 test('native local mount recovery diagnostics preserve paths in every language', async () => {
   const catalog = json('../src/i18n/server-messages.json')
   registerServerMessages('core', catalog)
