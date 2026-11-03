@@ -5908,5 +5908,53 @@
     "en": "Module publisher trust changed. Review a new operation plan.",
     "ru": "Доверие к издателю модуля изменилось. Проверьте новый план операции.",
     "uk": "Довіра до видавця модуля змінилася. Перевірте новий план операції."
+  },
+  {
+    "key": "modules.lifecycle.cbf5e5fdce3b",
+    "en": "Module {{v0}} does not support coordinated maintenance. Finish its tasks and stop its service in System services before retrying.",
+    "ru": "Модуль {{v0}} не поддерживает согласованное обслуживание. Завершите его задачи и остановите его службу в разделе «Системные службы», затем повторите попытку.",
+    "uk": "Модуль {{v0}} не підтримує узгоджене обслуговування. Завершіть його завдання й зупиніть його службу в розділі «Системні служби», потім повторіть спробу."
+  },
+  {
+    "key": "modules.lifecycle.cb63a3f655e4",
+    "en": "Cannot open the system maintenance lock; check system services before retrying",
+    "ru": "Не удалось открыть блокировку обслуживания системы; проверьте системные службы перед повторной попыткой",
+    "uk": "Не вдалося відкрити блокування обслуговування системи; перевірте системні служби перед повторною спробою"
+  },
+  {
+    "key": "modules.lifecycle.ae33b3665b80",
+    "en": "Cannot identify the system architecture; check package state before retrying",
+    "ru": "Не удалось определить архитектуру системы; проверьте состояние пакетов перед повторной попыткой",
+    "uk": "Не вдалося визначити архітектуру системи; перевірте стан пакунків перед повторною спробою"
+  },
+  {
+    "key": "modules.lifecycle.759431c1da38",
+    "en": "Update (remains disabled): {{v0}}",
+    "ru": "Обновить (останется отключённым): {{v0}}",
+    "uk": "Оновити (залишиться вимкненим): {{v0}}"
+  },
+  {
+    "key": "modules.lifecycle.2966d02acd7b",
+    "en": "Recover the recorded module transaction; installed OS dependencies are retained",
+    "ru": "Восстановить операцию модуля из журнала; установленные системные зависимости сохраняются",
+    "uk": "Відновити операцію модуля з журналу; установлені системні залежності зберігаються"
+  },
+  {
+    "key": "modules.lifecycle.53261240207d",
+    "en": "Account identity or access has changed; request a new operation plan",
+    "ru": "Идентификатор учётной записи или права доступа изменились; запросите новый план операции",
+    "uk": "Ідентифікатор облікового запису або права доступу змінилися; запитайте новий план операції"
+  },
+  {
+    "key": "modules.lifecycle.d81663bda621",
+    "en": "Module archive ownership or size is unsafe; upload the archive again",
+    "ru": "Владелец или размер архива модуля небезопасен; загрузите архив заново",
+    "uk": "Власник або розмір архіву модуля небезпечний; завантажте архів знову"
+  },
+  {
+    "key": "modules.lifecycle.fe99a73646f5",
+    "en": "Invalid module transaction ownership; preserve the journal for inspection",
+    "ru": "Некорректные сведения о владельце операции модуля; сохраните журнал для проверки",
+    "uk": "Некоректні відомості про власника операції модуля; збережіть журнал для перевірки"
   }
 ]
