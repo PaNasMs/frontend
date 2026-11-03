@@ -5524,5 +5524,23 @@
     "en": "This file system UUID is present on another device. Review the mount configuration.",
     "ru": "У другого устройства такой же UUID файловой системы. Проверьте настройки монтирования.",
     "uk": "Інший пристрій має такий самий UUID файлової системи. Перевірте налаштування монтування."
+  },
+  {
+    "key": "storage.local.unmountedCleanup",
+    "en": "Clear the interrupted mount state after verifying that the mount is gone.",
+    "ru": "Проверьте, что том отключён, и очистите запись о прерванном подключении.",
+    "uk": "Перевірте, що том відʼєднано, і очистьте запис про перерване підключення."
+  },
+  {
+    "key": "storage.local.foreignMountConfiguration",
+    "en": "This volume has an existing mount configuration at another location. Review it before continuing.",
+    "ru": "Для этого тома уже настроена другая точка монтирования. Проверьте её перед продолжением.",
+    "uk": "Для цього тому вже налаштовано іншу точку монтування. Перевірте її перед продовженням."
+  },
+  {
+    "key": "storage.local.btrfsComposition",
+    "en": "Multi-device or changed Btrfs volumes require a separate workflow",
+    "ru": "Для тома Btrfs из нескольких устройств или с изменившимся составом нужна отдельная операция",
+    "uk": "Для тому Btrfs з кількох пристроїв або зі зміненим складом потрібна окрема операція"
   }
 ]
