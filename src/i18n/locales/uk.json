@@ -2691,6 +2691,8 @@
   "storage.mountPointChanged": "Точка монтування змінилася. Перевірте новий план операції.",
   "jobs.check.Folder": "Папка",
   "jobs.check.Network mount": "Мережеве монтування",
+  "storage.recovery.enter_device": "Введіть шлях до пристрою",
+  "storage.recovery.interrupted_action": "Перервана операція: {{v0}}",
   "storage.recovery.table_changed": "Не вдалося підтвердити оновлену таблицю розділів; перевірте її перед повторною операцією",
   "storage.recovery.btrfs_device": "Не вдалося перевірити пристрій файлової системи Btrfs",
   "storage.recovery.partition_names": "Не вдалося перевірити назви пристроїв розділів",

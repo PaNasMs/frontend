@@ -2691,6 +2691,8 @@
   "storage.mountPointChanged": "The mount point changed; review a new operation plan",
   "jobs.check.Folder": "Folder",
   "jobs.check.Network mount": "Network mount",
+  "storage.recovery.enter_device": "Enter the device path",
+  "storage.recovery.interrupted_action": "Interrupted operation: {{v0}}",
   "storage.recovery.table_changed": "Could not confirm the updated partition table; inspect it before retrying",
   "storage.recovery.btrfs_device": "Could not verify Btrfs backing device",
   "storage.recovery.partition_names": "Could not verify partition device names",

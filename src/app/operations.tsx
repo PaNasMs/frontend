@@ -657,6 +657,7 @@ function OperationForm({
     (!folderName.trim() || folderName === '.' || folderName === '..' || /[\/\x00]/.test(folderName))
   const newName = String(params.name ?? '')
   const currentName = baseName(String(params.target ?? ''))
+  const missingRecoveryTarget = action === 'storage.recover' && !String(params.target ?? '').trim()
   const invalidFileName = action === 'file.rename' && !validFileName(newName)
   // A repeated secret is compared here and never leaves the browser.
   const repeats = (fields ?? operations[action].fields).filter((f) => f.confirms)
@@ -678,6 +679,7 @@ function OperationForm({
         throw new Error(tr('passwords_do_not_match_a73dc9b1'))
       if (invalidFolderName)
         throw new Error(tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286'))
+      if (missingRecoveryTarget) throw new Error(tr('storage.recovery.enter_device'))
       if (invalidFileName) throw new Error(tr('fileTasks.nameInvalid'))
       if (unconfirmed) throw new Error(tr('passwords_do_not_match_a73dc9b1'))
       return managed<{
@@ -688,8 +690,9 @@ function OperationForm({
       }>('plan', { action, params: requestParams })
     },
     onError: () => {
-      const field =
-        invalidFolderName || invalidFileName
+      const field = missingRecoveryTarget
+        ? 'target'
+        : invalidFolderName || invalidFileName
           ? 'name'
           : params.password !== params.passwordConfirm
             ? 'passwordConfirm'
@@ -1017,14 +1020,16 @@ function OperationForm({
           editable.map((f) => {
             const val = params[f.key]
             const fieldError =
-              (f.key === 'passwordConfirm' && val && val !== params.password) ||
-              (f.confirms && val && val !== params[f.confirms])
-                ? tr('passwords_do_not_match_a73dc9b1')
-                : action === 'file.mkdir' && f.key === 'name' && val && invalidFolderName
-                  ? tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286')
-                  : action === 'file.rename' && f.key === 'name' && val && !validFileName(newName.trim())
-                    ? tr('fileTasks.nameInvalid')
-                    : ''
+              missingRecoveryTarget && f.key === 'target' && plan.isError
+                ? tr('storage.recovery.enter_device')
+                : (f.key === 'passwordConfirm' && val && val !== params.password) ||
+                    (f.confirms && val && val !== params[f.confirms])
+                  ? tr('passwords_do_not_match_a73dc9b1')
+                  : action === 'file.mkdir' && f.key === 'name' && val && invalidFolderName
+                    ? tr('enter_a_folder_name_without_slashes_and_are_not_al_83215286')
+                    : action === 'file.rename' && f.key === 'name' && val && !validFileName(newName.trim())
+                      ? tr('fileTasks.nameInvalid')
+                      : ''
             const choices =
               providedChoices?.[f.key] ??
               (f.type === 'devices' || f.type === 'device'
@@ -1120,6 +1125,7 @@ function OperationForm({
                       <input
                         id={`${id}-${f.key}`}
                         aria-label={f.label}
+                        required={action === 'storage.recover' && f.key === 'target'}
                         aria-invalid={!!fieldError}
                         aria-describedby={
                           fieldError ? `${id}-${f.key}-error` : f.hint ? `${id}-${f.key}-hint` : undefined
@@ -1199,7 +1205,9 @@ function OperationForm({
             <h3>{tr('confirmation_846aff70')}</h3>
             <Notice>
               {action === 'storage.recover' && (
-                <div>{tr('device_bc791dbe')}: <strong>{plan.data.target}</strong></div>
+                <div>
+                  {tr('device_bc791dbe')}: <strong>{plan.data.target}</strong>
+                </div>
               )}
               {plan.data.details.map((d, i) => (
                 <div key={i}>{d}</div>

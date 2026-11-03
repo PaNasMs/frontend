@@ -2691,6 +2691,8 @@
   "storage.mountPointChanged": "Точка подключения изменилась. Проверьте новый план операции.",
   "jobs.check.Folder": "Папка",
   "jobs.check.Network mount": "Сетевое подключение",
+  "storage.recovery.enter_device": "Введите путь к устройству",
+  "storage.recovery.interrupted_action": "Прерванная операция: {{v0}}",
   "storage.recovery.table_changed": "Не удалось подтвердить обновлённую таблицу разделов; проверьте её перед повторной операцией",
   "storage.recovery.btrfs_device": "Не удалось проверить устройство файловой системы Btrfs",
   "storage.recovery.partition_names": "Не удалось проверить имена устройств разделов",

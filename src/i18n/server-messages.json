@@ -5406,6 +5406,11 @@
     "uk": "Точка монтування змінилася. Перевірте новий план операції."
   },
   {
+    "key": "storage.recovery.interrupted_action",
+    "en": "Interrupted operation: {{v0}}",
+    "ru": "Прерванная операция: {{v0}}"
+  },
+  {
     "key": "storage.recovery.table_changed",
     "en": "Could not confirm the updated partition table; inspect it before retrying",
     "ru": "Не удалось подтвердить обновлённую таблицу разделов; проверьте её перед повторной операцией",
