@@ -5404,5 +5404,497 @@
     "en": "The mount point changed; review a new operation plan",
     "ru": "Точка подключения изменилась. Проверьте новый план операции.",
     "uk": "Точка монтування змінилася. Перевірте новий план операції."
+  },
+  {
+    "key": "modules.lifecycle.46445ba97c90",
+    "en": "Active requests or tasks prevent module maintenance; wait and retry",
+    "ru": "Активные запросы или задачи мешают обслуживанию модулей; дождитесь их завершения и повторите попытку",
+    "uk": "Активні запити або завдання заважають обслуговуванню модулів; дочекайтеся завершення та повторіть спробу"
+  },
+  {
+    "key": "modules.lifecycle.cf828b8a3ff3",
+    "en": "An orphan module transaction cannot be rewritten",
+    "ru": "Нельзя перезаписать незавершённую операцию модуля без журнала",
+    "uk": "Не можна перезаписати незавершену операцію модуля без журналу"
+  },
+  {
+    "key": "modules.lifecycle.977a6db62841",
+    "en": "Cannot verify inherited system maintenance",
+    "ru": "Не удалось подтвердить блокировку обслуживания системы",
+    "uk": "Не вдалося підтвердити блокування обслуговування системи"
+  },
+  {
+    "key": "modules.lifecycle.8549a5eb995c",
+    "en": "Could not compare OS package versions",
+    "ru": "Не удалось сравнить версии системных пакетов",
+    "uk": "Не вдалося порівняти версії системних пакунків"
+  },
+  {
+    "key": "modules.lifecycle.5dac8308e514",
+    "en": "Duplicate module handler",
+    "ru": "Обработчик модуля указан повторно",
+    "uk": "Обробник модуля вказано повторно"
+  },
+  {
+    "key": "modules.lifecycle.22e21b4d556e",
+    "en": "Incomplete module transaction",
+    "ru": "Журнал операции модуля неполон",
+    "uk": "Журнал операції модуля неповний"
+  },
+  {
+    "key": "modules.lifecycle.18721ae0f5c6",
+    "en": "Installed module identity is invalid; preserve it for inspection",
+    "ru": "Идентификатор установленного модуля некорректен; сохраните его для проверки",
+    "uk": "Ідентифікатор установленого модуля некоректний; збережіть його для перевірки"
+  },
+  {
+    "key": "modules.lifecycle.b068e64a22ad",
+    "en": "Installed modules changed while staging; recorded files were preserved",
+    "ru": "Установленные модули изменились во время подготовки; записанные файлы сохранены",
+    "uk": "Установлені модулі змінилися під час підготовки; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.3d67191ddda4",
+    "en": "Invalid OS package version comparison",
+    "ru": "Некорректное сравнение версий системных пакетов",
+    "uk": "Некоректне порівняння версій системних пакунків"
+  },
+  {
+    "key": "modules.lifecycle.3a976f9dbf8b",
+    "en": "Invalid absent module unit",
+    "ru": "Некорректная запись об отсутствующей службе модуля",
+    "uk": "Некоректний запис про відсутню службу модуля"
+  },
+  {
+    "key": "modules.lifecycle.eeb820df625e",
+    "en": "Invalid detailed module description",
+    "ru": "Некорректное подробное описание модуля",
+    "uk": "Некоректний докладний опис модуля"
+  },
+  {
+    "key": "modules.lifecycle.919930ee9da6",
+    "en": "Invalid legacy module transaction",
+    "ru": "Некорректный журнал операции старого формата",
+    "uk": "Некоректний журнал операції старого формату"
+  },
+  {
+    "key": "modules.lifecycle.2f7422b0f29c",
+    "en": "Invalid member-access capability",
+    "ru": "Некорректное разрешение доступа обычных пользователей",
+    "uk": "Некоректний дозвіл доступу звичайних користувачів"
+  },
+  {
+    "key": "modules.lifecycle.983f0f5b8cff",
+    "en": "Invalid module archive",
+    "ru": "Некорректный архив модуля",
+    "uk": "Некоректний архів модуля"
+  },
+  {
+    "key": "modules.lifecycle.4b35e6292239",
+    "en": "Invalid module cleanup path",
+    "ru": "Некорректный путь очистки модуля",
+    "uk": "Некоректний шлях очищення модуля"
+  },
+  {
+    "key": "modules.lifecycle.d2f0ac513b11",
+    "en": "Invalid module extraction phase",
+    "ru": "Некорректный этап распаковки модуля",
+    "uk": "Некоректний етап розпакування модуля"
+  },
+  {
+    "key": "modules.lifecycle.0eb49a221100",
+    "en": "Invalid module installation path",
+    "ru": "Некорректный путь установки модуля",
+    "uk": "Некоректний шлях установлення модуля"
+  },
+  {
+    "key": "modules.lifecycle.189ff95ecfe5",
+    "en": "Invalid module manifest",
+    "ru": "Некорректный манифест модуля",
+    "uk": "Некоректний маніфест модуля"
+  },
+  {
+    "key": "modules.lifecycle.9bac2fb8a64f",
+    "en": "Invalid module payload identity",
+    "ru": "Некорректный идентификатор файлов модуля",
+    "uk": "Некоректний ідентифікатор файлів модуля"
+  },
+  {
+    "key": "modules.lifecycle.5d4604f2a77a",
+    "en": "Invalid module signing key",
+    "ru": "Некорректный ключ подписи модуля",
+    "uk": "Некоректний ключ підпису модуля"
+  },
+  {
+    "key": "modules.lifecycle.7c28fac5e038",
+    "en": "Invalid module state path",
+    "ru": "Некорректный путь состояния модуля",
+    "uk": "Некоректний шлях стану модуля"
+  },
+  {
+    "key": "modules.lifecycle.97a53179c10a",
+    "en": "Invalid module transaction",
+    "ru": "Некорректный журнал операции модуля",
+    "uk": "Некоректний журнал операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.cd67a9290475",
+    "en": "Invalid module transaction commit",
+    "ru": "Некорректная запись о завершении операции модуля",
+    "uk": "Некоректний запис про завершення операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.350cc68c6e76",
+    "en": "Invalid module transaction ownership",
+    "ru": "Некорректные сведения о владельце операции модуля",
+    "uk": "Некоректні відомості про власника операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.9f36ce6d780b",
+    "en": "Invalid module transaction phase",
+    "ru": "Некорректный этап операции модуля",
+    "uk": "Некоректний етап операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.e5213d08d5ec",
+    "en": "Invalid module translations",
+    "ru": "Некорректные переводы модуля",
+    "uk": "Некоректні переклади модуля"
+  },
+  {
+    "key": "modules.lifecycle.ad4383be3fc0",
+    "en": "Invalid system dependency",
+    "ru": "Некорректная системная зависимость",
+    "uk": "Некоректна системна залежність"
+  },
+  {
+    "key": "modules.lifecycle.acef7b769a16",
+    "en": "Legacy module staging conflicts with a backup name; preserve the transaction for manual recovery",
+    "ru": "Подготовленные файлы старого формата конфликтуют с именем резервной копии; сохраните журнал для ручного восстановления",
+    "uk": "Підготовлені файли старого формату конфліктують з іменем резервної копії; збережіть журнал для ручного відновлення"
+  },
+  {
+    "key": "modules.lifecycle.0abd994249e4",
+    "en": "Module activation authorization is missing",
+    "ru": "Отсутствует подтверждение прав на запуск модуля",
+    "uk": "Відсутнє підтвердження прав на запуск модуля"
+  },
+  {
+    "key": "modules.lifecycle.ec01d633fd76",
+    "en": "Module archive changed during extraction",
+    "ru": "Архив модуля изменился во время распаковки",
+    "uk": "Архів модуля змінився під час розпакування"
+  },
+  {
+    "key": "modules.lifecycle.7f123cb3a059",
+    "en": "Module archive changed while it was read",
+    "ru": "Архив модуля изменился во время чтения",
+    "uk": "Архів модуля змінився під час читання"
+  },
+  {
+    "key": "modules.lifecycle.88543e1a6c14",
+    "en": "Module archive ownership or size is unsafe",
+    "ru": "Небезопасный владелец или размер архива модуля",
+    "uk": "Небезпечний власник або розмір архіву модуля"
+  },
+  {
+    "key": "modules.lifecycle.7db411b27bc2",
+    "en": "Module backup changed; recorded files were preserved",
+    "ru": "Резервная копия модуля изменилась; записанные файлы сохранены",
+    "uk": "Резервна копія модуля змінилася; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.26e53ff94524",
+    "en": "Module files contain mounted data; unmount it before recovery",
+    "ru": "В каталогах модуля есть подключённые данные; отключите их перед восстановлением",
+    "uk": "У каталогах модуля є підключені дані; відключіть їх перед відновленням"
+  },
+  {
+    "key": "modules.lifecycle.58b77b9f098a",
+    "en": "Module files exist without an installed receipt; preserve them for inspection",
+    "ru": "Файлы модуля существуют без записи об установке; сохраните их для проверки",
+    "uk": "Файли модуля існують без запису про встановлення; збережіть їх для перевірки"
+  },
+  {
+    "key": "modules.lifecycle.1db00d481ad0",
+    "en": "Module lifecycle lock permissions are unsafe",
+    "ru": "Небезопасные права блокировки управления модулями",
+    "uk": "Небезпечні права блокування керування модулями"
+  },
+  {
+    "key": "modules.lifecycle.e9e8ac20fdbf",
+    "en": "Module maintenance in progress; retry shortly",
+    "ru": "Выполняется обслуживание модулей; повторите попытку немного позже",
+    "uk": "Виконується обслуговування модулів; повторіть спробу трохи пізніше"
+  },
+  {
+    "key": "modules.lifecycle.67ce3a494508",
+    "en": "Module payload changed after interruption; recorded files were preserved",
+    "ru": "Файлы модуля изменились после прерывания; записанные файлы сохранены",
+    "uk": "Файли модуля змінилися після переривання; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.ab3510073be1",
+    "en": "Module payload changed before activation; current files were preserved",
+    "ru": "Файлы модуля изменились перед запуском; текущие файлы сохранены",
+    "uk": "Файли модуля змінилися перед запуском; поточні файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.77294d4fdbbb",
+    "en": "Module payload changed; update or reinstall the module",
+    "ru": "Файлы модуля изменились; обновите или переустановите модуль",
+    "uk": "Файли модуля змінилися; оновіть або перевстановіть модуль"
+  },
+  {
+    "key": "modules.lifecycle.35bd1cb5e5ad",
+    "en": "Module payload is missing",
+    "ru": "Файлы модуля отсутствуют",
+    "uk": "Файли модуля відсутні"
+  },
+  {
+    "key": "modules.lifecycle.865cde637da9",
+    "en": "Module payload permissions are unsafe",
+    "ru": "Небезопасные права файлов модуля",
+    "uk": "Небезпечні права файлів модуля"
+  },
+  {
+    "key": "modules.lifecycle.fa3a2912eeb4",
+    "en": "Module recovery dependencies contain a cycle",
+    "ru": "Зависимости восстановления модулей образуют цикл",
+    "uk": "Залежності відновлення модулів утворюють цикл"
+  },
+  {
+    "key": "modules.lifecycle.d55775c3d808",
+    "en": "Module recovery journal is invalid; recorded files were preserved",
+    "ru": "Журнал восстановления модуля некорректен; записанные файлы сохранены",
+    "uk": "Журнал відновлення модуля некоректний; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.7c130415e9db",
+    "en": "Module registry changed after interruption; current files were preserved",
+    "ru": "Реестр модулей изменился после прерывания; текущие файлы сохранены",
+    "uk": "Реєстр модулів змінився після переривання; поточні файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.635a2b42d2a4",
+    "en": "Module registry changed before activation; recorded files were preserved",
+    "ru": "Реестр модулей изменился перед запуском; записанные файлы сохранены",
+    "uk": "Реєстр модулів змінився перед запуском; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.7881c69cfdfc",
+    "en": "Module registry changed while staging; recorded files were preserved",
+    "ru": "Реестр модулей изменился во время подготовки; записанные файлы сохранены",
+    "uk": "Реєстр модулів змінився під час підготовки; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.ee7732956b57",
+    "en": "Module registry contains an invalid identity",
+    "ru": "Реестр модулей содержит некорректный идентификатор",
+    "uk": "Реєстр модулів містить некоректний ідентифікатор"
+  },
+  {
+    "key": "modules.lifecycle.af54626fcd2c",
+    "en": "Module registry could not be read; preserve it and review recovery",
+    "ru": "Не удалось прочитать реестр модулей; сохраните его и проверьте возможность восстановления",
+    "uk": "Не вдалося прочитати реєстр модулів; збережіть його та перевірте можливість відновлення"
+  },
+  {
+    "key": "modules.lifecycle.f6c198c1d331",
+    "en": "Module registry is too large",
+    "ru": "Реестр модулей слишком велик",
+    "uk": "Реєстр модулів завеликий"
+  },
+  {
+    "key": "modules.lifecycle.82ec477c7173",
+    "en": "Module service configuration changed; current files were preserved",
+    "ru": "Конфигурация службы модуля изменилась; текущие файлы сохранены",
+    "uk": "Конфігурація служби модуля змінилася; поточні файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.18a73114788a",
+    "en": "Module service exists without an installed receipt; preserve it for inspection",
+    "ru": "Служба модуля существует без записи об установке; сохраните её для проверки",
+    "uk": "Служба модуля існує без запису про встановлення; збережіть її для перевірки"
+  },
+  {
+    "key": "modules.lifecycle.183947500666",
+    "en": "Module signing key permissions are unsafe",
+    "ru": "Небезопасные права ключа подписи модуля",
+    "uk": "Небезпечні права ключа підпису модуля"
+  },
+  {
+    "key": "modules.lifecycle.22b8df4a7e83",
+    "en": "Module staging permissions are unsafe",
+    "ru": "Небезопасные права подготовленных файлов модуля",
+    "uk": "Небезпечні права підготовлених файлів модуля"
+  },
+  {
+    "key": "modules.lifecycle.fd3a6bd623c0",
+    "en": "Module state changed before replacement; current files were preserved",
+    "ru": "Состояние модуля изменилось перед заменой; текущие файлы сохранены",
+    "uk": "Стан модуля змінився перед заміною; поточні файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.313360443a5c",
+    "en": "Module state changed while it was read",
+    "ru": "Состояние модуля изменилось во время чтения",
+    "uk": "Стан модуля змінився під час читання"
+  },
+  {
+    "key": "modules.lifecycle.40545a5e4702",
+    "en": "Module state is too large",
+    "ru": "Состояние модуля слишком велико",
+    "uk": "Стан модуля завеликий"
+  },
+  {
+    "key": "modules.lifecycle.3d45ee0e6f92",
+    "en": "Module state permissions are unsafe",
+    "ru": "Небезопасные права состояния модуля",
+    "uk": "Небезпечні права стану модуля"
+  },
+  {
+    "key": "modules.lifecycle.d0543bc3a10b",
+    "en": "Module transaction changed; recorded files were preserved",
+    "ru": "Операция модуля изменилась; записанные файлы сохранены",
+    "uk": "Операція модуля змінилася; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.09a74b970de7",
+    "en": "Module transaction permissions are unsafe",
+    "ru": "Небезопасные права журнала операции модуля",
+    "uk": "Небезпечні права журналу операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.3953bc35e30f",
+    "en": "Module transaction temporary file permissions are unsafe",
+    "ru": "Небезопасные права временного файла операции модуля",
+    "uk": "Небезпечні права тимчасового файлу операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.8aa72ee0cea8",
+    "en": "Native operation executable is missing",
+    "ru": "Исполняемый файл операции модуля отсутствует",
+    "uk": "Виконуваний файл операції модуля відсутній"
+  },
+  {
+    "key": "modules.lifecycle.165d42fd9593",
+    "en": "No module transaction needs recovery",
+    "ru": "Нет операции модуля, требующей восстановления",
+    "uk": "Немає операції модуля, що потребує відновлення"
+  },
+  {
+    "key": "modules.lifecycle.0d3062b4401c",
+    "en": "Original module payload is missing; recorded files were preserved",
+    "ru": "Исходные файлы модуля отсутствуют; записанные файлы сохранены",
+    "uk": "Початкові файли модуля відсутні; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.d4a26379ed79",
+    "en": "Recover pending module transactions with the installed version before package changes",
+    "ru": "Перед изменением пакета восстановите незавершённые операции модулей установленной версией",
+    "uk": "Перед зміною пакунка відновіть незавершені операції модулів установленою версією"
+  },
+  {
+    "key": "modules.lifecycle.a52a9814453d",
+    "en": "Recover the recorded module transaction before changing modules",
+    "ru": "Перед изменением модулей восстановите операцию из журнала",
+    "uk": "Перед зміною модулів відновіть операцію з журналу"
+  },
+  {
+    "key": "modules.lifecycle.5ca83eb6053e",
+    "en": "Required OS packages were not installed; module files were preserved",
+    "ru": "Необходимые системные пакеты не установлены; файлы модуля сохранены",
+    "uk": "Необхідні системні пакунки не встановлено; файли модуля збережено"
+  },
+  {
+    "key": "modules.lifecycle.96ab14b40402",
+    "en": "Staged module payload changed; recorded files were preserved",
+    "ru": "Подготовленные файлы модуля изменились; записанные файлы сохранены",
+    "uk": "Підготовлені файли модуля змінилися; записані файли збережено"
+  },
+  {
+    "key": "modules.lifecycle.a54c824f152f",
+    "en": "System maintenance lock changed; retry after the update",
+    "ru": "Блокировка обслуживания системы изменилась; повторите попытку после обновления",
+    "uk": "Блокування обслуговування системи змінилося; повторіть спробу після оновлення"
+  },
+  {
+    "key": "modules.lifecycle.f853e3935f2a",
+    "en": "System maintenance lock permissions are unsafe",
+    "ru": "Небезопасные права блокировки обслуживания системы",
+    "uk": "Небезпечні права блокування обслуговування системи"
+  },
+  {
+    "key": "modules.lifecycle.513896283d6c",
+    "en": "Unknown module lifecycle command",
+    "ru": "Неизвестная команда управления модулями",
+    "uk": "Невідома команда керування модулями"
+  },
+  {
+    "key": "modules.lifecycle.51721b9c29a5",
+    "en": "Unknown native operation format",
+    "ru": "Неизвестный формат операции модуля",
+    "uk": "Невідомий формат операції модуля"
+  },
+  {
+    "key": "modules.lifecycle.a3e07b72ab12",
+    "en": "Unrecognized files remain in the module transaction; preserve them for inspection",
+    "ru": "В каталоге операции модуля остались неизвестные файлы; сохраните их для проверки",
+    "uk": "У каталозі операції модуля залишилися невідомі файли; збережіть їх для перевірки"
+  },
+  {
+    "key": "modules.lifecycle.8856386fd1fb",
+    "en": "Module recovery is incomplete. Recover the recorded transaction before changing modules.",
+    "ru": "Восстановление модуля не завершено. Перед изменением модулей восстановите операцию из журнала.",
+    "uk": "Відновлення модуля не завершено. Перед зміною модулів відновіть операцію з журналу."
+  },
+  {
+    "key": "modules.lifecycle.ae543a45277b",
+    "en": "Module transaction recovered",
+    "ru": "Операция модуля восстановлена",
+    "uk": "Операцію модуля відновлено"
+  },
+  {
+    "key": "modules.lifecycle.36581b8d8c26",
+    "en": "Native module lifecycle failed; inspect the recorded transaction",
+    "ru": "Не удалось завершить операцию модуля; проверьте её журнал",
+    "uk": "Не вдалося завершити операцію модуля; перевірте її журнал"
+  },
+  {
+    "key": "modules.lifecycle.681970f77a79",
+    "en": "Invalid native module lifecycle response",
+    "ru": "Некорректный ответ управления модулями",
+    "uk": "Некоректна відповідь керування модулями"
+  },
+  {
+    "key": "modules.lifecycle.b0d4d4f7390b",
+    "en": "Review the installed modules and recover the recorded transaction before retrying. The interrupted operation has not been repeated.",
+    "ru": "Перед повторной попыткой проверьте установленные модули и восстановите операцию из журнала. Прерванная операция не повторялась.",
+    "uk": "Перед повторною спробою перевірте встановлені модулі та відновіть операцію з журналу. Перервану операцію не повторено."
+  },
+  {
+    "key": "modules.lifecycle.3a8b6193d6b9",
+    "en": "Modules not started: {{v0}}. Open Modules to update or reinstall them.",
+    "ru": "Модули не запущены: {{v0}}. Откройте «Модули», чтобы обновить или переустановить их.",
+    "uk": "Модулі не запущено: {{v0}}. Відкрийте «Модулі», щоб оновити або перевстановити їх."
+  },
+  {
+    "key": "modules.lifecycle.812cde8f391d",
+    "en": "Missing recovery dependency: {{v0}}",
+    "ru": "Отсутствует зависимость восстановления: {{v0}}",
+    "uk": "Відсутня залежність відновлення: {{v0}}"
+  },
+  {
+    "key": "modules.lifecycle.658d408f99fb",
+    "en": "Update module {{v0}} to a maintenance-aware version before updating the module",
+    "ru": "Перед обновлением модуля {{v0}} установите версию с поддержкой блокировки обслуживания",
+    "uk": "Перед оновленням модуля {{v0}} установіть версію з підтримкою блокування обслуговування"
+  },
+  {
+    "key": "modules.lifecycle.7892927fa6f0",
+    "en": "Recover the recorded module transaction before using installed modules",
+    "ru": "Перед использованием установленных модулей восстановите операцию из журнала",
+    "uk": "Перед використанням установлених модулів відновіть операцію з журналу"
   }
 ]

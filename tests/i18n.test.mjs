@@ -8,6 +8,21 @@ const { registerServerMessages, serverText, localizeResponse } = loadTypeScript(
 )
 const json = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'))
 const dictionaries = ['../src/i18n/', '../../modules/files/frontend/', '../../modules/terminal/frontend/']
+test('module recovery diagnostics retain object names and recovery limits in every language', async () => {
+  registerServerMessages('core', json('../src/i18n/server-messages.json'))
+  for (const lang of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(lang)
+    const dictionary = json(`../src/i18n/locales/${lang}.json`)
+    const message = json('../src/i18n/server-messages.json').find(
+      (entry) => entry.en === 'Module recovery is incomplete. Recover the recorded transaction before changing modules.',
+    )
+    assert.equal(serverText(message.en), dictionary[message.key])
+    const pending = 'Modules not started: files, terminal. Open Modules to update or reinstall them.'
+    assert.ok(serverText(pending).includes('files, terminal'))
+    if (lang !== 'en') assert.notEqual(serverText(pending), pending)
+    assert.ok(dictionary['jobs.check.Module transaction'])
+  }
+})
 test('default, unsupported language, English fallback and independent namespaces', async () => {
   await initializeLanguage('de')
   assert.equal(i18n.language, 'en')
