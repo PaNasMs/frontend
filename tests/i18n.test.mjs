@@ -240,7 +240,13 @@ test('native local mount recovery diagnostics preserve paths in every language',
     await i18n.changeLanguage(language)
     const dictionary = json('../src/i18n/locales/' + language + '.json')
     for (const entry of entries) {
-      const result = localizeResponse({ error: entry.en, point: '/mnt/Дані', target: '/dev/sda1' })
+      const result = localizeResponse({
+        error: entry.en,
+        details: [entry.en],
+        point: '/mnt/Дані',
+        target: '/dev/sda1',
+      })
+      assert.deepEqual(result.details, [dictionary[entry.key]])
       assert.equal(result.error, dictionary[entry.key])
       assert.equal(result.point, '/mnt/Дані')
       assert.equal(result.target, '/dev/sda1')

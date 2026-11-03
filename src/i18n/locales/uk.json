@@ -2712,7 +2712,9 @@
   "jobs.check.Local storage": "Локальне сховище",
   "storage.local.configuredPathInspectionFailed": "Не вдалося перевірити налаштовані шляхи зберігання",
   "storage.local.uuidAlsoPresent": "Інший пристрій має такий самий UUID файлової системи. Перевірте налаштування монтування.",
-  "storage.local.unmountedCleanup": "Перевірте, що том відʼєднано, і очистьте запис про перерване підключення.",
+  "storage.local.unmountedCleanup": "Перевірте, що том від’єднано, і очистьте запис про перерване підключення.",
   "storage.local.foreignMountConfiguration": "Для цього тому вже налаштовано іншу точку монтування. Перевірте її перед продовженням.",
-  "storage.local.btrfsComposition": "Для тому Btrfs з кількох пристроїв або зі зміненим складом потрібна окрема операція"
+  "storage.local.btrfsComposition": "Для тому Btrfs з кількох пристроїв або зі зміненим складом потрібна окрема операція",
+  "storage.local.processMountIdentity": "Не вдалося визначити, який том використовує процес",
+  "storage.local.externalPrepareEntry": "Для цього диска є запис монтування, створений поза панеллю. Перевірте його перед підготовкою диска."
 }

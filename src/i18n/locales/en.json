@@ -2714,5 +2714,7 @@
   "storage.local.uuidAlsoPresent": "This file system UUID is present on another device. Review the mount configuration.",
   "storage.local.unmountedCleanup": "Clear the interrupted mount state after verifying that the mount is gone.",
   "storage.local.foreignMountConfiguration": "This volume has an existing mount configuration at another location. Review it before continuing.",
-  "storage.local.btrfsComposition": "Multi-device or changed Btrfs volumes require a separate workflow"
+  "storage.local.btrfsComposition": "Multi-device or changed Btrfs volumes require a separate workflow",
+  "storage.local.processMountIdentity": "Could not verify process mount identity",
+  "storage.local.externalPrepareEntry": "This disk has a mount entry managed outside the panel. Review it before preparing the disk."
 }
