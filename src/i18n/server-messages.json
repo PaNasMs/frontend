@@ -5706,5 +5706,155 @@
     "en": "Inspect the current partition table and file system before preparing another operation. Interrupted writes are never repeated automatically.",
     "ru": "Проверьте текущую таблицу разделов и файловую систему перед новой операцией. Прерванные записи никогда не повторяются автоматически.",
     "uk": "Перевірте поточну таблицю розділів і файлову систему перед новою операцією. Перервані записи ніколи не повторюються автоматично."
+  },
+  {
+    "key": "storage.local.mountRecoveryFirst",
+    "en": "A mount operation needs recovery before a new operation can start.",
+    "ru": "Перед новой операцией нужно завершить восстановление подключения тома.",
+    "uk": "Перед новою операцією потрібно завершити відновлення підключення тому."
+  },
+  {
+    "key": "storage.local.stageAlreadyExists",
+    "en": "A private mount stage already exists. Inspect recovery before continuing.",
+    "ru": "Осталось незавершённое временное подключение тома. Проверьте восстановление перед продолжением.",
+    "uk": "Залишилося незавершене тимчасове підключення тому. Перевірте відновлення перед продовженням."
+  },
+  {
+    "key": "storage.local.stageStillMounted",
+    "en": "A private stage is still mounted; inspect recovery before removing it",
+    "ru": "Временное подключение тома ещё активно. Проверьте восстановление перед его удалением.",
+    "uk": "Тимчасове підключення тому ще активне. Перевірте відновлення перед його видаленням."
+  },
+  {
+    "key": "storage.local.homeInspectionFailed",
+    "en": "Could not inspect user home folders",
+    "ru": "Не удалось проверить домашние папки пользователей",
+    "uk": "Не вдалося перевірити домашні теки користувачів"
+  },
+  {
+    "key": "storage.local.healthStateUnsafe",
+    "en": "File system health state is unsafe",
+    "ru": "Нельзя безопасно использовать сохранённый результат проверки файловой системы",
+    "uk": "Неможливо безпечно використати збережений результат перевірки файлової системи"
+  },
+  {
+    "key": "storage.local.metadataNotSettled",
+    "en": "Prepared disk metadata has not settled; inspect recovery before continuing",
+    "ru": "Сведения о подготовленном диске ещё не обновились. Проверьте восстановление перед продолжением.",
+    "uk": "Відомості про підготовлений диск ще не оновилися. Перевірте відновлення перед продовженням."
+  },
+  {
+    "key": "storage.local.stageIdentityInvalid",
+    "en": "Private mount stage identity is invalid",
+    "ru": "Не удалось подтвердить временное подключение тома",
+    "uk": "Не вдалося підтвердити тимчасове підключення тому"
+  },
+  {
+    "key": "storage.local.stagePermissionsUnsafe",
+    "en": "Private mount stage permissions are unsafe",
+    "ru": "Небезопасные права каталога временного подключения тома",
+    "uk": "Небезпечні права каталогу тимчасового підключення тому"
+  },
+  {
+    "key": "storage.local.trustedRemountParent",
+    "en": "Repair or changing an active mount requires a root-owned mount-point parent that other users cannot modify. Unmount it and choose a protected mount point first.",
+    "ru": "Для исправления или изменения активного подключения родительский каталог точки подключения должен принадлежать root и быть недоступен другим пользователям для изменения. Сначала отключите том и выберите защищённую точку подключения.",
+    "uk": "Для виправлення або зміни активного підключення батьківський каталог точки монтування має належати root і бути недоступним іншим користувачам для змін. Спочатку відмонтуйте том і виберіть захищену точку монтування."
+  },
+  {
+    "key": "storage.local.disconnectedChanged",
+    "en": "The disconnected volume state changed; review a new operation plan",
+    "ru": "Состояние отключённого тома изменилось. Проверьте новый план операции.",
+    "uk": "Стан відключеного тому змінився. Перевірте новий план операції."
+  },
+  {
+    "key": "storage.local.mountDirectoryGone",
+    "en": "The mount-point directory disappeared",
+    "ru": "Каталог точки подключения исчез",
+    "uk": "Каталог точки монтування зник"
+  },
+  {
+    "key": "storage.local.mountParentChanged",
+    "en": "The mount-point parent changed. Review recovery before continuing.",
+    "ru": "Родительский каталог точки подключения изменился. Проверьте восстановление перед продолжением.",
+    "uk": "Батьківський каталог точки монтування змінився. Перевірте відновлення перед продовженням."
+  },
+  {
+    "key": "storage.local.mountedVolumeChanged",
+    "en": "The mounted volume changed; inspect recovery",
+    "ru": "Подключённый том изменился. Проверьте восстановление.",
+    "uk": "Підключений том змінився. Перевірте відновлення."
+  },
+  {
+    "key": "storage.local.stagedMountChanged",
+    "en": "The staged mount changed",
+    "ru": "Временное подключение тома изменилось",
+    "uk": "Тимчасове підключення тому змінилося"
+  },
+  {
+    "key": "storage.local.stagedMountUnavailable",
+    "en": "The staged mount is unavailable",
+    "ru": "Временное подключение тома недоступно",
+    "uk": "Тимчасове підключення тому недоступне"
+  },
+  {
+    "key": "storage.local.priorOperationUnfinished",
+    "en": "A previous operation is unfinished. This new confirmed plan preserves its evidence in history and does not replay its destructive steps.",
+    "ru": "Предыдущая операция не завершена. Новый подтверждённый план сохранит её сведения в истории и не будет автоматически повторять шаги, изменяющие данные.",
+    "uk": "Попередню операцію не завершено. Новий підтверджений план збереже її відомості в історії та не повторюватиме автоматично кроки, що змінюють дані."
+  },
+  {
+    "key": "storage.local.operationCompleted",
+    "en": "Storage operation completed",
+    "ru": "Операция с хранилищем завершена",
+    "uk": "Операцію зі сховищем завершено"
+  },
+  {
+    "key": "storage.local.inspectionOnly",
+    "en": "Inspect the current device and completed steps. Destructive operations are never replayed automatically; a new operation requires a fresh plan and confirmation.",
+    "ru": "Проверьте текущее устройство и выполненные шаги. Операции, изменяющие данные, не повторяются автоматически: для новой операции нужны новый план и подтверждение.",
+    "uk": "Перевірте поточний пристрій і виконані кроки. Операції, що змінюють дані, не повторюються автоматично: для нової операції потрібні новий план і підтвердження."
+  },
+  {
+    "key": "storage.local.configuredPathInspectionFailed",
+    "en": "Could not inspect configured storage paths",
+    "ru": "Не удалось проверить настроенные пути хранения",
+    "uk": "Не вдалося перевірити налаштовані шляхи зберігання"
+  },
+  {
+    "key": "storage.local.uuidAlsoPresent",
+    "en": "This file system UUID is present on another device. Review the mount configuration.",
+    "ru": "У другого устройства такой же UUID файловой системы. Проверьте настройки монтирования.",
+    "uk": "Інший пристрій має такий самий UUID файлової системи. Перевірте налаштування монтування."
+  },
+  {
+    "key": "storage.local.unmountedCleanup",
+    "en": "Clear the interrupted mount state after verifying that the mount is gone.",
+    "ru": "Проверьте, что том отключён, и очистите запись о прерванном подключении.",
+    "uk": "Перевірте, що том від’єднано, і очистьте запис про перерване підключення."
+  },
+  {
+    "key": "storage.local.foreignMountConfiguration",
+    "en": "This volume has an existing mount configuration at another location. Review it before continuing.",
+    "ru": "Для этого тома уже настроена другая точка подключения. Проверьте её перед продолжением.",
+    "uk": "Для цього тому вже налаштовано іншу точку монтування. Перевірте її перед продовженням."
+  },
+  {
+    "key": "storage.local.btrfsComposition",
+    "en": "Multi-device or changed Btrfs volumes require a separate workflow",
+    "ru": "Для тома Btrfs из нескольких устройств или с изменившимся составом нужна отдельная операция",
+    "uk": "Для тому Btrfs з кількох пристроїв або зі зміненим складом потрібна окрема операція"
+  },
+  {
+    "key": "storage.local.processMountIdentity",
+    "en": "Could not verify process mount identity",
+    "ru": "Не удалось проверить идентификатор точки подключения, которую использует процесс",
+    "uk": "Не вдалося перевірити ідентифікатор точки монтування, яку використовує процес"
+  },
+  {
+    "key": "storage.local.externalPrepareEntry",
+    "en": "This disk has a mount entry managed outside the panel. Review it before preparing the disk.",
+    "ru": "Для этого диска есть запись подключения, созданная вне панели. Проверьте её перед подготовкой диска.",
+    "uk": "Для цього диска є запис монтування, створений поза панеллю. Перевірте його перед підготовкою диска."
   }
 ]

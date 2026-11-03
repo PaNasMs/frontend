@@ -253,3 +253,28 @@ test('storage configuration recovery messages preserve device identity and do no
   }
   await i18n.changeLanguage('en')
 })
+
+test('native local mount recovery diagnostics preserve paths in every language', async () => {
+  const catalog = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', catalog)
+  const entries = catalog.filter((entry) => entry.key.startsWith('storage.local.'))
+  assert.ok(entries.length >= 15)
+  for (const language of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(language)
+    const dictionary = json('../src/i18n/locales/' + language + '.json')
+    for (const entry of entries) {
+      const result = localizeResponse({
+        error: entry.en,
+        details: [entry.en],
+        point: '/mnt/Дані',
+        target: '/dev/sda1',
+      })
+      assert.deepEqual(result.details, [dictionary[entry.key]])
+      assert.equal(result.error, dictionary[entry.key])
+      assert.equal(result.point, '/mnt/Дані')
+      assert.equal(result.target, '/dev/sda1')
+    }
+    assert.ok(dictionary['jobs.check.Local storage'])
+  }
+  await i18n.changeLanguage('en')
+})
