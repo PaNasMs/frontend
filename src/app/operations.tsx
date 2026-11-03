@@ -213,6 +213,10 @@ export const operations: Record<string, Operation> = {
   },
   'raid.check': { label: tr('check_array_80a1807f'), fields: [target] },
   'raid.check-stop': { label: tr('stop_array_check_befc81d8'), fields: [target] },
+  'storage.recover': {
+    label: tr('storage.recover_configuration'),
+    fields: [{ key: 'target', label: tr('device_bc791dbe'), hint: tr('storage.recovery_target_hint') }],
+  },
   'partition.create': {
     label: tr('create_partition_cc6989af'),
     fields: [
