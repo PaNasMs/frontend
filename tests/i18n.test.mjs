@@ -279,6 +279,8 @@ test('module maintenance guidance offers the existing service-stop path without 
     'Recover the recorded module transaction; installed OS dependencies are retained',
     'Account identity or access has changed; request a new operation plan',
   ]
+  const maintenance = catalog.find((entry) => entry.en === messages[0])
+  assert.ok(maintenance)
   for (const language of ['en', 'ru', 'uk']) {
     await i18n.changeLanguage(language)
     const dictionary = json('../src/i18n/locales/' + language + '.json')
@@ -287,6 +289,7 @@ test('module maintenance guidance offers the existing service-stop path without 
       assert.ok(source, raw)
       assert.equal(serverText(raw.replace('{{v0}}', 'legacy-example')), dictionary[source.key].replace('{{v0}}', 'legacy-example'))
     }
+    assert.equal(serverText(messages[1].replace('{{v0}}', 'legacy-example')), dictionary[maintenance.key].replace('{{v0}}', 'legacy-example'))
   }
   await i18n.changeLanguage('en')
 })
