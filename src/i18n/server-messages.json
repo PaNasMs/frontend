@@ -2213,6 +2213,11 @@
     "ru": "Устройство {{v0}} используется: {{v1}}"
   },
   {
+    "key": "server_498050658189",
+    "en": "Device {{v0}} is used by: {{v1}}",
+    "ru": "Устройство {{v0}} используется: {{v1}}"
+  },
+  {
     "key": "server_fdabc0a87a21",
     "en": "Operation on {{v0}} has not started. ",
     "ru": "Операция с {{v0}} не начата. "
@@ -2411,6 +2416,11 @@
     "key": "server_ebbd9ddb7cfc",
     "en": "OS repositories have no suitable package {{v0}} >= {{v1}}. Refresh OS package lists.",
     "ru": "В репозиториях ОС нет подходящего пакета {{v0}} >= {{v1}}. Обновите списки пакетов ОС."
+  },
+  {
+    "key": "server_f5c56faab52c",
+    "en": "Module {{v0}} is busy: close the terminal or finish file transfers",
+    "ru": "Модуль {{v0}} занят: закройте терминал или завершите передачу файлов"
   },
   {
     "key": "server_f5c56faab52c",
@@ -4692,6 +4702,12 @@
     "en": "Invalid sharing request",
     "ru": "Некорректный запрос общего доступа",
     "uk": "Некоректний запит спільного доступу"
+  },
+  {
+    "key": "sharing.passwordSyncFailed",
+    "en": "Linux password accepted, but SMB password synchronization failed. See Users → Security and retry by signing in again.",
+    "ru": "Пароль Linux принят, но синхронизировать пароль SMB не удалось. Откройте «Пользователи → Безопасность» и войдите ещё раз для повторной попытки.",
+    "uk": "Пароль Linux прийнято, але синхронізувати пароль SMB не вдалося. Відкрийте «Користувачі → Безпека» та увійдіть знову для повторної спроби."
   },
   {
     "key": "sharing.passwordSyncFailed",
