@@ -217,7 +217,11 @@ test('native folder and mount diagnostics preserve busy process labels in all la
     await i18n.changeLanguage(language)
     const dictionary = json('../src/i18n/locales/' + language + '.json')
     assert.equal(serverText(busy.en.replace('{{v0}}', names)), dictionary[busy.key].replace('{{v0}}', names))
-    for (const key of ['storage.networkRecoveryRequired', 'storage.networkConfigurationChanged', 'storage.personalFolderBoundary']) {
+    for (const key of [
+      'storage.networkRecoveryRequired',
+      'storage.networkConfigurationChanged',
+      'storage.personalFolderBoundary',
+    ]) {
       const message = catalog.find((entry) => entry.key === key)
       assert.ok(message, key)
       assert.equal(serverText(message.en), dictionary[key])
@@ -225,4 +229,23 @@ test('native folder and mount diagnostics preserve busy process labels in all la
     assert.ok(dictionary['jobs.check.Folder'])
     assert.ok(dictionary['jobs.check.Network mount'])
   }
+})
+
+test('native local mount recovery diagnostics preserve paths in every language', async () => {
+  const catalog = json('../src/i18n/server-messages.json')
+  registerServerMessages('core', catalog)
+  const entries = catalog.filter((entry) => entry.key.startsWith('storage.local.'))
+  assert.ok(entries.length >= 15)
+  for (const language of ['en', 'ru', 'uk']) {
+    await i18n.changeLanguage(language)
+    const dictionary = json('../src/i18n/locales/' + language + '.json')
+    for (const entry of entries) {
+      const result = localizeResponse({ error: entry.en, point: '/mnt/Дані', target: '/dev/sda1' })
+      assert.equal(result.error, dictionary[entry.key])
+      assert.equal(result.point, '/mnt/Дані')
+      assert.equal(result.target, '/dev/sda1')
+    }
+    assert.ok(dictionary['jobs.check.Local storage'])
+  }
+  await i18n.changeLanguage('en')
 })
