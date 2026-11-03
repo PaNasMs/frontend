@@ -236,10 +236,12 @@ test('storage configuration recovery messages preserve device identity and do no
   registerServerMessages('core', catalog)
   const entries = catalog.filter((entry) => entry.key.startsWith('storage.recovery.'))
   assert.ok(entries.length >= 37)
+  const slots = (template) => [...template.matchAll(/\{\{(v\d+)\}\}/g)].map((match) => match[1]).sort()
   for (const language of ['en', 'ru', 'uk']) {
     await i18n.changeLanguage(language)
     const dictionary = json('../src/i18n/locales/' + language + '.json')
     for (const entry of entries) {
+      assert.deepEqual(slots(dictionary[entry.key]), slots(entry.en), entry.key)
       const expand = (value) => value.replace('{{v0}}', 'partitionfs').replace('{{v1}}', '/dev/nvme0n1p2')
       const result = localizeResponse({ error: expand(entry.en), target: '/dev/nvme0n1p2' })
       assert.equal(result.error, expand(dictionary[entry.key]))
