@@ -2691,6 +2691,7 @@
   "storage.mountPointChanged": "Точка монтування змінилася. Перевірте новий план операції.",
   "jobs.check.Folder": "Папка",
   "jobs.check.Network mount": "Мережеве монтування",
+  "storage.recovery.overlap_pending": "Розділ перетинається з наявним розділом. Відкрийте звіт про відновлення перерваної операції.",
   "storage.recovery.enter_device": "Введіть шлях до пристрою",
   "storage.recovery.interrupted_action": "Перервана операція: {{v0}}",
   "storage.recovery.table_changed": "Не вдалося підтвердити оновлену таблицю розділів; перевірте її перед повторною операцією",

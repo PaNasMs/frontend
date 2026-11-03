@@ -2691,6 +2691,7 @@
   "storage.mountPointChanged": "Точка подключения изменилась. Проверьте новый план операции.",
   "jobs.check.Folder": "Папка",
   "jobs.check.Network mount": "Сетевое подключение",
+  "storage.recovery.overlap_pending": "Раздел пересекается с существующим разделом. Откройте отчёт о восстановлении прерванной операции.",
   "storage.recovery.enter_device": "Введите путь к устройству",
   "storage.recovery.interrupted_action": "Прерванная операция: {{v0}}",
   "storage.recovery.table_changed": "Не удалось подтвердить обновлённую таблицу разделов; проверьте её перед повторной операцией",

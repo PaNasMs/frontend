@@ -5406,6 +5406,11 @@
     "uk": "Точка монтування змінилася. Перевірте новий план операції."
   },
   {
+    "key": "storage.recovery.overlap_pending",
+    "en": "The partition overlaps an existing partition. Review the recovery report for the interrupted operation.",
+    "ru": "Раздел пересекается с существующим разделом. Откройте отчёт о восстановлении прерванной операции."
+  },
+  {
     "key": "storage.recovery.interrupted_action",
     "en": "Interrupted operation: {{v0}}",
     "ru": "Прерванная операция: {{v0}}"
