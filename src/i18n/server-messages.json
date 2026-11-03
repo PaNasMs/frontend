@@ -5404,5 +5404,307 @@
     "en": "The mount point changed; review a new operation plan",
     "ru": "Точка подключения изменилась. Проверьте новый план операции.",
     "uk": "Точка монтування змінилася. Перевірте новий план операції."
+  },
+  {
+    "key": "storage.recovery.overlap_pending",
+    "en": "The partition overlaps an existing partition. Review the recovery report for the interrupted operation.",
+    "ru": "Раздел пересекается с существующим разделом. Откройте отчёт о восстановлении прерванной операции."
+  },
+  {
+    "key": "storage.recovery.archive_absent",
+    "en": "No interrupted partition or file system journal is available to archive",
+    "ru": "Нет журнала прерванной операции с разделом или файловой системой для архивирования"
+  },
+  {
+    "key": "storage.recovery.archive_config",
+    "en": "Recover the mount configuration before archiving this journal",
+    "ru": "Восстановите конфигурацию монтирования перед архивированием журнала"
+  },
+  {
+    "key": "storage.recovery.archive_done",
+    "en": "Interrupted operation journal archived",
+    "ru": "Журнал прерванной операции архивирован"
+  },
+  {
+    "key": "storage.recovery.archive_absent_device",
+    "en": "The recorded device is absent",
+    "ru": "Устройство из журнала отсутствует"
+  },
+  {
+    "key": "storage.recovery.archive_present_device",
+    "en": "The recorded device path is present",
+    "ru": "Путь к устройству из журнала существует"
+  },
+  {
+    "key": "storage.recovery.archive_boot",
+    "en": "The system has restarted since this operation",
+    "ru": "После операции система перезагружалась"
+  },
+  {
+    "key": "storage.recovery.archive_changed",
+    "en": "The mount configuration has changed since this operation",
+    "ru": "После операции конфигурация монтирования изменилась"
+  },
+  {
+    "key": "storage.recovery.archive_warning",
+    "en": "Archiving preserves the interrupted journal and allows new plans. Inspect the disk and mount configuration before confirming.",
+    "ru": "Журнал сохранится в архиве, после чего можно будет составлять новые планы. Перед подтверждением проверьте диск и конфигурацию монтирования."
+  },
+  {
+    "key": "storage.recovery.archive_type",
+    "en": "Current device type: {{v0}}",
+    "ru": "Тип устройства сейчас: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_fs",
+    "en": "Current file system: {{v0}}",
+    "ru": "Текущая файловая система: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_uuid",
+    "en": "Current file system UUID: {{v0}}",
+    "ru": "UUID текущей файловой системы: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_mount",
+    "en": "Current mount point: {{v0}}",
+    "ru": "Текущая точка монтирования: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_step_ok",
+    "en": "Recorded completed step: {{v0}}",
+    "ru": "Журнал подтверждает завершение шага: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.archive_step_unknown",
+    "en": "Recorded unconfirmed step: {{v0}}",
+    "ru": "Завершение шага не подтверждено: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.interrupted_action",
+    "en": "Interrupted operation: {{v0}}",
+    "ru": "Прерванная операция: {{v0}}"
+  },
+  {
+    "key": "storage.recovery.table_changed",
+    "en": "Could not confirm the updated partition table; inspect it before retrying",
+    "ru": "Не удалось подтвердить обновлённую таблицу разделов; проверьте её перед повторной операцией",
+    "uk": "Не вдалося підтвердити оновлену таблицю розділів; перевірте її перед повторною операцією"
+  },
+  {
+    "key": "storage.recovery.btrfs_device",
+    "en": "Could not verify Btrfs backing device",
+    "ru": "Не удалось проверить устройство файловой системы Btrfs",
+    "uk": "Не вдалося перевірити пристрій файлової системи Btrfs"
+  },
+  {
+    "key": "storage.recovery.partition_names",
+    "en": "Could not verify partition device names",
+    "ru": "Не удалось проверить имена устройств разделов",
+    "uk": "Не вдалося перевірити назви пристроїв розділів"
+  },
+  {
+    "key": "storage.recovery.identity",
+    "en": "Could not verify storage identity",
+    "ru": "Не удалось подтвердить идентичность устройства хранения",
+    "uk": "Не вдалося підтвердити ідентичність пристрою зберігання"
+  },
+  {
+    "key": "storage.recovery.invalid_mount",
+    "en": "Invalid mount configuration",
+    "ru": "Некорректная конфигурация подключения",
+    "uk": "Некоректна конфігурація підключення"
+  },
+  {
+    "key": "storage.recovery.geometry",
+    "en": "Invalid storage geometry",
+    "ru": "Некорректные размеры или границы устройства хранения",
+    "uk": "Некоректні розміри або межі пристрою зберігання"
+  },
+  {
+    "key": "storage.recovery.lock",
+    "en": "Invalid storage lock",
+    "ru": "Некорректная блокировка устройства хранения",
+    "uk": "Некоректне блокування пристрою зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_absent",
+    "en": "No pending storage configuration recovery was found",
+    "ru": "Нет незавершённого восстановления конфигурации хранения",
+    "uk": "Немає незавершеного відновлення конфігурації зберігання"
+  },
+  {
+    "key": "storage.recovery.btrfs_scope",
+    "en": "Resizing multi-device or changed Btrfs requires a separate workflow",
+    "ru": "Изменение размера Btrfs на нескольких или изменившихся устройствах требует отдельной процедуры",
+    "uk": "Зміна розміру Btrfs на кількох або змінених пристроях потребує окремої процедури"
+  },
+  {
+    "key": "storage.recovery.config_changed",
+    "en": "Storage configuration changed; review recovery before modifying it",
+    "ru": "Конфигурация хранения изменилась; проверьте восстановление перед её изменением",
+    "uk": "Конфігурація зберігання змінилася; перевірте відновлення перед її зміною"
+  },
+  {
+    "key": "storage.recovery.config_size",
+    "en": "Storage configuration is too large",
+    "ru": "Конфигурация хранения слишком велика",
+    "uk": "Конфігурація зберігання завелика"
+  },
+  {
+    "key": "storage.recovery.config_permissions",
+    "en": "Storage configuration permissions are unsafe",
+    "ru": "Небезопасные права доступа к конфигурации хранения",
+    "uk": "Небезпечні права доступу до конфігурації зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_required",
+    "en": "Storage configuration recovery is required before another operation",
+    "ru": "Перед следующей операцией нужно восстановить конфигурацию хранения",
+    "uk": "Перед наступною операцією потрібно відновити конфігурацію зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_unavailable",
+    "en": "Storage configuration recovery is unavailable for this record",
+    "ru": "Восстановление конфигурации хранения недоступно для этой записи",
+    "uk": "Відновлення конфігурації зберігання недоступне для цього запису"
+  },
+  {
+    "key": "storage.recovery.identity_preserve",
+    "en": "Storage identity changed; preserve the operation record and inspect the device",
+    "ru": "Устройство хранения изменилось; сохраните запись операции и проверьте устройство",
+    "uk": "Пристрій зберігання змінився; збережіть запис операції та перевірте пристрій"
+  },
+  {
+    "key": "storage.recovery.lock_permissions",
+    "en": "Storage lock permissions are unsafe",
+    "ru": "Небезопасные права доступа к блокировке устройства хранения",
+    "uk": "Небезпечні права доступу до блокування пристрою зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_intent",
+    "en": "Storage recovery configuration intent is invalid",
+    "ru": "Некорректная сохранённая конфигурация для восстановления хранения",
+    "uk": "Некоректна збережена конфігурація для відновлення зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_ambiguous",
+    "en": "Storage recovery evidence is ambiguous",
+    "ru": "Записи восстановления хранения противоречат друг другу",
+    "uk": "Записи відновлення зберігання суперечать один одному"
+  },
+  {
+    "key": "storage.recovery.recovery_identity",
+    "en": "Storage recovery identity changed",
+    "ru": "Устройство для восстановления хранения изменилось",
+    "uk": "Пристрій для відновлення зберігання змінився"
+  },
+  {
+    "key": "storage.recovery.recovery_identity_missing",
+    "en": "Storage recovery identity is unavailable",
+    "ru": "Не удалось установить устройство для восстановления хранения",
+    "uk": "Не вдалося визначити пристрій для відновлення зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_record_changed",
+    "en": "Storage recovery record changed; preserve it for inspection",
+    "ru": "Запись восстановления хранения изменилась; сохраните её для проверки",
+    "uk": "Запис відновлення зберігання змінився; збережіть його для перевірки"
+  },
+  {
+    "key": "storage.recovery.recovery_record",
+    "en": "Storage recovery record is invalid",
+    "ru": "Некорректная запись восстановления хранения",
+    "uk": "Некоректний запис відновлення зберігання"
+  },
+  {
+    "key": "storage.recovery.recovery_size",
+    "en": "Storage recovery record is too large",
+    "ru": "Запись восстановления хранения слишком велика",
+    "uk": "Запис відновлення зберігання завеликий"
+  },
+  {
+    "key": "storage.recovery.recovery_permissions",
+    "en": "Storage recovery record permissions are unsafe",
+    "ru": "Небезопасные права доступа к записи восстановления хранения",
+    "uk": "Небезпечні права доступу до запису відновлення зберігання"
+  },
+  {
+    "key": "storage.recovery.state_permissions",
+    "en": "Storage state permissions are unsafe",
+    "ru": "Небезопасные права доступа к состоянию хранения",
+    "uk": "Небезпечні права доступу до стану зберігання"
+  },
+  {
+    "key": "storage.recovery.transaction_invalid",
+    "en": "Storage transaction evidence is invalid",
+    "ru": "Некорректная запись операции с устройством хранения",
+    "uk": "Некоректний запис операції з пристроєм зберігання"
+  },
+  {
+    "key": "storage.recovery.transaction_size",
+    "en": "Storage transaction evidence is too large",
+    "ru": "Запись операции с устройством хранения слишком велика",
+    "uk": "Запис операції з пристроєм зберігання завеликий"
+  },
+  {
+    "key": "storage.recovery.transaction_identity",
+    "en": "Storage transaction identity is invalid",
+    "ru": "Некорректная идентичность устройства в записи операции",
+    "uk": "Некоректна ідентичність пристрою в записі операції"
+  },
+  {
+    "key": "storage.recovery.transaction_permissions",
+    "en": "Storage transaction permissions are unsafe",
+    "ru": "Небезопасные права доступа к записи операции хранения",
+    "uk": "Небезпечні права доступу до запису операції зберігання"
+  },
+  {
+    "key": "storage.recovery.block_changed",
+    "en": "The block device changed. Review a new operation plan.",
+    "ru": "Блочное устройство изменилось. Проверьте новый план операции.",
+    "uk": "Блоковий пристрій змінився. Перевірте новий план операції."
+  },
+  {
+    "key": "storage.recovery.original_present",
+    "en": "The original file system is still present; preserve its configuration",
+    "ru": "Исходная файловая система ещё существует; сохраните её конфигурацию",
+    "uk": "Початкова файлова система ще існує; збережіть її конфігурацію"
+  },
+  {
+    "key": "storage.recovery.unknown_evidence",
+    "en": "Unknown storage transaction evidence. Inspect it before continuing.",
+    "ru": "Неизвестная запись операции хранения. Проверьте её перед продолжением.",
+    "uk": "Невідомий запис операції зберігання. Перевірте його перед продовженням."
+  },
+  {
+    "key": "storage.recovery.recovery_plan",
+    "en": "Only saved mount configuration will be reconciled. Partition and file-system writes will not be repeated.",
+    "ru": "Будет восстановлена только сохранённая конфигурация подключений. Запись разделов и файловых систем повторяться не будет.",
+    "uk": "Буде відновлено лише збережену конфігурацію підключень. Запис розділів і файлових систем не повторюватиметься."
+  },
+  {
+    "key": "storage.recovery.recovery_before",
+    "en": "The original file system is still present. Keep its existing mount configuration and reload it.",
+    "ru": "Исходная файловая система ещё существует. Сохранить её конфигурацию подключения и загрузить её заново.",
+    "uk": "Початкова файлова система ще існує. Зберегти її конфігурацію підключення та завантажити її знову."
+  },
+  {
+    "key": "storage.recovery.recovery_desired",
+    "en": "Apply the saved mount configuration and reload it, including when it is already written.",
+    "ru": "Применить сохранённую конфигурацию подключений и загрузить её заново, даже если она уже записана.",
+    "uk": "Застосувати збережену конфігурацію підключень і завантажити її знову, навіть якщо її вже записано."
+  },
+  {
+    "key": "storage.recovery.pending_other",
+    "en": "Unfinished {{v0}} operation on {{v1}}. Inspect its recovery report before changing this storage.",
+    "ru": "Незавершённая операция {{v0}} на {{v1}}. Проверьте отчёт восстановления перед изменением этого устройства.",
+    "uk": "Незавершена операція {{v0}} на {{v1}}. Перевірте звіт відновлення перед зміною цього пристрою."
+  },
+  {
+    "key": "storage.recovery.inspect_only",
+    "en": "Inspect the current partition table and file system before preparing another operation. Interrupted writes are never repeated automatically.",
+    "ru": "Проверьте текущую таблицу разделов и файловую систему перед новой операцией. Прерванные записи никогда не повторяются автоматически.",
+    "uk": "Перевірте поточну таблицю розділів і файлову систему перед новою операцією. Перервані записи ніколи не повторюються автоматично."
   }
 ]
