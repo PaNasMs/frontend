@@ -1,4 +1,7 @@
 {
+  "cooling.frequency_limit": "Максимальная частота процессора",
+  "cooling.system_maximum": "Системный максимум",
+  "cooling.mhz": "МГц",
   "picker.locations": "Расположения",
   "picker.home": "Домашняя папка",
   "picker.expand": "Развернуть",

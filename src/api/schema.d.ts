@@ -2183,6 +2183,8 @@ export interface components {
             /** @enum {string} */
             profile: "quiet" | "balanced" | "performance";
             sampleSeconds: number;
+            /** @description CPU frequency ceiling in kHz. Zero selects the system maximum. */
+            cpuMaxKHz?: number;
             /** @enum {string} */
             cpuProfile: "quiet" | "balanced" | "performance";
         };
@@ -2191,6 +2193,7 @@ export interface components {
             configured?: boolean;
             /** @description Supported control interfaces, independent of controller service health. GPIO support does not prove a fan is wired. */
             capabilities?: {
+                cpuFrequenciesKHz?: number[];
                 cpu: boolean;
                 disk: boolean;
             };
@@ -2732,7 +2735,7 @@ export interface components {
             };
             sleepSettings: {
                 minutes: number;
-            };
+            } | null;
             sleepStatus: {
                 [key: string]: {
                     device: string;

@@ -57,14 +57,17 @@ export function CoolingSettings({
   const q = useQueryClient()
   const data = useQuery({ queryKey: ['cooling'], queryFn: () => request<CoolingState>('cooling') })
   const cfg = data.data?.config
+  const frequencies = data.data?.capabilities?.cpuFrequenciesKHz ?? []
   const saved = kind === 'cpu' ? cfg?.cpuProfile : cfg?.profile
   const draft = useDraft<{
+    frequency: number
     profile: string
     mode: HardwareMode
     control: number
     tach: number | null
   }>(
     {
+      frequency: cfg?.cpuMaxKHz ?? 0,
       profile: saved ?? 'balanced',
       mode: cfg?.hardwareMode ?? 'none',
       control: cfg?.controlGPIO ?? 27,
@@ -72,17 +75,32 @@ export function CoolingSettings({
     },
     kind + String(advanced),
   )
-  const { profile, mode, control, tach } = draft.draft
+  const { frequency, profile, mode, control, tach } = draft.draft
   const pins = Object.keys(headerPins).map(Number)
   const pinLabel = (pin: number) => `GPIO${pin} · ${tr('cooling.header_pin')} ${headerPins[pin]}`
   const setProfile = (profile: string) => draft.setDraft((p) => ({ ...p, profile }))
   const save = useMutation({
     mutationFn: async () => {
       const current = await request<CoolingState>('cooling')
+      const profileEdited = profile !== draft.original.profile
+      const limitEdited = frequency !== draft.original.frequency
+      if (kind === 'cpu') {
+        const latest = current.config
+        const latestFrequency = latest.cpuMaxKHz ?? 0
+        if (
+          (profileEdited && latest.cpuProfile !== draft.original.profile && latest.cpuProfile !== profile) ||
+          (limitEdited && latestFrequency !== draft.original.frequency && latestFrequency !== frequency)
+        ) {
+          throw new Error(tr('oled.conflict'))
+        }
+      }
       return request<CoolingState>('cooling', 'PUT', {
         ...current.config,
         ...(kind === 'cpu'
-          ? { cpuProfile: profile }
+          ? {
+              ...(profileEdited ? { cpuProfile: profile } : {}),
+              ...(limitEdited ? { cpuMaxKHz: frequency } : {}),
+            }
           : advanced
             ? { hardwareMode: mode, controlGPIO: control, tachGPIO: tach }
             : { profile }),
@@ -95,7 +113,7 @@ export function CoolingSettings({
     },
   })
   const dirty = !!cfg && draft.dirty
-  if (data.data?.capabilities?.[kind] === false) return null
+  if (data.data?.capabilities?.[kind] === false && !(kind === 'cpu' && frequencies.length)) return null
   return (
     <WaitingSurface className={className} busy={save.isPending}>
       <h2>
@@ -114,13 +132,16 @@ export function CoolingSettings({
           {tr('cooling_initializing_sensors')}
         </p>
       )}
-      {kind === 'cpu' && data.data?.status.cpu && !data.data.status.cpu.available && (
-        <Notice error>{tr('could_not_apply_the_cpu_profile_06fc2905')}</Notice>
-      )}
+      {kind === 'cpu' &&
+        data.data?.capabilities?.cpu !== false &&
+        data.data?.status.cpu &&
+        !data.data.status.cpu.available && (
+          <Notice error>{tr('could_not_apply_the_cpu_profile_06fc2905')}</Notice>
+        )}
       {kind === 'disk' && cfg?.hardwareMode === 'none' && !advanced && (
         <p className="muted small">{tr('cooling.disabled_hint')}</p>
       )}
-      {!advanced && (
+      {!advanced && data.data?.capabilities?.[kind] !== false && (
         <label className="field">
           {tr('profile_eb0b9b0d')}
           <select
@@ -134,6 +155,28 @@ export function CoolingSettings({
             <option value="quiet">{tr('quiet_683d09e0')}</option>
             <option value="balanced">{tr('balanced_8462ef31')}</option>
             <option value="performance">{tr('performance_4c36d399')}</option>
+          </select>
+        </label>
+      )}
+      {kind === 'cpu' && frequencies.length > 0 && (
+        <label className="field">
+          {tr('cooling.frequency_limit')}
+          <select
+            value={frequency}
+            disabled={!cfg || save.isPending}
+            onChange={(event) => draft.setDraft((p) => ({ ...p, frequency: Number(event.target.value) }))}
+          >
+            <option value={0}>{tr('cooling.system_maximum')}</option>
+            {frequency > 0 && !frequencies.includes(frequency) && (
+              <option disabled value={frequency}>
+                {frequency / 1000} {tr('cooling.mhz')}
+              </option>
+            )}
+            {frequencies.map((khz) => (
+              <option key={khz} value={khz}>
+                {khz / 1000} {tr('cooling.mhz')}
+              </option>
+            ))}
           </select>
         </label>
       )}
