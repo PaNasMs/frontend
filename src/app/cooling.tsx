@@ -82,10 +82,25 @@ export function CoolingSettings({
   const save = useMutation({
     mutationFn: async () => {
       const current = await request<CoolingState>('cooling')
+      const profileEdited = profile !== draft.original.profile
+      const limitEdited = frequency !== draft.original.frequency
+      if (kind === 'cpu') {
+        const latest = current.config
+        const latestFrequency = latest.cpuMaxKHz ?? 0
+        if (
+          (profileEdited && latest.cpuProfile !== draft.original.profile && latest.cpuProfile !== profile) ||
+          (limitEdited && latestFrequency !== draft.original.frequency && latestFrequency !== frequency)
+        ) {
+          throw new Error(tr('oled.conflict'))
+        }
+      }
       return request<CoolingState>('cooling', 'PUT', {
         ...current.config,
         ...(kind === 'cpu'
-          ? { cpuProfile: profile, ...(frequencies.length ? { cpuMaxKHz: frequency } : {}) }
+          ? {
+              ...(profileEdited ? { cpuProfile: profile } : {}),
+              ...(limitEdited ? { cpuMaxKHz: frequency } : {}),
+            }
           : advanced
             ? { hardwareMode: mode, controlGPIO: control, tachGPIO: tach }
             : { profile }),
@@ -117,9 +132,12 @@ export function CoolingSettings({
           {tr('cooling_initializing_sensors')}
         </p>
       )}
-      {kind === 'cpu' && data.data?.status.cpu && !data.data.status.cpu.available && (
-        <Notice error>{tr('could_not_apply_the_cpu_profile_06fc2905')}</Notice>
-      )}
+      {kind === 'cpu' &&
+        data.data?.capabilities?.cpu !== false &&
+        data.data?.status.cpu &&
+        !data.data.status.cpu.available && (
+          <Notice error>{tr('could_not_apply_the_cpu_profile_06fc2905')}</Notice>
+        )}
       {kind === 'disk' && cfg?.hardwareMode === 'none' && !advanced && (
         <p className="muted small">{tr('cooling.disabled_hint')}</p>
       )}
@@ -149,6 +167,11 @@ export function CoolingSettings({
             onChange={(event) => draft.setDraft((p) => ({ ...p, frequency: Number(event.target.value) }))}
           >
             <option value={0}>{tr('cooling.system_maximum')}</option>
+            {frequency > 0 && !frequencies.includes(frequency) && (
+              <option disabled value={frequency}>
+                {frequency / 1000} {tr('cooling.mhz')}
+              </option>
+            )}
             {frequencies.map((khz) => (
               <option key={khz} value={khz}>
                 {khz / 1000} {tr('cooling.mhz')}
