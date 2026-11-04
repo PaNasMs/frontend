@@ -1,4 +1,7 @@
 {
+  "cooling.frequency_limit": "Maximum CPU frequency",
+  "cooling.system_maximum": "System maximum",
+  "cooling.mhz": "MHz",
   "picker.locations": "Locations",
   "picker.home": "Home",
   "picker.expand": "Expand",
