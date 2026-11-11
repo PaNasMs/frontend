@@ -30,6 +30,15 @@ import type { components } from '../api/schema'
 type RecoveryReport = components['schemas']['JobRecovery']
 export type Job = components['schemas']['ManagementJob']
 type ManagementViews = components['schemas']['ManagementViews']
+function optionLabel(field: string, value: string) {
+  if (field === 'mountPolicy') return tr(`storage.mount_${value}`)
+  if (field === 'format') {
+    if (value === 'vfat') return tr('storage.format_fat_auto')
+    if (value === 'fat32' || value === 'ntfs') return value.toUpperCase()
+  }
+  return value
+}
+
 export type Field = {
   key: string
   label: string
@@ -239,7 +248,6 @@ export const operations: Record<string, Operation> = {
         key: 'format',
         label: tr('file_system_678066d2'),
         type: 'select',
-        options: ['ext4', 'xfs', 'btrfs', 'vfat'],
         value: 'ext4',
       },
     ],
@@ -1128,7 +1136,7 @@ function OperationForm({
                       >
                         {(f.key === 'format' ? (inv.data?.formats ?? []) : f.options)?.map((o) => (
                           <option key={o} value={o}>
-                            {f.key === 'mountPolicy' ? tr(`storage.mount_${o}`) : o}
+                            {optionLabel(f.key, o)}
                           </option>
                         ))}
                       </select>
