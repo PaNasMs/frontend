@@ -1,5 +1,11 @@
 [
   {
+    "key": "storage.fat32_minimum",
+    "en": "FAT32 requires at least {{v0}} MiB on this device. Choose FAT (auto) for a smaller volume.",
+    "ru": "Для FAT32 на этом устройстве нужно не менее {{v0}} МиБ. Для меньшего тома выберите FAT (авто).",
+    "uk": "Для FAT32 на цьому пристрої потрібно щонайменше {{v0}} МіБ. Для меншого тому виберіть FAT (авто)."
+  },
+  {
     "key": "share.reason.system",
     "en": "System interfaces cannot be used for connection sharing",
     "ru": "Системные интерфейсы нельзя использовать для раздачи подключения",
