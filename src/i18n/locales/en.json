@@ -2750,6 +2750,7 @@
   "storage.recovery.pending_other": "Unfinished {{v0}} operation on {{v1}}. Inspect its recovery report before changing this storage.",
   "storage.recovery.inspect_only": "Inspect the current partition table and file system before preparing another operation. Interrupted writes are never repeated automatically.",
   "storage.recover_configuration": "Recover mount configuration",
+  "storage.format_fat_auto": "FAT (auto)",
   "storage.recovery_target_hint": "Use the device path from the interrupted operation, including a removed partition. A new plan will be reviewed before any configuration change.",
   "jobs.check.Storage operation": "Storage operation",
   "modules.lifecycle.46445ba97c90": "Active requests or tasks prevent module maintenance; wait and retry",
