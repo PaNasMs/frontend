@@ -1559,26 +1559,20 @@ tbody tr:hover {
   .workspace {
     padding: var(--space-4) var(--space-4) 148px;
   }
-  /* The shell header already names the section; a detail page keeps its own title. */
+  /* The phone bar names the section visually. Keep its page heading in the accessibility tree. */
   .page-heading:not(.detail) h1,
+  .page-heading:not(.detail) > :is(div, hgroup):first-child:has(h1):not(:has(button, a, input, select, textarea, [tabindex])),
+  .page-heading:not(.detail):has(h1):not(:has(button, a, input, select, textarea, [tabindex])),
   .desktop-heading h1,
   .workspace > h1 {
     position: absolute;
     width: 1px;
     height: 1px;
+    padding: 0;
+    margin: 0;
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
-  }
-  .page-heading:not(.detail) > :is(div, hgroup):first-child:has(h1):not(:has(.button)) {
-    display: none;
-  }
-  .page-heading:not(.detail):not(:has(.button, button, a)) {
-    display: none;
-  }
-  .workspace > h1 {
-    padding: 0;
-    margin: 0;
   }
   .page-heading,
   .desktop-heading {
