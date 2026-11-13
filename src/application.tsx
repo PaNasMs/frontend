@@ -359,10 +359,12 @@ async function boot() {
             {
               path: '*',
               element: (
-                <>
+                <div className="page-heading detail">
                   <h1>{tr('page_not_found_b8a96047')}</h1>
-                  <Link to="/">{tr('go_to_desktop_487f0618')}</Link>
-                </>
+                  <Link className="button" to="/">
+                    {tr('go_to_desktop_487f0618')}
+                  </Link>
+                </div>
               ),
             },
           ],
