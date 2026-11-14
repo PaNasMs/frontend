@@ -31,9 +31,27 @@ const retainedModule = `
     routes: ['*'], icon: '', component: () => react.createElement('h1', null, 'Files fixture') });
 `
 const languages = {
-  en: { sections: 'Sections', receive: 'Receive', transfers: 'Transfers', folder: 'My folder' },
-  ru: { sections: 'Разделы', receive: 'Приём', transfers: 'Передачи', folder: 'Моя папка' },
-  uk: { sections: 'Розділи', receive: 'Отримання', transfers: 'Передавання', folder: 'Моя тека' },
+  en: {
+    sections: 'Sections',
+    receive: 'Receive',
+    transfers: 'Transfers',
+    folder: 'My folder',
+    users: 'Users and groups',
+  },
+  ru: {
+    sections: 'Разделы',
+    receive: 'Приём',
+    transfers: 'Передачи',
+    folder: 'Моя папка',
+    users: 'Пользователи и группы',
+  },
+  uk: {
+    sections: 'Розділи',
+    receive: 'Отримання',
+    transfers: 'Передавання',
+    folder: 'Моя тека',
+    users: 'Користувачі та групи',
+  },
 }
 
 try {
@@ -112,7 +130,9 @@ try {
           }
         } else {
           await page.goto(base + '/users/accounts')
-          await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toHaveCount(1)
+          await expect(
+            page.getByRole('main').getByRole('heading', { level: 1, name: labels.users, exact: true }),
+          ).toHaveCount(1)
           await expect(page).toHaveURL(base + '/users/accounts')
         }
       }
