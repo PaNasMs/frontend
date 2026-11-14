@@ -252,7 +252,7 @@ try {
               await assertNoOverflowOrOverlap(page, width)
               await assertVisibleControlsHaveTargets(page, width)
               await expect(page.locator('.phone-taskbar')).toHaveCount(width < 640 ? 1 : 0)
-            }).toPass()
+            }).toPass({ timeout: 5000 })
             await verifyPinOverflow(page, lang, width)
           }
           assert.deepEqual(
@@ -326,7 +326,7 @@ try {
       await expect(page.locator(`.pinned-applications > a[data-app-id="${sourceId}"]`)).toHaveCount(0)
       await expect(page.locator('.pinned-overflow-trigger')).toBeVisible()
       await expect(first).not.toHaveClass(/drop-before|drop-after/)
-    }).toPass()
+    }).toPass({ timeout: 5000 })
     await page.mouse.move(637, 890)
     await page.mouse.up()
     assert.deepEqual(
@@ -400,7 +400,7 @@ try {
       assert.ok(
         itemRect.y >= menuRect.y - 1 && itemRect.y + itemRect.height <= menuRect.y + menuRect.height + 1,
       )
-    }).toPass()
+    }).toPass({ timeout: 5000 })
 
     await page.keyboard.press('Escape')
     await expect(overflowTrigger).toBeFocused()
@@ -440,7 +440,7 @@ try {
       assert.ok(
         itemRect.y >= menuRect.y - 1 && itemRect.y + itemRect.height <= menuRect.y + menuRect.height + 1,
       )
-    }).toPass()
+    }).toPass({ timeout: 5000 })
     assertRuntimeHealthy()
     await page.close()
   }
@@ -459,7 +459,7 @@ try {
       await expect(available).toHaveCount(1)
       await expect(available).toBeVisible()
       await assertNoOverflowOrOverlap(page, 768)
-    }).toPass()
+    }).toPass({ timeout: 5000 })
     await page.waitForFunction(
       (expectedID) => document.activeElement?.getAttribute('data-app-id') === expectedID,
       id,
