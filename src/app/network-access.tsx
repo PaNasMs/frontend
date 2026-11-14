@@ -8,7 +8,7 @@ import { waitForJob } from '../shared/job-completion'
 import { newID } from './dashboard'
 import { notify } from './notifications'
 import { useRouteTab } from './navigation'
-import { tr } from '../i18n'
+import { locale, tr } from '../i18n'
 
 type Config = {
   enabled: boolean
@@ -42,11 +42,27 @@ export const accessQuery = {
 }
 export function NetworkAccessSettings() {
   const data = useQuery(accessQuery)
-  if (data.error) return <Notice>{String(data.error)}</Notice>
-  if (!data.data) return <p role="status">{tr('access.loading')}</p>
-  return <AccessForm incoming={data.data} />
+  return (
+    <>
+      {data.error && (
+        <Notice error>
+          {data.error.message}{' '}
+          <Button disabled={data.isFetching} onClick={() => void data.refetch()}>
+            {tr('access.retry')}
+          </Button>
+        </Notice>
+      )}
+      {data.isPending && <p role="status">{tr('access.loading')}</p>}
+      {data.data && data.isError && (
+        <p role="status">
+          {tr('access.stale', { time: new Date(data.dataUpdatedAt).toLocaleString(locale()) })}
+        </p>
+      )}
+      {data.data && <AccessForm incoming={data.data} unavailable={data.isError} />}
+    </>
+  )
 }
-export function AccessForm({ incoming }: { incoming: Access }) {
+export function AccessForm({ incoming, unavailable = false }: { incoming: Access; unavailable?: boolean }) {
   const wifiSupported = incoming.devices.some((d) => d.kind === 'wifi')
   const usbSupported =
     incoming.usb.available || ['controller-busy', 'multiple-controllers'].includes(incoming.usb.reason)
@@ -60,6 +76,7 @@ export function AccessForm({ incoming }: { incoming: Access }) {
   const q = useQueryClient()
   const update = <K extends keyof Config>(key: K, v: Config[K]) => setValue({ ...value, [key]: v })
   async function apply(kind: 'save' | 'stop') {
+    if (unavailable || busy) return
     setBusy(true)
     setError('')
     try {
@@ -99,6 +116,7 @@ export function AccessForm({ incoming }: { incoming: Access }) {
       <form
         onSubmit={(event) => {
           event.preventDefault()
+          if (unavailable || busy) return
           if (active) setConfirm('save')
           else void apply('save')
         }}
@@ -199,7 +217,7 @@ export function AccessForm({ incoming }: { incoming: Access }) {
               </label>
               <p>{tr('access.returnHelp')}</p>
               {active && (
-                <Button type="button" onClick={() => setConfirm('stop')}>
+                <Button type="button" disabled={unavailable || busy} onClick={() => setConfirm('stop')}>
                   {tr('access.stop')}
                 </Button>
               )}
@@ -243,7 +261,7 @@ export function AccessForm({ incoming }: { incoming: Access }) {
           )}
         </div>
         {!confirm && error && <Notice error>{error}</Notice>}
-        <Button className="primary" disabled={!dirty || busy} type="submit">
+        <Button className="primary" disabled={!dirty || busy || unavailable} type="submit">
           {tr('access.apply')}
         </Button>
       </form>
@@ -271,12 +289,17 @@ export function AccessForm({ incoming }: { incoming: Access }) {
                 <Button disabled={busy} onClick={() => setConfirm(null)}>
                   {tr('access.cancel')}
                 </Button>
-                <Button className="primary" disabled={busy} onClick={() => confirm && void apply(confirm)}>
+                <Button
+                  className="primary"
+                  disabled={busy || unavailable}
+                  onClick={() => confirm && void apply(confirm)}
+                >
                   {tr('access.apply')}
                 </Button>
               </>
             }
           >
+            {unavailable && <Notice error>{tr('access.refreshRequired')}</Notice>}
             {error && <Notice>{error}</Notice>}
           </DialogContent>
         </Dialog.Portal>
