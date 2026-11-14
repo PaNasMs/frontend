@@ -1,11 +1,17 @@
 import { tr } from '../i18n/index'
 import { modules } from './module-registry'
 import { OngoingTasks } from './ongoing-tasks'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { mdiViewDashboardOutline, mdiMonitorDashboard, mdiCheck, mdiDotsVertical } from '@mdi/js'
+import {
+  mdiViewDashboardOutline,
+  mdiMonitorDashboard,
+  mdiCheck,
+  mdiDotsVertical,
+  mdiDotsHorizontal,
+} from '@mdi/js'
 import { request, type Preferences } from '../api/client'
 import { Icon } from '../shared/ui'
 import { apps, shortcutKind, defaults, columns, screen, toggleShortcut, reorder } from './desktop-layout'
@@ -15,6 +21,12 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
   const save = usePreferencesSave()
   const location = useLocation()
   const [open, setOpen] = useState(false)
+  const [overflowOpen, setOverflowOpen] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(0)
+  const pins = useRef<HTMLElement>(null)
+  const overflowTrigger = useRef<HTMLButtonElement>(null)
+  const overflowPanel = useRef<HTMLElement>(null)
+  const resizeFocus = useRef<string | null>(null)
   const [context, setContext] = useState<{
     id: string
     x: number
@@ -48,12 +60,14 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
   const app = applications.find((a) => a.id === context?.id)
   useEffect(() => {
     setOpen(false)
+    setOverflowOpen(false)
     setContext(null)
   }, [location.pathname, location.search])
   useEffect(() => {
     function close(e: PointerEvent) {
       if (!root.current?.contains(e.target as Node) && !popup.current?.contains(e.target as Node)) {
         setOpen(false)
+        setOverflowOpen(false)
         setContext(null)
       }
     }
@@ -61,7 +75,9 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
       if (e.key === 'Escape' && (root.current?.querySelector('[aria-expanded="true"]') || popup.current)) {
         setContext(null)
         setOpen(false)
-        trigger.current?.focus()
+        const returnTo = overflowPanel.current ? overflowTrigger.current : trigger.current
+        setOverflowOpen(false)
+        returnTo?.focus()
       }
     }
     document.addEventListener('pointerdown', close)
@@ -78,6 +94,7 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
     const close = (event: Event) => {
       if ((event as CustomEvent).detail !== root.current) {
         setOpen(false)
+        setOverflowOpen(false)
         setContext(null)
       }
     }
@@ -85,8 +102,55 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
     return () => window.removeEventListener('panasms:popover', close)
   }, [])
   useEffect(() => {
-    if (open) window.dispatchEvent(new CustomEvent('panasms:popover', { detail: root.current }))
-  }, [open])
+    if (open || overflowOpen)
+      window.dispatchEvent(new CustomEvent('panasms:popover', { detail: root.current }))
+  }, [open, overflowOpen])
+  useEffect(() => {
+    if (overflowOpen) overflowPanel.current?.querySelector<HTMLAnchorElement>('a')?.focus()
+  }, [overflowOpen])
+  useLayoutEffect(() => {
+    const nav = pins.current
+    const button = trigger.current
+    if (!nav || !button) return
+    function measure() {
+      const gap = parseFloat(getComputedStyle(nav!).columnGap) || 0
+      const slots = Math.max(
+        1,
+        Math.floor(
+          (nav!.getBoundingClientRect().width + gap) / (button!.getBoundingClientRect().width + gap),
+        ),
+      )
+      const next = slots >= ids.length ? ids.length : slots - 1
+      const focused = document.activeElement as HTMLElement | null
+      const focusedId = focused?.closest<HTMLElement>('[data-app-id]')?.dataset.appId
+      if (focusedId && nav!.contains(focused) && ids.indexOf(focusedId) >= next)
+        resizeFocus.current = 'overflow'
+      if (overflowPanel.current?.contains(focused) && focusedId && ids.indexOf(focusedId) < next) {
+        resizeFocus.current = focusedId
+        setOverflowOpen(false)
+      }
+      if (next === ids.length && focused === overflowTrigger.current) resizeFocus.current = 'launcher'
+      setVisibleCount(next)
+      if (next === ids.length) setOverflowOpen(false)
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(nav)
+    observer.observe(button)
+    return () => observer.disconnect()
+  }, [ids.join('|'), phone])
+  useLayoutEffect(() => {
+    const target = resizeFocus.current
+    if (!target) return
+    resizeFocus.current = null
+    if (target === 'overflow') overflowTrigger.current?.focus()
+    else {
+      const link = Array.from(pins.current?.querySelectorAll<HTMLAnchorElement>('[data-app-id]') ?? []).find(
+        (item) => item.dataset.appId === target,
+      )
+      ;(link ?? trigger.current)?.focus()
+    }
+  }, [visibleCount, overflowOpen])
   function arrange(source: string, target: string) {
     if (source === target) return
     save.mutate((p) => ({ ...p, [key]: reorder(p[key] ?? ids, source, target) }))
@@ -100,6 +164,91 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
       y: Math.max(8, Math.min(y, innerHeight - 145)),
     })
   }
+  function renderPin(id: string, inOverflow = false) {
+    const a = applications.find((a) => a.id === id)!
+    return (
+      <NavLink
+        key={id}
+        to={a.path!}
+        title={a.title}
+        aria-label={a.title}
+        className={over === id ? (ids.indexOf(dragged) < ids.indexOf(id) ? 'drop-after' : 'drop-before') : ''}
+        data-app-id={id}
+        draggable={false}
+        onPointerDown={(e) => {
+          if (inOverflow || e.button !== 0 || save.isPending) return
+          pointer.current = { id, x: e.clientX, y: e.clientY, moved: false }
+          suppressClick.current = false
+          e.currentTarget.setPointerCapture(e.pointerId)
+        }}
+        onPointerMove={(e) => {
+          const p = pointer.current
+          if (!p) return
+          if (!p.moved && Math.hypot(e.clientX - p.x, e.clientY - p.y) < 8) return
+          p.moved = true
+          setDragged(p.id)
+          const target = document
+            .elementFromPoint(e.clientX, e.clientY)
+            ?.closest<HTMLElement>('[data-app-id]')
+          setOver(target?.dataset.appId ?? '')
+        }}
+        onPointerUp={(e) => {
+          const p = pointer.current
+          pointer.current = null
+          if (!p?.moved) return
+          suppressClick.current = true
+          const target = document
+            .elementFromPoint(e.clientX, e.clientY)
+            ?.closest<HTMLElement>('[data-app-id]')?.dataset.appId
+          if (target) arrange(p.id, target)
+          setDragged('')
+          setOver('')
+        }}
+        onPointerCancel={() => {
+          pointer.current = null
+          setDragged('')
+          setOver('')
+        }}
+        onClick={(e) => {
+          if (suppressClick.current) {
+            e.preventDefault()
+            suppressClick.current = false
+          }
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault()
+          showContext(id, e.clientX, e.clientY)
+        }}
+        onKeyDown={(e) => {
+          if (e.altKey && ['ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            e.preventDefault()
+            const at = ids.indexOf(id),
+              next = at + (e.key === 'ArrowLeft' ? -1 : 1)
+            if (next < 0 || next >= ids.length) return
+            save.mutate(
+              (p) => {
+                const order = [...(p[key] ?? ids)]
+                ;[order[at], order[next]] = [order[next], order[at]]
+                return { ...p, [key]: order }
+              },
+              {
+                onSuccess: () =>
+                  requestAnimationFrame(() => {
+                    const link = Array.from(
+                      root.current?.querySelectorAll<HTMLAnchorElement>('[data-app-id]') ?? [],
+                    ).find((item) => item.dataset.appId === id)
+                    ;(link ?? overflowTrigger.current ?? trigger.current)?.focus()
+                  }),
+              },
+            )
+          }
+        }}
+      >
+        <Icon path={a.icon} />
+        {inOverflow && <span>{a.title}</span>}
+      </NavLink>
+    )
+  }
   return (
     <div className="application-bar" ref={root}>
       <button
@@ -111,6 +260,7 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
         aria-expanded={open}
         onClick={() => {
           setOpen(!open)
+          setOverflowOpen(false)
           setContext(null)
         }}
       >
@@ -125,82 +275,26 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
       >
         <Icon path={mdiMonitorDashboard} />
       </NavLink>
-      <nav aria-label={tr('pinned_applications_ea84a502')}>
-        {ids.map((id) => {
-          const a = applications.find((a) => a.id === id)!
-          return (
-            <NavLink
-              key={id}
-              to={a.path!}
-              title={a.title}
-              aria-label={a.title}
-              className={
-                over === id ? (ids.indexOf(dragged) < ids.indexOf(id) ? 'drop-after' : 'drop-before') : ''
-              }
-              data-app-id={id}
-              draggable={false}
-              onPointerDown={(e) => {
-                if (e.button !== 0 || save.isPending) return
-                pointer.current = { id, x: e.clientX, y: e.clientY, moved: false }
-                suppressClick.current = false
-                e.currentTarget.setPointerCapture(e.pointerId)
-              }}
-              onPointerMove={(e) => {
-                const p = pointer.current
-                if (!p) return
-                if (!p.moved && Math.hypot(e.clientX - p.x, e.clientY - p.y) < 8) return
-                p.moved = true
-                setDragged(p.id)
-                const target = document
-                  .elementFromPoint(e.clientX, e.clientY)
-                  ?.closest<HTMLElement>('[data-app-id]')
-                setOver(target?.dataset.appId ?? '')
-              }}
-              onPointerUp={(e) => {
-                const p = pointer.current
-                pointer.current = null
-                if (!p?.moved) return
-                suppressClick.current = true
-                const target = document
-                  .elementFromPoint(e.clientX, e.clientY)
-                  ?.closest<HTMLElement>('[data-app-id]')?.dataset.appId
-                if (target) arrange(p.id, target)
-                setDragged('')
-                setOver('')
-              }}
-              onPointerCancel={() => {
-                pointer.current = null
-                setDragged('')
-                setOver('')
-              }}
-              onClick={(e) => {
-                if (suppressClick.current) {
-                  e.preventDefault()
-                  suppressClick.current = false
-                }
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault()
-                showContext(id, e.clientX, e.clientY)
-              }}
-              onKeyDown={(e) => {
-                if (e.altKey && ['ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                  e.preventDefault()
-                  const at = ids.indexOf(id),
-                    next = at + (e.key === 'ArrowLeft' ? -1 : 1)
-                  if (next < 0 || next >= ids.length) return
-                  save.mutate((p) => {
-                    const order = [...(p[key] ?? ids)]
-                    ;[order[at], order[next]] = [order[next], order[at]]
-                    return { ...p, [key]: order }
-                  })
-                }
-              }}
-            >
-              <Icon path={a.icon} />
-            </NavLink>
-          )
-        })}
+      <nav ref={pins} className="pinned-applications" aria-label={tr('pinned_applications_ea84a502')}>
+        {ids.slice(0, visibleCount).map((id) => renderPin(id))}
+        {visibleCount < ids.length && (
+          <button
+            ref={overflowTrigger}
+            className="pinned-overflow-trigger"
+            title={tr('ui.morePinnedApplications')}
+            aria-label={tr('ui.morePinnedApplications')}
+            aria-current={current && ids.slice(visibleCount).includes(current.id) ? 'page' : undefined}
+            aria-expanded={overflowOpen}
+            aria-controls={phone ? 'phone-pinned-overflow' : 'desktop-pinned-overflow'}
+            onClick={() => {
+              setOverflowOpen(!overflowOpen)
+              setOpen(false)
+              setContext(null)
+            }}
+          >
+            <Icon path={mdiDotsHorizontal} />
+          </button>
+        )}
       </nav>
       {!phone && (
         <>
@@ -213,6 +307,17 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
               return <Indicator key={module.id} />
             })}
         </>
+      )}
+      {overflowOpen && visibleCount < ids.length && (
+        <section
+          ref={overflowPanel}
+          id={phone ? 'phone-pinned-overflow' : 'desktop-pinned-overflow'}
+          className="app-launcher-menu pinned-overflow-menu"
+          aria-label={tr('ui.morePinnedApplications')}
+        >
+          <h2>{tr('ui.morePinnedApplications')}</h2>
+          {ids.slice(visibleCount).map((id) => renderPin(id, true))}
+        </section>
       )}
       {open && (
         <section className="app-launcher-menu" aria-label={tr('nas_applications_5f56f294')}>
