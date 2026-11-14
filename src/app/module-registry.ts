@@ -59,7 +59,8 @@ export const isAdministrator = () => administrator
 export function setModuleAccess(admin: boolean) {
   administrator = admin
 }
-export const modules = () => registered.filter((m) => administrator || m.id === 'files' || m.memberAccess)
+export const modules = (admin = administrator) =>
+  registered.filter((m) => admin || m.id === 'files' || m.memberAccess)
 let builtIn = Infinity
 /** Everything registered before this call belongs to the core; later registrations are installed modules. */
 export function sealBuiltInModules() {
