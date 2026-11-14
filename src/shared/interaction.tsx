@@ -1,17 +1,10 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  useId,
-  useContext,
-  createContext,
-  useCallback,
-  type ReactNode,
-} from 'react'
+import { useEffect, useRef, useState, useCallback, type ReactNode } from 'react'
 import { useBeforeUnload, useBlocker } from 'react-router-dom'
 import * as Dialog from '@radix-ui/react-dialog'
 import { tr } from '../i18n'
 import { DialogContent } from './waiting'
+import { DirtyFormsContext, useUnsavedForm } from './dirty-forms'
+export { useUnsavedForm } from './dirty-forms'
 
 export function ConfirmDialog({
   open,
@@ -92,12 +85,14 @@ export function ConfirmDialog({
 export function UnsavedChanges({
   dirty,
   live,
+  pending = false,
   onDiscard,
 }: {
   dirty: boolean
+  pending?: boolean
   /** Synchronously maintained set of dirty forms: a form that was just reset must not block an unload. */
   live?: { current: Set<string> }
-  onDiscard?: () => void
+  onDiscard?: () => void | boolean
 }) {
   const contentSearch = (search: string) => {
     const params = new URLSearchParams(search)
@@ -110,6 +105,20 @@ export function UnsavedChanges({
       (currentLocation.pathname !== nextLocation.pathname ||
         contentSearch(currentLocation.search) !== contentSearch(nextLocation.search)),
   )
+  const transitionHandled = useRef(false)
+  useEffect(() => {
+    if (blocker.state === 'unblocked') transitionHandled.current = false
+    else if (
+      blocker.state === 'blocked' &&
+      !dirty &&
+      !pending &&
+      (!live || live.current.size === 0) &&
+      !transitionHandled.current
+    ) {
+      transitionHandled.current = true
+      blocker.proceed()
+    }
+  }, [blocker, dirty, pending, live])
   useBeforeUnload((event) => {
     if (dirty && (!live || live.current.size > 0)) {
       event.preventDefault()
@@ -119,29 +128,43 @@ export function UnsavedChanges({
   return (
     <ConfirmDialog
       open={blocker.state === 'blocked'}
-      title={tr('ui.discardTitle')}
+      title={tr(pending ? 'operation_in_progress_10a75370' : 'ui.discardTitle')}
       accept={tr('ui.discard')}
-      onCancel={() => blocker.state === 'blocked' && blocker.reset()}
+      disabled={pending}
+      onCancel={() => {
+        if (blocker.state === 'blocked' && !transitionHandled.current) {
+          transitionHandled.current = true
+          blocker.reset()
+        }
+      }}
       onConfirm={() => {
-        if (blocker.state === 'blocked') {
-          onDiscard?.()
+        if (blocker.state === 'blocked' && !pending && !transitionHandled.current) {
+          transitionHandled.current = true
+          if (onDiscard?.() === false) {
+            transitionHandled.current = false
+            return
+          }
           blocker.proceed()
         }
       }}
     >
-      {tr('ui.discardHelp')}
+      {tr(pending ? 'ui.waitBeforeLeaving' : 'ui.discardHelp')}
     </ConfirmDialog>
   )
 }
 
-const DirtyFormsContext = createContext<(id: string, dirty: boolean, discard?: () => void) => void>(() => {})
 export function DirtyFormsProvider({ children }: { children: ReactNode }) {
   const discards = useRef(new Map<string, () => void>())
   // The state below drives rendering; the ref mirrors it synchronously so that a form reset
   // immediately before a reload (such as applying the interface language) no longer blocks it.
   const live = useRef(new Set<string>())
+  const waiting = useRef(new Set<string>())
+  const [waitingCount, setWaitingCount] = useState(0)
   const [forms, setForms] = useState<Set<string>>(() => new Set())
-  const report = useCallback((id: string, dirty: boolean, discard?: () => void) => {
+  const report = useCallback((id: string, dirty: boolean, discard?: () => void, pending = false) => {
+    if (pending) waiting.current.add(id)
+    else waiting.current.delete(id)
+    setWaitingCount(waiting.current.size)
     if (dirty && discard) discards.current.set(id, discard)
     else discards.current.delete(id)
     if (dirty) live.current.add(id)
@@ -159,9 +182,12 @@ export function DirtyFormsProvider({ children }: { children: ReactNode }) {
       <UnsavedChanges
         dirty={forms.size > 0}
         live={live}
+        pending={waitingCount > 0}
         onDiscard={() => {
-          for (const discard of discards.current.values()) discard()
+          if (waiting.current.size) return false
+          for (const discard of [...discards.current.values()]) discard()
           discards.current.clear()
+          live.current.clear()
           setForms(new Set())
         }}
       />
@@ -169,17 +195,6 @@ export function DirtyFormsProvider({ children }: { children: ReactNode }) {
     </DirtyFormsContext.Provider>
   )
 }
-export function useUnsavedForm(dirty: boolean, onDiscard?: () => void) {
-  const id = useId()
-  const discard = useRef(onDiscard)
-  discard.current = onDiscard
-  const report = useContext(DirtyFormsContext)
-  useEffect(() => {
-    report(id, dirty, () => discard.current?.())
-    return () => report(id, false)
-  }, [id, dirty, report])
-}
-
 export function useDraft<T>(incoming: T, target = '') {
   const [draft, setDraft] = useState<T>(incoming)
   const [baseline, setBaseline] = useState(JSON.stringify(incoming))

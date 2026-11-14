@@ -17,6 +17,7 @@ import {
 import * as Dialog from '@radix-ui/react-dialog'
 import { tr } from '../i18n'
 import { mdiClose } from '@mdi/js'
+import { useUnsavedForm } from './dirty-forms'
 
 type Waiting = { busy?: boolean; message?: string; hint?: string }
 
@@ -173,6 +174,15 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
   const [nested, setNested] = useState(false)
   const parent = useContext(ParentDialog)
   const dirty = suppliedDirty ?? changed
+  useUnsavedForm(
+    dirty,
+    () => {
+      bypass.current = true
+      closeRef.current?.click()
+      bypass.current = false
+    },
+    !!busy && intent === 'edit',
+  )
   const setRef = useCallback(
     (node: HTMLDivElement | null) => {
       localRef.current = node

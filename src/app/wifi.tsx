@@ -123,6 +123,7 @@ export function WifiControls({
           <Dialog.Overlay className="dialog-overlay" />
           <DialogContent
             busy={busy}
+            dirty={!!choice && (!!password || (choice === 'hidden' && (!!ssid || security !== 'wpa2')))}
             className="settings-dialog wifi-dialog"
             header={
               <>
@@ -146,10 +147,8 @@ export function WifiControls({
                     form="modal-wifi"
                     type="button"
                     disabled={disabled}
-                    onClick={() => {
-                      setChoice(null)
-                      setPassword('')
-                    }}
+                    data-dialog-cancel
+                    onClick={close}
                   >
                     {tr('homes.cancel')}
                   </Button>

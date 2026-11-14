@@ -441,7 +441,9 @@ export function Dashboard() {
             }
             footer={
               <div className="actions">
-                <Button onClick={closeConfiguration}>{tr('cancel_0ec753be')}</Button>
+                <Button data-dialog-cancel onClick={closeConfiguration}>
+                  {tr('cancel_0ec753be')}
+                </Button>
                 <Button
                   className="primary"
                   onClick={() => {
