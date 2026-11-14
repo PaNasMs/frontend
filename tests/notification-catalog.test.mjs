@@ -6,6 +6,8 @@ test('notification catalog names every task in all interface languages', () => {
   const { actions, messages } = notificationCatalog()
   assert.ok(Object.keys(actions).length >= 100)
   assert.deepEqual(actions['file.copy'], { en: 'Copy', ru: 'Копировать', uk: 'Копіювати' })
+  for (const action of ['filesystem.format', 'disk.prepare', 'user.delete', 'luks.key-remove'])
+    for (const lang of ['en', 'ru', 'uk']) assert.ok(actions[action]?.[lang], `${action} ${lang}`)
   // The task list wording wins over the form label.
   assert.equal(actions['module.install'].ru, 'Установка модуля')
   for (const [action, names] of Object.entries(actions))
