@@ -290,7 +290,7 @@ function Shell() {
         ))}
         {session.data?.role !== 'admin' &&
         !['/', '/profile', '/history'].includes(routeLocation.pathname) &&
-        !matchPath('/profile/:section', routeLocation.pathname) &&
+        !routeLocation.pathname.startsWith('/profile/') &&
         !modules(false).some(
           (module) =>
             module.path &&

@@ -96,6 +96,9 @@ try {
         ).toHaveCount(1)
         await page.goto(`${base}/files/nested/folder`)
         await expect(page.getByRole('heading', { name: 'Files fixture' })).toHaveCount(1)
+        await page.goto(`${base}/profile/security/keys`)
+        await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toHaveCount(1)
+        await expect(page).toHaveURL(`${base}/profile/security/keys`)
         if (role === 'user') {
           for (const path of [
             '/users/accounts',
