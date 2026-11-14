@@ -36,7 +36,7 @@ export function ProfilePage() {
     ['account', 'appearance', 'security', 'connections', 'notifications', 'activity'],
     'account',
   )
-  const [deleteKey, setDeleteKey] = useState('')
+  const [deleteKey, setDeleteKey] = useState<Profile['keys'][number] | null>(null)
   const preferences = useQuery({
     queryKey: ['preferences'],
     queryFn: () => request<Preferences>('preferences'),
@@ -72,6 +72,7 @@ export function ProfilePage() {
         return
       }
       if (body.action === 'name') nameDraft.reset(body.name)
+      if (body.action === 'delete') setDeleteKey(null)
       notify(body.action === 'name' ? tr('name_saved_31b77838') : tr('ssh_keys_updated_88d5e6c8'))
       setKey('')
       setKeyPassword('')
@@ -84,15 +85,24 @@ export function ProfilePage() {
     <WaitingSurface busy={update.isPending || saveLanguage.isPending || saveTheme.isPending}>
       <ConfirmDialog
         open={!!deleteKey}
-        title={tr('delete_86ea33ae')}
-        accept={tr('delete_86ea33ae')}
-        onCancel={() => setDeleteKey('')}
+        title={tr('accounts.deleteSSHKey')}
+        accept={`${tr('delete_86ea33ae')} · ${deleteKey?.comment || deleteKey?.type || ''}`}
+        danger
+        busy={update.isPending}
+        onCancel={() => {
+          setDeleteKey(null)
+          update.reset()
+        }}
         onConfirm={() => {
-          update.mutate({ action: 'delete', id: deleteKey, currentPassword: keyPassword })
-          setDeleteKey('')
+          if (deleteKey) update.mutate({ action: 'delete', id: deleteKey.id, currentPassword: keyPassword })
         }}
       >
-        {tr('delete_this_ssh_key_it_will_no_longer_work_for_sig_7c3f298a')}
+        <p>
+          <strong>{deleteKey?.comment || deleteKey?.type}</strong>
+        </p>
+        <p className="mono">{deleteKey?.fingerprint}</p>
+        <p>{tr('delete_this_ssh_key_it_will_no_longer_work_for_sig_7c3f298a')}</p>
+        {update.error && <Notice error>{update.error.message}</Notice>}
       </ConfirmDialog>
       <div className="page-heading">
         <div>
@@ -101,7 +111,7 @@ export function ProfilePage() {
         </div>
       </div>
       {data.error && <Notice error>{data.error.message}</Notice>}
-      {update.error && <Notice error>{update.error.message}</Notice>}
+      {update.error && !deleteKey && <Notice error>{update.error.message}</Notice>}
       <Tabs.Root
         className="section-layout settings-page profile-settings"
         orientation="vertical"
@@ -325,11 +335,12 @@ export function ProfilePage() {
                     <div className="mono small">{k.fingerprint}</div>
                   </div>
                   <Button
-                    title={tr('delete_86ea33ae')}
-                    aria-label={tr('delete_86ea33ae')}
+                    title={`${tr('delete_86ea33ae')} · ${k.comment || k.type}`}
+                    aria-label={`${tr('delete_86ea33ae')} · ${k.comment || k.type}`}
                     disabled={!keyPassword || update.isPending}
                     onClick={() => {
-                      setDeleteKey(k.id)
+                      update.reset()
+                      setDeleteKey(k)
                     }}
                   >
                     <Icon path={mdiDeleteOutline} />

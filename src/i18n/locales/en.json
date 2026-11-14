@@ -2878,5 +2878,12 @@
   "storage.local.configuredPathInspectionFailed": "Could not inspect configured storage paths",
   "jobs.check.Local storage": "Local storage",
   "storage.local.unmountedCleanup": "Clear the interrupted mount state after verifying that the mount is gone.",
-  "storage.local.mountParentChanged": "The mount-point parent changed. Review recovery before continuing."
+  "storage.local.mountParentChanged": "The mount-point parent changed. Review recovery before continuing.",
+  "accounts.deleteSSHKey": "Delete SSH key",
+  "accounts.session": "Session",
+  "accounts.sessionStarted": "Started",
+  "accounts.endCurrentSession": "This is your current session. You will be signed out of PaNasMs.",
+  "delivery.removeDeviceHelp": "This device will stop receiving push notifications from the NAS. You can subscribe again from that device.",
+  "delivery.unlinkTelegramHelp": "This Telegram account will stop receiving NAS notifications. You can link it again later.",
+  "delivery.telegramLinkChanged": "The Telegram connection changed. Close this dialog and review the current account before disconnecting it."
 }

@@ -2878,5 +2878,12 @@
   "storage.local.configuredPathInspectionFailed": "Не вдалося перевірити налаштовані шляхи зберігання",
   "jobs.check.Local storage": "Локальне сховище",
   "storage.local.unmountedCleanup": "Перевірте, що том від’єднано, і очистьте запис про перерване підключення.",
-  "storage.local.mountParentChanged": "Батьківський каталог точки монтування змінився. Перевірте відновлення перед продовженням."
+  "storage.local.mountParentChanged": "Батьківський каталог точки монтування змінився. Перевірте відновлення перед продовженням.",
+  "accounts.deleteSSHKey": "Видалити SSH-ключ",
+  "accounts.session": "Сеанс",
+  "accounts.sessionStarted": "Початок сеансу",
+  "accounts.endCurrentSession": "Це ваш поточний сеанс. Ви вийдете з PaNasMs.",
+  "delivery.removeDeviceHelp": "Цей пристрій перестане отримувати push-сповіщення від NAS. Підписку можна ввімкнути знову з цього пристрою.",
+  "delivery.unlinkTelegramHelp": "Цей обліковий запис Telegram перестане отримувати сповіщення від NAS. Його можна буде прив’язати знову.",
+  "delivery.telegramLinkChanged": "Прив’язка Telegram змінилася. Закрийте діалог і перевірте поточний обліковий запис перед відключенням."
 }
