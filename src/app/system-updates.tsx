@@ -7,6 +7,7 @@ import { tr, locale } from '../i18n'
 import { Button, Icon, Notice, DialogContent, WaitingOverlay } from '../shared/ui'
 import { managed, type Job } from './operations'
 import { newID } from './desktop-layout'
+import { useDraft } from '../shared/interaction'
 import { waitForJob } from '../shared/job-completion'
 import { isAdministrator } from './module-registry'
 import { notify } from './notifications'
@@ -45,7 +46,9 @@ export function SystemUpdates() {
   const query = useSystemUpdates()
   const q = useQueryClient()
   const data = query.data
-  const [settings, setSettings] = useState<Settings>({ channel: 'stable', mode: 'notify', hour: 3 })
+  const draft = useDraft<Settings | null>(data?.settings ?? null, 'system-updates')
+  const settings = draft.draft
+  const setSettings = draft.setDraft
   const [operation, setOperation] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -53,9 +56,6 @@ export function SystemUpdates() {
   // 'refused' while the refusal stands, 'cleared' once a re-check passes.
   const [guard, setGuard] = useState<'' | 'refused' | 'cleared'>('')
   const installing = useRef(false)
-  useEffect(() => {
-    if (data) setSettings(data.settings)
-  }, [data?.settings.channel, data?.settings.mode, data?.settings.hour])
   useEffect(() => {
     if (data?.busy && ['install', 'rollback'].includes(data.state.operation ?? '')) installing.current = true
     if (
@@ -95,6 +95,8 @@ export function SystemUpdates() {
   // Cancelling a refused confirmation leaves nothing to report on the page.
   const close = () => open(null)
   async function apply(action: string, params: Record<string, unknown> = {}) {
+    if (!data || query.isError || working || (action.endsWith('settings') && (!settings || draft.conflict)))
+      return
     setBusy(true)
     setError('')
     setGuard('')
@@ -124,31 +126,44 @@ export function SystemUpdates() {
     }
   }
   const working = busy || !!data?.busy
+  const unavailable = !data || query.isError
+  const readError = query.error && (
+    <Notice error>
+      {query.error.message}{' '}
+      <Button disabled={query.isFetching} onClick={() => void query.refetch()}>
+        {tr('up.retry')}
+      </Button>
+    </Notice>
+  )
   return (
     <div className="update-settings">
       <div className="page-heading">
         <h2>{tr('up.title')}</h2>
         <div className="actions">
-          <Button title={tr('up.check')} disabled={working} onClick={() => void apply('system.update.check')}>
+          <Button
+            title={tr('up.check')}
+            disabled={working || unavailable}
+            onClick={() => void apply('system.update.check')}
+          >
             <Icon path={mdiRefresh} />
           </Button>
           <Button
             title={tr('up.download')}
-            disabled={working || !data?.available}
+            disabled={working || unavailable || !data?.available}
             onClick={() => void apply('system.update.download')}
           >
             <Icon path={mdiDownload} />
           </Button>
           <Button
             title={tr('up.install')}
-            disabled={working || !data?.available}
+            disabled={working || unavailable || !data?.available}
             onClick={() => open('install')}
           >
             <Icon path={mdiUpdate} />
           </Button>
           <Button
             title={tr('up.rollback')}
-            disabled={working || !data?.rollbackAvailable}
+            disabled={working || unavailable || !data?.rollbackAvailable}
             onClick={() => open('rollback')}
           >
             <Icon path={mdiRestore} />
@@ -156,102 +171,127 @@ export function SystemUpdates() {
         </div>
       </div>
       {error && !operation && <Notice error>{error}</Notice>}
-      {query.error && !working && <Notice error>{query.error.message}</Notice>}
-      {data?.state.error && <Notice error>{data.state.error}</Notice>}
-      <dl className="update-summary">
-        <dt>{tr('up.current')}</dt>
-        <dd>{data?.installed['panasms-prototype'] ?? '—'}</dd>
-        <dt>{tr('up.available')}</dt>
-        <dd>{data?.available ? data.candidate?.version : tr('up.none')}</dd>
-        <dt>{tr('up.checked')}</dt>
-        <dd>{data?.checkedAt ? new Date(data.checkedAt).toLocaleString(locale()) : '—'}</dd>
-      </dl>
-      {data?.candidate && (
-        <a href={data.candidate.run} target="_blank" rel="noreferrer">
-          {tr('up.changes')}
-        </a>
+      {query.isPending && <p role="status">{tr('up.loading')}</p>}
+      {!operation && readError}
+      {data && query.isError && (
+        <p role="status">
+          {tr('up.stale', { time: new Date(query.dataUpdatedAt).toLocaleString(locale()) })}
+        </p>
       )}
-      <form
-        className="update-preferences waiting-surface"
-        onSubmit={(e) => {
-          e.preventDefault()
-          void apply('system.update.settings', settings)
-        }}
-      >
-        <h3>{tr('up.preferences')}</h3>
-        <label className="field">
-          {tr('up.channel')}
-          <select
-            value={settings.channel}
-            onChange={(e) => setSettings({ ...settings, channel: e.target.value as Settings['channel'] })}
-          >
-            <option value="stable">{tr('up.stable')}</option>
-            <option value="testing">{tr('up.testing')}</option>
-          </select>
-        </label>
-        <label className="field">
-          {tr('up.mode')}
-          <select
-            value={settings.mode}
-            onChange={(e) => setSettings({ ...settings, mode: e.target.value as Settings['mode'] })}
-          >
-            <option value="notify">{tr('up.notify')}</option>
-            <option value="download">{tr('up.autoDownload')}</option>
-            <option value="auto">{tr('up.autoInstall')}</option>
-          </select>
-        </label>
-        {settings.mode === 'auto' && (
-          <label className="field">
-            {tr('up.hour')}
-            <select
-              value={settings.hour}
-              onChange={(e) => setSettings({ ...settings, hour: Number(e.target.value) })}
+      {data && (
+        <>
+          {data.state.error && <Notice error>{data.state.error}</Notice>}
+          <dl className="update-summary">
+            <dt>{tr('up.current')}</dt>
+            <dd>{data?.installed['panasms-prototype'] ?? '—'}</dd>
+            <dt>{tr('up.available')}</dt>
+            <dd>{data?.available ? data.candidate?.version : tr('up.none')}</dd>
+            <dt>{tr('up.checked')}</dt>
+            <dd>{data?.checkedAt ? new Date(data.checkedAt).toLocaleString(locale()) : '—'}</dd>
+          </dl>
+          {data?.candidate && (
+            <a href={data.candidate.run} target="_blank" rel="noreferrer">
+              {tr('up.changes')}
+            </a>
+          )}
+          {settings && (
+            <form
+              className="update-preferences waiting-surface"
+              onSubmit={(e) => {
+                e.preventDefault()
+                void apply('system.update.settings', settings)
+              }}
             >
-              {Array.from({ length: 24 }, (_, h) => (
-                <option key={h} value={h}>
-                  {String(h).padStart(2, '0')}:00–{String(h).padStart(2, '0')}:59
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        <p className="small muted">{tr('up.policy')}</p>
-        <Button
-          type="submit"
-          className="primary"
-          disabled={working || JSON.stringify(settings) === JSON.stringify(data?.settings)}
-        >
-          {tr('apply_768af677')}
-        </Button>
-        {busy && !operation && <WaitingOverlay />}
-      </form>
-      <h3>{tr('up.history')}</h3>
-      {data?.history.length ? (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>{tr('up.date')}</th>
-                <th>{tr('up.version')}</th>
-                <th>{tr('up.result')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.history.map((row) => (
-                <tr key={row.id}>
-                  <td>{new Date(row.finishedAt ?? row.startedAt ?? '').toLocaleString(locale())}</td>
-                  <td>{row.version ?? '—'}</td>
-                  <td>
-                    {tr('up.phase.' + row.phase)}
-                    {row.error && <p className="small">{row.error}</p>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="muted">{tr('up.empty')}</p>
+              <h3>{tr('up.preferences')}</h3>
+              {draft.conflict && (
+                <Notice>
+                  {tr('oled.conflict')}{' '}
+                  <Button type="button" disabled={unavailable || working} onClick={() => draft.reset()}>
+                    {tr('oled.reload')}
+                  </Button>
+                </Notice>
+              )}
+              <label className="field">
+                {tr('up.channel')}
+                <select
+                  disabled={unavailable || working}
+                  value={settings.channel}
+                  onChange={(e) =>
+                    setSettings({ ...settings, channel: e.target.value as Settings['channel'] })
+                  }
+                >
+                  <option value="stable">{tr('up.stable')}</option>
+                  <option value="testing">{tr('up.testing')}</option>
+                </select>
+              </label>
+              <label className="field">
+                {tr('up.mode')}
+                <select
+                  disabled={unavailable || working}
+                  value={settings.mode}
+                  onChange={(e) => setSettings({ ...settings, mode: e.target.value as Settings['mode'] })}
+                >
+                  <option value="notify">{tr('up.notify')}</option>
+                  <option value="download">{tr('up.autoDownload')}</option>
+                  <option value="auto">{tr('up.autoInstall')}</option>
+                </select>
+              </label>
+              {settings.mode === 'auto' && (
+                <label className="field">
+                  {tr('up.hour')}
+                  <select
+                    disabled={unavailable || working}
+                    value={settings.hour}
+                    onChange={(e) => setSettings({ ...settings, hour: Number(e.target.value) })}
+                  >
+                    {Array.from({ length: 24 }, (_, h) => (
+                      <option key={h} value={h}>
+                        {String(h).padStart(2, '0')}:00–{String(h).padStart(2, '0')}:59
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              <p className="small muted">{tr('up.policy')}</p>
+              <Button
+                type="submit"
+                className="primary"
+                disabled={working || unavailable || !draft.dirty || draft.conflict}
+              >
+                {tr('apply_768af677')}
+              </Button>
+              {busy && !operation && <WaitingOverlay />}
+            </form>
+          )}
+          <h3>{tr('up.history')}</h3>
+          {data?.history.length ? (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>{tr('up.date')}</th>
+                    <th>{tr('up.version')}</th>
+                    <th>{tr('up.result')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.history.map((row) => (
+                    <tr key={row.id}>
+                      <td>{new Date(row.finishedAt ?? row.startedAt ?? '').toLocaleString(locale())}</td>
+                      <td>{row.version ?? '—'}</td>
+                      <td>
+                        {tr('up.phase.' + row.phase)}
+                        {row.error && <p className="small">{row.error}</p>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="muted">{tr('up.empty')}</p>
+          )}
+        </>
       )}
       <Dialog.Root
         open={!!operation}
@@ -288,7 +328,11 @@ export function SystemUpdates() {
                   <Dialog.Close asChild>
                     <Button data-dialog-cancel>{tr('cancel_0ec753be')}</Button>
                   </Dialog.Close>
-                  <Button className="primary" onClick={() => void apply('system.update.' + operation)}>
+                  <Button
+                    className="primary"
+                    disabled={unavailable || working}
+                    onClick={() => void apply('system.update.' + operation)}
+                  >
                     {tr('homes.confirmButton')}
                   </Button>
                 </div>
@@ -296,6 +340,7 @@ export function SystemUpdates() {
             }
           >
             {error && <Notice error>{error}</Notice>}
+            {readError}
             {guard === 'cleared' && !error && <Notice>{tr('up.unblocked')}</Notice>}
           </DialogContent>
         </Dialog.Portal>
