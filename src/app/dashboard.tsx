@@ -23,7 +23,9 @@ import { request, type Metrics, type Preferences } from '../api/client'
 import { Button, DialogContent, Icon, Notice, bytes } from '../shared/ui'
 import { screen, columns, free, place, defaults, apps, type Tile } from './desktop-layout'
 import { usePreferencesSave } from './preferences-save'
+import { useUnsavedForm } from '../shared/interaction'
 export { newID, type Tile } from './desktop-layout'
+type LayoutDraft = { tiles: Tile[]; baseline: string; original: string }
 export function Dashboard() {
   const pointer = useRef<{
     id: string
@@ -48,13 +50,17 @@ export function Dashboard() {
   const [mode, setMode] = useState(screen)
   const cols = columns(mode)
   const gridMaxWidth = cols * 176
-  const initial = useMemo(() => defaults(cols), [cols])
+  const initial = useMemo(
+    () =>
+      Object.fromEntries(['mobile', 'medium', 'wide'].map((layout) => [layout, defaults(columns(layout))])),
+    [],
+  )
   const [editing, setEditing] = useState(false)
-  const [draft, setDraft] = useState<Tile[]>([])
-  const [base, setBase] = useState('')
+  const [drafts, setDrafts] = useState<Record<string, LayoutDraft>>({})
   const [selected, setSelected] = useState('cpu')
   const [moving, setMoving] = useState<string | null>(null)
   const [configuring, setConfiguring] = useState<string | null>(null)
+  const [configurationMode, setConfigurationMode] = useState<string>(mode)
   const [adding, setAdding] = useState<string | null>(null)
   const [configuration, setConfiguration] = useState<Record<string, string>>({})
   const prefs = useQuery({ queryKey: ['preferences'], queryFn: () => request<Preferences>('preferences') })
@@ -63,21 +69,54 @@ export function Dashboard() {
   useEffect(() => {
     const resize = () => {
       const next = screen()
-      setMode((old) => {
-        if (old !== next) {
-          setEditing(false)
-          setMoving(null)
-          setDrag(null)
-          pointer.current = null
-        }
-        return next
-      })
+      if (next !== mode) {
+        setMode(next)
+        setMoving(null)
+        setDrag(null)
+        pointer.current = null
+      }
     }
     addEventListener('resize', resize)
     return () => removeEventListener('resize', resize)
-  }, [])
-  const stored = prefs.data?.desktopLayouts?.[mode] as Tile[] | undefined
-  const tiles = (editing ? draft : (stored ?? initial)).filter((t) => catalog[t.kind])
+  }, [mode])
+  function savedTiles(layout: string) {
+    return ((prefs.data?.desktopLayouts?.[layout] as Tile[] | undefined) ?? initial[layout]).filter(
+      (tile) => catalog[tile.kind],
+    )
+  }
+  function layoutDraft(layout: string): LayoutDraft {
+    const tiles = savedTiles(layout)
+    return {
+      tiles,
+      baseline: JSON.stringify(prefs.data?.desktopLayouts?.[layout] ?? null),
+      original: JSON.stringify(tiles),
+    }
+  }
+  function setDraft(update: Tile[] | ((old: Tile[]) => Tile[]), layout = mode) {
+    setDrafts((previous) => {
+      const current = previous[layout] ?? layoutDraft(layout)
+      return {
+        ...previous,
+        [layout]: { ...current, tiles: typeof update === 'function' ? update(current.tiles) : update },
+      }
+    })
+  }
+  const draft = drafts[mode]?.tiles ?? savedTiles(mode)
+  const tiles = (editing ? draft : savedTiles(mode)).filter((tile) => catalog[tile.kind])
+  const configurationTiles = drafts[configurationMode]?.tiles ?? savedTiles(configurationMode)
+  const changedDrafts = Object.entries(drafts).filter(
+    ([, value]) => JSON.stringify(value.tiles) !== value.original,
+  )
+  function discard() {
+    setEditing(false)
+    setDrafts({})
+    setMoving(null)
+    setDrag(null)
+    pointer.current = null
+    setAdding(null)
+    setConfiguring(null)
+  }
+  useUnsavedForm(editing && changedDrafts.length > 0, discard)
   const draggedTile = draft.find((t) => t.id === drag?.id)
   const draggedSize = draggedTile ? catalog[draggedTile.kind] : undefined
   const rows = Math.max(1, ...tiles.map((t) => t.y + catalog[t.kind].height)) + (editing ? 2 : 0)
@@ -85,7 +124,7 @@ export function Dashboard() {
     (a, b) => a[1].module.localeCompare(b[1].module) || a[1].title.localeCompare(b[1].title),
   )
   function closeConfiguration() {
-    if (adding) setDraft((old) => old.filter((tile) => tile.id !== adding))
+    if (adding) setDraft((old) => old.filter((tile) => tile.id !== adding), configurationMode)
     setAdding(null)
     setConfiguring(null)
   }
@@ -134,25 +173,23 @@ export function Dashboard() {
     return () => removeEventListener('keydown', cancel)
   }, [])
   function apply() {
+    if (save.isPending || !changedDrafts.length) return
     save.mutate(
       (p) => {
-        if (JSON.stringify(p.desktopLayouts?.[mode] ?? null) !== base)
-          throw Error(tr('the_layout_was_changed_from_the_application_menu_c_204dc84a'))
-        return { ...p, desktopLayouts: { ...p.desktopLayouts, [mode]: draft } }
+        const layouts = { ...p.desktopLayouts }
+        for (const [layout, value] of changedDrafts) {
+          if (JSON.stringify(p.desktopLayouts?.[layout] ?? null) !== value.baseline)
+            throw Error(tr('the_layout_was_changed_from_the_application_menu_c_204dc84a'))
+          layouts[layout] = value.tiles
+        }
+        return { ...p, desktopLayouts: layouts }
       },
-      {
-        onSuccess: () => {
-          setEditing(false)
-          setMoving(null)
-          setDrag(null)
-          pointer.current = null
-        },
-      },
+      { onSuccess: discard },
     )
   }
   return (
     <section className="personal-desktop">
-      <div className="desktop-heading" style={{ maxWidth: gridMaxWidth }}>
+      <div className="desktop-heading" style={{ maxWidth: `min(100%, ${gridMaxWidth}px)` }}>
         <h1>{tr('desktop_651d54bb')}</h1>
         <div className="actions">
           {editing ? (
@@ -161,15 +198,12 @@ export function Dashboard() {
                 title={tr('discard_changes_9aff1e0e')}
                 aria-label={tr('discard_changes_9aff1e0e')}
                 disabled={save.isPending}
-                onClick={() => {
-                  setEditing(false)
-                  setMoving(null)
-                }}
+                onClick={discard}
               >
                 <Icon path={mdiClose} />
               </Button>
-              <Button className="primary" disabled={save.isPending} onClick={apply}>
-                {tr('save_layout_ae62a41e')}
+              <Button className="primary" disabled={save.isPending || !changedDrafts.length} onClick={apply}>
+                {tr('desktop.saveLayouts')}
               </Button>
             </>
           ) : (
@@ -178,8 +212,7 @@ export function Dashboard() {
               aria-label={tr('customize_desktop_701fd886')}
               disabled={!prefs.data}
               onClick={() => {
-                setDraft(tiles)
-                setBase(JSON.stringify(stored ?? null))
+                setDrafts({ [mode]: layoutDraft(mode) })
                 setEditing(true)
               }}
             >
@@ -189,7 +222,8 @@ export function Dashboard() {
         </div>
       </div>
       {editing && (
-        <div className="desktop-tools">
+        <div className="desktop-tools surface">
+          <p role="status">{tr('desktop.editingLayout', { layout: tr('desktop.layout.' + mode) })}</p>
           <div className="desktop-add">
             <label className="field">
               <span className="sr-only">{tr('desktop_item_picker_label')}</span>
@@ -224,6 +258,7 @@ export function Dashboard() {
                   setDraft([...draft, t])
                   if (catalog[selected]?.configure) {
                     setConfiguration({})
+                    setConfigurationMode(mode)
                     setAdding(t.id)
                     setConfiguring(t.id)
                   }
@@ -356,7 +391,9 @@ export function Dashboard() {
                       aria-label={`${tr('configure_8960ddc3')}: ${w.title}`}
                       disabled={save.isPending}
                       onClick={() => {
+                        setDraft((old) => old)
                         setConfiguration(t.config ?? {})
+                        setConfigurationMode(mode)
                         setAdding(null)
                         setConfiguring(t.id)
                       }}
@@ -429,13 +466,13 @@ export function Dashboard() {
             dirty={
               !!configuring &&
               JSON.stringify(configuration) !==
-                JSON.stringify(draft.find((t) => t.id === configuring)?.config ?? {})
+                JSON.stringify(configurationTiles.find((t) => t.id === configuring)?.config ?? {})
             }
             header={
               <>
                 <Dialog.Title>{tr('configure_8960ddc3')}</Dialog.Title>
                 <Dialog.Description>
-                  {catalog[draft.find((t) => t.id === configuring)?.kind ?? '']?.title}
+                  {catalog[configurationTiles.find((t) => t.id === configuring)?.kind ?? '']?.title}
                 </Dialog.Description>
               </>
             }
@@ -445,10 +482,12 @@ export function Dashboard() {
                 <Button
                   className="primary"
                   onClick={() => {
-                    setDraft((old) =>
-                      old.map((tile) =>
-                        tile.id === configuring ? { ...tile, config: configuration } : tile,
-                      ),
+                    setDraft(
+                      (old) =>
+                        old.map((tile) =>
+                          tile.id === configuring ? { ...tile, config: configuration } : tile,
+                        ),
+                      configurationMode,
                     )
                     setAdding(null)
                     setConfiguring(null)
@@ -460,7 +499,7 @@ export function Dashboard() {
             }
           >
             {(() => {
-              const tile = draft.find((t) => t.id === configuring)
+              const tile = configurationTiles.find((t) => t.id === configuring)
               const Configure = tile && catalog[tile.kind]?.configure
               return Configure ? <Configure value={configuration} onChange={setConfiguration} /> : null
             })()}
