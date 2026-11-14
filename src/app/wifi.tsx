@@ -71,11 +71,7 @@ export function WifiControls({
       choice === 'hidden'
         ? { interface: name, ssid, security, password }
         : { interface: name, accessPoint: choice?.id, ssidHex: choice?.ssidHex, password }
-    try {
-      if (await run('network.wifi.connect', params)) close()
-    } finally {
-      setPassword('')
-    }
+    if (await run('network.wifi.connect', params)) close()
   }
   return (
     <>

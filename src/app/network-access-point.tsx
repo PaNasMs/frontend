@@ -115,17 +115,15 @@ export function AccessPointDialog({
             className="network-ap-form"
             onSubmit={async (event) => {
               event.preventDefault()
-              try {
-                if (
-                  await run('network.share.wifi', {
-                    id: group.id,
-                    interface: name,
-                    wifi: { ssid, band, channel, password },
-                  })
-                )
-                  close()
-              } finally {
+              if (
+                await run('network.share.wifi', {
+                  id: group.id,
+                  interface: name,
+                  wifi: { ssid, band, channel, password },
+                })
+              ) {
                 setPassword('')
+                close()
               }
             }}
             id="modal-network-access-point"
