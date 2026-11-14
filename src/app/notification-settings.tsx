@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { mdiSendOutline, mdiDeleteOutline, mdiRefresh, mdiLinkVariant, mdiLinkVariantOff } from '@mdi/js'
 import { request } from '../api/client'
-import { Button, Icon, Notice, WaitingSurface } from '../shared/ui'
+import { Button, DraftConflict, Icon, Notice, WaitingSurface } from '../shared/ui'
 import { MultiSelect } from '../shared/multi-select'
 import { ConfirmDialog, useDraft } from '../shared/interaction'
 import { tr, locale } from '../i18n'
@@ -14,47 +14,224 @@ type Settings = components['schemas']['NotificationSettings']
 type Preferences = components['schemas']['NotificationPreferences']
 type Profile = components['schemas']['NotificationProfile']
 const levels = ['info', 'warning', 'error', 'critical'] as const
-const defaults: Preferences = { enabled: false, email: '', chatId: '', routes: { info: [], warning: ['push'], error: ['email'], critical: ['telegram'] } }
-const empty: Config = { smtp: { host: '', port: 587, security: 'starttls', username: '', from: '', enabled: false }, telegramEnabled: false, contact: '' }
+const defaults: Preferences = {
+  enabled: false,
+  email: '',
+  chatId: '',
+  routes: { info: [], warning: ['push'], error: ['email'], critical: ['telegram'] },
+}
+const empty: Config = {
+  smtp: { host: '', port: 587, security: 'starttls', username: '', from: '', enabled: false },
+  telegramEnabled: false,
+  contact: '',
+}
 const errorText = (e: unknown) => tr(e instanceof Error ? e.message : 'delivery.unavailable')
 
 export function NotificationSettings() {
   const q = useQueryClient()
-  const data = useQuery({ queryKey: ['notification-settings'], queryFn: () => request<Settings>('notification-settings') })
-  const { draft, setDraft, reset, dirty } = useDraft(data.data?.config ?? empty)
+  const data = useQuery({
+    queryKey: ['notification-settings'],
+    queryFn: () => request<Settings>('notification-settings'),
+  })
+  const { draft, setDraft, reset, dirty, conflict } = useDraft(
+    data.data?.config ?? empty,
+    'notification-settings',
+  )
+  const unavailable = !data.data || data.isError
   const [testEmail, setTestEmail] = useState('')
-  const smtpTest = useMutation({ mutationFn: () => request('notification-smtp-test', 'POST', { email: testEmail.trim() }), onSuccess: () => notify(tr('delivery.smtpAccepted')) })
-  const smtp = <K extends keyof Config['smtp'],>(key: K, value: Config['smtp'][K]) => setDraft({ ...draft, smtp: { ...draft.smtp, [key]: value } })
-  const save = useMutation({ mutationFn: () => request<Settings>('notification-settings', 'PUT', draft), onSuccess: value => { reset(value.config); q.setQueryData(['notification-settings'], value); void q.invalidateQueries({ queryKey: ['notification-profile'] }); notify(tr('delivery.saved')) } })
-  return <WaitingSurface busy={save.isPending || smtpTest.isPending} className="general-settings"><section className="surface">
-    <h2>{tr('delivery.title')}</h2><p className="muted">{tr('delivery.adminHelp')}</p>
-    {data.error && <Notice error>{errorText(data.error)}</Notice>}{save.error && <Notice error>{errorText(save.error)}</Notice>}
-    {!data.data && !data.error && <Notice>{tr('delivery.loading')}</Notice>}
-    <form className="external-settings-form" onSubmit={e => { e.preventDefault(); save.mutate() }}>
-      <fieldset disabled={!data.data || save.isPending || smtpTest.isPending} className="delivery-fields">
-      <h3>SMTP</h3>
-      <label className="external-toggle"><input type="checkbox" checked={draft.smtp.enabled} onChange={e => smtp('enabled', e.target.checked)} />{tr('delivery.enableSMTP')}</label>
-      <div className="delivery-pair"><label className="field">{tr('delivery.host')}<input value={draft.smtp.host} onChange={e => smtp('host', e.target.value)} required={draft.smtp.enabled} autoComplete="off" /></label>
-      <label className="field">{tr('delivery.port')}<input inputMode="numeric" value={draft.smtp.port || ''} onChange={e => { if (/^\d*$/.test(e.target.value)) smtp('port', Number(e.target.value)) }} required={draft.smtp.enabled} /></label></div>
-      <label className="field">{tr('delivery.security')}<select value={draft.smtp.security} onChange={e => smtp('security', e.target.value as 'tls' | 'starttls')}><option value="starttls">STARTTLS</option><option value="tls">TLS</option></select></label>
-      <label className="field">{tr('delivery.from')}<input type="email" value={draft.smtp.from} onChange={e => smtp('from', e.target.value)} required={draft.smtp.enabled} /></label>
-      <label className="field">{tr('delivery.username')}<input value={draft.smtp.username} autoComplete="off" onChange={e => smtp('username', e.target.value)} /></label>
-      <label className="field">{tr('delivery.password')}<input type="password" autoComplete="new-password" value={draft.smtp.password ?? ''} placeholder={data.data?.passwordConfigured ? '••••••••' : ''} onChange={e => smtp('password', e.target.value)} /></label>
-      <div className="delivery-test"><label className="field">{tr('delivery.testRecipient')}<input type="email" value={testEmail} onChange={e => setTestEmail(e.target.value)} autoComplete="email" /></label><Button type="button" title={tr('delivery.testEmail')} disabled={dirty || !data.data?.config.smtp.enabled || !testEmail.trim() || smtpTest.isPending} onClick={e => { const form = e.currentTarget.closest('form'); if (form?.reportValidity()) smtpTest.mutate() }}><Icon path={mdiSendOutline} /></Button></div>
-      <p className="muted small">{tr('delivery.smtpTestHelp')}</p>
-      {smtpTest.error && <Notice error>{errorText(smtpTest.error)}</Notice>}
-      <h3>Telegram</h3><p className="muted small">{tr('delivery.botHelp')}</p>
-      <label className="external-toggle"><input type="checkbox" checked={draft.telegramEnabled} onChange={e => setDraft({ ...draft, telegramEnabled: e.target.checked })} />{tr('delivery.enableTelegram')}</label>
-      <label className="field">{tr('delivery.token')}<input type="password" autoComplete="new-password" value={draft.telegramToken ?? ''} placeholder={data.data?.tokenConfigured ? '••••••••' : ''} onChange={e => setDraft({ ...draft, telegramToken: e.target.value })} /></label>
-      <TelegramConnection />
-      <h3>{tr('delivery.push')}</h3><p className="muted small">{tr('delivery.https')}</p>
-      <label className="field">{tr('delivery.contact')}<input type="email" value={draft.contact} onChange={e => setDraft({ ...draft, contact: e.target.value })} /></label>
-      <p className="muted small">{tr('delivery.secretsHelp')}</p>
-      <div className="actions"><Button type="submit" className="primary" disabled={!dirty}>{tr('apply_768af677')}</Button></div>
-      </fieldset>
-    </form>
-    <a href="/profile/notifications">{tr('delivery.personalLink')}</a>
-  </section></WaitingSurface>
+  const smtpTest = useMutation({
+    mutationFn: () => request('notification-smtp-test', 'POST', { email: testEmail.trim() }),
+    onSuccess: () => notify(tr('delivery.smtpAccepted')),
+  })
+  const smtp = <K extends keyof Config['smtp']>(key: K, value: Config['smtp'][K]) =>
+    setDraft({ ...draft, smtp: { ...draft.smtp, [key]: value } })
+  const save = useMutation({
+    mutationFn: () => request<Settings>('notification-settings', 'PUT', draft),
+    onSuccess: (value) => {
+      reset(value.config)
+      q.setQueryData(['notification-settings'], value)
+      void q.invalidateQueries({ queryKey: ['notification-profile'] })
+      notify(tr('delivery.saved'))
+    },
+  })
+  return (
+    <WaitingSurface busy={save.isPending || smtpTest.isPending} className="general-settings">
+      <section className="surface">
+        <h2>{tr('delivery.title')}</h2>
+        <p className="muted">{tr('delivery.adminHelp')}</p>
+        {data.error && (
+          <Notice error>
+            {errorText(data.error)}{' '}
+            <Button
+              type="button"
+              disabled={data.isFetching || save.isPending}
+              onClick={() => void data.refetch()}
+            >
+              {tr('retry_9e506acb')}
+            </Button>
+          </Notice>
+        )}
+        {save.error && <Notice error>{errorText(save.error)}</Notice>}
+        {conflict && (
+          <DraftConflict
+            disabled={unavailable || save.isPending}
+            onReload={() => {
+              reset()
+              save.reset()
+            }}
+          />
+        )}
+        {!data.data && !data.error && <Notice>{tr('delivery.loading')}</Notice>}
+        <form
+          className="external-settings-form"
+          onSubmit={(e) => {
+            e.preventDefault()
+            if (!unavailable && !save.isPending && !smtpTest.isPending && !conflict && dirty) save.mutate()
+          }}
+        >
+          <fieldset disabled={!data.data || save.isPending || smtpTest.isPending} className="delivery-fields">
+            <h3>SMTP</h3>
+            <label className="external-toggle">
+              <input
+                type="checkbox"
+                checked={draft.smtp.enabled}
+                onChange={(e) => smtp('enabled', e.target.checked)}
+              />
+              {tr('delivery.enableSMTP')}
+            </label>
+            <div className="delivery-pair">
+              <label className="field">
+                {tr('delivery.host')}
+                <input
+                  value={draft.smtp.host}
+                  onChange={(e) => smtp('host', e.target.value)}
+                  required={draft.smtp.enabled}
+                  autoComplete="off"
+                />
+              </label>
+              <label className="field">
+                {tr('delivery.port')}
+                <input
+                  inputMode="numeric"
+                  value={draft.smtp.port || ''}
+                  onChange={(e) => {
+                    if (/^\d*$/.test(e.target.value)) smtp('port', Number(e.target.value))
+                  }}
+                  required={draft.smtp.enabled}
+                />
+              </label>
+            </div>
+            <label className="field">
+              {tr('delivery.security')}
+              <select
+                value={draft.smtp.security}
+                onChange={(e) => smtp('security', e.target.value as 'tls' | 'starttls')}
+              >
+                <option value="starttls">STARTTLS</option>
+                <option value="tls">TLS</option>
+              </select>
+            </label>
+            <label className="field">
+              {tr('delivery.from')}
+              <input
+                type="email"
+                value={draft.smtp.from}
+                onChange={(e) => smtp('from', e.target.value)}
+                required={draft.smtp.enabled}
+              />
+            </label>
+            <label className="field">
+              {tr('delivery.username')}
+              <input
+                value={draft.smtp.username}
+                autoComplete="off"
+                onChange={(e) => smtp('username', e.target.value)}
+              />
+            </label>
+            <label className="field">
+              {tr('delivery.password')}
+              <input
+                type="password"
+                autoComplete="new-password"
+                value={draft.smtp.password ?? ''}
+                placeholder={data.data?.passwordConfigured ? '••••••••' : ''}
+                onChange={(e) => smtp('password', e.target.value)}
+              />
+            </label>
+            <div className="delivery-test">
+              <label className="field">
+                {tr('delivery.testRecipient')}
+                <input
+                  type="email"
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                  autoComplete="email"
+                />
+              </label>
+              <Button
+                type="button"
+                title={tr('delivery.testEmail')}
+                disabled={
+                  unavailable ||
+                  conflict ||
+                  dirty ||
+                  !data.data?.config.smtp.enabled ||
+                  !testEmail.trim() ||
+                  smtpTest.isPending
+                }
+                onClick={(e) => {
+                  const form = e.currentTarget.closest('form')
+                  if (form?.reportValidity()) smtpTest.mutate()
+                }}
+              >
+                <Icon path={mdiSendOutline} />
+              </Button>
+            </div>
+            <p className="muted small">{tr('delivery.smtpTestHelp')}</p>
+            {smtpTest.error && <Notice error>{errorText(smtpTest.error)}</Notice>}
+            <h3>Telegram</h3>
+            <p className="muted small">{tr('delivery.botHelp')}</p>
+            <label className="external-toggle">
+              <input
+                type="checkbox"
+                checked={draft.telegramEnabled}
+                onChange={(e) => setDraft({ ...draft, telegramEnabled: e.target.checked })}
+              />
+              {tr('delivery.enableTelegram')}
+            </label>
+            <label className="field">
+              {tr('delivery.token')}
+              <input
+                type="password"
+                autoComplete="new-password"
+                value={draft.telegramToken ?? ''}
+                placeholder={data.data?.tokenConfigured ? '••••••••' : ''}
+                onChange={(e) => setDraft({ ...draft, telegramToken: e.target.value })}
+              />
+            </label>
+            <TelegramConnection />
+            <h3>{tr('delivery.push')}</h3>
+            <p className="muted small">{tr('delivery.https')}</p>
+            <label className="field">
+              {tr('delivery.contact')}
+              <input
+                type="email"
+                value={draft.contact}
+                onChange={(e) => setDraft({ ...draft, contact: e.target.value })}
+              />
+            </label>
+            <p className="muted small">{tr('delivery.secretsHelp')}</p>
+            <div className="actions">
+              <Button type="submit" className="primary" disabled={!dirty || conflict || unavailable}>
+                {tr('apply_768af677')}
+              </Button>
+            </div>
+          </fieldset>
+        </form>
+        <a href="/profile/notifications">{tr('delivery.personalLink')}</a>
+      </section>
+    </WaitingSurface>
+  )
 }
 
 export function NotificationPreferences() {
@@ -64,7 +241,11 @@ export function NotificationPreferences() {
     queryFn: () => request<Profile>('notification-profile'),
     refetchInterval: 15000,
   })
-  const { draft, setDraft, reset, dirty } = useDraft(data.data?.preferences ?? defaults)
+  const { draft, setDraft, reset, dirty, conflict } = useDraft(
+    data.data?.preferences ?? defaults,
+    'notification-preferences',
+  )
+  const unavailable = !data.data || data.isError
   const [pushError, setPushError] = useState('')
   const [selectedDevice, setSelectedDevice] = useState<{ id: string; label: string } | null>(null)
   const refresh = () => q.invalidateQueries({ queryKey: ['notification-profile'] })
@@ -153,14 +334,34 @@ export function NotificationPreferences() {
         </ConfirmDialog>
         <h2>{tr('delivery.title')}</h2>
         <p className="muted">{tr('delivery.personalHelp')}</p>
-        {data.error && <Notice error>{errorText(data.error)}</Notice>}
+        {data.error && (
+          <Notice error>
+            {errorText(data.error)}{' '}
+            <Button
+              type="button"
+              disabled={data.isFetching || save.isPending}
+              onClick={() => void data.refetch()}
+            >
+              {tr('retry_9e506acb')}
+            </Button>
+          </Notice>
+        )}
         {save.error && <Notice error>{errorText(save.error)}</Notice>}
+        {conflict && (
+          <DraftConflict
+            disabled={unavailable || save.isPending}
+            onReload={() => {
+              reset()
+              save.reset()
+            }}
+          />
+        )}
         {!data.data && !data.error && <Notice>{tr('delivery.loading')}</Notice>}
         <form
           className="external-settings-form"
           onSubmit={(e) => {
             e.preventDefault()
-            save.mutate()
+            if (!unavailable && !save.isPending && !conflict && dirty) save.mutate()
           }}
         >
           <fieldset className="delivery-fields" disabled={!data.data || save.isPending}>
@@ -206,7 +407,7 @@ export function NotificationPreferences() {
               </div>
             ))}
             <div className="actions">
-              <Button type="submit" className="primary" disabled={!dirty}>
+              <Button type="submit" className="primary" disabled={!dirty || conflict || unavailable}>
                 {tr('apply_768af677')}
               </Button>
             </div>

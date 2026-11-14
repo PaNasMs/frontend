@@ -1,4 +1,6 @@
 {
+  "forms.changed": "Settings changed elsewhere. Your edits are preserved. Discard them and reload the current settings before saving.",
+  "forms.reload": "Discard edits and reload",
   "cooling.frequency_limit": "Maximum CPU frequency",
   "cooling.system_maximum": "System maximum",
   "cooling.mhz": "MHz",

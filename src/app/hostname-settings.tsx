@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { request, type Identity } from '../api/client'
 import { tr } from '../i18n'
-import { Button, Notice } from '../shared/ui'
+import { Button, DraftConflict, Notice } from '../shared/ui'
+import { useDraft } from '../shared/interaction'
 import { WaitingSurface } from '../shared/waiting'
 import { managed, type Job } from './operations'
 import { newID } from './dashboard'
@@ -19,17 +20,18 @@ export function HostnameSettings() {
     enabled: admin,
     refetchInterval: 10000,
   })
-  const [name, setName] = useState('')
+  const draft = useDraft(data.data?.hostname ?? '', 'hostname')
+  const name = draft.draft
+  const setName = draft.setDraft
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  useEffect(() => {
-    if (data.data) setName(data.data.hostname)
-  }, [data.data?.hostname])
   const valid = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(name) && name !== 'localhost'
-  const dirty = name !== data.data?.hostname
+  const dirty = draft.dirty
+  const unavailable = !data.data || data.isError
   const host = dirty ? `${name}.local` : data.data?.networkName || `${name}.local`
   const address = data.data && valid ? new URL(`${data.data.scheme}://${host}:${data.data.port}/`).href : ''
   async function save() {
+    if (unavailable || busy || draft.conflict || !valid || !dirty) return
     setBusy(true)
     setError('')
     try {
@@ -57,8 +59,24 @@ export function HostnameSettings() {
     <WaitingSurface busy={busy}>
       <section className="surface">
         <h2>{tr('hostname.title')}</h2>
-        {data.error && <Notice error>{data.error.message}</Notice>}
+        {data.error && (
+          <Notice error>
+            {data.error.message}{' '}
+            <Button type="button" disabled={data.isFetching || busy} onClick={() => void data.refetch()}>
+              {tr('retry_9e506acb')}
+            </Button>
+          </Notice>
+        )}
         {error && <Notice error>{error}</Notice>}
+        {draft.conflict && (
+          <DraftConflict
+            disabled={unavailable || busy}
+            onReload={() => {
+              draft.reset()
+              setError('')
+            }}
+          />
+        )}
         <form
           onSubmit={(event) => {
             event.preventDefault()
@@ -96,7 +114,11 @@ export function HostnameSettings() {
           <p className="muted small">{tr('hostname.localOnly')}</p>
           {data.data?.state !== 'ready' && data.data && <Notice>{tr('hostname.unavailable')}</Notice>}
           {data.data?.scheme === 'https' && <p className="muted small">{tr('hostname.tls')}</p>}
-          <Button type="submit" className="primary" disabled={!data.data || !valid || !dirty}>
+          <Button
+            type="submit"
+            className="primary"
+            disabled={unavailable || busy || draft.conflict || !valid || !dirty}
+          >
             {tr('apply_768af677')}
           </Button>
         </form>

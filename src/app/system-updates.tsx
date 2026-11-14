@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
 import { mdiRefresh, mdiDownload, mdiUpdate, mdiRestore, mdiClose } from '@mdi/js'
 import { tr, locale } from '../i18n'
-import { Button, Icon, Notice, DialogContent, WaitingOverlay } from '../shared/ui'
+import { Button, DraftConflict, Icon, Notice, DialogContent, WaitingOverlay } from '../shared/ui'
 import { managed, type Job } from './operations'
 import { newID } from './desktop-layout'
 import { useDraft } from '../shared/interaction'
@@ -204,12 +204,7 @@ export function SystemUpdates() {
             >
               <h3>{tr('up.preferences')}</h3>
               {draft.conflict && (
-                <Notice>
-                  {tr('oled.conflict')}{' '}
-                  <Button type="button" disabled={unavailable || working} onClick={() => draft.reset()}>
-                    {tr('oled.reload')}
-                  </Button>
-                </Notice>
+                <DraftConflict disabled={unavailable || working} onReload={() => draft.reset()} />
               )}
               <label className="field">
                 {tr('up.channel')}
