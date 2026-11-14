@@ -72,8 +72,29 @@ export function OngoingTasks({ row = false }: { row?: boolean }) {
       </Link>
     )
   }
+  const first = tasks[0]
+  const compactTitle = [
+    tr('all_long_running_tasks_ee8c43c9', { v0: tasks.length }),
+    first.title,
+    first.target,
+    taskPercent(first),
+    first.stage,
+    stale ? tr('data_may_be_out_of_date_f878d6a7') : '',
+  ]
+    .filter(Boolean)
+    .join(' · ')
   return (
     <div className="ongoing-tasks" aria-label={tr('long_running_tasks_ef6b1f6c')}>
+      <Link
+        className="ongoing-compact"
+        to={tasks.length === 1 && first.id === 'system-update' ? first.href! : jobsHref}
+        title={compactTitle}
+        aria-label={compactTitle}
+      >
+        <Icon path={first.paused ? mdiPause : first.href ? mdiSync : mdiProgressClock} size={18} />
+        <span>{taskPercent(first)}</span>
+        {tasks.length > 1 && <span>+{tasks.length - 1}</span>}
+      </Link>
       {tasks.slice(0, 2).map((task) => (
         <Link
           className={`ongoing-task ${task.paused ? 'paused' : ''}`}
