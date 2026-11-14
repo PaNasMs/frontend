@@ -60,10 +60,12 @@ const query = new QueryClient({
   },
 })
 const Login = lazy(() => import('./app/login'))
-function PersistentModules() {
+function PersistentModules({ administrator }: { administrator: boolean }) {
   const { pathname } = useLocation()
   const [visited, setVisited] = useState<string[]>([])
-  const retained = modules().filter((module) => module.keepAlive && module.path && module.component)
+  const retained = modules(administrator).filter(
+    (module) => module.keepAlive && module.path && module.component,
+  )
   const active = retained.find((module) =>
     [module.path!, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)].some((path) =>
       matchPath(path, pathname),
@@ -288,12 +290,19 @@ function Shell() {
         ))}
         {session.data?.role !== 'admin' &&
         !['/', '/profile', '/history'].includes(routeLocation.pathname) &&
-        !routeLocation.pathname.startsWith('/files') &&
-        !routeLocation.pathname.startsWith('/profile/') ? (
+        !matchPath('/profile/:section', routeLocation.pathname) &&
+        !modules(false).some(
+          (module) =>
+            module.path &&
+            module.component &&
+            [module.path, ...(module.routes ?? []).map((route) => `${module.path}/${route}`)].some((path) =>
+              matchPath(path, routeLocation.pathname),
+            ),
+        ) ? (
           <Navigate to="/" replace />
         ) : (
           <DirtyFormsProvider>
-            {session.data?.role === 'admin' && <PersistentModules key={session.data.username} />}
+            <PersistentModules key={session.data?.username} administrator={session.data?.role === 'admin'} />
             <Outlet />
           </DirtyFormsProvider>
         )}
