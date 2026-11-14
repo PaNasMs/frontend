@@ -225,6 +225,8 @@ try {
             layout.buttons.every((button) => button.width >= 40),
             combination + ': decision button hit area is too narrow',
           )
+          if (width === 320)
+            assert.ok(layout.buttons[1].width > 250, combination + ': long target action needs its own row')
           assert.ok(!layout.text.includes('operation.'), combination + ': untranslated operation key')
           await page.keyboard.press('Escape')
           await expect(page.getByRole('dialog')).toHaveCount(0)
@@ -232,14 +234,31 @@ try {
           if (width === 320) {
             await open('Delete fixture file')
             const dangerButton = page.getByRole('dialog').locator('button.danger')
-            await expect(dangerButton).toBeVisible()
+            await expect(dangerButton).toBeEnabled()
             const dangerBox = await dangerButton.boundingBox()
             if (lang === 'en' && theme === 'light' && material === 'solid')
               await page.screenshot({ path: '/tmp/operation-confirmations-320.png', fullPage: true })
-            assert.ok(
-              dangerBox.width > 250,
-              combination + ': long danger action did not get a full-width row',
-            )
+            await expect(async () => {
+              const choices = await page
+                .getByRole('dialog')
+                .locator('.modal-footer button')
+                .evaluateAll((buttons) =>
+                  buttons.map((button) => {
+                    const rect = button.getBoundingClientRect()
+                    return (
+                      rect.left >= 0 &&
+                      rect.right <= innerWidth &&
+                      rect.top >= 0 &&
+                      rect.bottom <= innerHeight &&
+                      button.contains(
+                        document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2),
+                      )
+                    )
+                  }),
+                )
+              assert.equal(choices.length, 3, combination + ': file removal must retain all three decisions')
+              assert.ok(choices.every(Boolean), combination + ': file removal choice is not reachable')
+            }).toPass()
             assert.ok(
               dangerBox.x >= 0 && dangerBox.x + dangerBox.width <= width,
               combination + ': danger action overflows horizontally',
