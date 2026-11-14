@@ -303,6 +303,148 @@ try {
     await page.close()
   }
 
+  // Losing pointer capture after the dragged pin moves into overflow must not suppress the next menu click.
+  {
+    const page = await browser.newPage({ viewport: { width: 1024, height: 900 } })
+    const assertRuntimeHealthy = trackRuntime(page)
+    await openFixture(page, { role: 'admin', lang: 'en' })
+    const visible = page.locator('.pinned-applications > a[data-app-id]')
+    await expect(visible).toHaveCount(8)
+    const source = visible.last()
+    const sourceId = await source.getAttribute('data-app-id')
+    const sourceTitle = await source.getAttribute('aria-label')
+    const first = visible.first()
+    const firstRect = await first.boundingBox()
+    const sourceRect = await source.boundingBox()
+    await page.mouse.move(sourceRect.x + sourceRect.width / 2, sourceRect.y + sourceRect.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(firstRect.x + firstRect.width / 2, firstRect.y + firstRect.height / 2, { steps: 3 })
+    await expect(first).toHaveClass(/drop-before/)
+
+    await page.setViewportSize({ width: 640, height: 900 })
+    await expect(async () => {
+      await expect(page.locator(`.pinned-applications > a[data-app-id="${sourceId}"]`)).toHaveCount(0)
+      await expect(page.locator('.pinned-overflow-trigger')).toBeVisible()
+      await expect(first).not.toHaveClass(/drop-before|drop-after/)
+    }).toPass()
+    await page.mouse.move(637, 890)
+    await page.mouse.up()
+    assert.deepEqual(
+      await fixtureWrites(page),
+      [],
+      'losing a dragged pin on resize must not save preferences',
+    )
+    await expect(page).toHaveURL(/\/$/)
+
+    await page.locator('.pinned-overflow-trigger').click()
+    const menu = page.locator('.pinned-overflow-menu')
+    const otherPin = menu.locator('a[data-app-id]').first()
+    const otherId = await otherPin.getAttribute('data-app-id')
+    const otherTitle = await otherPin.innerText()
+    assert.notEqual(otherId, sourceId)
+    await otherPin.click()
+    await page.getByRole('heading', { name: `Destination: ${otherTitle}`, exact: true }).waitFor()
+    await expect(page).toHaveURL(new RegExp(`/${otherId}$`))
+    assert.deepEqual(await fixtureWrites(page), [], 'opening another overflow pin must not save preferences')
+    assert.notEqual(otherTitle, sourceTitle)
+    assertRuntimeHealthy()
+    await page.close()
+  }
+
+  // Wrapped fixed controls at a short desktop height must leave both menus scrollable to their final item.
+  {
+    const page = await browser.newPage({ viewport: { width: 640, height: 300 } })
+    const assertRuntimeHealthy = trackRuntime(page)
+    await openFixture(page, { role: 'admin', lang: 'en' })
+    await page.addStyleTag({
+      content: '.topbar { max-width: 420px; flex-wrap: wrap; } .topbar-right { flex-wrap: wrap; }',
+    })
+    const topbar = page.locator('header.topbar')
+    const topbarRect = await topbar.boundingBox()
+    assert.ok(topbarRect.height > 56, `fixed controls should wrap the top bar: ${JSON.stringify(topbarRect)}`)
+
+    const overflowTrigger = page.getByRole('button', { name: overflowLabels.en, exact: true })
+    await overflowTrigger.click()
+    const overflowMenu = page.locator('.pinned-overflow-menu')
+    const overflowLast = overflowMenu.locator('a[data-app-id]').last()
+    await expect(overflowMenu).toBeVisible()
+    await expect(async () => {
+      const geometry = await overflowMenu.evaluate((menu) => {
+        const rect = menu.getBoundingClientRect()
+        const topbarRect = menu.closest('.topbar').getBoundingClientRect()
+        return {
+          top: rect.top,
+          bottom: rect.bottom,
+          viewportHeight: innerHeight,
+          measuredTop: parseFloat(getComputedStyle(menu).getPropertyValue('--app-menu-top')),
+          barBottom: topbarRect.bottom,
+          scrollable: menu.scrollHeight > menu.clientHeight,
+        }
+      })
+      assert.ok(
+        geometry.top >= geometry.barBottom,
+        `overflow menu follows wrapped top bar: ${JSON.stringify(geometry)}`,
+      )
+      assert.ok(
+        geometry.bottom <= geometry.viewportHeight + 1,
+        `overflow menu fits short viewport: ${JSON.stringify(geometry)}`,
+      )
+      assert.ok(
+        Math.abs(geometry.top - geometry.measuredTop) <= 1,
+        `overflow menu records its actual top: ${JSON.stringify(geometry)}`,
+      )
+      assert.ok(geometry.scrollable, `overflow menu scrolls its long list: ${JSON.stringify(geometry)}`)
+      await overflowLast.scrollIntoViewIfNeeded()
+      const menuRect = await overflowMenu.boundingBox()
+      const itemRect = await overflowLast.boundingBox()
+      assert.ok(
+        itemRect.y >= menuRect.y - 1 && itemRect.y + itemRect.height <= menuRect.y + menuRect.height + 1,
+      )
+    }).toPass()
+
+    await page.keyboard.press('Escape')
+    await expect(overflowTrigger).toBeFocused()
+    await page.getByRole('button', { name: 'Sections', exact: true }).click()
+    const launcher = page.locator('.app-launcher-menu[aria-label="NAS sections"]')
+    const launcherLast = launcher.locator('.launcher-entry a').last()
+    await expect(launcher).toBeVisible()
+    await expect(async () => {
+      const geometry = await launcher.evaluate((menu) => {
+        const rect = menu.getBoundingClientRect()
+        const topbarRect = menu.closest('.topbar').getBoundingClientRect()
+        return {
+          top: rect.top,
+          bottom: rect.bottom,
+          viewportHeight: innerHeight,
+          measuredTop: parseFloat(getComputedStyle(menu).getPropertyValue('--app-menu-top')),
+          barBottom: topbarRect.bottom,
+          scrollable: menu.scrollHeight > menu.clientHeight,
+        }
+      })
+      assert.ok(
+        geometry.top >= geometry.barBottom,
+        `launcher follows wrapped top bar: ${JSON.stringify(geometry)}`,
+      )
+      assert.ok(
+        geometry.bottom <= geometry.viewportHeight + 1,
+        `launcher fits short viewport: ${JSON.stringify(geometry)}`,
+      )
+      assert.ok(
+        Math.abs(geometry.top - geometry.measuredTop) <= 1,
+        `launcher records its actual top: ${JSON.stringify(geometry)}`,
+      )
+      assert.ok(geometry.scrollable, `launcher scrolls its long list: ${JSON.stringify(geometry)}`)
+      await launcherLast.scrollIntoViewIfNeeded()
+      const menuRect = await launcher.boundingBox()
+      const itemRect = await launcherLast.boundingBox()
+      assert.ok(
+        itemRect.y >= menuRect.y - 1 && itemRect.y + itemRect.height <= menuRect.y + menuRect.height + 1,
+      )
+    }).toPass()
+    assertRuntimeHealthy()
+    await page.close()
+  }
+
   // A focused hidden pin stays available while the viewport changes; resize itself never writes preferences.
   {
     const page = await browser.newPage({ viewport: { width: 640, height: 900 } })
@@ -347,6 +489,16 @@ try {
     const savedOrder = writes[0].taskbar
     assert.equal(savedOrder[sourceIndex], initialOrder[sourceIndex + 1])
     assert.equal(savedOrder[sourceIndex + 1], sourceId)
+    await page.waitForFunction(
+      (expectedID) =>
+        ![...document.querySelectorAll('.pinned-applications > a[data-app-id]')].some(
+          (pin) => pin.dataset.appId === expectedID,
+        ),
+      sourceId,
+    )
+    await page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+    )
     await page.waitForFunction(() =>
       document.querySelector('.application-bar')?.contains(document.activeElement),
     )

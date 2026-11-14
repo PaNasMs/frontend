@@ -780,6 +780,8 @@ tbody tr:hover {
 .app-launcher-menu {
   top: calc(100% + var(--space-2));
   padding: var(--space-4);
+  max-height: calc(100dvh - var(--app-menu-top, 74px) - var(--space-4));
+  overflow-y: auto;
 }
 .launcher-entry {
   border-radius: var(--radius-md);

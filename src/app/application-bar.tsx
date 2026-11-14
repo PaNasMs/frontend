@@ -109,6 +109,24 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
     if (overflowOpen) overflowPanel.current?.querySelector<HTMLAnchorElement>('a')?.focus()
   }, [overflowOpen])
   useLayoutEffect(() => {
+    if (!open && !overflowOpen) return
+    const menu = overflowOpen
+      ? overflowPanel.current
+      : root.current?.querySelector<HTMLElement>('.app-launcher-menu:not(.pinned-overflow-menu)')
+    const container = root.current?.closest<HTMLElement>('.topbar, .phone-header, .phone-taskbar')
+    if (!menu || !container || !root.current) return
+    const measure = () => menu.style.setProperty('--app-menu-top', `${menu.getBoundingClientRect().top}px`)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(container)
+    observer.observe(root.current)
+    window.addEventListener('resize', measure)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', measure)
+    }
+  }, [open, overflowOpen, phone])
+  useLayoutEffect(() => {
     const nav = pins.current
     const button = trigger.current
     if (!nav || !button) return
@@ -121,6 +139,7 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
         ),
       )
       const next = slots >= ids.length ? ids.length : slots - 1
+      if (pointer.current && !ids.slice(0, next).includes(pointer.current.id)) cancelPointer()
       const focused = document.activeElement as HTMLElement | null
       const focusedId = focused?.closest<HTMLElement>('[data-app-id]')?.dataset.appId
       if (focusedId && nav!.contains(focused) && ids.indexOf(focusedId) >= next)
@@ -156,6 +175,12 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
     save.mutate((p) => ({ ...p, [key]: reorder(p[key] ?? ids, source, target) }))
     setDragged('')
     setOver('')
+  }
+  function cancelPointer() {
+    pointer.current = null
+    setDragged('')
+    setOver('')
+    suppressClick.current = false
   }
   function showContext(id: string, x: number, y: number) {
     setContext({
@@ -205,9 +230,10 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
           setOver('')
         }}
         onPointerCancel={() => {
-          pointer.current = null
-          setDragged('')
-          setOver('')
+          cancelPointer()
+        }}
+        onLostPointerCapture={() => {
+          if (pointer.current) cancelPointer()
         }}
         onClick={(e) => {
           if (suppressClick.current) {
