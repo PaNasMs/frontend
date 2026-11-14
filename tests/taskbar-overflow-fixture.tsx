@@ -180,6 +180,8 @@ const removableDevices = [
 ]
 const fixtureState = {
   preferences,
+  holdPreferenceWrites: false,
+  releasePreferenceWrite: null as (() => void) | null,
   preferenceWrites: [] as Record<string, unknown>[],
 }
 ;(window as Window & { __taskbarFixture?: typeof fixtureState }).__taskbarFixture = fixtureState
@@ -192,6 +194,10 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   let value: unknown = {}
   if (url.pathname === '/api/v1/preferences') {
     if (method === 'PUT') {
+      if (fixtureState.holdPreferenceWrites)
+        await new Promise<void>((resolve) => {
+          fixtureState.releasePreferenceWrite = resolve
+        })
       const next = JSON.parse(String(init?.body ?? '{}')) as typeof preferences
       fixtureState.preferences = next
       fixtureState.preferenceWrites.push(structuredClone(next))

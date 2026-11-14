@@ -225,6 +225,7 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
             const at = ids.indexOf(id),
               next = at + (e.key === 'ArrowLeft' ? -1 : 1)
             if (next < 0 || next >= ids.length) return
+            const focusedPin = e.currentTarget
             save.mutate(
               (p) => {
                 const order = [...(p[key] ?? ids)]
@@ -234,6 +235,8 @@ export function ApplicationBar({ phone = false }: { phone?: boolean }) {
               {
                 onSuccess: () =>
                   requestAnimationFrame(() => {
+                    const active = document.activeElement
+                    if (active && active !== document.body && active !== focusedPin) return
                     const link = Array.from(
                       root.current?.querySelectorAll<HTMLAnchorElement>('[data-app-id]') ?? [],
                     ).find((item) => item.dataset.appId === id)

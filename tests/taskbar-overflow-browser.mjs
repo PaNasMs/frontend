@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { chromium } from '@playwright/test'
+import { chromium, expect } from '@playwright/test'
 
 const baseURL = process.env.FRONTEND_TEST_URL ?? 'http://127.0.0.1:15174'
 const executablePath = process.env.CHROME_PATH
@@ -115,6 +115,7 @@ async function assertNoOverflowOrOverlap(page, width) {
     )
     return {
       viewport: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
       body: document.body.scrollWidth,
       document: document.documentElement.scrollWidth,
       bars,
@@ -141,7 +142,7 @@ async function assertNoOverflowOrOverlap(page, width) {
   )
   for (const box of result.overflowContainers) {
     assert.ok(
-      box.right <= result.viewport + 1,
+      box.left >= -1 && box.right <= result.viewport + 1 && box.top >= -1 && box.bottom <= result.height + 1,
       `${box.name} crosses viewport edge at ${width}px: ${JSON.stringify(box)}`,
     )
   }
@@ -168,12 +169,12 @@ async function assertVisibleControlsHaveTargets(page, width) {
       if (rect.width < 43.95 || rect.height < 43.95)
         return [`${name} is ${rect.width.toFixed(1)}×${rect.height.toFixed(1)}`]
       if (
-        rect.right <= 0 ||
-        rect.bottom <= 0 ||
-        rect.left >= document.documentElement.clientWidth ||
-        rect.top >= document.documentElement.clientHeight
+        rect.left < -1 ||
+        rect.top < -1 ||
+        rect.right > document.documentElement.clientWidth + 1 ||
+        rect.bottom > document.documentElement.clientHeight + 1
       )
-        return []
+        return [`${name} lies outside the viewport: ${JSON.stringify(rect.toJSON())}`]
       const points = [
         [rect.left + rect.width / 2, rect.top + rect.height / 2],
         [rect.left + 2, rect.top + rect.height / 2],
@@ -195,31 +196,37 @@ async function assertVisibleControlsHaveTargets(page, width) {
 async function verifyPinOverflow(page, lang, width) {
   const count = width < 640 ? 3 : 8
   const trigger = page.getByRole('button', { name: overflowLabels[lang], exact: true })
-  if (await trigger.isVisible().catch(() => false)) {
-    await trigger.click()
-    const menu = page.locator('.pinned-overflow-menu')
-    await menu.waitFor()
-    assert.equal(
-      (await page.locator('.pinned-applications > a[data-app-id]').count()) +
-        (await menu.locator('a[data-app-id]').count()),
-      count,
-      `all ${count} pins should be reachable at ${width}px`,
-    )
-    assert.ok(await menu.locator('a[data-app-id]').first().innerText())
-    await page.keyboard.press('Escape')
-    await page.waitForFunction(() => !document.querySelector('.pinned-overflow-menu'))
-    assert.equal(
-      await page.evaluate(() => document.activeElement?.classList.contains('pinned-overflow-trigger')),
-      true,
-      'Escape should return focus to overflow trigger',
-    )
-  } else {
-    assert.equal(
-      await page.locator('.pinned-applications > a[data-app-id]').count(),
-      count,
-      `all ${count} pins should fit when overflow trigger is absent at ${width}px`,
-    )
-  }
+  const menu = page.locator('.pinned-overflow-menu')
+  await expect(async () => {
+    const menuOpen = await menu.isVisible().catch(() => false)
+    if (menuOpen || (await trigger.isVisible().catch(() => false))) {
+      if (!menuOpen) await trigger.click({ timeout: 1000 })
+      await expect(menu).toBeVisible()
+      assert.equal(
+        (await page.locator('.pinned-applications > a[data-app-id]').count()) +
+          (await menu.locator('a[data-app-id]').count()),
+        count,
+        `all ${count} pins should be reachable at ${width}px`,
+      )
+      assert.ok(await menu.locator('a[data-app-id]').first().innerText())
+      await page.keyboard.press('Escape')
+      await expect(menu).toBeHidden()
+      await expect(trigger).toBeFocused()
+      assert.equal(
+        await page.evaluate(() => document.activeElement?.classList.contains('pinned-overflow-trigger')),
+        true,
+        'Escape should return focus to overflow trigger',
+      )
+    } else {
+      assert.equal(
+        await page.locator('.pinned-applications > a[data-app-id]').count(),
+        count,
+        `all ${count} pins should fit when overflow trigger is absent at ${width}px`,
+      )
+    }
+    await assertNoOverflowOrOverlap(page, width)
+    await assertVisibleControlsHaveTargets(page, width)
+  }).toPass({ timeout: 5000 })
 }
 
 try {
@@ -241,9 +248,11 @@ try {
           }
           for (const width of widths) {
             await page.setViewportSize({ width, height: 900 })
-            await page.waitForTimeout(80)
-            await assertNoOverflowOrOverlap(page, width)
-            await assertVisibleControlsHaveTargets(page, width)
+            await expect(async () => {
+              await assertNoOverflowOrOverlap(page, width)
+              await assertVisibleControlsHaveTargets(page, width)
+              await expect(page.locator('.phone-taskbar')).toHaveCount(width < 640 ? 1 : 0)
+            }).toPass()
             await verifyPinOverflow(page, lang, width)
           }
           assert.deepEqual(
@@ -303,10 +312,12 @@ try {
     const id = await pin.getAttribute('data-app-id')
     await pin.focus()
     await page.setViewportSize({ width: 768, height: 900 })
-    await page.waitForTimeout(100)
     const available = page.locator(`.application-bar a[data-app-id="${id}"]`)
-    assert.equal(await available.count(), 1, `focused pin ${id} should remain represented after resize`)
-    assert.notEqual(await available.evaluate((node) => getComputedStyle(node).display), 'none')
+    await expect(async () => {
+      await expect(available).toHaveCount(1)
+      await expect(available).toBeVisible()
+      await assertNoOverflowOrOverlap(page, 768)
+    }).toPass()
     await page.waitForFunction(
       (expectedID) => document.activeElement?.getAttribute('data-app-id') === expectedID,
       id,
@@ -344,6 +355,30 @@ try {
       true,
       'focus should remain in the application bar after reordering',
     )
+    await page.close()
+  }
+
+  // Finishing a delayed save must not take focus back from another control.
+  for (const destination of ['[data-testid="outside-toolbar"]', '.app-launcher']) {
+    const page = await browser.newPage({ viewport: { width: 640, height: 900 } })
+    await openFixture(page, { role: 'admin', lang: 'en' })
+    await page.evaluate(() => {
+      window.__taskbarFixture.holdPreferenceWrites = true
+    })
+    const pin = page.locator('.pinned-applications > a[data-app-id]').last()
+    const pinId = await pin.getAttribute('data-app-id')
+    await pin.focus()
+    await page.keyboard.press('Alt+ArrowRight')
+    await page.waitForFunction(() => !!window.__taskbarFixture.releasePreferenceWrite)
+    const nextFocus = page.locator(destination)
+    await nextFocus.focus()
+    await page.evaluate(() => window.__taskbarFixture.releasePreferenceWrite())
+    await expect.poll(() => fixtureWrites(page).then((writes) => writes.length)).toBe(1)
+    await expect(page.locator(`.pinned-applications > a[data-app-id="${pinId}"]`)).toHaveCount(0)
+    await page.evaluate(
+      () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+    )
+    await expect(nextFocus).toBeFocused()
     await page.close()
   }
 
