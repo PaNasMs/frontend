@@ -376,7 +376,7 @@ export const operations: Record<string, Operation> = {
   'user.identity': { label: tr('accounts.changeUID'), fields: [] },
   'user.key.add': { label: tr('accounts.addKey'), fields: [] },
   'user.key.delete': { label: tr('accounts.deleteKey'), danger: true, fields: [] },
-  'user.session.end': { label: tr('accounts.endSession'), fields: [] },
+  'user.session.end': { label: tr('accounts.endSession'), danger: true, fields: [] },
   'user.create': {
     label: tr('create_user_40516a2e'),
     fields: [

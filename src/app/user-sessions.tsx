@@ -18,6 +18,8 @@ type Session = {
   current?: boolean
   state?: string
 }
+const sessionIdentity = (session: Session) =>
+  `${session.device || (session.kind === 'ssh' ? 'SSH' : tr('accounts.panel'))} · ${session.address || tr('accounts.localSession')}`
 export function UserSessions({ user }: { user: string }) {
   const q = useQueryClient()
   const [selected, setSelected] = useState<Session | null>(null)
@@ -32,14 +34,15 @@ export function UserSessions({ user }: { user: string }) {
     refetchInterval: 10000,
   })
   const end = useMutation({
-    mutationFn: () => request(`sessions?user=${encodeURIComponent(user)}`, 'POST', { id: selected!.id }),
-    onSuccess: () => {
-      if (selected?.current) {
+    mutationFn: (session: Session) =>
+      request(`sessions?user=${encodeURIComponent(session.user)}`, 'POST', { id: session.id }),
+    onSuccess: (_, session) => {
+      if (session.current) {
         location.reload()
         return
       }
       setSelected(null)
-      void q.invalidateQueries({ queryKey: ['account-sessions', user] })
+      void q.invalidateQueries({ queryKey: ['account-sessions', session.user] })
     },
   })
   return (
@@ -80,13 +83,29 @@ export function UserSessions({ user }: { user: string }) {
                 fields={[]}
                 label={tr('accounts.endSession')}
                 icon={mdiCloseCircleOutline}
+                context={[
+                  {
+                    key: 'target',
+                    label: tr('accounts.session'),
+                    value: `${user} · ${sessionIdentity(s)} · ${s.id}`,
+                  },
+                  {
+                    key: 'created',
+                    label: tr('accounts.sessionStarted'),
+                    value: sessionTime(s.created, locale()),
+                  },
+                ]}
+                description={tr('accounts.confirmEnd')}
                 autoReview
               />
             ) : (
               <Button
-                title={tr('accounts.endSession')}
-                aria-label={tr('accounts.endSession')}
-                onClick={() => setSelected(s)}
+                title={`${tr('accounts.endSession')} · ${sessionIdentity(s)}`}
+                aria-label={`${tr('accounts.endSession')} · ${sessionIdentity(s)}`}
+                onClick={() => {
+                  end.reset()
+                  setSelected(s)
+                }}
               >
                 <Icon path={mdiCloseCircleOutline} />
               </Button>
@@ -117,11 +136,17 @@ export function UserSessions({ user }: { user: string }) {
             }
             footer={
               <div className="actions">
-                <Button onClick={() => setSelected(null)} data-dialog-cancel>
+                <Button onClick={() => setSelected(null)} disabled={end.isPending} data-dialog-cancel>
                   {tr('cancel_0ec753be')}
                 </Button>
-                <Button className="danger" onClick={() => end.mutate()}>
-                  {tr('accounts.endSession')}
+                <Button
+                  className="danger"
+                  disabled={end.isPending}
+                  onClick={() => {
+                    if (selected) end.mutate(selected)
+                  }}
+                >
+                  {tr('accounts.endSession')} · {selected && sessionIdentity(selected)}
                 </Button>
               </div>
             }
@@ -129,6 +154,20 @@ export function UserSessions({ user }: { user: string }) {
             intent="confirm"
             dirty={false}
           >
+            {selected && (
+              <>
+                <p>
+                  <strong>{sessionIdentity(selected)}</strong>
+                </p>
+                <p>
+                  {selected.user} · {tr('accounts.panel')}
+                </p>
+                <p>
+                  {tr('accounts.sessionStarted')} · {sessionTime(selected.created, locale())}
+                </p>
+                {selected.current && <Notice>{tr('accounts.endCurrentSession')}</Notice>}
+              </>
+            )}
             {end.error && <Notice error>{end.error.message}</Notice>}
           </DialogContent>
         </Dialog.Portal>

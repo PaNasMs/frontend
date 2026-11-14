@@ -2884,5 +2884,12 @@
   "storage.local.configuredPathInspectionFailed": "Не удалось проверить настроенные пути хранения",
   "jobs.check.Local storage": "Локальное хранилище",
   "storage.local.unmountedCleanup": "Проверьте, что том отключён, и очистите запись о прерванном подключении.",
-  "storage.local.mountParentChanged": "Родительский каталог точки подключения изменился. Проверьте восстановление перед продолжением."
+  "storage.local.mountParentChanged": "Родительский каталог точки подключения изменился. Проверьте восстановление перед продолжением.",
+  "accounts.deleteSSHKey": "Удалить SSH-ключ",
+  "accounts.session": "Сеанс",
+  "accounts.sessionStarted": "Начало сеанса",
+  "accounts.endCurrentSession": "Это ваш текущий сеанс. Вы выйдете из PaNasMs.",
+  "delivery.removeDeviceHelp": "Это устройство перестанет получать push-уведомления от NAS. Подписку можно включить снова с этого устройства.",
+  "delivery.unlinkTelegramHelp": "Этот аккаунт Telegram перестанет получать уведомления от NAS. Его можно будет привязать снова.",
+  "delivery.telegramLinkChanged": "Привязка Telegram изменилась. Закройте диалог и проверьте текущий аккаунт перед отключением."
 }

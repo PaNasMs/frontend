@@ -18,6 +18,9 @@ export function ConfirmDialog({
   title,
   children,
   accept,
+  danger = false,
+  busy = false,
+  disabled = false,
   onConfirm,
   onCancel,
 }: {
@@ -25,6 +28,9 @@ export function ConfirmDialog({
   title: string
   children?: ReactNode
   accept: string
+  danger?: boolean
+  busy?: boolean
+  disabled?: boolean
   onConfirm: () => void
   onCancel: () => void
 }) {
@@ -33,26 +39,19 @@ export function ConfirmDialog({
     <Dialog.Root
       open={open}
       onOpenChange={(value) => {
-        if (!value) onCancel()
+        if (!value && !busy) onCancel()
       }}
     >
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay" />
         <DialogContent
           className="dialog compact-confirm"
+          busy={busy}
           onOpenAutoFocus={(event) => {
             event.preventDefault()
             cancelRef.current?.focus()
           }}
-          header={
-            <>
-              {' '}
-              <Dialog.Title>{title}</Dialog.Title>
-              <Dialog.Description asChild>
-                <div className="muted">{children}</div>
-              </Dialog.Description>{' '}
-            </>
-          }
+          header={<Dialog.Title>{title}</Dialog.Title>}
           footer={
             <div className="dialog-actions">
               <button
@@ -61,12 +60,18 @@ export function ConfirmDialog({
                 ref={cancelRef}
                 data-cancel
                 onClick={onCancel}
+                disabled={busy}
                 autoFocus
                 data-dialog-cancel
               >
                 {tr('cancel_0ec753be')}
               </button>
-              <button type="button" className="button primary" onClick={onConfirm}>
+              <button
+                type="button"
+                className={`button ${danger ? 'danger' : 'primary'}`}
+                disabled={busy || disabled}
+                onClick={onConfirm}
+              >
                 {accept}
               </button>
             </div>
@@ -74,7 +79,11 @@ export function ConfirmDialog({
           variant="compact"
           intent="confirm"
           dirty={false}
-        ></DialogContent>
+        >
+          <Dialog.Description asChild>
+            <div className="muted">{children}</div>
+          </Dialog.Description>
+        </DialogContent>
       </Dialog.Portal>
     </Dialog.Root>
   )
