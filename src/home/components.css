@@ -557,10 +557,10 @@ tbody tr:hover {
   position: sticky;
   top: var(--space-4);
   z-index: 30;
-  height: 56px;
+  height: auto;
   min-height: 56px;
   margin: var(--space-4) var(--space-5) 0;
-  padding: 0 6px;
+  padding: 6px;
   gap: var(--space-2);
   border: 0;
   border-radius: var(--radius-pill);
@@ -584,18 +584,55 @@ tbody tr:hover {
 }
 .application-bar {
   gap: var(--space-1);
+  flex-wrap: wrap;
 }
-.topbar .application-bar nav {
+.topbar .application-bar .pinned-applications {
+  display: flex;
+  flex: 1;
+  min-width: var(--control);
   gap: 2px;
   padding-right: 0;
+  overflow: visible;
+}
+.application-bar .pinned-overflow-trigger {
+  flex: 0 0 var(--control);
+  width: var(--control);
+  height: var(--control);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mute);
+}
+.pinned-overflow-trigger[aria-expanded='true'] {
+  background: var(--inset);
+  color: var(--ink);
+}
+.topbar .pinned-overflow-menu > a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: auto;
+  min-height: var(--control);
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-3);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.pinned-overflow-menu > a > svg {
+  flex-shrink: 0;
 }
 /* Only the triggers of the shell are round; buttons inside its menus keep their own shape. */
 :is(.application-bar, .topbar-right) > details > summary,
 .application-bar > nav > a,
 .topbar-action,
+.topbar .topbar-action,
 .user-avatar,
 .desktop-home,
-.app-launcher {
+.application-bar > .app-launcher {
   width: var(--control);
   min-width: var(--control);
   height: var(--control);
@@ -621,7 +658,8 @@ tbody tr:hover {
 .topbar nav .active:hover,
 .desktop-home.active,
 .desktop-home.active:hover,
-.app-launcher[aria-current='page'] {
+.app-launcher[aria-current='page'],
+.pinned-overflow-trigger[aria-current='page'] {
   background: var(--accent);
   color: var(--on-accent);
 }
@@ -677,6 +715,30 @@ tbody tr:hover {
 .ongoing-task progress {
   width: 56px;
 }
+.ongoing-tasks {
+  flex-shrink: 0;
+}
+.ongoing-compact {
+  display: none;
+}
+@media (max-width: 1023px) {
+  .ongoing-tasks .ongoing-task,
+  .ongoing-tasks .ongoing-overflow {
+    display: none;
+  }
+  .topbar .ongoing-compact {
+    display: flex;
+    align-items: center;
+    width: auto;
+    min-width: var(--control);
+    min-height: var(--control);
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--inset);
+    color: var(--ink);
+  }
+}
 
 /* ---------- Menus and popovers: always opaque ---------- */
 .profile-dropdown,
@@ -716,7 +778,10 @@ tbody tr:hover {
   background: var(--inset);
 }
 .app-launcher-menu {
+  top: calc(100% + var(--space-2));
   padding: var(--space-4);
+  max-height: calc(100dvh - var(--app-menu-top, 74px) - var(--space-4));
+  overflow-y: auto;
 }
 .launcher-entry {
   border-radius: var(--radius-md);
@@ -1515,15 +1580,16 @@ tbody tr:hover {
   justify-content: space-between;
   border: 0;
   padding: 0;
+  gap: var(--space-1);
 }
-.phone-taskbar .application-bar nav {
-  display: contents;
+.phone-taskbar .pinned-applications {
+  justify-content: space-evenly;
 }
 .phone-taskbar > details > summary,
 .phone-taskbar .application-bar > :is(.app-launcher, .desktop-home),
-.phone-taskbar .application-bar > nav > a {
-  width: 52px;
-  min-width: 52px;
+.phone-taskbar .application-bar > nav > :is(a, button) {
+  width: var(--control);
+  min-width: var(--control);
   height: 48px;
   min-height: 48px;
   border-radius: var(--radius-pill);
@@ -1561,7 +1627,8 @@ tbody tr:hover {
   }
   /* The phone bar names the section visually. Keep its page heading in the accessibility tree. */
   .page-heading:not(.detail) h1,
-  .page-heading:not(.detail) > :is(div, hgroup):first-child:has(h1):not(:has(button, a, input, select, textarea, [tabindex])),
+  .page-heading:not(.detail)
+    > :is(div, hgroup):first-child:has(h1):not(:has(button, a, input, select, textarea, [tabindex])),
   .page-heading:not(.detail):has(h1):not(:has(button, a, input, select, textarea, [tabindex])),
   .desktop-heading h1,
   .workspace > h1 {
@@ -1893,6 +1960,19 @@ tbody tr:hover {
   }
 }
 
-.password-control { position: relative; min-width: 0; }
-.password-control > input { width: 100%; padding-inline-end: 3.25rem; }
-.password-control > .button { position: absolute; inset-inline-end: 0.25rem; top: 50%; transform: translateY(-50%); background: transparent; box-shadow: none; }
+.password-control {
+  position: relative;
+  min-width: 0;
+}
+.password-control > input {
+  width: 100%;
+  padding-inline-end: 3.25rem;
+}
+.password-control > .button {
+  position: absolute;
+  inset-inline-end: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  box-shadow: none;
+}
