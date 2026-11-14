@@ -242,13 +242,16 @@ function Disk({
                       ? mdiAlertOutline
                       : mdiHelpCircleOutline
               }
-              label={
+              label={[
                 d.tran === 'mmc'
                   ? tr('smart_not_supported_6b090f41')
                   : acknowledged
                     ? tr('smart_crc_acknowledged_9e205124')
-                    : healthNames[t?.health ?? 'unknown']
-              }
+                    : healthNames[t?.health ?? 'unknown'],
+                t && (!live || t.stale || t.smartStale) ? tr('data_is_out_of_date_91b76e66') : '',
+              ]
+                .filter(Boolean)
+                .join(' · ')}
               warning={!acknowledged && (t?.health === 'failed' || t?.health === 'warning')}
             />
           )}{' '}
@@ -361,6 +364,7 @@ function SmartDialog({
   pending,
   error,
   onBaseline,
+  readStatus,
 }: {
   d: Device
   t?: Telemetry
@@ -369,6 +373,7 @@ function SmartDialog({
   pending: boolean
   error?: string
   onBaseline: (value?: number) => void
+  readStatus?: ReactNode
 }) {
   const dialogRef = useRef<HTMLDivElement>(null)
   const [smartTab, setSmartTab] = useState('attributes')
@@ -474,6 +479,7 @@ function SmartDialog({
         intent="inspect"
         dirty={false}
       >
+        {readStatus}
         {t?.warnings?.length ? (
           <Notice error>
             {t.warnings
@@ -499,7 +505,14 @@ function SmartDialog({
             )}
             <div className="actions">
               <Button
-                disabled={pending || !live || !!t?.stale || t?.state !== 'active' || crc === baseline}
+                disabled={
+                  pending ||
+                  !live ||
+                  !!t?.stale ||
+                  !!t?.smartStale ||
+                  t?.state !== 'active' ||
+                  crc === baseline
+                }
                 onClick={() => onBaseline(crc)}
               >
                 {tr('acknowledge_current_crc_count_3ad8bb52')}
@@ -657,7 +670,30 @@ export function StoragePage() {
   const assigned = new Set((s?.arrays ?? []).flatMap((a) => memberDisks(a.members).map((d) => d.path)))
   const mounts = flatten<Mount>(s?.mounts ?? [])
   const samples = telemetry.data?.status.disks ?? []
-  const live = !!telemetry.data?.available
+  const live = !!telemetry.data?.available && !telemetry.error
+  const policiesCurrent = !!data.data && !data.error && !!options.data && !options.error
+  const currentOptions = policiesCurrent ? options.data : undefined
+  const sources = [
+    { id: 'inventory', label: tr('storageRead.inventory'), query: data },
+    { id: 'telemetry', label: tr('storageRead.telemetry'), query: telemetry },
+    { id: 'metrics', label: tr('storageRead.metrics'), query: metrics },
+    { id: 'actions', label: tr('storageRead.actions'), query: options },
+    { id: 'preferences', label: tr('storageRead.preferences'), query: prefs },
+  ]
+  const readNotice = ({ id, label, query }: (typeof sources)[number]) =>
+    query.error && (
+      <Notice error key={id}>
+        <strong>{label}</strong>: {query.error.message}
+        <p>
+          {query.dataUpdatedAt
+            ? tr('storageRead.stale', { time: new Date(query.dataUpdatedAt).toLocaleString(locale()) })
+            : tr('storageRead.unavailable')}
+        </p>
+        <Button disabled={query.isFetching} onClick={() => void query.refetch()}>
+          {tr('retry_9e506acb')}
+        </Button>
+      </Notice>
+    )
   const baselineFor = (d: Device) => smartBaseline(d, prefs.data)
   const disk = (
     d: Device,
@@ -670,7 +706,7 @@ export function StoragePage() {
       key={d.path}
       system={!!options.data?.devices.find((p) => p.path === d.path)?.protectedReason}
       actions={
-        !compact && options.data?.devices.find((p) => p.path === d.path)?.ejectable ? (
+        !compact && currentOptions?.devices.find((p) => p.path === d.path)?.ejectable ? (
           <EjectButton device={d} />
         ) : undefined
       }
@@ -680,9 +716,9 @@ export function StoragePage() {
       selection={selection}
       d={d}
       t={samples.find((t) => t.device === d.path)}
-      live={live || d.tran === 'mmc'}
+      live={live || (d.tran === 'mmc' && !data.error)}
       compact={compact}
-      rate={metrics.data?.disks?.[d.kname]}
+      rate={!metrics.error ? metrics.data?.disks?.[d.kname] : undefined}
       baseline={baselineFor(d)}
       onSmart={() => {
         save.reset()
@@ -697,7 +733,7 @@ export function StoragePage() {
   const free = disks.filter(
     (d) =>
       !assigned.has(d.path) &&
-      options.data?.devices.find((p) => p.path === d.path)?.raidEligible &&
+      currentOptions?.devices.find((p) => p.path === d.path)?.raidEligible &&
       freeSelection.includes(d.path),
   )
   const levels =
@@ -755,7 +791,12 @@ export function StoragePage() {
           <p className="muted">{tr('disks_arrays_and_file_systems_6e7c20dc')}</p>
         </div>
         <div className="actions">
-          <Button onClick={() => void data.refetch()} disabled={data.isFetching}>
+          <Button
+            onClick={() => {
+              for (const source of sources) void source.query.refetch()
+            }}
+            disabled={sources.some(({ query }) => query.isFetching)}
+          >
             <Icon path={mdiRefresh} />
             {tr('refresh_c2f668e5')}
           </Button>
@@ -786,12 +827,11 @@ export function StoragePage() {
           ]}
         />
         {data.isPending && <Notice>{tr('discovering_storage_2689e168')}</Notice>}
-        {data.error && <Notice error>{data.error.message}</Notice>}
+        {sources.map(readNotice)}
         <Tabs.Content value="disks">
           <div className="storage-tab-intro">
             <p className="muted">{tr('select_unused_disks_to_create_an_array_or_one_disk_91ae0bec')}</p>
           </div>
-          {options.error && <Notice error>{options.error.message}</Notice>}
           {free.length > 0 && (
             <div className="selection-bar disk-selection-bar" aria-label={tr('selected_disks_3524e0a0')}>
               <div>
@@ -931,7 +971,7 @@ export function StoragePage() {
                         {bytes(a.size)} · {a.members.length}
                         {' ' + tr('disks_3c37da8d')}
                       </p>
-                      {metrics.data?.disks?.[a.device.replace('/dev/', '')] && (
+                      {!metrics.error && metrics.data?.disks?.[a.device.replace('/dev/', '')] && (
                         <p className="small muted">
                           {tr('array_9147c2e6') + ' '}
                           {bytes(metrics.data.disks[a.device.replace('/dev/', '')].read)}
@@ -1139,7 +1179,7 @@ export function StoragePage() {
             {disks
               .filter((d) => !assigned.has(d.path))
               .map((d) => {
-                const p = options.data?.devices.find((p) => p.path === d.path)
+                const p = currentOptions?.devices.find((p) => p.path === d.path)
                 return disk(
                   d,
                   false,
@@ -1166,7 +1206,9 @@ export function StoragePage() {
                     )}
                     {!p?.raidEligible && (
                       <p className="small muted">
-                        {p?.raidReason || tr('checking_selection_availability_9b43b4d0')}
+                        {data.error || options.error
+                          ? tr('storageRead.actionsUnavailable')
+                          : p?.raidReason || tr('checking_selection_availability_9b43b4d0')}
                       </p>
                     )}
                   </>,
@@ -1188,6 +1230,13 @@ export function StoragePage() {
             devices={volumes}
             mounts={mounts}
             options={options.data}
+            optionsUnavailable={!policiesCurrent}
+            optionsError={data.error?.message || options.error?.message}
+            onRetryOptions={() => {
+              void data.refetch()
+              void options.refetch()
+            }}
+            retryingOptions={data.isFetching || options.isFetching}
             arrayNames={Object.fromEntries((s?.arrays ?? []).map((a) => [a.device, a.name]))}
           />
         </Tabs.Content>
@@ -1204,11 +1253,23 @@ export function StoragePage() {
             t={samples.find((t) => t.device === selectedDisk.path)}
             live={live}
             baseline={baselineFor(selectedDisk)}
-            pending={save.isPending || !prefs.data || !smartKey(selectedDisk)}
+            pending={
+              save.isPending || !prefs.data || !!prefs.error || !!data.error || !smartKey(selectedDisk)
+            }
+            readStatus={sources
+              .filter(({ id }) => ['inventory', 'telemetry', 'preferences'].includes(id))
+              .map(readNotice)}
             error={save.error?.message}
             onBaseline={(value) => {
               const key = smartKey(selectedDisk)
-              if (key) save.mutate({ key, value })
+              if (!key || !prefs.data || prefs.error || data.error || save.isPending) return
+              const sample = samples.find((item) => item.device === selectedDisk.path)
+              if (
+                value !== undefined &&
+                (!live || sample?.stale || sample?.smartStale || sample?.state !== 'active')
+              )
+                return
+              save.mutate({ key, value })
             }}
           />
         )}
