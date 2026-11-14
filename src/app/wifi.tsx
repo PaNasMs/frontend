@@ -336,6 +336,7 @@ export function WifiControls({
                   </Button>
                 </Dialog.Close>
                 <Button
+                  className="primary"
                   disabled={disabled}
                   onClick={async () => {
                     const action = confirm === 'disconnect' ? 'network.wifi.disconnect' : 'network.wifi.radio'
@@ -348,7 +349,10 @@ export function WifiControls({
                       setConfirm(null)
                   }}
                 >
-                  {tr('wifi.apply')}
+                  {tr(
+                    confirm === 'disconnect' ? 'wifi.disconnect' : enabled ? 'wifi.turnOff' : 'wifi.turnOn',
+                  )}{' '}
+                  · {name}
                 </Button>
               </div>
             }

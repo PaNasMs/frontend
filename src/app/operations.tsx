@@ -56,6 +56,7 @@ export type Field = {
   confirms?: string
 }
 type Operation = {
+  danger?: boolean
   label: string
   fields: Field[]
 }
@@ -87,7 +88,7 @@ export const operations: Record<string, Operation> = {
   'system.update.install': { label: tr('up.install'), fields: [] },
   'system.update.rollback': { label: tr('up.rollback'), fields: [] },
   'share.save': { label: tr('shares.save'), fields: [] },
-  'share.remove': { label: tr('shares.remove'), fields: [] },
+  'share.remove': { label: tr('shares.remove'), danger: true, fields: [] },
   'share.disconnect': { label: tr('shares.disconnect'), fields: [] },
   'share.account': { label: tr('accounts.smbAccess'), fields: [] },
   'share.recover': { label: tr('shares.recover'), fields: [] },
@@ -100,7 +101,7 @@ export const operations: Record<string, Operation> = {
   'network.share.save': { label: tr('share.create'), fields: [] },
   'network.share.start': { label: tr('share.start'), fields: [] },
   'network.share.stop': { label: tr('share.stop'), fields: [] },
-  'network.share.delete': { label: tr('share.delete'), fields: [] },
+  'network.share.delete': { label: tr('share.delete'), danger: true, fields: [] },
   'network.access.save': { label: tr('access.title'), fields: [] },
   'network.access.stop': { label: tr('access.stop'), fields: [] },
   'network.configure': { label: tr('network.configure'), fields: [] },
@@ -112,7 +113,7 @@ export const operations: Record<string, Operation> = {
   'system.reboot': { label: tr('power.reboot'), fields: [] },
   'homes.move': { label: tr('homes.move'), fields: [] },
   'module.source-add': { label: tr('repos.add'), fields: [] },
-  'module.source-remove': { label: tr('repos.remove'), fields: [] },
+  'module.source-remove': { label: tr('repos.remove'), danger: true, fields: [] },
   'module.recover': { label: tr('jobs.recoverModules'), fields: [] },
   'updates.repair': { label: tr('jobs.repairPackages'), fields: [] },
   'homes.recover': { label: tr('homes.recover'), fields: [] },
@@ -169,10 +170,11 @@ export const operations: Record<string, Operation> = {
   },
   'file.delete': {
     label: tr('permanently_delete_1879f0ec'),
+    danger: true,
     fields: [{ key: 'target', label: tr('path_1b46c650') }],
   },
-  'filesystem.remove': { label: tr('storage.remove_filesystem'), fields: [target] },
-  'disk.prepare': { label: tr('wipe_device_79e13b21'), fields: [target] },
+  'filesystem.remove': { label: tr('storage.remove_filesystem'), danger: true, fields: [target] },
+  'disk.prepare': { label: tr('wipe_device_79e13b21'), danger: true, fields: [target] },
   'raid.convert': {
     label: tr('storage.raid_convert'),
     fields: [
@@ -199,6 +201,7 @@ export const operations: Record<string, Operation> = {
   'raid.resume': { label: tr('resume_reshape_6ac07018'), fields: [target] },
   'raid.delete': {
     label: tr('delete_array_9849a1e4'),
+    danger: true,
     fields: [
       target,
       { key: 'removeShares', label: tr('storage.removeShares'), type: 'check', value: false, optional: true },
@@ -224,6 +227,7 @@ export const operations: Record<string, Operation> = {
   'raid.check-stop': { label: tr('stop_array_check_befc81d8'), fields: [target] },
   'storage.archive-journal': {
     label: tr('storage.recovery.archive_action'),
+    danger: true,
     fields: [{ key: 'target', label: tr('device_bc791dbe'), hint: tr('storage.recovery_target_hint') }],
   },
   'storage.recover': {
@@ -238,10 +242,11 @@ export const operations: Record<string, Operation> = {
       { key: 'endMiB', label: tr('end_mib_41fdede8'), type: 'number' },
     ],
   },
-  'partition.delete': { label: tr('delete_partition_74a0d7ba'), fields: [target] },
+  'partition.delete': { label: tr('delete_partition_74a0d7ba'), danger: true, fields: [target] },
   'partition.resize': { label: tr('resize_partition_080a7c82'), fields: [target, size] },
   'filesystem.format': {
     label: tr('format_volume_01553c8e'),
+    danger: true,
     fields: [
       target,
       {
@@ -258,6 +263,7 @@ export const operations: Record<string, Operation> = {
   },
   'filesystem.snapshot-delete': {
     label: tr('storage.snapshot_delete'),
+    danger: true,
     fields: [target, { key: 'snapshot', label: tr('storage.snapshot'), type: 'select' }],
   },
   'filesystem.snapshot-restore': {
@@ -289,6 +295,7 @@ export const operations: Record<string, Operation> = {
   },
   'luks.key-remove': {
     label: tr('storage.key_remove'),
+    danger: true,
     fields: [
       target,
       { key: 'slot', label: tr('storage.key_slot'), type: 'select' },
@@ -316,6 +323,7 @@ export const operations: Record<string, Operation> = {
   },
   'luks.header-restore': {
     label: tr('storage.header_restore'),
+    danger: true,
     fields: [
       target,
       { key: 'folder', label: tr('storage.header_folder'), type: 'folder', folderPolicy: 'share' },
@@ -323,6 +331,7 @@ export const operations: Record<string, Operation> = {
   },
   'luks.create': {
     label: tr('create_encrypted_volume_a70fa700'),
+    danger: true,
     fields: [
       target,
       { key: 'passphrase', label: tr('luks_password_keep_a_separate_copy_43d8a4a0'), type: 'password' },
@@ -343,7 +352,7 @@ export const operations: Record<string, Operation> = {
     ],
   },
   'luks.close': { label: tr('lock_volume_dd9f2c5c'), fields: [target] },
-  'smart.unschedule': { label: tr('delete_smart_schedule_ee3cb186'), fields: [target] },
+  'smart.unschedule': { label: tr('delete_smart_schedule_ee3cb186'), danger: true, fields: [target] },
   'smart.short': { label: tr('short_smart_test_4a03235f'), fields: [target] },
   'smart.long': { label: tr('extended_smart_test_8c82a017'), fields: [target] },
   'smart.abort': { label: tr('stop_smart_test_a72d42af'), fields: [target] },
@@ -366,7 +375,7 @@ export const operations: Record<string, Operation> = {
   'user.security': { label: tr('accounts.security'), fields: [] },
   'user.identity': { label: tr('accounts.changeUID'), fields: [] },
   'user.key.add': { label: tr('accounts.addKey'), fields: [] },
-  'user.key.delete': { label: tr('accounts.deleteKey'), fields: [] },
+  'user.key.delete': { label: tr('accounts.deleteKey'), danger: true, fields: [] },
   'user.session.end': { label: tr('accounts.endSession'), fields: [] },
   'user.create': {
     label: tr('create_user_40516a2e'),
@@ -413,6 +422,7 @@ export const operations: Record<string, Operation> = {
   },
   'user.delete': {
     label: tr('delete_user_e0728517'),
+    danger: true,
     fields: [
       user,
       {
@@ -436,6 +446,7 @@ export const operations: Record<string, Operation> = {
   },
   'group.delete': {
     label: tr('delete_group_05b970e6'),
+    danger: true,
     fields: [{ key: 'target', label: tr('group_name_9e4491a4') }],
   },
   'service.start': {
@@ -470,6 +481,7 @@ export const operations: Record<string, Operation> = {
   },
   'nfs.export-remove': {
     label: tr('remove_nfs_share_e7cb9224'),
+    danger: true,
     fields: [{ key: 'target', label: tr('directory_46e27e2f') }],
   },
   'nfs.mount': {
@@ -713,6 +725,19 @@ function OperationForm({
       if (field) document.getElementById(`${id}-${field}`)?.focus()
     },
   })
+  const visibleContext = context.filter((item) => !plan.data || item.key !== 'target')
+  const targetDetail =
+    action === 'filesystem.snapshot-delete' || action === 'filesystem.snapshot-restore'
+      ? params.snapshot
+      : action === 'luks.key-remove'
+        ? `${tr('storage.key_slot')} ${params.slot}`
+        : undefined
+  const confirmationTarget = [
+    context.find((item) => item.key === 'target')?.value || plan.data?.target,
+    targetDetail,
+  ]
+    .filter(Boolean)
+    .join(' · ')
   const run = useMutation({
     mutationFn: async (requestedAction?: string) => {
       const selectedAction = requestedAction ?? action
@@ -960,17 +985,12 @@ function OperationForm({
                 </Button>
               </Dialog.Close>
               <Button
-                className={
-                  action === 'filesystem.remove' || action === 'storage.archive-journal'
-                    ? 'danger'
-                    : 'primary'
-                }
+                className={operations[action].danger ? 'danger' : 'primary'}
                 disabled={run.isPending}
                 onClick={() => run.mutate()}
               >
-                {action === 'filesystem.remove' || action === 'storage.archive-journal'
-                  ? operations[action].label
-                  : tr('confirm_0467ae4b')}
+                {operations[action].label}
+                {confirmationTarget ? ` · ${confirmationTarget}` : ''}
               </Button>
             </div>
           ) : (
@@ -1001,11 +1021,11 @@ function OperationForm({
           )
         }
         variant="form"
-        intent="edit"
+        intent={plan.data ? 'confirm' : 'edit'}
       >
-        {!fileOperation && context.length > 0 && (
+        {!fileOperation && visibleContext.length > 0 && (
           <dl className="operation-context">
-            {context.map((item) => (
+            {visibleContext.map((item) => (
               <div key={item.key}>
                 <dt>{item.label}</dt>
                 <dd>{item.value}</dd>
@@ -1223,10 +1243,10 @@ function OperationForm({
           <>
             <h3>{tr('confirmation_846aff70')}</h3>
             <Notice>
-              {journalAction && (
-                <div>
-                  {tr('device_bc791dbe')}: <strong>{plan.data.target}</strong>
-                </div>
+              {confirmationTarget && (
+                <p>
+                  <strong>{confirmationTarget}</strong>
+                </p>
               )}
               {plan.data.details.map((d, i) => (
                 <div key={i}>{d}</div>

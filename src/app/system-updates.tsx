@@ -333,7 +333,8 @@ export function SystemUpdates() {
                     disabled={unavailable || working}
                     onClick={() => void apply('system.update.' + operation)}
                   >
-                    {tr('homes.confirmButton')}
+                    {tr('up.' + operation)} · PaNasMs
+                    {operation === 'install' && data?.candidate?.version ? ` ${data.candidate.version}` : ''}
                   </Button>
                 </div>
               )

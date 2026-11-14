@@ -121,6 +121,8 @@ export function CloseIcon({
   )
 }
 
+const cancelSelector = '[data-dialog-cancel]:not(.close-icon):not(:disabled), [data-cancel]:not(:disabled)'
+
 const ParentDialog = createContext<((active: boolean) => void) | null>(null)
 export type DialogContentProps = ComponentPropsWithoutRef<typeof Dialog.Content> &
   Waiting & {
@@ -160,6 +162,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
   )
   const discardID = useId()
   const localRef = useRef<HTMLDivElement | null>(null)
+  const previousIntent = useRef(intent)
   const closeRef = useRef<HTMLButtonElement>(null)
   const cancelRef = useRef<HTMLButtonElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)
@@ -178,6 +181,12 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
     },
     [ref],
   )
+  useLayoutEffect(() => {
+    if (busy) return
+    if (intent === 'confirm' && previousIntent.current !== 'confirm')
+      localRef.current?.querySelector<HTMLElement>(cancelSelector)?.focus({ preventScroll: true })
+    previousIntent.current = intent
+  }, [intent, busy])
   useLayoutEffect(() => {
     parent?.(true)
     return () => parent?.(false)
@@ -250,9 +259,7 @@ export const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(func
           const root = localRef.current
           const focus =
             intent === 'confirm'
-              ? root?.querySelector<HTMLElement>(
-                  '[data-dialog-cancel]:not(.close-icon):not(:disabled), [data-cancel]:not(:disabled)',
-                )
+              ? root?.querySelector<HTMLElement>(cancelSelector)
               : intent === 'edit'
                 ? root?.querySelector<HTMLElement>(
                     'input:not([type=hidden]):not(:disabled), select:not(:disabled), textarea:not(:disabled)',

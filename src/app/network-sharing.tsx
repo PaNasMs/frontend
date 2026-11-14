@@ -175,7 +175,7 @@ export function SharingLayout<T extends ShareInterface>({
                 {' '}
                 <Dialog.Title>{confirm && tr('share.' + confirm.action)}</Dialog.Title>
                 <Dialog.Description>
-                  {tr('share.confirmAction', { name: confirm?.group.name })}
+                  <strong>{confirm?.group.name}</strong> {confirm && tr('share.confirm.' + confirm.action)}
                 </Dialog.Description>{' '}
               </>
             }
@@ -185,13 +185,14 @@ export function SharingLayout<T extends ShareInterface>({
                   {tr('share.cancel')}
                 </Button>
                 <Button
+                  className={confirm?.action === 'delete' ? 'danger' : 'primary'}
                   disabled={busy}
                   onClick={async () => {
                     if (confirm && (await run('network.share.' + confirm.action, { id: confirm.group.id })))
                       setConfirm(null)
                   }}
                 >
-                  {tr('share.confirm')}
+                  {confirm && `${tr('share.' + confirm.action)} · ${confirm.group.name}`}
                 </Button>
               </div>
             }

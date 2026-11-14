@@ -208,6 +208,17 @@ export function ModuleManager() {
     </div>
   )
   const moduleName = (id: string) => catalog.data?.installed.find((item) => item.id === id)?.title ?? id
+  const pendingLabel =
+    pending &&
+    tr(
+      {
+        'module.install': 'install_modules_bfc8911f',
+        'module.enable': 'enable_module_9e827c96',
+        'module.disable': 'disable_module_11c9ac86',
+        'module.remove': 'remove_module_ed11fa8e',
+      }[pending.action] ?? 'change_module_4e519bcb',
+    )
+  const pendingTarget = pending && moduleName(pending.params.target || pending.plan.target)
   return (
     <WaitingSurface busy={busy && !pending && !accepted} message={stage || undefined}>
       <div className={moduleId ? 'page-heading detail' : 'page-heading'}>
@@ -462,11 +473,7 @@ export function ModuleManager() {
               <>
                 {' '}
                 <div className="page-heading">
-                  <Dialog.Title>
-                    {pending?.action === 'module.install'
-                      ? tr('install_modules_bfc8911f')
-                      : tr('change_module_4e519bcb')}
-                  </Dialog.Title>
+                  <Dialog.Title>{pendingLabel}</Dialog.Title>
                 </div>
                 <Dialog.Description>
                   {tr('review_the_changes_before_applying_0b26d959')}
@@ -478,8 +485,13 @@ export function ModuleManager() {
                 <Button disabled={busy} onClick={() => setPending(null)} data-dialog-cancel>
                   {tr('cancel_0ec753be')}
                 </Button>
-                <Button disabled={busy} onClick={() => void apply()}>
-                  {tr('confirm_0467ae4b')}
+                <Button
+                  className={pending?.action === 'module.remove' ? 'danger' : 'primary'}
+                  disabled={busy}
+                  onClick={() => void apply()}
+                >
+                  {pendingLabel}
+                  {pendingTarget ? ` · ${pendingTarget}` : ''}
                 </Button>
               </div>
             }
@@ -487,6 +499,9 @@ export function ModuleManager() {
             intent="confirm"
             dirty={false}
           >
+            <p>
+              <strong>{pendingTarget}</strong>
+            </p>
             <ul>
               {pending?.plan.details.map((d, i) => (
                 <li key={i}>{d}</li>
