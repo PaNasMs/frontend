@@ -30,11 +30,29 @@ export function Button({ className, title, ...props }: ButtonHTMLAttributes<HTML
     />
   )
 }
-export function Notice({ children, error = false }: { children: ReactNode; error?: boolean }) {
+export function Notice({
+  children,
+  error = false,
+  className,
+}: {
+  children: ReactNode
+  error?: boolean
+  className?: string
+}) {
   return (
-    <div className={cn('notice', error && 'error')} role={error ? 'alert' : 'status'}>
+    <div className={cn('notice', error && 'error', className)} role={error ? 'alert' : 'status'}>
       {children}
     </div>
+  )
+}
+export function DraftConflict({ disabled = false, onReload }: { disabled?: boolean; onReload: () => void }) {
+  return (
+    <Notice className="draft-conflict">
+      <span>{tr('forms.changed')}</span>
+      <Button type="button" disabled={disabled} onClick={onReload}>
+        {tr('forms.reload')}
+      </Button>
+    </Notice>
   )
 }
 export function PasswordInput(props: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {

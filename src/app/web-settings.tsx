@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { flushSync } from 'react-dom'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import * as Dialog from '@radix-ui/react-dialog'
 import { request, type Identity } from '../api/client'
 import { tr } from '../i18n'
-import { Button, Notice, DialogContent } from '../shared/ui'
+import { Button, DraftConflict, Notice, DialogContent } from '../shared/ui'
+import { useDraft } from '../shared/interaction'
 import { managed, type Job } from './operations'
 import { newID } from './dashboard'
 import { waitForJob } from '../shared/job-completion'
 
 type Access = { port: number; pending: boolean; error: string }
 export function WebSettings() {
+  const queryClient = useQueryClient()
   const session = useQuery({ queryKey: ['session'], queryFn: () => request<Identity>('session') })
   const admin = session.data?.role === 'admin'
   const data = useQuery({
@@ -17,14 +20,14 @@ export function WebSettings() {
     queryFn: () => managed<Access>('web-access'),
     enabled: admin,
   })
-  const [port, setPort] = useState('80')
+  const draft = useDraft(data.data ? String(data.data.port) : '', 'web-port')
+  const port = draft.draft
+  const setPort = draft.setDraft
   const [open, setOpen] = useState(false)
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  useEffect(() => {
-    if (data.data) setPort(String(data.data.port))
-  }, [data.data?.port])
+  const unavailable = !data.data || data.isError
   const valid = /^\d+$/.test(port) && Number(port) >= 1 && Number(port) <= 65535
   const address = new URL(window.location.href)
   address.port = valid ? String(Number(port)) : ''
@@ -32,6 +35,7 @@ export function WebSettings() {
   address.search = ''
   address.hash = ''
   async function save() {
+    if (unavailable || busy || draft.conflict || !valid || !draft.dirty || data.data?.pending) return
     setBusy(true)
     setError('')
     try {
@@ -56,6 +60,14 @@ export function WebSettings() {
           })
           const health = await response.json()
           if (response.ok && health.status === 'ok' && health.product === 'PaNasMs') {
+            flushSync(() => {
+              queryClient.setQueryData<Access>(['web-access'], {
+                port: Number(port),
+                pending: false,
+                error: '',
+              })
+              draft.reset(port)
+            })
             window.location.assign(address.href)
             return
           }
@@ -77,11 +89,22 @@ export function WebSettings() {
     <section className="surface">
       <h2>{tr('web.title')}</h2>
       <p className="muted">{tr('web.description')}</p>
-      {data.error && <Notice error>{data.error.message}</Notice>}
+      {!open && data.error && (
+        <Notice error>
+          {data.error.message}{' '}
+          <Button type="button" disabled={data.isFetching || busy} onClick={() => void data.refetch()}>
+            {tr('retry_9e506acb')}
+          </Button>
+        </Notice>
+      )}
       {data.data?.error && <Notice error>{data.data.error}</Notice>}
+      {!open && draft.conflict && (
+        <DraftConflict disabled={unavailable || busy} onReload={() => draft.reset()} />
+      )}
       <form
         onSubmit={(event) => {
           event.preventDefault()
+          if (unavailable || busy || draft.conflict || !valid || !draft.dirty || data.data?.pending) return
           setError('')
           setReady(false)
           setOpen(true)
@@ -91,6 +114,7 @@ export function WebSettings() {
           {tr('web.port')}
           <input
             type="number"
+            disabled={!data.data || busy}
             min={1}
             max={65535}
             step={1}
@@ -104,7 +128,7 @@ export function WebSettings() {
         <Button
           type="submit"
           className="primary"
-          disabled={!valid || !data.data || data.data.pending || Number(port) === data.data.port}
+          disabled={!valid || unavailable || busy || draft.conflict || data.data?.pending || !draft.dirty}
         >
           {tr('apply_768af677')}
         </Button>
@@ -138,7 +162,11 @@ export function WebSettings() {
                     {tr('web.open')}
                   </a>
                 ) : (
-                  <Button className="primary" onClick={() => void save()}>
+                  <Button
+                    className="primary"
+                    disabled={unavailable || busy || draft.conflict}
+                    onClick={() => void save()}
+                  >
                     {tr('apply_768af677')}
                   </Button>
                 )}
@@ -151,6 +179,23 @@ export function WebSettings() {
             <p>
               <a href={address.href}>{address.href}</a>
             </p>
+            {data.error && (
+              <Notice error>
+                {data.error.message}{' '}
+                <Button type="button" disabled={data.isFetching || busy} onClick={() => void data.refetch()}>
+                  {tr('retry_9e506acb')}
+                </Button>
+              </Notice>
+            )}
+            {draft.conflict && (
+              <DraftConflict
+                disabled={unavailable || busy}
+                onReload={() => {
+                  draft.reset()
+                  setOpen(false)
+                }}
+              />
+            )}
             {error && <Notice error>{error}</Notice>}
           </DialogContent>
         </Dialog.Portal>

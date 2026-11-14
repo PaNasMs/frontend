@@ -6,8 +6,8 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { mdiGoogle, mdiGithub, mdiDropbox, mdiLinkVariantOff } from '@mdi/js'
 import { request, APIError } from '../api/client'
 import type { components } from '../api/schema'
-import { Button, Icon, Notice, DialogContent, WaitingSurface, Disclosure } from '../shared/ui'
-import { useDraft, useUnsavedForm } from '../shared/interaction'
+import { Button, DraftConflict, Icon, Notice, DialogContent, WaitingSurface, Disclosure } from '../shared/ui'
+import { useDraft } from '../shared/interaction'
 import { tr } from '../i18n'
 import { notify } from './notifications'
 import { ExternalGrants } from './external-grants'
@@ -51,21 +51,25 @@ function ProviderSettingsForm({ provider }: { provider: Provider }) {
     queryKey: ['external-settings', provider],
     queryFn: () => request<ProviderSettings>(`external/settings/${provider}`),
   })
-  const id = useDraft(data.data?.clientId ?? '')
-  const enabled = useDraft(data.data?.enabled ?? false)
-  const [secret, setSecret] = useState('')
-  useUnsavedForm(!!secret, () => setSecret(''))
+  const form = useDraft(
+    {
+      clientId: data.data?.clientId ?? '',
+      enabled: data.data?.enabled ?? false,
+      clientSecret: '',
+    },
+    'provider:' + provider,
+  )
+  const { draft, setDraft } = form
+  const unavailable = !data.data || data.isError
   const save = useMutation({
     mutationFn: () =>
       request<ProviderSettings>(`external/settings/${provider}`, 'PUT', {
-        clientId: id.draft.trim(),
-        clientSecret: secret,
-        enabled: enabled.draft,
+        clientId: draft.clientId.trim(),
+        clientSecret: draft.clientSecret,
+        enabled: draft.enabled,
       }),
     onSuccess: (value) => {
-      setSecret('')
-      id.reset(value.clientId)
-      enabled.reset(value.enabled)
+      form.reset({ clientId: value.clientId, enabled: value.enabled, clientSecret: '' })
       q.setQueryData(['external-settings', provider], value)
       void q.invalidateQueries({ queryKey: ['external-providers'] })
       notify(tr('external.saved'))
@@ -80,82 +84,109 @@ function ProviderSettingsForm({ provider }: { provider: Provider }) {
         <h3 className="external-provider-heading">
           <Icon path={providerIcons[provider]} /> {providerNames[provider]}
         </h3>
-        {data.error && <Notice error>{errorText(data.error)}</Notice>}
+        {data.error && (
+          <Notice error>
+            {errorText(data.error)}{' '}
+            <Button
+              type="button"
+              disabled={data.isFetching || save.isPending}
+              onClick={() => void data.refetch()}
+            >
+              {tr('retry_9e506acb')}
+            </Button>
+          </Notice>
+        )}
         {save.error && <Notice error>{errorText(save.error)}</Notice>}
+        {form.conflict && (
+          <DraftConflict
+            disabled={unavailable || save.isPending}
+            onReload={() => {
+              form.reset()
+              save.reset()
+            }}
+          />
+        )}
         <form
           onSubmit={(event) => {
             event.preventDefault()
-            save.mutate()
+            if (!unavailable && !save.isPending && !form.conflict && form.dirty) save.mutate()
           }}
           className="external-settings-form"
         >
-          <label className="field">
-            {tr('external.clientId')}
-            <input
-              value={id.draft}
-              onChange={(e) => id.setDraft(e.target.value)}
-              autoComplete="off"
-              required
-              maxLength={256}
-            />
-          </label>
-          <label className="field">
-            {tr('external.clientSecret')}
-            <input
-              type="password"
-              value={secret}
-              onChange={(e) => setSecret(e.target.value)}
-              autoComplete="new-password"
-              required={!data.data?.secretConfigured || id.draft !== data.data.clientId}
-              placeholder={data.data?.secretConfigured && id.draft === data.data.clientId ? '••••••••' : ''}
-              title={data.data?.secretConfigured ? tr('external.keepSecret') : undefined}
-              maxLength={4096}
-            />
-          </label>
-          <label className="field">
-            {tr('external.redirect')}
-            <input readOnly value={data.data?.redirectUri ?? ''} onFocus={(e) => e.target.select()} />
-          </label>
-          <p className="muted small">
-            {tr(`external.setup.${provider}`)}{' '}
-            <a
-              href={`https://panasms.github.io/docs/setup/${provider}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {tr('external.setupGuide')}
-            </a>
-            {' · '}
-            <a
-              href={
-                {
-                  google: 'https://console.cloud.google.com/auth/clients',
-                  github: 'https://github.com/settings/developers',
-                  dropbox: 'https://www.dropbox.com/developers/apps',
-                }[provider]
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {providerNames[provider]}
-            </a>
-          </p>
-          <label className="external-toggle">
-            <input
-              type="checkbox"
-              checked={enabled.draft}
-              onChange={(e) => enabled.setDraft(e.target.checked)}
-            />
-            {tr(provider === 'dropbox' ? 'external.enableLink' : 'external.enableProvider', {
-              provider: providerNames[provider],
-            })}
-          </label>
-          <p className="muted small">{tr(`external.scope.${provider}`)}</p>
-          <div className="actions">
-            <Button className="primary" disabled={save.isPending || !data.data}>
-              {tr('apply_768af677')}
-            </Button>
-          </div>
+          <fieldset disabled={!data.data || save.isPending} className="delivery-fields">
+            <label className="field">
+              {tr('external.clientId')}
+              <input
+                value={draft.clientId}
+                onChange={(e) => setDraft({ ...draft, clientId: e.target.value })}
+                autoComplete="off"
+                required
+                maxLength={256}
+              />
+            </label>
+            <label className="field">
+              {tr('external.clientSecret')}
+              <input
+                type="password"
+                value={draft.clientSecret}
+                onChange={(e) => setDraft({ ...draft, clientSecret: e.target.value })}
+                autoComplete="new-password"
+                required={!data.data?.secretConfigured || draft.clientId !== data.data.clientId}
+                placeholder={
+                  data.data?.secretConfigured && draft.clientId === data.data.clientId ? '••••••••' : ''
+                }
+                title={data.data?.secretConfigured ? tr('external.keepSecret') : undefined}
+                maxLength={4096}
+              />
+            </label>
+            <label className="field">
+              {tr('external.redirect')}
+              <input readOnly value={data.data?.redirectUri ?? ''} onFocus={(e) => e.target.select()} />
+            </label>
+            <p className="muted small">
+              {tr(`external.setup.${provider}`)}{' '}
+              <a
+                href={`https://panasms.github.io/docs/setup/${provider}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {tr('external.setupGuide')}
+              </a>
+              {' · '}
+              <a
+                href={
+                  {
+                    google: 'https://console.cloud.google.com/auth/clients',
+                    github: 'https://github.com/settings/developers',
+                    dropbox: 'https://www.dropbox.com/developers/apps',
+                  }[provider]
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {providerNames[provider]}
+              </a>
+            </p>
+            <label className="external-toggle">
+              <input
+                type="checkbox"
+                checked={draft.enabled}
+                onChange={(e) => setDraft({ ...draft, enabled: e.target.checked })}
+              />
+              {tr(provider === 'dropbox' ? 'external.enableLink' : 'external.enableProvider', {
+                provider: providerNames[provider],
+              })}
+            </label>
+            <p className="muted small">{tr(`external.scope.${provider}`)}</p>
+            <div className="actions">
+              <Button
+                className="primary"
+                disabled={save.isPending || unavailable || form.conflict || !form.dirty}
+              >
+                {tr('apply_768af677')}
+              </Button>
+            </div>
+          </fieldset>
         </form>
       </section>
     </WaitingSurface>

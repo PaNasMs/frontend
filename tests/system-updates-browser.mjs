@@ -106,7 +106,7 @@ try {
           failRead = false
           state = { ...state, settings: { ...state.settings, hour: 8 } }
           await retry.click()
-          const reload = page.getByRole('button', { name: text['oled.reload'], exact: true })
+          const reload = page.getByRole('button', { name: text['forms.reload'], exact: true })
           await expect(reload).toBeVisible()
           await expect(hour).toHaveValue('9')
           await expect(apply).toBeDisabled()
@@ -133,13 +133,13 @@ try {
             const dialogRetry = dialog.getByRole('button', { name: text['up.retry'], exact: true })
             await expect(dialogRetry).toBeVisible({ timeout: 10000 })
             await expect(
-              dialog.getByRole('button', { name: text['homes.confirmButton'], exact: true }),
+              dialog.getByRole('button', { name: `${text['up.rollback']} · PaNasMs`, exact: true }),
             ).toBeDisabled()
             assert.equal(writes.length, 2)
             failRead = false
             await dialogRetry.click()
             await expect(
-              dialog.getByRole('button', { name: text['homes.confirmButton'], exact: true }),
+              dialog.getByRole('button', { name: `${text['up.rollback']} · PaNasMs`, exact: true }),
             ).toBeEnabled()
             await dialog.getByRole('button', { name: text.cancel_0ec753be, exact: true }).click()
             await expect(dialog).toHaveCount(0)
