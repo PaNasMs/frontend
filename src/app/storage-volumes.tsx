@@ -114,11 +114,19 @@ export function StorageVolumes({
   mounts,
   options,
   arrayNames = {},
+  optionsUnavailable = false,
+  optionsError,
+  onRetryOptions,
+  retryingOptions = false,
 }: {
   devices: Device[]
   mounts: Mount[]
   options?: StorageOptions
   arrayNames?: Record<string, string>
+  optionsUnavailable?: boolean
+  optionsError?: string
+  onRetryOptions?: () => void
+  retryingOptions?: boolean
 }) {
   const [selection, setSelection] = useState<Selection | null>(null)
   const mounted = (device: Device) => !!volumeMountPoint(device, mounts)
@@ -142,7 +150,7 @@ export function StorageVolumes({
   // Free space on a disk changes its partition layout, not the disk as a whole, so the system disk is
   // allowed there; its system partitions and whole-device operations stay protected.
   const systemReason = free ? policy?.layoutReason : policy?.protectedReason
-  const protectedDevice = !options || !policy || !!systemReason
+  const protectedDevice = optionsUnavailable || !options || !policy || !!systemReason
   const attached = selected && mounted(selected)
   const point = selected ? volumeMountPoint(selected, mounts) : ''
   const children = selected?.children?.length ?? 0
@@ -338,6 +346,7 @@ export function StorageVolumes({
               <OperationButton
                 icon={mdiLinkOff}
                 label={tr('unmount_network_share_dd0cee6d')}
+                disabled={optionsUnavailable}
                 actions={[selectedNetwork.fstype === 'cifs' ? 'smb.unmount' : 'nfs.unmount']}
                 initial={{ target: selectedNetwork.target }}
                 context={[
@@ -369,7 +378,16 @@ export function StorageVolumes({
               </p>
             </div>{' '}
             {protectedDevice ? (
-              <Notice>{systemReason || tr('checking_available_actions_8f7ab614')}</Notice>
+              <Notice error={!!optionsError}>
+                {optionsError
+                  ? tr('storageRead.actionsUnavailable')
+                  : systemReason || tr('checking_available_actions_8f7ab614')}
+                {optionsError && onRetryOptions && (
+                  <Button onClick={onRetryOptions} disabled={retryingOptions}>
+                    {tr('retry_9e506acb')}
+                  </Button>
+                )}
+              </Notice>
             ) : (
               <div className="context-actions">
                 {free && (
