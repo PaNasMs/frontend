@@ -1208,6 +1208,7 @@
   "modules.catalogLoading": "Завантаження каталогу модулів…",
   "modules.catalogError": "Каталог модулів недоступний. Встановлені модулі доступні.",
   "modules.catalogPreparing": "Підготовка встановлення…",
+  "modules.reviewUpdatedPlan": "План встановлення змінився. Перевірте новий список модулів перед підтвердженням.",
   "modules.filter": "Фільтр модулів",
   "modules.filterAll": "Усі",
   "modules.filterInstalled": "Встановлені",
