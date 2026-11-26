@@ -1208,6 +1208,7 @@
   "modules.catalogLoading": "Loading module catalog…",
   "modules.catalogError": "The module catalog is unavailable. Installed modules remain accessible.",
   "modules.catalogPreparing": "Preparing installation…",
+  "modules.reviewUpdatedPlan": "The installation plan changed. Review the updated selection before confirming.",
   "modules.filter": "Module filter",
   "modules.filterAll": "All",
   "modules.filterInstalled": "Installed",

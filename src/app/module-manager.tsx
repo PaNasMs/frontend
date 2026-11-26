@@ -35,6 +35,7 @@ type Plan = {
   fingerprint: string
   confirmation: string
 }
+const catalogInstall = 'module.catalog-install'
 function moduleIcon(module: InstalledModule) {
   return (
     modules().find((item) => item.id === module.id)?.icon ??
@@ -57,21 +58,25 @@ export function ModuleManager() {
     action: string
     params: Record<string, string>
     plan: Plan
+    refreshed: boolean
   } | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [stage, setStage] = useState('')
   const [accepted, setAccepted] = useState(false)
-  async function preview(action: string, params: Record<string, string>) {
+  async function preview(action: string, params: Record<string, string>, refreshed = false) {
     setError('')
     setBusy(true)
+    setAccepted(false)
+    if (action === catalogInstall) setStage(tr('modules.catalogPreparing'))
     try {
       const plan = await managed<Plan>('plan', { action, params })
-      setPending({ action, params, plan })
+      setPending({ action, params, plan, refreshed })
     } catch (e) {
       setError((e as Error).message)
     } finally {
       setBusy(false)
+      setStage('')
     }
   }
   async function upload(archive: File) {
@@ -97,7 +102,8 @@ export function ModuleManager() {
       setStage('')
     }
   }
-  async function apply(operation = pending) {
+  async function apply() {
+    const operation = pending
     if (!operation) return
     setError('')
     setBusy(true)
@@ -129,6 +135,15 @@ export function ModuleManager() {
         location.assign('/modules')
       else location.reload()
     } catch (e) {
+      if (
+        operation.action === catalogInstall &&
+        e instanceof Error &&
+        e.message === tr('server_dc9a55e8b9e3')
+      ) {
+        setPending(null)
+        await preview(operation.action, operation.params, true)
+        return
+      }
       setError((e as Error).message)
       setBusy(false)
       setPending(null)
@@ -136,21 +151,7 @@ export function ModuleManager() {
       void catalog.refetch()
     }
   }
-  async function install(module: InstalledModule) {
-    setError('')
-    setBusy(true)
-    setStage(tr('modules.catalogPreparing'))
-    try {
-      const params = { target: module.id, version: module.version }
-      const action = 'module.catalog-install'
-      const plan = await managed<Plan>('plan', { action, params })
-      await apply({ action, params, plan })
-    } catch (e) {
-      setError((e as Error).message)
-      setBusy(false)
-      setStage('')
-    }
-  }
+
   const installedIds = new Set(catalog.data?.installed.map((m) => m.id))
   const items = [
     ...(catalog.data?.installed ?? []),
@@ -174,7 +175,7 @@ export function ModuleManager() {
         disabled={busy || !!release.reason}
         title={label}
         aria-label={label}
-        onClick={() => void install(release)}
+        onClick={() => void preview(catalogInstall, { target: release.id, version: release.version })}
       >
         <Icon path={installedIds.has(module.id) ? mdiUpdate : mdiDownload} />
       </Button>
@@ -378,7 +379,9 @@ export function ModuleManager() {
         <div className="surface module-details">
           <section>
             <h2>{tr('about_this_module_debf7d50')}</h2>
-            <p className="module-long-description">{selected.longDescription || selected.description || tr('no_description_provided_7eeedaab')}</p>
+            <p className="module-long-description">
+              {selected.longDescription || selected.description || tr('no_description_provided_7eeedaab')}
+            </p>
             <dl className="module-facts">
               <dt>{tr('version_97c248cb')}</dt>
               <dd>{selected.version}</dd>
@@ -463,13 +466,17 @@ export function ModuleManager() {
                 {' '}
                 <div className="page-heading">
                   <Dialog.Title>
-                    {pending?.action === 'module.install'
+                    {pending?.action === 'module.install' || pending?.action === catalogInstall
                       ? tr('install_modules_bfc8911f')
                       : tr('change_module_4e519bcb')}
                   </Dialog.Title>
                 </div>
                 <Dialog.Description>
-                  {tr('review_the_changes_before_applying_0b26d959')}
+                  {tr(
+                    pending?.refreshed
+                      ? 'modules.reviewUpdatedPlan'
+                      : 'review_the_changes_before_applying_0b26d959',
+                  )}
                 </Dialog.Description>{' '}
               </>
             }
@@ -487,6 +494,7 @@ export function ModuleManager() {
             intent="confirm"
             dirty={false}
           >
+            {pending?.action === catalogInstall && <p>{pending.plan.target}</p>}
             <ul>
               {pending?.plan.details.map((d, i) => (
                 <li key={i}>{d}</li>
